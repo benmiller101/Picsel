@@ -1,0 +1,14 @@
+{
+  "name": "picsel-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Picsel — studio portfolio and lead-gen site. Static HTML/CSS/JS, no framework.",
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes serve . --listen 3000",
+    "shots": "node tools/capture-shots.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
