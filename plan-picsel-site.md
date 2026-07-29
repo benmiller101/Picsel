@@ -39,7 +39,8 @@ Single source of truth. If a fact changes, change it here first, then everywhere
 | Dedicated studio email | `[DECISION]` use benwmiller101@gmail.com for now, or set up info@ on the Picsel domain |
 | Domain | `[DECISION]` not chosen yet (e.g. a picsel… .co.uk / .studio). Register in Picsel's own account |
 | Hosting | Cloudflare Pages (same as client builds) |
-| Stack | Static multi-page HTML/CSS/JS, built **on top of the existing hero** (`hero.html/.css/.js`, `nav.css/.js`). No framework |
+| Stack | Static multi-page HTML/CSS/JS, built **on top of the existing hero** (`hero.html/.css/.js`). No framework. Pages are generated from one shared template by `tools/build.js` (`npm run build`) so the `<head>`, nav and footer exist once; the output is plain static HTML |
+| Repo | Local git repo on `main`. **Pending:** no GitHub remote yet — the `gh` CLI is not installed on this machine, so the remote must be created before Cloudflare Pages can connect (Section 12) |
 | Fonts | Adobe Fonts web project `ior4aly` (`argent-pixel-cf`, `gridlite-pe-variable`, `pf-pixelscript`, `pixelify-sans`) + Google `Lexend` (body) and `Pixelify Sans` (fallback pixel face) |
 | Contact form | Web3Forms (free, access key in the dashboard) |
 | Brand aesthetic | Dark near-black, lava-lamp gradient blobs (hero only), near-invisible dot-grid texture, PICSEL pixel wordmark with a font-glitch |
@@ -50,7 +51,7 @@ Single source of truth. If a fact changes, change it here first, then everywhere
 
 | Slug | Name | URL | Sector | Location | Featured |
 |---|---|---|---|---|---|
-| nevitt-construction | A Nevitt Construction `[DECISION]` name vs "Hayle Builders" | https://haylebuilders.com/ | Construction | Hayle, Cornwall | yes |
+| nevitt-construction | A Nevitt Construction — settled, the live site brands itself this; haylebuilders.com is only the domain | https://haylebuilders.com/ | Construction | Hayle, Cornwall | yes |
 | lanora-house | Lanora House | https://www.lanorahouse.com/ | House clearance | Hayle, Cornwall | yes |
 | ajc-removals | AJC Removals & Clearances | https://ajcremovals.co.uk/ | Removals & clearance | Cornwall | yes |
 | julie-miller-art | Julie Miller Art | https://juliemillerart.co.uk/ | Artist portfolio | Scottish Borders | yes |
@@ -102,9 +103,17 @@ Picsel is a brand-new studio. Credibility comes from the work shown, not from in
 - [ ] `[DECISION]` Domain chosen and registered in Picsel's own account
 - [ ] `[DECISION]` Studio contact email (Gmail for now vs info@ on the domain)
 - [ ] `[DECISION]` Whether to show the founding-offer pricing on the site
-- [ ] `[BEN]` Confirm each client is happy to be featured, and the first project's display name
-      (A Nevitt Construction vs Hayle Builders)
-- [ ] `[BEN]` Reword the five draft blurbs if wanted; add SEO/Google Profile tags where they apply
+- [ ] `[BEN]` **Confirm each of the five clients is happy to be featured.** Blocks Section 6 shipping.
+      Worth a specific note on two: Lanora House (Ben is a director) and House of Cornwall, whose own
+      site states it is affiliated with Lanora House — two of the five featured projects are
+      connected businesses, which is fine to show but should be a conscious choice
+- [x] `[BEN]` First project's display name — settled as **A Nevitt Construction** (its own site's
+      header and title; `haylebuilders.com` is only the domain)
+- [ ] `[BEN]` Reword the five draft blurbs if wanted. Drafts are in `projects.js`, written from what
+      each live site says about itself and claiming no outcomes
+- [ ] `[BEN]` **Confirm the `tags` per project.** All five currently read `['Website']` only, since
+      that is all that is verifiable from the outside. Add `'SEO'` / `'Google Profile'` only where
+      Picsel actually did that work — these are public claims
 - [x] `[BEN]` Project list supplied (names, URLs, sectors) — done
 
 ### Required before launch
@@ -118,18 +127,55 @@ Picsel is a brand-new studio. Credibility comes from the work shown, not from in
 ## Section 1: Setup, structure and content model
 **Priority: CRITICAL | Effort: 2 hours**
 
-- [ ] Confirm the repo (the existing `picsel` directory) and make a first commit of this plan and
+- [x] Confirm the repo (the existing `picsel` directory) and make a first commit of this plan and
       `instructions-picsel-site.md`
-- [ ] Add `.claude/settings.json` with the agency permission rules (spec in the instructions file)
-- [ ] Create `projects.js` as the single source of truth, pre-filled with the five projects
+- [x] Add `.claude/settings.json` with the agency permission rules (spec in the instructions file)
+- [x] Create `projects.js` as the single source of truth, pre-filled with the five projects
       (schema in the build brief). Everything project-related reads from this file
-- [ ] Decide the shared page shell: which parts of `nav.css`/`nav.js` and the hero carry across all
+- [x] Decide the shared page shell: which parts of `nav.css`/`nav.js` and the hero carry across all
       pages, and where a shared `<head>` partial and base stylesheet live
 
 **What we built:**
+
+The site now has a spine. `projects.js` holds the five real projects and is the only place their
+facts live, so the Work grid, each project page, the sitemap and the screenshot script all read from
+one list and can never contradict each other. `site.config.js` does the same job for Picsel itself —
+the phone number and email are written once and appear everywhere from there. A small build step
+takes a single page template and writes finished, plain HTML files, which is what lets every page
+share one `<head>` and one nav without nine copies drifting apart. That build runs on Ben's machine,
+never in a visitor's browser, so every word of the site is in the file before it is served.
+
+The shell was checked in a real browser rather than assumed to work, and three things were wrong:
+content sat behind the floating nav, the footer stranded itself halfway down short pages, and the
+footer's phone and email links were 26 pixels tall — well under the 44-pixel minimum a thumb needs.
+All three are fixed and re-measured at 375, 768, 1024 and 1440 pixels wide, with no sideways
+scrolling at any size and a clean console.
+
 **Decisions made:**
 
-**Done when:** `projects.js` holds the five real projects and a blank page renders with the shared nav and base styles.
+- **A small build step, not hand-written pages.** Plain HTML has no way to share a `<head>` or a nav.
+  The alternative was copying both into every page, which always drifts. `tools/build.js` renders
+  pages from one template; the output is ordinary static files with no framework and no runtime.
+- **The build refuses to write a broken site.** It checks every page before writing any of them:
+  titles unique and ≤60 characters, descriptions unique and ≤155, exactly one `<h1>`. If a check
+  fails, nothing is written at all. Verified by deliberately breaking a page.
+- **The nav is real HTML, replacing `nav.js`.** The prototype `nav.js` was a switcher between four
+  experiment pages that built itself in JavaScript — which would have made the site's navigation
+  invisible to anything not running scripts, breaking the plan's own rule. `nav.css`'s pill styling
+  carries over into `site.css`; `nav.css`/`nav.js` remain only because `hero.html` still links them
+  and are deleted in Section 3.
+- **`tokens.css` is deliberately minimal.** It holds only the two colours already in `hero.css` plus
+  a small spacing scale — enough for the shell, nothing invented ahead of Section 2's design work.
+- **Generated HTML is committed.** Cloudflare Pages can then serve the repo directly with no build
+  configuration to get wrong, and Ben can see exactly what ships. Easily reversed later.
+- **`A Nevitt Construction` over `Hayle Builders`.** Settles a `[DECISION]`: the live site brands
+  itself A Nevitt Construction in its own header and title. `haylebuilders.com` is only the domain.
+- **Project blurbs are factual drafts, and tags claim nothing.** Every `tags` array reads
+  `['Website']` only, because that is all that is verifiable from the live sites — `SEO` and
+  `Google Profile` stay off until Ben confirms per client. Blurbs describe each build and
+  deliberately claim no traffic, ranking or enquiry outcome.
+
+**Done when:** `projects.js` holds the five real projects and a blank page renders with the shared nav and base styles. ✅
 
 ---
 
@@ -426,7 +472,7 @@ Lighter than a client engagement — this is Picsel's shop window, kept fresh.
 
 ## Progress
 
-- [ ] Section 1: Setup, structure and content model
+- [x] Section 1: Setup, structure and content model
 - [ ] Section 2: Design system and site-wide background
 - [ ] Section 3: Hero and scroll behaviour
 - [ ] Section 4: Homepage
