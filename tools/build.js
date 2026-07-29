@@ -39,21 +39,107 @@ const PAGES = [
     path: '/shell-check/',
     title: 'Shell check | Picsel',
     description:
-      'Internal build check confirming the shared page shell renders with the site nav, footer and base styles. Not linked from the site.',
+      'Internal build check showing the shared page shell and the design system: type scale, colour, buttons and the drifting backdrop. Not linked from the site.',
     /* Kept out of sitemap.xml — it is a build artefact, not a page for
        visitors. Omitting it from the sitemap is not enough on its own though:
        a page is still reachable and indexable if anything ever links to it,
        so it carries an explicit noindex as well.
        TEMPORARY — delete this page once the homepage exists in Section 4. */
     excludeFromSitemap: true,
-    extraHead: '  <meta name="robots" content="noindex, nofollow" />',
-    content: `    <div class="wrap" style="padding-block: var(--space-8);">
-      <h1>Shared shell</h1>
-      <p>
-        This page has no content of its own. It exists to prove the shared shell renders:
-        the nav above, the footer below, the tokens and base styles applied, and the whole
-        document present in the HTML without JavaScript running.
+    /* The layout below is inline rather than in a stylesheet because this page
+       is temporary and nothing else uses it — a proof-sheet.css that gets
+       deleted in two sections would be a file for the sake of a rule. Every
+       value still comes from tokens.css. */
+    extraHead: `  <meta name="robots" content="noindex, nofollow" />
+  <style>
+    .proof {
+      display: grid;
+      gap: var(--space-12);
+      margin-top: var(--space-16);
+      padding-top: var(--space-12);
+      border-top: 1px solid var(--line);
+    }
+    /* Two columns from tablet up, so the page is not one centred stack — the
+       layout being checked has to be a real one. */
+    @media (min-width: 48rem) {
+      .proof { grid-template-columns: 2fr 1fr; align-items: start; }
+      .proof__block:first-child { grid-row: span 2; }
+    }
+    .proof__block > * + * { margin-top: var(--space-4); }
+    .proof__block h2 { margin-bottom: var(--space-2); }
+    .proof__block p { max-width: var(--measure); }
+    .proof__caption { font-size: var(--text-sm); color: var(--ink-faint); }
+    .proof__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+    .proof__swatches {
+      display: grid;
+      gap: var(--space-3);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-size: var(--text-sm);
+      color: var(--ink-faint);
+    }
+    .proof__swatches li { display: flex; align-items: center; gap: var(--space-3); }
+    .proof__swatch {
+      width: 2.5rem;
+      height: 2.5rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+    }
+  </style>`,
+    /* A proof sheet rather than a blank page: every part of the design system
+       shown at once, so a look at this one page says whether the type scale,
+       the palette, the buttons and the backdrop are right. Deleted along with
+       the page itself once the homepage exists in Section 4. */
+    content: `    <div class="wrap section">
+      <p class="eyebrow">Internal build check</p>
+      <h1 class="display">Picsel</h1>
+      <p class="lede">
+        This page is not part of the site. It exists so the shared shell and the design
+        system can be looked at in one place: the nav above, the footer below, the type
+        scale, the one accent colour, and the dot field drifting behind all of it.
       </p>
+
+      <div class="proof">
+        <section class="proof__block">
+          <h2>Type scale</h2>
+          <p>
+            Headings are Lexend. The pixel face is reserved for the wordmark and the
+            occasional big title, because it is genuinely hard to read at length.
+          </p>
+          <h3>A third-level heading</h3>
+          <p>
+            Body copy sits at 17 pixels with generous line spacing. Light text on a dark
+            background bleeds slightly into it, and the extra room between lines is what
+            keeps a paragraph comfortable rather than dense. This paragraph is capped at a
+            reading width so the eye can find the start of the next line without hunting
+            for it.
+          </p>
+          <p class="proof__caption">Caption and metadata sit here, one step quieter.</p>
+        </section>
+
+        <section class="proof__block">
+          <h2>Actions</h2>
+          <p>
+            Two button styles and no more. The accent is the cyan already thrown by the
+            wordmark&rsquo;s glitch, and it marks one thing per screen.
+          </p>
+          <p class="proof__actions">
+            <a class="btn btn--primary" href="/contact/#enquiry">Get in touch</a>
+            <a class="btn btn--secondary" href="/work/">See the work</a>
+          </p>
+        </section>
+
+        <section class="proof__block">
+          <h2>Colour</h2>
+          <ul class="proof__swatches">
+            <li><span class="proof__swatch" style="background: var(--bg)"></span>Page</li>
+            <li><span class="proof__swatch" style="background: var(--bg-raised)"></span>Raised</li>
+            <li><span class="proof__swatch" style="background: var(--ink)"></span>Ink</li>
+            <li><span class="proof__swatch" style="background: var(--accent)"></span>Accent</li>
+          </ul>
+        </section>
+      </div>
     </div>`,
   },
 ];

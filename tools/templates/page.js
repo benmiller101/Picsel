@@ -61,10 +61,13 @@ ${items}
     </nav>`;
 }
 
-/* Trailing slashes and casing are the two ways the same URL gets written
-   differently. Normalising both means path comparisons behave. */
+/* Trailing slashes, casing and fragments are the three ways the same URL gets
+   written differently. Normalising all of them means path comparisons behave —
+   '/contact/#enquiry' and '/contact' are the same page and must be recognised
+   as one, or the nav highlights nothing on the page it is sitting on. */
 function normalisePath(path = '/') {
-  const trimmed = String(path).toLowerCase().replace(/\/+$/, '');
+  const withoutFragment = String(path).split('#')[0].split('?')[0];
+  const trimmed = withoutFragment.toLowerCase().replace(/\/+$/, '');
   return trimmed === '' ? '/' : trimmed;
 }
 
@@ -89,6 +92,14 @@ function renderHead({ title, description, path, ogImage, extraHead }) {
 
   return `  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- The site is dark-only. color-scheme tells the browser so, which makes it
+       render scrollbars, form fields and other built-in controls dark to match
+       instead of dropping bright white boxes into the page. theme-color tints
+       the browser's own chrome on mobile, so the bar above the page is the
+       same near-black rather than a hard white edge. -->
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0a0a" />
 
   <title>${escapeHtml(title)}</title>
   <meta name="description" content="${escapeHtml(description)}" />

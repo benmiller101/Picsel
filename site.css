@@ -1,22 +1,22 @@
-/* ---- site.css — shared chrome: the nav and the footer ---------------------
+/* ---- site.css — shared chrome: the nav, buttons and the footer ------------
    The furniture that appears on every page. base.css sets the floor (reset,
-   type defaults, accessibility); this styles the two components the shell
-   renders around the content.
+   type scale, accessibility); this styles the components the shell renders
+   around the content.
 
    Supersedes nav.css, which styled the prototype's page-switcher. That switcher
    built its markup in JavaScript and linked four experiment pages; this nav is
    real HTML linking real routes. nav.css and nav.js stay in the repo only
    because hero.html still loads them, and are removed in Section 3 when the
-   hero becomes the homepage.
-
-   STATUS: structural, not final. Section 2 owns the visual design — the accent
-   colour drawn from the brand glitch, the working mobile menu, and the type
-   scale. What is here is disciplined and correct, not yet decorated. */
+   hero becomes the homepage. */
 
 /* ---- Nav -----------------------------------------------------------------
    Pinned to the top and floating over the content, carried across from the
    prototype's treatment. The blur keeps the labels legible over whatever is
-   moving underneath — on the homepage that is the hero's blobs. */
+   moving underneath — on the homepage that is the hero's blobs.
+
+   There is no hamburger. With four things in the bar, all four fit at 375px,
+   and hiding a phone-first audience's route to contact behind a button they
+   have to find first would be worse design than a slightly tighter bar. */
 .site-nav {
   position: fixed;
   top: var(--space-4);
@@ -30,33 +30,35 @@
 
   max-width: calc(100% - (var(--space-4) * 2));
   padding: var(--space-2) var(--space-4);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
 
   /* Deliberately not glassmorphism: no glow, no heavy frost, no soft shadow
      stack. A quiet translucent bar with a hairline edge — enough to separate
      it from the page, not enough to become an ornament. */
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid var(--line);
   backdrop-filter: blur(14px) saturate(1.2);
   -webkit-backdrop-filter: blur(14px) saturate(1.2);
 }
 
 .site-nav__brand {
-  /* Padded to a 44px tap height like every other link in the bar. The text
+  /* Padded to a full tap height like every other link in the bar. The text
      itself is only ~26px tall, and a target that size is one most thumbs
      miss — the home link should not be the hardest thing to hit. */
   display: flex;
   align-items: center;
-  min-height: 44px;
+  min-height: var(--tap-min);
   padding-inline: var(--space-2);
 
-  font-family: 'argent-pixel-cf', 'Pixelify Sans', ui-monospace, monospace;
-  /* 400, never 700. argent-pixel-cf ships only a 400 weight, so asking for
-     bold makes the browser fake one by smearing the glyphs sideways — which on
-     a pixel face breaks the pixel grid and reads as a rendering fault. */
-  font-weight: 400;
-  font-size: 1rem;
-  letter-spacing: 0.12em;
+  font-family: var(--font-display);
+  /* 400, never 700 — see the note on .display in base.css. */
+  font-weight: var(--weight-regular);
+  font-size: var(--text-base);
+  letter-spacing: var(--tracking-display);
+  /* Reclaims the gap letter-spacing leaves after the final letter, so the
+     wordmark sits optically centred in its own padding rather than shunted
+     left by an invisible space on its right. */
+  margin-right: calc(var(--tracking-display) * -1);
   color: var(--ink);
   text-decoration: none;
   white-space: nowrap;
@@ -65,45 +67,102 @@
 .site-nav__list {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-1);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .site-nav__link {
-  display: block;
-  /* Tap targets must clear 44px. The padding here plus the inherited
-     line-height is what gets a link there — a 12px label with tight padding
-     is a target most thumbs miss. */
-  padding: 0.7rem 0.9rem;
-  border-radius: 999px;
-  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  /* Tap targets must clear 44px. The min-height guarantees it outright rather
+     than relying on padding plus an inherited line-height to add up. */
+  min-height: var(--tap-min);
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-pill);
+
+  font-size: var(--text-sm);
   color: var(--ink-muted);
   text-decoration: none;
   white-space: nowrap;
-  transition: color 160ms ease, background-color 160ms ease;
+  transition: color var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease);
 }
 
 .site-nav__link:hover {
   color: var(--ink);
+  background: rgba(255, 255, 255, 0.07);
 }
 
+/* The page you are on, marked for the eye and — via aria-current in the
+   markup — announced for anyone listening rather than looking. */
 .site-nav__link[aria-current='page'] {
   color: var(--ink);
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* The single call to action. Section 2 gives it the brand accent; until then
-   it is inverted, which is already a clear enough hierarchy to test with. */
+/* The single call to action, and the only place the accent appears in the
+   chrome. Black text on cyan measures about 11:1, well past the AA floor. */
 .site-nav__link--accent {
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: var(--weight-medium);
 }
 
 .site-nav__link--accent:hover {
-  color: var(--bg);
-  opacity: 0.88;
+  background: var(--accent);
+  color: var(--accent-ink);
+  /* Lifting brightness rather than swapping to a second accent tone keeps the
+     palette at one accent value, which is the rule. */
+  filter: brightness(1.12);
+}
+
+/* ---- Buttons -------------------------------------------------------------
+   Two kinds and no more: the one thing you want people to do, and everything
+   else. A third button style is almost always a sign the page is asking for
+   too much at once. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+
+  min-height: var(--tap-min);
+  padding: var(--space-3) var(--space-6);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease),
+              filter var(--dur-fast) var(--ease);
+}
+
+.btn--primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.btn--primary:hover {
+  filter: brightness(1.12);
+}
+
+.btn--secondary {
+  background: transparent;
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+
+.btn--secondary:hover {
+  border-color: var(--ink);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* ---- Footer --------------------------------------------------------------
@@ -111,15 +170,15 @@
    small businesses, often reading on a phone between jobs — whatever page
    someone stops on, the way to make contact is right there. */
 .site-footer {
-  margin-top: var(--space-8);
-  padding-block: var(--space-8);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: var(--section-y);
+  padding-block: var(--space-12);
+  border-top: 1px solid var(--line);
 }
 
 .site-footer__inner {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-4);
+  gap: var(--space-6);
   align-items: baseline;
   justify-content: space-between;
 }
@@ -127,7 +186,7 @@
 .site-footer__contact {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-4);
+  gap: var(--space-6);
 }
 
 /* The phone number is the single most important link on the site for this
@@ -137,34 +196,45 @@
 .site-footer__contact a {
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
+  min-height: var(--tap-min);
 
   color: var(--ink);
-  text-decoration-color: rgba(255, 255, 255, 0.35);
+  text-decoration-color: var(--line-strong);
   text-underline-offset: 0.25em;
+  transition: text-decoration-color var(--dur-fast) var(--ease);
+}
+
+.site-footer__contact a:hover {
+  text-decoration-color: var(--accent);
 }
 
 .site-footer__meta {
-  font-size: 0.875rem;
-  color: var(--ink-muted);
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
 }
 
 /* ---- Small screens -------------------------------------------------------
-   Below this the nav would overflow its own pill. Section 2 replaces this with
-   a real mobile menu; for now the items simply wrap to a comfortable size
-   rather than being clipped. */
+   The bar tightens rather than collapsing. Everything stays reachable; only
+   the padding and the label size give ground. Tap heights do not — they are
+   held at 44px by min-height, which padding changes cannot undercut. */
 @media (max-width: 640px) {
   .site-nav {
     gap: var(--space-2);
-    padding: var(--space-2);
+    padding: var(--space-1) var(--space-2);
+  }
+
+  .site-nav__brand {
+    font-size: var(--text-sm);
+    padding-inline: var(--space-1);
   }
 
   .site-nav__link {
-    padding: 0.7rem 0.6rem;
-    font-size: 0.8125rem;
+    padding-inline: var(--space-2);
+    font-size: var(--text-xs);
   }
 
   .site-footer__inner {
     flex-direction: column;
+    gap: var(--space-4);
   }
 }

@@ -1,7 +1,8 @@
 /* ---- base.css — the shared floor every page stands on ---------------------
    Loaded by every page, after tokens.css and before any page-specific sheet.
    Holds only what is genuinely universal: the reset, document defaults, the
-   accessibility floor and the shared layout container.
+   type scale, the accessibility floor, the shared layout container and the
+   site-wide backdrop.
 
    Anything that belongs to one page belongs in that page's own stylesheet.
    The hero's blobs and glitch stay in hero.css; they appear on the homepage
@@ -30,6 +31,12 @@ p, figure, blockquote, dl, dd {
 /* ---- Document ------------------------------------------------------------ */
 
 html {
+  /* The page colour lives on the root, not on <body>. That is deliberate: the
+     root's background is what paints the browser canvas, which leaves the
+     layer behind <body> free for the backdrop below. Put this on <body> and
+     the backdrop is covered up and never seen. */
+  background: var(--bg);
+
   /* Anchor links and in-page jumps glide rather than teleport — but only for
      visitors who have not asked for reduced motion (handled at the foot). */
   scroll-behavior: smooth;
@@ -40,7 +47,6 @@ html {
 
 body {
   min-height: 100vh;
-  background: var(--bg);
   color: var(--ink-muted);
 
   /* A column so the footer can be pushed to the bottom on short pages. Without
@@ -52,15 +58,11 @@ body {
 
   /* Lexend for all reading copy. The pixel faces are for the wordmark and the
      occasional big title only — the audience here is busy, mostly
-     non-technical, and a pixel face over a paragraph is genuinely hard work.
-     The stack after it is the fallback chain if Lexend has not loaded yet. */
-  font-family: 'Lexend', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  font-weight: 300;
-  font-size: 1rem;
-  /* Generous leading. Light text on a dark background bleeds slightly into it
-     (an optical effect called halation), and extra line spacing is what keeps
-     a paragraph readable rather than dense. */
-  line-height: 1.65;
+     non-technical, and a pixel face over a paragraph is genuinely hard work. */
+  font-family: var(--font-body);
+  font-weight: var(--weight-light);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -68,6 +70,51 @@ body {
   /* Nothing may cause sideways scrolling. A single over-wide element on a
      phone otherwise makes the entire page shuffle left and right. */
   overflow-x: hidden;
+}
+
+/* ---- The site-wide backdrop ----------------------------------------------
+   One fixed layer of faint dots that every page slides over. It does not
+   scroll with the content, and it drifts slowly upward under its own steam —
+   like a slow conveyor behind a shop window. The page feels alive without
+   anything moving that the eye has to follow.
+
+   Built in CSS rather than as a second canvas on top of the hero's. A canvas
+   would mean a JavaScript animation loop running on every page for the whole
+   visit, redrawing thousands of dots and costing battery, to draw something
+   that is barely visible. A repeating gradient does the same job for nothing,
+   and — the part that matters — it still works with JavaScript switched off.
+
+   It moves by transform, not by shifting the background position. Transforms
+   are handed to the graphics card and cost nothing per frame; repositioning a
+   background makes the browser repaint the entire screen sixty times a second.
+   The layer is one tile taller than the viewport so that as it travels up, the
+   bottom edge never appears. */
+body::before {
+  content: '';
+  position: fixed;
+  /* Positioned, therefore out of the flex flow above — it is a backdrop, not a
+     column item. The negative bottom is the extra tile of overhang. */
+  inset: 0 0 calc(var(--dot-pitch) * -1) 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background-image: radial-gradient(
+    circle at center,
+    rgba(var(--dot-tint), var(--dot-alpha)) var(--dot-size),
+    transparent calc(var(--dot-size) + 0.6px)
+  );
+  background-size: var(--dot-pitch) var(--dot-pitch);
+
+  animation: backdrop-drift var(--dot-drift) linear infinite;
+  will-change: transform;
+}
+
+/* Exactly one tile of travel, then it repeats. Because the pattern is
+   identical every tile, the restart is invisible and the drift reads as
+   endless. */
+@keyframes backdrop-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(0, calc(var(--dot-pitch) * -1), 0); }
 }
 
 /* ---- Media ---------------------------------------------------------------
@@ -84,16 +131,27 @@ canvas {
   height: auto;
 }
 
-/* ---- Type ---------------------------------------------------------------- */
+/* ---- Type ----------------------------------------------------------------
+   Headings are Lexend by default, on the scale from tokens.css. The pixel
+   display face is opt-in via .display — it is the studio's signature and is
+   rationed, not sprinkled. */
 
 h1, h2, h3, h4, h5, h6 {
   color: var(--ink);
+  font-weight: var(--weight-regular);
   /* Headings are large, so they need proportionally tighter leading than body
      copy — at the same 1.65 the lines would drift apart and stop reading as
      one phrase. */
-  line-height: 1.15;
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
   text-wrap: balance;
 }
+
+h1 { font-size: var(--text-3xl); line-height: var(--leading-tight); }
+h2 { font-size: var(--text-2xl); }
+h3 { font-size: var(--text-xl); }
+h4 { font-size: var(--text-lg); }
+h5, h6 { font-size: var(--text-base); }
 
 /* Stops a paragraph ending in a single stranded word on its own last line. */
 p {
@@ -114,17 +172,74 @@ select {
   color: inherit;
 }
 
+/* ---- Type utilities ------------------------------------------------------
+   A deliberately short list. Each one earns its place by being needed on more
+   than one page. */
+
+/* The pixel display face. Always 400 weight: argent-pixel-cf ships only one
+   weight, so asking for bold makes the browser fake it by smearing the glyphs
+   sideways — which on a face drawn to a pixel grid reads as a rendering fault
+   rather than as emphasis. Always tracked wide, because pixel letterforms jam
+   together without added air. */
+.display {
+  font-family: var(--font-display);
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-tight);
+  /* Letter-spacing adds its gap AFTER the final letter too, so the line ends
+     with invisible padding. On a left-aligned heading that trailing space is
+     harmless; pulling it back keeps the text box honest for anything measuring
+     the element's width. What it must NOT do is shift the first letter — an
+     indent here pushes the heading right of the eyebrow and paragraph beneath
+     it, and the misalignment is visible at a glance. */
+  margin-right: calc(var(--tracking-display) * -1);
+}
+
+/* Centred use is the exception, and it is the one case where the trailing gap
+   does matter: it drags the whole line off-centre by half of itself. An indent
+   of the same size puts it back. This is what hero.css does to the wordmark. */
+.display--centred {
+  text-align: center;
+  margin-right: 0;
+  text-indent: var(--tracking-display);
+}
+
+/* The small capitalised label above a section heading. It exists to say what
+   kind of thing follows, so it is only ever used where there is something true
+   to say — never as decoration. */
+.eyebrow {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* The opening paragraph of a page or section: one step up from body copy. */
+.lede {
+  font-size: var(--text-lg);
+  color: var(--ink);
+  max-width: var(--measure);
+}
+
+/* Caps a run of text at a comfortable reading width. Roughly 65 characters a
+   line, which is the width the eye tracks back from most reliably. */
+.measure {
+  max-width: var(--measure);
+}
+
 /* ---- Accessibility floor -------------------------------------------------
    Not optional and not decorative. */
 
 /* A visible focus ring for keyboard users, and only for them — :focus-visible
    skips it on mouse clicks, which is why the old trick of removing outlines
    entirely was never necessary. Someone navigating by Tab must always be able
-   to see where they are. */
+   to see where they are. The accent is used here because it is the one colour
+   on the site nothing else competes with, so the ring is unmissable. */
 :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
-  outline: 2px solid var(--ink);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
 }
 
 /* Visually hidden but still read aloud by screen readers. Used for the skip
@@ -156,7 +271,7 @@ select {
      keyboard or switch control and needs it to be a solid target. */
   display: flex;
   align-items: center;
-  min-height: 44px;
+  min-height: var(--tap-min);
   padding-inline: var(--space-4);
   background: var(--ink);
   color: var(--bg);
@@ -178,6 +293,13 @@ select {
   max-width: var(--page-max);
   margin-inline: auto;
   padding-inline: var(--page-gutter);
+}
+
+/* The standard vertical rhythm between major bands of content. One value,
+   used everywhere, is what stops sections drifting to slightly different
+   heights down the page. */
+.section {
+  padding-block: var(--section-y);
 }
 
 /* Where the skip link lands. Needs to be focusable to move the keyboard
@@ -211,7 +333,11 @@ main {
 
    Animations are near-eliminated rather than removed outright: a duration of
    0 can cancel an animation's completion event, and any JavaScript waiting on
-   that event would then never run. 0.01ms finishes instantly and still fires. */
+   that event would then never run. 0.01ms finishes instantly and still fires.
+
+   This is also what stills the backdrop. The dot field stops drifting and
+   simply sits there as static texture — the page keeps its surface, and
+   nothing on screen moves on its own. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -224,5 +350,11 @@ main {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Freed of its animation, the layer no longer needs its own compositing
+     layer held in graphics memory for the whole visit. */
+  body::before {
+    will-change: auto;
   }
 }

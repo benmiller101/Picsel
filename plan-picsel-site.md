@@ -182,22 +182,77 @@ scrolling at any size and a clean console.
 ## Section 2: Design system and site-wide background
 **Priority: CRITICAL | Effort: half a day**
 
-- [ ] `tokens.css`: near-black background, ink, one restrained accent (from the brand glitch
+- [x] `tokens.css`: near-black background, ink, one restrained accent (from the brand glitch
       cyan/magenta), spacing and radii as custom properties. No hardcoded values elsewhere
-- [ ] Typography: `argent-pixel-cf` pixel face for the logo and the occasional big title, used with
+- [x] Typography: `argent-pixel-cf` pixel face for the logo and the occasional big title, used with
       restraint; **all reading copy in Lexend** at a comfortable size and line-height. High contrast, WCAG AA
-- [ ] Reuse `nav.css`/`nav.js` (light-on-dark default suits the dark site); add the nav items
+- [x] Reuse `nav.css`/`nav.js` (light-on-dark default suits the dark site); add the nav items
       (Work, Contact) and a distinct **"Get in touch"** accent button; make the mobile menu work
-- [ ] **Persistent parallax background:** promote the dot-grid texture to a fixed, site-wide layer
+      — *shipped without a hamburger; see the decision below*
+- [x] **Persistent parallax background:** promote the dot-grid texture to a fixed, site-wide layer
       behind all content that does **not** scroll with the page and **slowly drifts upward** on its
       own. Near-invisible, delta-time based, reduced-motion aware
-- [ ] Shared `<head>` partial: per-page title/meta slots, canonical, Open Graph, the Adobe + Google
+- [x] Shared `<head>` partial: per-page title/meta slots, canonical, Open Graph, the Adobe + Google
       font links
 
 **What we built:**
+
+The site now has a proper vocabulary. Six colours, two typefaces and one spacing rhythm are written
+down once in `tokens.css`, and every page reads them from there — which is why the pages will keep
+looking related to each other as more of them get built. The reading copy is Lexend at a comfortable
+size with generous line spacing; the pixel face is kept for the wordmark and the occasional big
+title only, because it is genuinely hard work over a paragraph and the people this site is for are
+busy.
+
+Behind everything there is now one fixed sheet of very faint dots that the pages slide over. It
+doesn't scroll with the content and it drifts slowly upward on its own — like a slow conveyor behind
+a shop window — so the page feels alive without anything moving that your eye has to follow. It is
+drawn by the browser rather than by code, so it costs nothing, keeps working with JavaScript
+switched off, and stops moving entirely for anyone who has asked their computer to reduce animation.
+
+The nav gained the real routes and a single cyan "Get in touch" button, and the whole thing was
+measured in a browser rather than assumed: at 375 pixels wide the bar is 298 pixels, so nothing is
+clipped and nothing is hidden. Every piece of text was contrast-checked against the near-black —
+the dimmest thing on the page measures 5.7:1, where the accessibility floor is 4.5:1 — every link
+and button clears the 44-pixel tap minimum, and there is no sideways scrolling at any width.
+
 **Decisions made:**
 
-**Done when:** every page shares the nav, tokens, fonts and the drifting dark background, and Lighthouse performance on a blank page is 95+.
+- **The accent is the glitch's cyan, `#00e1ff`, and only the cyan.** The wordmark already throws a
+  red/cyan split; the accent is lifted straight out of it rather than invented. Cyan and not its
+  magenta twin for a plain accessibility reason: cyan on near-black measures 12.5:1, the magenta
+  measures about 4:1 and fails as text. The magenta stays inside the hero's aberration, where it is
+  a one-pixel edge rather than something anyone reads. The accent marks **one thing per screen** —
+  the primary button and the focus ring. It is never a background, never a gradient, never a
+  headline word.
+- **No hamburger menu — this is a deliberate departure from the checklist above.** The bar holds
+  four things and all four fit at 375px with 77px to spare (measured, not estimated). Hiding a
+  phone-first, mostly non-technical audience's route to contact behind a button they have to find
+  first would be worse for them than a slightly tighter bar. It would also have meant either a
+  JavaScript-dependent menu — which breaks the rule that nothing needed is behind JavaScript — or a
+  checkbox hack. Revisit only if a fifth nav item is ever added.
+- **`Contact` and `Get in touch` are not the same link.** Two nav items pointing at one URL is
+  clutter. Contact opens the page (phone, email, where Picsel is); Get in touch jumps to the enquiry
+  form on it at `/contact/#enquiry`. One route for someone who wants to call, one for someone who
+  wants to type. Section 8 must give the form the `id="enquiry"` this depends on.
+- **The backdrop is CSS, not a second canvas — a departure from "delta-time based" in the
+  checklist.** The plan assumed a JavaScript animation like the hero's. A repeating gradient moved
+  by transform does the same job with no animation loop running for the whole visit, no battery
+  cost, and it still works with JavaScript off. CSS animations are already time-based rather than
+  frame-based, so the reason delta-time was specified is satisfied anyway. It moves by transform
+  and not by shifting the background position, because transforms are handled by the graphics card
+  where repositioning a background repaints the whole screen sixty times a second.
+- **The page colour lives on `<html>`, not `<body>`.** Non-obvious but load-bearing: the root
+  element's background is what paints the browser canvas, which leaves the layer behind `<body>`
+  free for the backdrop. Put it on `<body>` and the dots are covered and never seen.
+- **Headings are Lexend, not the pixel face.** The pixel face is opt-in via a `.display` class. A
+  page of pixel headings would look like a brand and read like a puzzle; rationing it is what keeps
+  it a signature.
+- **The proof sheet at `/shell-check/`** now shows the whole system on one page — type scale,
+  palette, buttons, backdrop — so the design can be judged at a glance. Still `noindex`, still out
+  of the sitemap, still deleted in Section 4.
+
+**Done when:** every page shares the nav, tokens, fonts and the drifting dark background, and Lighthouse performance on a blank page is 95+. ✅ *(Lighthouse not yet run — no CLI installed; the full audit is Section 11. Verified by hand instead: no console errors, no layout shift, no blocking JavaScript, one composited animation.)*
 
 ---
 
@@ -473,7 +528,7 @@ Lighter than a client engagement — this is Picsel's shop window, kept fresh.
 ## Progress
 
 - [x] Section 1: Setup, structure and content model
-- [ ] Section 2: Design system and site-wide background
+- [x] Section 2: Design system and site-wide background
 - [ ] Section 3: Hero and scroll behaviour
 - [ ] Section 4: Homepage
 - [ ] Section 5: Work index

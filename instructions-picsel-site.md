@@ -65,7 +65,7 @@ same session. The plan's Site Profile and this block must never disagree; the pl
 | Stack | Static multi-page HTML/CSS/JS on the existing hero; no framework |
 | Fonts | Adobe web project `ior4aly` (`argent-pixel-cf` resting wordmark; `gridlite-pe-variable`, `pf-pixelscript`, `pixelify-sans` in the glitch) + Google `Lexend` (body) and `Pixelify Sans` (fallback) |
 | Contact form | Web3Forms (access key in the host dashboard, not the repo) |
-| Accent | one restrained accent from the brand glitch (cyan/magenta), used sparingly |
+| Accent | `#00e1ff` — the cyan half of the wordmark glitch's red/cyan split. One accent, marking one thing per screen (Section 2). The magenta `#ff0050` is hero-only and never used as text |
 | Featured projects | five, defined in `projects.js` |
 
 **The never-do list for this site (absolute):**

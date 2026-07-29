@@ -1,23 +1,33 @@
 /* ---- tokens.css — the design system's vocabulary -------------------------
-   Every colour, size, space and radius used anywhere on this site is named
-   here and referenced by name. Nothing else in the project hardcodes a value.
+   Every colour, size, space, radius and type step used anywhere on this site
+   is named here and referenced by name. Nothing else in the project hardcodes
+   a value.
 
    Why bother: a hardcoded #0a0a0a scattered across nine files is nine things
    to find and change, and one of them will always get missed — that is exactly
    how a site drifts out of looking designed. Named here, it is one edit.
 
-   STATUS: deliberately minimal. Section 1 needs only enough to render the
-   shared shell, and these two colours are lifted from hero.css rather than
-   invented. Section 2 builds the real system on top: the restrained accent
-   drawn from the brand glitch, the full spacing scale, radii, and the type
-   scale with its line-heights and tracking. Do not hardcode a value elsewhere
-   in the meantime — add it here instead. */
+   The palette and the type scale are both deliberately small. A system with
+   forty greys and eleven text sizes is not a system; it is a paint shop. Six
+   colours and eight type steps is enough to build the whole site, and the
+   constraint is what makes the pages look related. */
 
 :root {
-  /* ---- Colour ----------------------------------------------------------
-     Near-black rather than dark grey. The hero blobs are saturated, and
+  /* =====================================================================
+     COLOUR — six values, and one of them is used sparingly on purpose
+     ===================================================================== */
+
+  /* Near-black rather than dark grey. The hero blobs are saturated, and
      anything lighter behind them washes the gradients out. */
   --bg: #0a0a0a;
+
+  /* One step up from the page, for anything that needs to read as a surface
+     sitting on it — a card, a form field, the frame around a screenshot.
+     Deliberately a lift in lightness only, with no blur, glow or translucency:
+     frosted-glass cards are the single most recognisable generated-site tell
+     and this site does not use them. */
+  --bg-raised: #131313;
+
   --ink: #ffffff;
 
   /* Reading copy at full white on near-black is harsher than it needs to be
@@ -26,19 +36,102 @@
      15:1, comfortably past the WCAG AA floor of 4.5:1 for body text. */
   --ink-muted: rgba(255, 255, 255, 0.72);
 
-  /* ---- Space -----------------------------------------------------------
-     A rhythm, not arbitrary numbers: each step is a consistent jump from the
-     last, so spacing across the site looks related rather than ad hoc.
-     Section 2 extends this into the full scale. */
-  --space-2: 0.5rem;
-  --space-4: 1rem;
-  --space-8: 2rem;
+  /* Captions, labels, metadata. Still ~5.6:1 against --bg, so it passes AA for
+     body text even though it is only ever used on short, secondary strings.
+     Nothing on this site is allowed to be dimmer than this. */
+  --ink-faint: rgba(255, 255, 255, 0.52);
 
-  /* Page gutter and the maximum measure for reading copy. Long lines are hard
-     to track back from on a dark background, so text is capped well before the
-     viewport width. */
-  --page-gutter: var(--space-4);
+  /* Hairlines: section rules, card edges, the nav's border. A one-pixel line
+     at 12% is a boundary you read without noticing — heavier and the page
+     starts to look like a spreadsheet. */
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.22);
+
+  /* ---- The accent ------------------------------------------------------
+     Lifted directly from the wordmark's chromatic aberration in hero.css —
+     the cyan half of the red/cyan split the glitch already throws. It is the
+     brand's own colour rather than an invented one, which is the whole test.
+
+     Cyan and not the magenta twin for a plain accessibility reason: #00e1ff
+     on near-black measures about 11:1, while the magenta #ff0050 measures
+     about 4:1 and fails as text. The magenta stays where it belongs — inside
+     the hero's aberration, at a size and duration where contrast rules do not
+     apply — and is named below so hero.css can stop hardcoding it.
+
+     RESTRAINT RULE: this colour marks one thing per screen. The primary
+     button, the focus ring, a live link. It is never a section background,
+     never a gradient, and never fills a headline word. */
+  --accent: #00e1ff;
+  --accent-ink: #0a0a0a;   /* text on top of a filled accent surface */
+
+  /* The other half of the glitch split. Hero-only, never used as text. */
+  --glitch-magenta: #ff0050;
+
+  /* =====================================================================
+     TYPE
+     ===================================================================== */
+
+  /* Two faces, each with a job. The pixel face is the studio's signature and
+     is genuinely hard to read at length, so it is rationed: the wordmark, and
+     the occasional big title. Every word anyone actually reads is Lexend.
+     The audience is busy trades and small businesses, mostly not technical —
+     legibility beats personality in the body copy every time. */
+  --font-display: 'argent-pixel-cf', 'Pixelify Sans', ui-monospace, monospace;
+  --font-body: 'Lexend', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* A real scale, not ad-hoc sizes. The clamp() steps grow with the viewport
+     between a phone-safe minimum and a desktop maximum, so nothing needs a
+     separate font-size at every breakpoint. */
+  --text-xs: 0.8125rem;                                  /* 13px — labels */
+  --text-sm: 0.9375rem;                                  /* 15px — captions */
+  --text-base: 1.0625rem;                                /* 17px — body */
+  --text-lg: clamp(1.125rem, 0.4vw + 1.02rem, 1.25rem);  /* intro paragraphs */
+  --text-xl: clamp(1.375rem, 1vw + 1.1rem, 1.75rem);     /* small headings */
+  --text-2xl: clamp(1.75rem, 2vw + 1.2rem, 2.5rem);      /* section headings */
+  --text-3xl: clamp(2.125rem, 4vw + 1.1rem, 3.5rem);     /* page headings */
+  --text-display: clamp(2.5rem, 7vw + 0.5rem, 5rem);     /* the rare big one */
+
+  --weight-light: 300;
+  --weight-regular: 400;
+  --weight-medium: 500;
+
+  /* Big type needs tighter leading than small type or the lines stop reading
+     as one phrase; body copy on a dark background needs more than usual,
+     because light text bleeds slightly into dark (halation). */
+  --leading-tight: 1.08;
+  --leading-snug: 1.25;
+  --leading-body: 1.65;
+
+  /* Pixel faces are drawn on a grid and jam together without added air. The
+     display tracking is wide for that reason, not for style. */
+  --tracking-display: 0.14em;
+  --tracking-wide: 0.08em;
+  --tracking-tight: -0.01em;
+
+  /* =====================================================================
+     SPACE — one rhythm, so spacing across the site looks related
+     ===================================================================== */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  /* The gap between major sections, breathing wider on bigger screens. Every
+     section uses this one value, which is what gives the page a steady
+     vertical rhythm instead of arbitrary gaps. */
+  --section-y: clamp(4rem, 9vw, 7.5rem);
+
+  /* Page gutter and the maximum measure. Long lines are hard to track back
+     from on a dark background, so text is capped well before the viewport
+     width; --measure is the tighter cap for paragraphs specifically. */
+  --page-gutter: clamp(1rem, 4vw, 2.5rem);
   --page-max: 72rem;
+  --measure: 38rem;
 
   /* The nav floats over the page rather than sitting in the document flow, so
      it takes up no space and content would otherwise start underneath it.
@@ -46,4 +139,47 @@
      never disagree — a hardcoded guess in base.css is exactly how content ends
      up tucked behind the nav on one page and not another. */
   --nav-height: 3.5rem;
+
+  /* The minimum size of anything you tap. 44px is the accessibility floor, not
+     a target to design down to. */
+  --tap-min: 44px;
+
+  /* =====================================================================
+     SHAPE
+     ===================================================================== */
+  /* Small radii. The brand is built on a pixel grid, so heavily rounded
+     corners fight it — these are just enough to stop edges looking sharp. */
+  --radius-sm: 3px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  /* =====================================================================
+     MOTION
+     ===================================================================== */
+  --dur-fast: 140ms;
+  --dur-base: 260ms;
+  /* Quick to start, slow to settle — movement that decelerates reads as
+     physical, where a linear ease reads as mechanical. */
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* =====================================================================
+     THE SITE-WIDE BACKDROP
+     Values for the fixed dot-grid layer that every page scrolls over.
+     Kept here so its loudness is one number, findable, in the same file as
+     everything else. See base.css for how it is drawn.
+     ===================================================================== */
+
+  /* Cool grey, slightly blue — the same tint the hero's canvas dot-grid uses,
+     so the two textures are the same material. */
+  --dot-tint: 142, 148, 178;
+  /* THE LOUDNESS KNOB. Near-invisible on purpose: this should read as texture
+     you sense rather than a pattern you see. Past about 0.09 it starts
+     competing with the words on top of it. */
+  --dot-alpha: 0.055;
+  --dot-pitch: 11px;   /* distance between dots */
+  --dot-size: 1.1px;   /* radius of each dot */
+  /* Seconds for the field to travel one full tile upward. 11px over 7s is
+     about 1.6px a second — slower than the eye tracks, which is the point. */
+  --dot-drift: 7s;
 }

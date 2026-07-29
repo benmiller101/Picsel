@@ -48,11 +48,17 @@ export const SITE = {
   /* The nav, in order. Rendered as real HTML in every page — never injected by
      JavaScript, because a visitor with JS blocked (or a crawler that does not
      execute it) must still get a working way around the site.
-     `accent` marks the one call-to-action styled differently from the rest. */
+     `accent` marks the one call-to-action styled differently from the rest.
+
+     'Contact' and 'Get in touch' are both on the bar on purpose, and they are
+     not the same link: Contact opens the page (phone number, email, where
+     Picsel is), while Get in touch jumps straight to the enquiry form on it.
+     Two nav items pointing at the identical URL would just be clutter; these
+     give someone who wants to call and someone who wants to type a route each. */
   nav: [
     { label: 'Work', href: '/work/' },
     { label: 'Contact', href: '/contact/' },
-    { label: 'Get in touch', href: '/contact/', accent: true },
+    { label: 'Get in touch', href: '/contact/#enquiry', accent: true },
   ],
 };
 
