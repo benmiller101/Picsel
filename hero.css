@@ -1,0 +1,195 @@
+:root {
+  /* Near-black. The blobs are saturated, so this stays genuinely dark rather
+     than dark-grey — anything lighter and the gradients lose their punch. */
+  --bg: #0a0a0a;
+
+  --ink: #ffffff;
+
+  /* Flattens the wordmark block — scaleY, so the letters get SHORTER and read
+     wider. 1 = untouched. Below about 0.6 the pixel grid visibly shears, since
+     the glyphs are being scaled off their own pixel pitch.
+     (scaleX would make them narrower and therefore look taller, which is the
+     opposite of what's wanted here.) */
+  --flatten: 0.72;
+
+  /* Permanent chromatic aberration on the wordmark, in em. Pushed hard — the
+     glitch flash goes further still. Tagline gets none. */
+  --aberration: 0.05em;
+
+  /* Zero. The silhouette now comes from a mask and the goo threshold, both of
+     which produce a vector-hard edge — any blur here goes straight back to
+     softening it. The colour field is blurred instead, BEHIND the mask, where
+     it can be as soft as it likes without touching the outline. */
+  --blob-softness: 0px;
+
+  /* nav.css's defaults are light-on-dark, which is already right for this
+     page — nothing to override. (blocks.css/the 3D page flip them.) */
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+.hero {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ---- Layer 0: dot-grid texture ------------------------------------------
+   Sits between the background and the blobs, so the dots read mostly in the
+   dark negative space around them. Sizing and DPR are handled in hero.js. */
+.hero-dots {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* DOTGRID.LAYER === 'overlay' — above everything, including the wordmark. */
+.hero-dots.is-overlay { z-index: 3; }
+
+/* ---- Layer 1: blobs ----------------------------------------------------- */
+
+.hero-blobs {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+  filter: blur(var(--blob-softness));
+  will-change: filter;
+  pointer-events: none;
+}
+
+/* ---- Layer 2: wordmark -------------------------------------------------- */
+
+.hero-mark {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  user-select: none;
+
+  /* No transform here — the flatten lives on .wordmark alone, so the tagline is
+     left at its natural proportions. */
+}
+
+.wordmark {
+  margin: 0;
+  font-family: var(--font-primary, 'Pixelify Sans'), ui-monospace, 'Courier New', monospace;
+  /* 400, not 700. argent-pixel-cf ships only a 400 weight (roman + italic), so
+     asking for bold makes the browser synthesise one by smearing the glyphs
+     sideways — which on a pixel face breaks the pixel grid and looks like a
+     rendering fault. The glitch fonts are mixed weights, and letting each show
+     its own natural weight is part of the effect. */
+  font-weight: 400;
+
+  /* The flatten applies to the WORDMARK ONLY — the tagline keeps its natural
+     proportions. transform rather than a font axis: these are pixel faces with
+     a single width axis, so font-stretch has nothing to select. */
+  transform: scaleY(var(--flatten));
+  transform-origin: center bottom;
+
+  /* Compact. The reference wordmark is about a quarter of the viewport width —
+     the blobs and the black around them are the composition, not the type. */
+  font-size: clamp(1.6rem, 5vw, 4.25rem);
+  line-height: 1.05;
+  letter-spacing: 0.16em;
+  /* letter-spacing adds a trailing gap after the last glyph, which visibly
+     shifts the word off-centre against the rule below it. */
+  text-indent: 0.16em;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* One span per letter, so the glitch can re-font them individually. */
+.wordmark span,
+.tagline span {
+  display: inline-block;
+}
+
+/* Chromatic aberration on the WORDMARK ONLY. The tagline is deliberately left
+   clean — it's a plain proportional face and gets no treatment at all.
+   It lives on the spans rather than the parent so a glitching letter can
+   override it with a bigger offset. */
+.wordmark span {
+  text-shadow:
+    calc(var(--aberration) * -1) 0 rgba(255, 0, 80, 0.85),
+    var(--aberration) 0 rgba(0, 225, 255, 0.85);
+}
+
+/* Pre-intro state. Letters are laid out but invisible, so nothing reflows as
+   they arrive — the word occupies its final width from the first frame. */
+.wordmark span.pending,
+.tagline span.pending {
+  opacity: 0;
+  /* Each letter animates its own font — without a fixed box the word would
+     reflow on every swap and the whole line would jitter. */
+  transition: none;
+  will-change: font-family, transform;
+}
+
+/* The glitch flash: chromatic split, plus a horizontal kick set per-flash from
+   JS (see GLITCH.JITTER). Pushed harder than a hint — the word still reads,
+   because only one to three letters are ever affected at once. */
+.wordmark span.glitching {
+  text-shadow:
+    -0.1em 0 rgba(255, 0, 60, 0.95),
+     0.1em 0 rgba(0, 225, 255, 0.95);
+}
+
+.tagline {
+  /* The rule used to sit here and supply this gap. */
+  margin: 0.55em 0 0;
+  /* Lexend — proportional, not a pixel face. It sits under the wordmark rather
+     than competing with it, which is also why it's excluded from the glitch
+     rotation by default (GLITCH.GLITCH_TAGLINE). */
+  font-family: 'Lexend', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-weight: 300;
+  /* Sized off the wordmark rather than the viewport, so the pair keeps its
+     proportions at any width. */
+  font-size: clamp(0.55rem, 1.35vw, 1rem);
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  white-space: nowrap;
+  text-align: center;
+  opacity: 0.9;
+}
+
+/* ---- reduced motion -----------------------------------------------------
+   hero.js reads the same query and calms the drift, morph and glitch rate.
+   This only handles what CSS owns. */
+@media (prefers-reduced-motion: reduce) {
+  /* Drops the glitch's exaggerated split back to the standing aberration —
+     not to none, which would make the wordmark visibly change on every flash. */
+  .wordmark span.glitching {
+    text-shadow:
+      calc(var(--aberration) * -1) 0 rgba(255, 0, 80, 0.85),
+      var(--aberration) 0 rgba(0, 225, 255, 0.85);
+  }
+}
+
+/* ---- small screens ------------------------------------------------------
+   Fewer, calmer blobs and no pointer interaction are handled in hero.js
+   (see IS_SMALL). Here: keep the mark inside the viewport. */
+@media (max-width: 640px) {
+  .wordmark { letter-spacing: 0.1em; text-indent: 0.1em; }
+  .tagline { letter-spacing: 0.14em; text-indent: 0.14em; }
+}

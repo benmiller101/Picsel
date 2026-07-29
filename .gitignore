@@ -1,0 +1,32 @@
+# Secrets. The Web3Forms access key and anything else sensitive lives in the
+# Cloudflare Pages dashboard or a local .env — never in the repo.
+.env
+.env.*
+!.env.example
+
+# Dependencies. Restored with `npm install`, so committing them just bloats
+# the repo and breaks on a different OS.
+node_modules/
+
+# Screenshot originals. The pipeline (Section 7) captures full-size PNGs and
+# converts them to optimised webp. Only the webp is worth versioning; the
+# originals are large, regenerable, and would dominate the repo's history.
+assets/work/**/*.png
+assets/work/**/*.jpeg
+assets/work/**/*.jpg
+.shots-cache/
+
+# Claude Code's per-machine approvals. settings.json IS committed (it's the
+# shared permission policy); settings.local.json holds this machine's
+# "don't ask again" answers and is personal.
+.claude/settings.local.json
+
+# OS and editor noise.
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+.vscode/
+.idea/
+*.swp

@@ -1,0 +1,447 @@
+# Picsel: Studio Website Build Plan
+## Prepared July 2026
+
+> This is Picsel's **own** site: a portfolio of the websites Ben has built, and the studio's
+> main way of winning work. It is not a client trades site, so the local-SEO/town-page machinery
+> of the client template does not apply. The conventions do: work through sections in order, each
+> has a priority, tick boxes and add "What we built" notes as you go.
+> Items marked `[BEN]` need something from Ben. `[DECISION]` needs a choice before coding starts.
+> `[MANUAL]` is a dashboard, DNS or account step outside the codebase.
+> Do not start a new section until the previous one's buildable work is tested and committed.
+> **The standing start rule:** `[BEN]` and `[DECISION]` items never block the AI. Do everything
+> you can, mark the human items pending (say exactly what's needed), and move to the next section
+> whose requirements are met. Governing design doc: `CLAUDE.md` (the website design standards) —
+> read it first; this plan never overrides its hard bans except the one intentional brand choice
+> noted below (dark palette + the hero's gradient blobs).
+
+---
+
+## How to use this plan
+
+- Tell the AI: **"Let's work on Section 2."** One section at a time.
+- After each section: open the preview in a browser, check it, commit to git.
+- **The AI updates this file automatically** — ticks boxes, fills "What we built" and "Decisions made."
+- Attach `instructions-picsel-site.md` at the start of every coding session, alongside this file.
+
+---
+
+## Site profile
+
+Single source of truth. If a fact changes, change it here first, then everywhere it appears.
+
+| Field | Value |
+|---|---|
+| Studio name | Picsel (working name; "Design Studio" tagline in the hero) |
+| What it is | Portfolio + lead-gen site for a Cornwall web design and automation studio |
+| Audience | Small businesses and trades, mostly Cornwall, mostly **not tech-savvy** — easy nav and an obvious way to make contact are the whole job |
+| Positioning | Affordable but effective websites, SEO and GEO, Google Business Profile help, and custom automation tools; one client per trade per town (exclusivity); local and fast |
+| Owner / contact | Ben Miller · 07456 809049 (`tel:+447456809049`) · benwmiller101@gmail.com |
+| Dedicated studio email | `[DECISION]` use benwmiller101@gmail.com for now, or set up info@ on the Picsel domain |
+| Domain | `[DECISION]` not chosen yet (e.g. a picsel… .co.uk / .studio). Register in Picsel's own account |
+| Hosting | Cloudflare Pages (same as client builds) |
+| Stack | Static multi-page HTML/CSS/JS, built **on top of the existing hero** (`hero.html/.css/.js`, `nav.css/.js`). No framework |
+| Fonts | Adobe Fonts web project `ior4aly` (`argent-pixel-cf`, `gridlite-pe-variable`, `pf-pixelscript`, `pixelify-sans`) + Google `Lexend` (body) and `Pixelify Sans` (fallback pixel face) |
+| Contact form | Web3Forms (free, access key in the dashboard) |
+| Brand aesthetic | Dark near-black, lava-lamp gradient blobs (hero only), near-invisible dot-grid texture, PICSEL pixel wordmark with a font-glitch |
+| Show pricing? | `[DECISION]` the founding offer is £199 build + £39/mo (rising to £299). Deciding whether to state it on the site |
+| Featured projects | The five below |
+
+### The five projects (source of truth for `projects.js`)
+
+| Slug | Name | URL | Sector | Location | Featured |
+|---|---|---|---|---|---|
+| nevitt-construction | A Nevitt Construction `[DECISION]` name vs "Hayle Builders" | https://haylebuilders.com/ | Construction | Hayle, Cornwall | yes |
+| lanora-house | Lanora House | https://www.lanorahouse.com/ | House clearance | Hayle, Cornwall | yes |
+| ajc-removals | AJC Removals & Clearances | https://ajcremovals.co.uk/ | Removals & clearance | Cornwall | yes |
+| julie-miller-art | Julie Miller Art | https://juliemillerart.co.uk/ | Artist portfolio | Scottish Borders | yes |
+| house-of-cornwall | House of Cornwall | https://houseofcornwall.live/ | Antiques & auctions | Hayle, Cornwall | yes |
+
+Blurbs are drafted in the build brief and are editable by Ben. `work` tags default to `['Website']`;
+add `'SEO'` / `'Google Profile'` per project where that's what Picsel actually did.
+
+---
+
+## Positioning boundaries: what the site never says
+
+Picsel is a brand-new studio. Credibility comes from the work shown, not from inflated claims.
+
+- **No invented social proof.** No fake testimonials, client counts, years-in-business, awards or
+  stat rows. Only claim numbers that are real (e.g. don't say "50+ sites" — there are five).
+- **Feature client sites respectfully.** Show the work and link out; do not imply a testimonial or
+  endorsement that hasn't been given. `[BEN]` give a quick nod that each client is happy to be
+  featured (Lanora House especially, where Ben is a director; and Julie Miller Art).
+- **Contain the brand gradients.** Dark palette and the hero's rainbow blobs are the one
+  intentional exception to `CLAUDE.md`'s purple-gradient ban. Do **not** spread
+  purple/blue/pink gradients across sections, buttons, cards or headline words elsewhere. The rest
+  is disciplined near-black; the client screenshots supply the colour.
+- **Plain English only.** The audience is non-technical trades. No jargon, no SaaS slogans, no
+  "Transform your X", no "Why choose us" section (all banned in `CLAUDE.md`).
+- **Pricing, if shown, is honest.** If the founding offer goes on the site, state it plainly and
+  keep it current; never bait-and-switch.
+
+---
+
+## Page structure (sitemap)
+
+| Page | URL | Job of the page |
+|---|---|---|
+| Home | / | The hero, one plain line on what Picsel does, a selected-work grid, a short services note, a strong contact band |
+| Work | /work | Every project as a card (screenshot, name, sector) linking to its page |
+| Project page (one per project) | /work/<slug> | Explore one build: screenshots, a bit written about it, a big "Visit the live site" button, prev/next, contact band |
+| Contact | /contact | Big click-to-call, email, and the Web3Forms form |
+| About / Services (optional) | section on / or /about | Plain-English what Picsel offers and how the local/exclusive model works |
+
+> **THE SITEMAP LAW** (from `CLAUDE.md`): every route that exists is in `sitemap.xml` in the same
+> commit that creates it. Re-verified at Sections 8 and 11.
+
+---
+
+## What we need before work starts
+
+### Required now
+- [ ] `[DECISION]` Domain chosen and registered in Picsel's own account
+- [ ] `[DECISION]` Studio contact email (Gmail for now vs info@ on the domain)
+- [ ] `[DECISION]` Whether to show the founding-offer pricing on the site
+- [ ] `[BEN]` Confirm each client is happy to be featured, and the first project's display name
+      (A Nevitt Construction vs Hayle Builders)
+- [ ] `[BEN]` Reword the five draft blurbs if wanted; add SEO/Google Profile tags where they apply
+- [x] `[BEN]` Project list supplied (names, URLs, sectors) — done
+
+### Required before launch
+- [ ] `[MANUAL]` Web3Forms access key created and pasted into the form
+- [ ] `[MANUAL]` Adobe Fonts web project confirmed serving on the production domain
+
+---
+
+# Phase 1: Build
+
+## Section 1: Setup, structure and content model
+**Priority: CRITICAL | Effort: 2 hours**
+
+- [ ] Confirm the repo (the existing `picsel` directory) and make a first commit of this plan and
+      `instructions-picsel-site.md`
+- [ ] Add `.claude/settings.json` with the agency permission rules (spec in the instructions file)
+- [ ] Create `projects.js` as the single source of truth, pre-filled with the five projects
+      (schema in the build brief). Everything project-related reads from this file
+- [ ] Decide the shared page shell: which parts of `nav.css`/`nav.js` and the hero carry across all
+      pages, and where a shared `<head>` partial and base stylesheet live
+
+**What we built:**
+**Decisions made:**
+
+**Done when:** `projects.js` holds the five real projects and a blank page renders with the shared nav and base styles.
+
+---
+
+## Section 2: Design system and site-wide background
+**Priority: CRITICAL | Effort: half a day**
+
+- [ ] `tokens.css`: near-black background, ink, one restrained accent (from the brand glitch
+      cyan/magenta), spacing and radii as custom properties. No hardcoded values elsewhere
+- [ ] Typography: `argent-pixel-cf` pixel face for the logo and the occasional big title, used with
+      restraint; **all reading copy in Lexend** at a comfortable size and line-height. High contrast, WCAG AA
+- [ ] Reuse `nav.css`/`nav.js` (light-on-dark default suits the dark site); add the nav items
+      (Work, Contact) and a distinct **"Get in touch"** accent button; make the mobile menu work
+- [ ] **Persistent parallax background:** promote the dot-grid texture to a fixed, site-wide layer
+      behind all content that does **not** scroll with the page and **slowly drifts upward** on its
+      own. Near-invisible, delta-time based, reduced-motion aware
+- [ ] Shared `<head>` partial: per-page title/meta slots, canonical, Open Graph, the Adobe + Google
+      font links
+
+**What we built:**
+**Decisions made:**
+
+**Done when:** every page shares the nav, tokens, fonts and the drifting dark background, and Lighthouse performance on a blank page is 95+.
+
+---
+
+## Section 3: Hero and scroll behaviour
+**Priority: CRITICAL | Effort: half a day**
+
+- [ ] Keep the load-in intro (wordmark glitches in, blobs slide from the sides to centre)
+- [ ] Convert the hero from a fixed full-screen splash into the **first section of a scrolling
+      homepage** (remove the `body { overflow: hidden }` lock and `position: fixed` splash behaviour)
+- [ ] **Reverse-on-scroll:** as the visitor scrolls the first screen, play the intro in reverse,
+      **scrubbed to scroll position** — blobs travel back to the sides, wordmark glitches/fades out —
+      then release into normal scrolling. Pinned hero over a defined `SCROLL_RANGE`, eased and reversible
+- [ ] Blobs are hero-only; only the dark + drifting dot-grid carries through the rest of the site
+- [ ] `prefers-reduced-motion`: skip the scrub (show hero, then content) and calm the background
+- [ ] Pause the hero animation loop once scrolled fully past (perf/battery)
+
+**What we built:**
+**Decisions made:**
+
+**Done when:** the hero plays in on load, un-builds smoothly and reversibly as you scroll, and hands off to normal page scroll with the background drifting behind.
+
+---
+
+## Section 4: Homepage
+**Priority: CRITICAL | Effort: half a day**
+
+- [ ] Below the hero: one plain sentence on what Picsel does (no slogan)
+- [ ] **Selected work** grid (the `featured` projects from `projects.js`): screenshot, name, sector,
+      linking to each project page. Let the screenshots carry the colour
+- [ ] Short, plain services note: websites, SEO & GEO, Google Business Profile help, custom
+      automation tools — and the one-client-per-trade-per-town idea in a sentence. No "Why choose us"
+- [ ] `[DECISION]` Founding-offer pricing block if Ben wants it on the site
+- [ ] Closing **contact band**: a line, a big "Get in touch" button, the phone number
+
+**What we built:**
+**Decisions made:**
+
+**Done when:** the homepage tells a non-technical visitor what Picsel is, shows the work, and makes contact obvious, with no placeholder text.
+
+---
+
+## Section 5: Work index
+**Priority: HIGH | Effort: 2 hours**
+
+- [ ] `/work`: every project from `projects.js` as a card (desktop screenshot, name, sector label),
+      generated from the data so adding a project is one entry
+- [ ] Clear hover/focus states (cards must look clickable); links go to `/work/<slug>`
+- [ ] Contact band at the foot
+
+**What we built:**
+**Decisions made:**
+
+**Done when:** all five projects show as cards and every card opens the right project page.
+
+---
+
+## Section 6: Project pages
+**Priority: CRITICAL | Effort: half a day**
+
+- [ ] One **static HTML page per project** (own URL, title, meta) generated from `projects.js` + a
+      shared template
+- [ ] Layout: project name (pixel display, restrained), sector label, the desktop screenshot as the
+      page hero, the blurb in Lexend, the small "what we did" tags, a **prominent "Visit the live
+      site" button** opening the client `url` in a new tab (`rel="noopener"`), the mobile screenshot
+      alongside, previous/next project links, and the contact band
+- [ ] Calm dark framing so the screenshot carries the colour; simple device/browser frame, no glassmorphism
+
+**What we built:**
+**Decisions made:**
+
+**Done when:** each of the five projects has its own page passing a read-aloud check, with a working live-site link and prev/next.
+
+---
+
+## Section 7: Screenshot pipeline
+**Priority: HIGH | Effort: 2 hours**
+
+- [ ] A repeatable script (`npm run shots`) that reads `projects.js` and **auto-captures** each live
+      `url` at desktop (~1440px) and mobile (~390px) with a headless browser (Playwright/Puppeteer)
+- [ ] Save to `assets/work/<slug>/desktop.webp` and `mobile.webp`, optimised; real `alt` text
+      ("Screenshot of the <name> website")
+- [ ] Unreachable URL → neat placeholder + a logged warning, never a broken build
+- [ ] Document the one command so Ben can refresh shots when a client site changes or a project is added
+
+**What we built:**
+**Decisions made:**
+
+**Done when:** running the script produces current desktop and mobile shots for all five sites and they appear on the Work and project pages.
+
+---
+
+## Section 8: Contact page and form
+**Priority: CRITICAL | Effort: 2 hours**
+
+- [ ] `/contact`: the **phone number big and obvious** as `tel:+447456809049`, the email, and that
+      Picsel is Cornwall-based
+- [ ] **Web3Forms** contact form (access key placeholder for Ben to paste): name, email, phone
+      (optional), a "what do you need" select (New website / SEO & Google / Automation tool /
+      Something else), message. Real `<label>`s, required-field validation, a honeypot, inline
+      success and error states (no redirect away)
+- [ ] Repeat the contact band on home and every project page so contact is never more than one
+      obvious click away; `tel:` click-to-call in the header or footer too
+
+**What we built:**
+**Decisions made:**
+
+**Done when:** a test enquiry submits and arrives by email, and the phone link calls on a real phone.
+
+---
+
+## Section 9: SEO infrastructure
+**Priority: CRITICAL | Effort: half a day**
+
+Picsel sells SEO, so its own site must model it (per `CLAUDE.md` SEO rules).
+
+- [ ] Unique title (≤60) and meta description (≤155) per page; one `<h1>` each; sensible heading order
+- [ ] `sitemap.xml` from the real route list (home, work, each project, contact); `robots.txt`;
+      canonical on every page
+- [ ] Open Graph + Twitter tags on every page; project pages use their desktop screenshot as the OG image
+- [ ] Schema (JSON-LD): `Organization`/`ProfessionalService` for Picsel across the site (name, area
+      served Cornwall, contact), and a simple `CreativeWork`/`WebSite` reference per project linking
+      to the live URL. Alt text on every meaningful image
+- [ ] Local signal: mention Cornwall naturally where it fits (not on the Julie Miller page — that
+      client is in the Scottish Borders)
+
+**What we built:**
+**Decisions made:**
+
+**Done when:** the sitemap is complete and valid, schema passes the Rich Results Test, and Lighthouse SEO is 100 on home, work and a project page.
+
+---
+
+## Section 10: GEO layer (AI search visibility)
+**Priority: HIGH | Effort: 2 hours**
+
+- [ ] Direct answer in the first ~50 words of the homepage: "Picsel is a web design and automation
+      studio in Cornwall building affordable, effective websites for local trades and small
+      businesses…" — liftable by an assistant
+- [ ] Entity consistency: same name, phone and email on every page and any external profile
+- [ ] `robots.txt` allows AI crawlers (GPTBot, ClaudeBot, PerplexityBot and peers); optional
+      `llms.txt` summarising Picsel, its services and the work
+- [ ] Question-led copy where it fits ("How much does a website cost?" etc.) answered plainly first
+
+**What we built:**
+**Decisions made:**
+
+**Done when:** the homepage passes the first-50-words test and robots reflects the crawler decision.
+
+---
+
+## Section 11: Performance, accessibility and responsive pass
+**Priority: CRITICAL | Effort: 2 hours**
+
+- [ ] Mobile-first checked at 375 / 768 / 1024 / 1440; nav collapses and works; tap targets ≥ 44px
+- [ ] With JavaScript disabled, all content is still visible (the animations enhance, they don't
+      gate content); `prefers-reduced-motion` respected across hero, background and reveals
+- [ ] Visible `:focus-visible` states, semantic HTML, labelled form controls, alt text
+- [ ] Lighthouse: performance 90+, SEO 100, accessibility 95+ on each page type; no layout shift; no
+      horizontal scroll; screenshots don't blow the page weight (optimised webp)
+- [ ] Run the `CLAUDE.md` §9 vibe-code checklist; fix anything that trips it
+
+**What we built:**
+**Decisions made:**
+
+**Done when:** every box passes at every width and the vibe-code checklist is all "no".
+
+---
+
+## Section 12: Launch
+**Priority: CRITICAL | Effort: half a day plus DNS wait**
+
+- [ ] Deploy to Cloudflare Pages; confirm the preview on the pages.dev URL
+- [ ] `[MANUAL]` Web3Forms key and any secrets set in the dashboard, not the repo
+- [ ] `[MANUAL]` Point the chosen domain's DNS at Cloudflare Pages; confirm HTTPS
+- [ ] `[MANUAL]` Confirm the Adobe Fonts web project serves on the production domain
+- [ ] `[MANUAL]` Google Search Console: add the property, submit the sitemap, request indexing on
+      home, work and each project page; Bing Webmaster Tools: add site, submit sitemap
+- [ ] Canonicals, sitemap and schema all reference the production domain
+
+**What we built:**
+**Decisions made:**
+
+**Done when:** the site is live on the domain with HTTPS, fonts serve, the form works, and both search consoles have the sitemap.
+
+---
+
+## Section 13: Launch QA
+**Priority: CRITICAL | Effort: 2 hours**
+
+- [ ] Every page in a browser; console clean; screenshot home, work, a project page and contact at
+      desktop and mobile
+- [ ] Reverse-scroll hero and the drifting background checked on real scroll and on mobile
+- [ ] Form submitted for real (email arrives); phone link tapped on a real phone
+- [ ] Sitemap audit (the Sitemap Law); schema re-validated on live URLs
+- [ ] Read every page aloud: plain language, no placeholder text, no invented claims, nothing that
+      overstates a brand-new studio
+- [ ] `[BEN]` walkthrough and sign-off
+
+**What we built:**
+**Decisions made:**
+
+**Done when:** every box is ticked and Ben has signed off.
+
+---
+
+# Phase 2: Grow it (after launch)
+
+Lighter than a client engagement — this is Picsel's shop window, kept fresh.
+
+## Section 14: Add work as it ships
+**Priority: HIGH | Effort: ongoing**
+- [ ] Every new client site: add an entry to `projects.js`, re-run the screenshot script, write a
+      blurb, commit. The Work grid and a new project page generate from the data
+- [ ] Ask each happy client for a short line to feature (only real, only with permission)
+
+## Section 15: Picsel's own SEO, GBP and reach
+**Priority: MEDIUM | Effort: as time allows**
+- [ ] `[BEN]` Set up Picsel's own Google Business Profile once there's a public identity, same
+      playbook Picsel sells to clients
+- [ ] Watch GSC coverage; make sure home, work and project pages index
+- [ ] Optional: a short "insights"/notes section (plain articles) if there's appetite — same static
+      pattern, real content only, no filler
+
+**What we built:**
+**Decisions made:**
+
+---
+
+## Build order summary
+
+| # | Section | Phase | Priority | Depends on |
+|---|---|---|---|---|
+| 1 | Setup, structure, content model | 1 | Critical | — |
+| 2 | Design system + parallax background | 1 | Critical | 1 |
+| 3 | Hero and scroll behaviour | 1 | Critical | 2 |
+| 4 | Homepage | 1 | Critical | 2, 3 |
+| 5 | Work index | 1 | High | 1, 2 |
+| 6 | Project pages | 1 | Critical | 1, 2, 5 |
+| 7 | Screenshot pipeline | 1 | High | 1 |
+| 8 | Contact page and form | 1 | Critical | 2 |
+| 9 | SEO infrastructure | 1 | Critical | 4, 5, 6, 8 |
+| 10 | GEO layer | 1 | High | 9 |
+| 11 | Performance, a11y, responsive | 1 | Critical | all build |
+| 12 | Launch | 1 | Critical | all Phase 1 |
+| 13 | Launch QA | 1 | Critical | 12 |
+| 14 | Add work as it ships | 2 | High | 13 |
+| 15 | Picsel's own SEO / GBP | 2 | Medium | 13 |
+
+---
+
+## Won't do
+
+- No frontend framework, CSS framework or animation library: the site is plain HTML/CSS/JS on the
+  existing hero
+- No content that needs JavaScript to appear (the hero/blobs/glitch enhance, they don't gate content)
+- No purple/blue/pink gradients beyond the hero blobs; no gradient-filled headline words
+- No invented testimonials, client counts, stats or awards; no "Why choose us" or SaaS-slogan sections
+- No featuring a client site that hasn't been cleared to feature
+- No stock imagery standing in for the real client screenshots
+- Nothing from the Positioning Boundaries list
+
+---
+
+## Ideas for later (out of scope for v1)
+
+- A dedicated Picsel email on the domain, and matching NAP once there's a public identity
+- The 3D block build-in or the mesh-gradient assembling logo as an alternate hero/section
+- Short case-study depth on the strongest builds (problem → what we did → result), only with real outcomes
+- An "insights" section if there's appetite to publish
+
+---
+
+## Progress
+
+- [ ] Section 1: Setup, structure and content model
+- [ ] Section 2: Design system and site-wide background
+- [ ] Section 3: Hero and scroll behaviour
+- [ ] Section 4: Homepage
+- [ ] Section 5: Work index
+- [ ] Section 6: Project pages
+- [ ] Section 7: Screenshot pipeline
+- [ ] Section 8: Contact page and form
+- [ ] Section 9: SEO infrastructure
+- [ ] Section 10: GEO layer
+- [ ] Section 11: Performance, accessibility and responsive pass
+- [ ] Section 12: Launch
+- [ ] Section 13: Launch QA
+- [ ] Section 14: Add work as it ships
+- [ ] Section 15: Picsel's own SEO, GBP and reach
+
+---
+
+*Plan created July 2026, adapted from the agency base template for Picsel's own studio site. Update checkbox status as sections complete.*

@@ -1,0 +1,14 @@
+# Ben works on Windows (CRLF line endings); Cloudflare Pages builds on Linux
+# (LF). Without this, every file looks "changed" whenever it crosses between
+# them and diffs become unreadable. Normalise to LF in the repo, and let Git
+# check files out however the local OS prefers.
+* text=auto eol=lf
+
+# Binary — never touch these, and never try to diff them as text.
+*.webp binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.woff binary
+*.woff2 binary
+*.ico binary
