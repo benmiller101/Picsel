@@ -1,0 +1,228 @@
+/* ---- base.css — the shared floor every page stands on ---------------------
+   Loaded by every page, after tokens.css and before any page-specific sheet.
+   Holds only what is genuinely universal: the reset, document defaults, the
+   accessibility floor and the shared layout container.
+
+   Anything that belongs to one page belongs in that page's own stylesheet.
+   The hero's blobs and glitch stay in hero.css; they appear on the homepage
+   only. Resist the pull to let this file become a dumping ground — a base
+   stylesheet that knows about specific pages is how a design system rots. */
+
+/* ---- Reset ---------------------------------------------------------------
+   border-box means a stated width is the width you actually get, padding and
+   border included. Without it, adding padding silently makes elements wider
+   than intended and layouts drift. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* The browser's default margins differ between elements and between browsers.
+   Clearing them means spacing comes from the scale in tokens.css and nothing
+   arrives by accident. */
+body,
+h1, h2, h3, h4, h5, h6,
+p, figure, blockquote, dl, dd {
+  margin: 0;
+}
+
+/* ---- Document ------------------------------------------------------------ */
+
+html {
+  /* Anchor links and in-page jumps glide rather than teleport — but only for
+     visitors who have not asked for reduced motion (handled at the foot). */
+  scroll-behavior: smooth;
+  /* Stops iOS inflating text in landscape, which otherwise breaks the type
+     scale on exactly the devices least able to spare the room. */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink-muted);
+
+  /* A column so the footer can be pushed to the bottom on short pages. Without
+     it, a page with little content leaves the footer stranded halfway down with
+     dead space beneath — which reads as a page that failed to load rather than
+     one that is simply short. */
+  display: flex;
+  flex-direction: column;
+
+  /* Lexend for all reading copy. The pixel faces are for the wordmark and the
+     occasional big title only — the audience here is busy, mostly
+     non-technical, and a pixel face over a paragraph is genuinely hard work.
+     The stack after it is the fallback chain if Lexend has not loaded yet. */
+  font-family: 'Lexend', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-weight: 300;
+  font-size: 1rem;
+  /* Generous leading. Light text on a dark background bleeds slightly into it
+     (an optical effect called halation), and extra line spacing is what keeps
+     a paragraph readable rather than dense. */
+  line-height: 1.65;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Nothing may cause sideways scrolling. A single over-wide element on a
+     phone otherwise makes the entire page shuffle left and right. */
+  overflow-x: hidden;
+}
+
+/* ---- Media ---------------------------------------------------------------
+   Images never exceed their container, and keep their proportions when the
+   container squeezes them. `display: block` removes the few pixels of gap
+   browsers leave under an inline image to make room for a text baseline. */
+img,
+picture,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---- Type ---------------------------------------------------------------- */
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--ink);
+  /* Headings are large, so they need proportionally tighter leading than body
+     copy — at the same 1.65 the lines would drift apart and stop reading as
+     one phrase. */
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+/* Stops a paragraph ending in a single stranded word on its own last line. */
+p {
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+}
+
+/* Form controls do not inherit type from the page by default, so without this
+   the contact form would render in the browser's own font. */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* ---- Accessibility floor -------------------------------------------------
+   Not optional and not decorative. */
+
+/* A visible focus ring for keyboard users, and only for them — :focus-visible
+   skips it on mouse clicks, which is why the old trick of removing outlines
+   entirely was never necessary. Someone navigating by Tab must always be able
+   to see where they are. */
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Visually hidden but still read aloud by screen readers. Used for the skip
+   link and for labels that would be redundant on screen but are needed by
+   someone listening to the page. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* The skip link: the first thing a keyboard user reaches, letting them jump
+   past the nav straight to the content instead of tabbing through it on every
+   single page. Off-screen until focused, then it appears. */
+.skip-link {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: 10000;
+
+  /* Clears the 44px target minimum like every other interactive element.
+     It is only visible while focused, but someone using it is navigating by
+     keyboard or switch control and needs it to be a solid target. */
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: var(--space-4);
+  background: var(--ink);
+  color: var(--bg);
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* ---- Layout -------------------------------------------------------------- */
+
+/* The shared measure. Every full-width section puts its content in one of
+   these, so the left edge of text lines up down the whole site — one of the
+   quiet things that separates a designed page from an assembled one. */
+.wrap {
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+}
+
+/* Where the skip link lands. Needs to be focusable to move the keyboard
+   caret there, but must not become a Tab stop of its own — hence -1. */
+#main:focus {
+  outline: none;
+}
+
+main {
+  /* Takes the leftover height so the footer is pushed to the bottom of the
+     viewport on pages too short to fill it. */
+  flex: 1 0 auto;
+
+  /* The nav is fixed, so it occupies no space in the layout and the first
+     heading on the page would sit underneath it. This reserves the gap: the
+     nav's own height, plus the offset it sits at, plus a breath below. */
+  padding-top: calc(var(--nav-height) + var(--space-4) + var(--space-8));
+}
+
+/* The homepage hero is a full-screen composition that starts at the very top
+   of the viewport and deliberately runs behind the nav — the wordmark and
+   blobs are the background the nav floats over. It opts out of the reserved
+   gap; every other page keeps it. */
+.page-hero main {
+  padding-top: 0;
+}
+
+/* ---- Reduced motion ------------------------------------------------------
+   Some people get genuinely unwell from screen motion, and set this at the
+   operating system level. Honouring it is not a nicety.
+
+   Animations are near-eliminated rather than removed outright: a duration of
+   0 can cancel an animation's completion event, and any JavaScript waiting on
+   that event would then never run. 0.01ms finishes instantly and still fires. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

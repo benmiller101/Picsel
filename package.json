@@ -5,7 +5,8 @@
   "description": "Picsel — studio portfolio and lead-gen site. Static HTML/CSS/JS, no framework.",
   "type": "module",
   "scripts": {
-    "dev": "npx --yes serve . --listen 3000",
+    "build": "node tools/build.js",
+    "dev": "npm run build && npx --yes serve . --listen 3000",
     "shots": "node tools/capture-shots.js"
   },
   "engines": {

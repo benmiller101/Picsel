@@ -1,0 +1,197 @@
+/* ---- page.js — the shared page shell --------------------------------------
+   Plain static HTML has no built-in way to share a <head> or a nav between
+   pages: you either copy them into every file and watch the copies drift, or
+   you generate the files from one template. This is that template.
+
+   The output is ordinary HTML written to disk. Nothing here runs in the
+   visitor's browser — by the time a page is served, the nav, the copy and the
+   meta tags are already in the file. That is what keeps the promise that no
+   content depends on JavaScript to appear. The build runs on Ben's machine,
+   not on the visitor's.
+
+   Every page on the site is rendered through renderPage(). If a tag belongs on
+   every page, it belongs here — adding it once means it cannot be forgotten on
+   page nine. */
+
+import { SITE, absoluteUrl } from '../../site.config.js';
+
+/* Page copy is written by hand, but it still passes through here on its way
+   into an HTML attribute. An unescaped apostrophe or ampersand in a meta
+   description silently truncates the tag; an unescaped angle bracket can break
+   the document outright. Cheap to apply, so it is applied everywhere. */
+function escapeHtml(value = '') {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/* ---- Nav ------------------------------------------------------------------
+   Rendered as real markup, with the current page marked using aria-current so
+   a screen reader announces "current page" rather than leaving a listener to
+   infer it from a colour they cannot see.
+
+   The prototype nav.js this replaced built its markup in JavaScript. That was
+   fine for a page of visual experiments and wrong for a real site: it made the
+   navigation invisible to anything that does not run scripts. */
+function renderNav(currentPath) {
+  const items = SITE.nav
+    .map((item) => {
+      /* Compared normalised, so '/work' and '/work/' are recognised as the
+         same page rather than quietly failing to highlight. */
+      const isCurrent = normalisePath(item.href) === normalisePath(currentPath);
+
+      /* The accent item is a call to action pointing at a page the visitor may
+         already be on. Marking it aria-current too would announce the page
+         twice; it is deliberately excluded. */
+      const current = isCurrent && !item.accent ? ' aria-current="page"' : '';
+      const accent = item.accent ? ' site-nav__link--accent' : '';
+
+      return `        <li><a class="site-nav__link${accent}" href="${escapeHtml(item.href)}"${current}>${escapeHtml(item.label)}</a></li>`;
+    })
+    .join('\n');
+
+  return `    <nav class="site-nav" aria-label="Main">
+      <a class="site-nav__brand" href="/">${escapeHtml(SITE.name)}</a>
+      <ul class="site-nav__list">
+${items}
+      </ul>
+    </nav>`;
+}
+
+/* Trailing slashes and casing are the two ways the same URL gets written
+   differently. Normalising both means path comparisons behave. */
+function normalisePath(path = '/') {
+  const trimmed = String(path).toLowerCase().replace(/\/+$/, '');
+  return trimmed === '' ? '/' : trimmed;
+}
+
+/* ---- Head -----------------------------------------------------------------
+   Title, description, canonical, Open Graph and Twitter cards, plus the font
+   links. Every page gets the full set; none of it is optional.
+
+   Canonical matters more than it looks: it tells search engines which address
+   is the real one for this page, so the same content reachable at two URLs is
+   not read as two competing pages. */
+function renderHead({ title, description, path, ogImage, extraHead }) {
+  const canonical = absoluteUrl(path);
+  const image = ogImage ? absoluteUrl(ogImage) : null;
+
+  const imageTags = image
+    ? `
+  <meta property="og:image" content="${escapeHtml(image)}" />
+  <meta name="twitter:image" content="${escapeHtml(image)}" />
+  <meta name="twitter:card" content="summary_large_image" />`
+    : `
+  <meta name="twitter:card" content="summary" />`;
+
+  return `  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>${escapeHtml(title)}</title>
+  <meta name="description" content="${escapeHtml(description)}" />
+  <link rel="canonical" href="${escapeHtml(canonical)}" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="${escapeHtml(SITE.name)}" />
+  <meta property="og:title" content="${escapeHtml(title)}" />
+  <meta property="og:description" content="${escapeHtml(description)}" />
+  <meta property="og:url" content="${escapeHtml(canonical)}" />
+  <meta property="og:locale" content="en_GB" />
+  <meta name="twitter:title" content="${escapeHtml(title)}" />
+  <meta name="twitter:description" content="${escapeHtml(description)}" />${imageTags}
+
+  <!-- Adobe Fonts, web project ior4aly: argent-pixel-cf (the resting wordmark)
+       plus the three faces the glitch rotates through. Served by Adobe while
+       the Creative Cloud subscription is live — never self-hosted, per licence. -->
+  <link rel="stylesheet" href="https://use.typekit.net/ior4aly.css" />
+
+  <!-- Lexend carries every word of reading copy on the site. Pixelify Sans is
+       the licence-independent safety net for the wordmark: if Typekit is
+       unreachable the mark still renders as a pixel face instead of dropping
+       to Courier. preconnect opens the connection early so the text is not
+       waiting on a handshake. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Lexend:wght@300;400&display=swap"
+        rel="stylesheet" />
+
+  <!-- Order matters: tokens defines the vocabulary, base uses it, the page
+       sheet overrides. Swapping them silently breaks the cascade. -->
+  <link rel="stylesheet" href="/tokens.css" />
+  <link rel="stylesheet" href="/base.css" />
+  <link rel="stylesheet" href="/site.css" />${extraHead ? `\n${extraHead}` : ''}`;
+}
+
+/* ---- Footer ---------------------------------------------------------------
+   Carries the phone number on every page. The audience is trades and small
+   businesses, often on a phone — contact should never be more than one obvious
+   tap away, wherever someone has got to. */
+function renderFooter() {
+  const year = FOOTER_YEAR;
+
+  return `    <footer class="site-footer">
+      <div class="wrap site-footer__inner">
+        <p class="site-footer__contact">
+          <a href="${escapeHtml(SITE.contact.phoneHref)}">${escapeHtml(SITE.contact.phoneDisplay)}</a>
+          <a href="mailto:${escapeHtml(SITE.contact.email)}">${escapeHtml(SITE.contact.email)}</a>
+        </p>
+        <p class="site-footer__meta">
+          ${escapeHtml(SITE.name)} — web design and automation in ${escapeHtml(SITE.areaServed)}.
+          &copy; ${year}
+        </p>
+      </div>
+    </footer>`;
+}
+
+/* Stamped once when the build module loads rather than per page, so a build
+   running across midnight cannot produce two different years in one output. */
+const FOOTER_YEAR = new Date().getFullYear();
+
+/**
+ * Render a complete HTML document.
+ *
+ * @param {object}  page
+ * @param {string}  page.title        Full <title>. Convention: "[Page] | Picsel", 60 chars max.
+ * @param {string}  page.description  Meta description, 155 chars max.
+ * @param {string}  page.path         Site-relative path, e.g. '/work/'. Drives canonical and nav highlighting.
+ * @param {string}  page.content      The page body markup, dropped inside <main>.
+ * @param {string} [page.bodyClass]   Extra class on <body> for page-specific styling.
+ * @param {string} [page.ogImage]     Site-relative image path for social previews.
+ * @param {string} [page.extraHead]   Additional head markup, e.g. a JSON-LD block.
+ * @param {string} [page.extraScripts] Script tags for the end of <body>. Enhancement only.
+ * @returns {string} A complete HTML document.
+ */
+export function renderPage({
+  title,
+  description,
+  path,
+  content,
+  bodyClass = '',
+  ogImage = null,
+  extraHead = '',
+  extraScripts = '',
+}) {
+  return `<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+${renderHead({ title, description, path, ogImage, extraHead })}
+</head>
+<body${bodyClass ? ` class="${escapeHtml(bodyClass)}"` : ''}>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+${renderNav(path)}
+
+  <main id="main" tabindex="-1">
+${content}
+  </main>
+
+${renderFooter()}
+${extraScripts ? `\n${extraScripts}\n` : ''}</body>
+</html>
+`;
+}
+
+export { escapeHtml, normalisePath };

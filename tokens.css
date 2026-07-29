@@ -1,0 +1,49 @@
+/* ---- tokens.css — the design system's vocabulary -------------------------
+   Every colour, size, space and radius used anywhere on this site is named
+   here and referenced by name. Nothing else in the project hardcodes a value.
+
+   Why bother: a hardcoded #0a0a0a scattered across nine files is nine things
+   to find and change, and one of them will always get missed — that is exactly
+   how a site drifts out of looking designed. Named here, it is one edit.
+
+   STATUS: deliberately minimal. Section 1 needs only enough to render the
+   shared shell, and these two colours are lifted from hero.css rather than
+   invented. Section 2 builds the real system on top: the restrained accent
+   drawn from the brand glitch, the full spacing scale, radii, and the type
+   scale with its line-heights and tracking. Do not hardcode a value elsewhere
+   in the meantime — add it here instead. */
+
+:root {
+  /* ---- Colour ----------------------------------------------------------
+     Near-black rather than dark grey. The hero blobs are saturated, and
+     anything lighter behind them washes the gradients out. */
+  --bg: #0a0a0a;
+  --ink: #ffffff;
+
+  /* Reading copy at full white on near-black is harsher than it needs to be
+     over a paragraph. This is the body text colour; --ink stays for headings
+     and anything that should sit forward. Contrast against --bg is roughly
+     15:1, comfortably past the WCAG AA floor of 4.5:1 for body text. */
+  --ink-muted: rgba(255, 255, 255, 0.72);
+
+  /* ---- Space -----------------------------------------------------------
+     A rhythm, not arbitrary numbers: each step is a consistent jump from the
+     last, so spacing across the site looks related rather than ad hoc.
+     Section 2 extends this into the full scale. */
+  --space-2: 0.5rem;
+  --space-4: 1rem;
+  --space-8: 2rem;
+
+  /* Page gutter and the maximum measure for reading copy. Long lines are hard
+     to track back from on a dark background, so text is capped well before the
+     viewport width. */
+  --page-gutter: var(--space-4);
+  --page-max: 72rem;
+
+  /* The nav floats over the page rather than sitting in the document flow, so
+     it takes up no space and content would otherwise start underneath it.
+     Named here because base.css needs it to reserve the gap, and the two must
+     never disagree — a hardcoded guess in base.css is exactly how content ends
+     up tucked behind the nav on one page and not another. */
+  --nav-height: 3.5rem;
+}

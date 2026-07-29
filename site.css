@@ -1,0 +1,170 @@
+/* ---- site.css — shared chrome: the nav and the footer ---------------------
+   The furniture that appears on every page. base.css sets the floor (reset,
+   type defaults, accessibility); this styles the two components the shell
+   renders around the content.
+
+   Supersedes nav.css, which styled the prototype's page-switcher. That switcher
+   built its markup in JavaScript and linked four experiment pages; this nav is
+   real HTML linking real routes. nav.css and nav.js stay in the repo only
+   because hero.html still loads them, and are removed in Section 3 when the
+   hero becomes the homepage.
+
+   STATUS: structural, not final. Section 2 owns the visual design — the accent
+   colour drawn from the brand glitch, the working mobile menu, and the type
+   scale. What is here is disciplined and correct, not yet decorated. */
+
+/* ---- Nav -----------------------------------------------------------------
+   Pinned to the top and floating over the content, carried across from the
+   prototype's treatment. The blur keeps the labels legible over whatever is
+   moving underneath — on the homepage that is the hero's blobs. */
+.site-nav {
+  position: fixed;
+  top: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+
+  max-width: calc(100% - (var(--space-4) * 2));
+  padding: var(--space-2) var(--space-4);
+  border-radius: 999px;
+
+  /* Deliberately not glassmorphism: no glow, no heavy frost, no soft shadow
+     stack. A quiet translucent bar with a hairline edge — enough to separate
+     it from the page, not enough to become an ornament. */
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+}
+
+.site-nav__brand {
+  /* Padded to a 44px tap height like every other link in the bar. The text
+     itself is only ~26px tall, and a target that size is one most thumbs
+     miss — the home link should not be the hardest thing to hit. */
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: var(--space-2);
+
+  font-family: 'argent-pixel-cf', 'Pixelify Sans', ui-monospace, monospace;
+  /* 400, never 700. argent-pixel-cf ships only a 400 weight, so asking for
+     bold makes the browser fake one by smearing the glyphs sideways — which on
+     a pixel face breaks the pixel grid and reads as a rendering fault. */
+  font-weight: 400;
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-nav__list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-nav__link {
+  display: block;
+  /* Tap targets must clear 44px. The padding here plus the inherited
+     line-height is what gets a link there — a 12px label with tight padding
+     is a target most thumbs miss. */
+  padding: 0.7rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  color: var(--ink-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+.site-nav__link:hover {
+  color: var(--ink);
+}
+
+.site-nav__link[aria-current='page'] {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* The single call to action. Section 2 gives it the brand accent; until then
+   it is inverted, which is already a clear enough hierarchy to test with. */
+.site-nav__link--accent {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.site-nav__link--accent:hover {
+  color: var(--bg);
+  opacity: 0.88;
+}
+
+/* ---- Footer --------------------------------------------------------------
+   Carries the phone number and email on every page. The audience is trades and
+   small businesses, often reading on a phone between jobs — whatever page
+   someone stops on, the way to make contact is right there. */
+.site-footer {
+  margin-top: var(--space-8);
+  padding-block: var(--space-8);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.site-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.site-footer__contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+/* The phone number is the single most important link on the site for this
+   audience — trades and small businesses, usually on a phone, often between
+   jobs. It sits in the footer of every page and must be a comfortable tap,
+   not a 26px line of text someone has to aim at. */
+.site-footer__contact a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+
+  color: var(--ink);
+  text-decoration-color: rgba(255, 255, 255, 0.35);
+  text-underline-offset: 0.25em;
+}
+
+.site-footer__meta {
+  font-size: 0.875rem;
+  color: var(--ink-muted);
+}
+
+/* ---- Small screens -------------------------------------------------------
+   Below this the nav would overflow its own pill. Section 2 replaces this with
+   a real mobile menu; for now the items simply wrap to a comfortable size
+   rather than being clipped. */
+@media (max-width: 640px) {
+  .site-nav {
+    gap: var(--space-2);
+    padding: var(--space-2);
+  }
+
+  .site-nav__link {
+    padding: 0.7rem 0.6rem;
+    font-size: 0.8125rem;
+  }
+
+  .site-footer__inner {
+    flex-direction: column;
+  }
+}
