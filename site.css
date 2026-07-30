@@ -3,11 +3,10 @@
    type scale, accessibility); this styles the components the shell renders
    around the content.
 
-   Supersedes nav.css, which styled the prototype's page-switcher. That switcher
-   built its markup in JavaScript and linked four experiment pages; this nav is
-   real HTML linking real routes. nav.css and nav.js stay in the repo only
-   because hero.html still loads them, and are removed in Section 3 when the
-   hero becomes the homepage. */
+   Replaced the prototype's nav.css/nav.js page-switcher, which built its markup
+   in JavaScript and linked four experiment pages. This nav is real HTML linking
+   real routes; both prototype files were deleted in Section 3 along with
+   hero.html, when the hero became the homepage. */
 
 /* ---- Nav -----------------------------------------------------------------
    Pinned to the top and floating over the content, carried across from the

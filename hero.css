@@ -1,10 +1,17 @@
+/* ---- hero.css — the homepage's opening screen -----------------------------
+   Loaded on the homepage only. --bg and --ink now come from tokens.css, which
+   every page loads first; what stays here is hero-specific and used nowhere
+   else on the site.
+
+   This used to be a fixed full-screen splash with the page's scrolling switched
+   off — fine for a one-screen prototype, useless as the top of a real site. It
+   is now the first section of a scrolling page: a tall section containing a
+   sticky stage. The stage sits still, filling the screen, while the section
+   scrolls past behind it, and that scrolled distance is what the reverse intro
+   is scrubbed against (see SCROLL in hero.js). Pinning this way is done by the
+   browser, so the hero stays put even while JavaScript is busy. */
+
 :root {
-  /* Near-black. The blobs are saturated, so this stays genuinely dark rather
-     than dark-grey — anything lighter and the gradients lose their punch. */
-  --bg: #0a0a0a;
-
-  --ink: #ffffff;
-
   /* Flattens the wordmark block — scaleY, so the letters get SHORTER and read
      wider. 1 = untouched. Below about 0.6 the pixel grid visibly shears, since
      the glyphs are being scaled off their own pixel pitch.
@@ -14,7 +21,18 @@
 
   /* Permanent chromatic aberration on the wordmark, in em. Pushed hard — the
      glitch flash goes further still. Tagline gets none. */
-  --aberration: 0.05em;
+  --aberration-rest: 0.05em;
+
+  /* How far the red/cyan split is pulled apart at the end of the scrub. The
+     wordmark leaves by coming apart into its two colour channels rather than
+     by simply fading — the same fault the glitch already flashes, held open. */
+  --aberration-exit: 0.5em;
+
+  /* The live value, widening as the hero is scrolled away. .wordmark span reads
+     this; the glitch class overrides it with its own bigger offsets. */
+  --aberration: calc(
+    var(--aberration-rest) + (var(--aberration-exit) - var(--aberration-rest)) * var(--hero-exit)
+  );
 
   /* Zero. The silhouette now comes from a mask and the goo threshold, both of
      which produce a vector-hard edge — any blur here goes straight back to
@@ -22,29 +40,51 @@
      it can be as soft as it likes without touching the outline. */
   --blob-softness: 0px;
 
-  /* nav.css's defaults are light-on-dark, which is already right for this
-     page — nothing to override. (blocks.css/the 3D page flip them.) */
+  /* How far the page scrolls while the hero is pinned — the length of the
+     reverse intro, in viewport heights. One screen of scrolling: long enough
+     to read the blobs travelling back out, short enough that nobody thinks the
+     page is stuck. hero.js does not hardcode this; it measures the element, so
+     changing this one number changes the scrub length and nothing else.
+
+     0 would break the effect but not the page: the hero would simply scroll
+     away like any other section. */
+  --hero-scroll: 100svh;
+
+  /* Set by hero.js, 0 to 1, as the hero is scrolled through: 0 is the hero at
+     rest, 1 is fully un-built. Declared here so the styles below have a value
+     to work with before any script runs — with JavaScript off it stays 0 and
+     the hero is simply a static, fully-composed screen. */
+  --hero-exit: 0;
 }
 
-* { box-sizing: border-box; }
-
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background: var(--bg);
-  color: var(--ink);
-  overflow: hidden;
-}
+/* ---- The section and its pinned stage ------------------------------------
+   The section is tall; the stage inside it is one screen and sticks to the top
+   of the viewport until the section has finished passing. */
 
 .hero {
-  position: fixed;
-  inset: 0;
+  position: relative;
+  height: calc(100svh + var(--hero-scroll));
+
+  /* isolate keeps the blobs' blending and stacking to themselves, so nothing
+     in the hero can paint over the nav or the sections below it. */
+  isolation: isolate;
+}
+
+.hero__stage {
+  position: sticky;
+  top: 0;
+
+  /* svh — the SMALL viewport height, i.e. the screen with the mobile browser's
+     address bar showing. 100vh on a phone means the height WITHOUT it, so the
+     bottom of the hero starts life hidden behind the browser's own chrome. */
+  height: 100svh;
+
   display: grid;
   place-items: center;
   background: var(--bg);
+  /* The blobs travel in from off-screen and must not widen the page while they
+     are out there. */
   overflow: hidden;
-  isolation: isolate;
 }
 
 /* ---- Layer 0: dot-grid texture ------------------------------------------
@@ -87,8 +127,30 @@ html, body {
   align-items: stretch;
   user-select: none;
 
-  /* No transform here — the flatten lives on .wordmark alone, so the tagline is
-     left at its natural proportions. */
+  /* The mark leaves faster than the blobs do — gone by the time the scrub is
+     ~70% through, so the last part of the scroll is the blobs alone travelling
+     back out. Everything overlapping until the end would just read as a fade.
+     No transition: the value is driven by scroll position, so it must land on
+     exactly the frame the scroll does or it lags behind the finger. */
+  opacity: clamp(0, calc(1 - var(--hero-exit) / 0.7), 1);
+
+  /* A small lift as it goes, so the mark reads as being drawn upward off the
+     screen rather than dimming in place. Translate only — no scale, which on a
+     pixel face would smear the glyphs off their own grid. */
+  transform: translate3d(0, calc(var(--hero-exit) * -2.5rem), 0);
+
+  /* No transform on the flatten here — that lives on .wordmark alone, so the
+     tagline keeps its natural proportions. */
+}
+
+/* The wordmark and tagline are spans inside the page's <h1>, not headings in
+   their own right — the heading text a screen reader announces is the
+   visually-hidden line beside them, because these two are split into
+   per-letter spans that would otherwise be spelled out. Blocks, so the flatten
+   transform below has something to apply to. */
+.wordmark,
+.tagline {
+  display: block;
 }
 
 .wordmark {
@@ -173,6 +235,55 @@ html, body {
   opacity: 0.9;
 }
 
+/* ---- the scroll cue -----------------------------------------------------
+   The hero fills the screen, so nothing on it says that the site continues
+   below. For an audience that is mostly not technical and often on a phone,
+   that is worth one quiet word. It fades out almost immediately once scrolling
+   starts, because by then it has done its job.
+
+   aria-hidden: it is a visual hint about a gesture, not information. A screen
+   reader user is already being told the page has more content by the page
+   itself. */
+.hero__cue {
+  position: absolute;
+  bottom: var(--space-8);
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  z-index: 2;
+
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-light);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+
+  /* Gone by a fifth of the way through the scrub — the moment the visitor has
+     scrolled at all, they know the page scrolls. */
+  opacity: clamp(0, calc(1 - var(--hero-exit) / 0.2), 1);
+  pointer-events: none;
+}
+
+/* The line beneath it, drifting downward on a loop: the direction of travel,
+   shown rather than written. Stopped entirely under reduced motion by the
+   global rule in base.css. */
+.hero__cue::after {
+  content: '';
+  display: block;
+  width: 1px;
+  height: var(--space-6);
+  margin: var(--space-2) auto 0;
+  background: linear-gradient(to bottom, var(--ink-faint), transparent);
+  animation: hero-cue-drift 2.6s var(--ease) infinite;
+}
+
+@keyframes hero-cue-drift {
+  0%   { transform: translateY(-40%); opacity: 0; }
+  40%  { opacity: 1; }
+  100% { transform: translateY(40%); opacity: 0; }
+}
+
 /* ---- reduced motion -----------------------------------------------------
    hero.js reads the same query and calms the drift, morph and glitch rate.
    This only handles what CSS owns. */
@@ -183,6 +294,15 @@ html, body {
     text-shadow:
       calc(var(--aberration) * -1) 0 rgba(255, 0, 80, 0.85),
       var(--aberration) 0 rgba(0, 225, 255, 0.85);
+  }
+
+  :root {
+    /* No scrub, so no pinned scrolling distance to scrub against — the extra
+       screen of scroll would otherwise be a screen of nothing happening. The
+       hero becomes an ordinary full-height section that scrolls away, and the
+       page below arrives a screen sooner. hero.js reads the same setting and
+       leaves --hero-exit alone. */
+    --hero-scroll: 0px;
   }
 }
 

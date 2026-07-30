@@ -78,7 +78,7 @@ function normalisePath(path = '/') {
    Canonical matters more than it looks: it tells search engines which address
    is the real one for this page, so the same content reachable at two URLs is
    not read as two competing pages. */
-function renderHead({ title, description, path, ogImage, extraHead }) {
+function renderHead({ title, description, path, ogImage, styles, extraHead }) {
   const canonical = absoluteUrl(path);
   const image = ogImage ? absoluteUrl(ogImage) : null;
 
@@ -133,7 +133,9 @@ function renderHead({ title, description, path, ogImage, extraHead }) {
        sheet overrides. Swapping them silently breaks the cascade. -->
   <link rel="stylesheet" href="/tokens.css" />
   <link rel="stylesheet" href="/base.css" />
-  <link rel="stylesheet" href="/site.css" />${extraHead ? `\n${extraHead}` : ''}`;
+  <link rel="stylesheet" href="/site.css" />${styles
+    .map((href) => `\n  <link rel="stylesheet" href="${escapeHtml(href)}" />`)
+    .join('')}${extraHead ? `\n${extraHead}` : ''}`;
 }
 
 /* ---- Footer ---------------------------------------------------------------
@@ -171,6 +173,10 @@ const FOOTER_YEAR = new Date().getFullYear();
  * @param {string}  page.content      The page body markup, dropped inside <main>.
  * @param {string} [page.bodyClass]   Extra class on <body> for page-specific styling.
  * @param {string} [page.ogImage]     Site-relative image path for social previews.
+ * @param {string[]} [page.styles]    Page-specific stylesheets, loaded after site.css.
+ *                                    Only the pages that need a sheet load it — hero.css
+ *                                    is 8KB of blob and glitch styling that the contact
+ *                                    page has no use for.
  * @param {string} [page.extraHead]   Additional head markup, e.g. a JSON-LD block.
  * @param {string} [page.extraScripts] Script tags for the end of <body>. Enhancement only.
  * @returns {string} A complete HTML document.
@@ -182,13 +188,14 @@ export function renderPage({
   content,
   bodyClass = '',
   ogImage = null,
+  styles = [],
   extraHead = '',
   extraScripts = '',
 }) {
   return `<!DOCTYPE html>
 <html lang="en-GB">
 <head>
-${renderHead({ title, description, path, ogImage, extraHead })}
+${renderHead({ title, description, path, ogImage, styles, extraHead })}
 </head>
 <body${bodyClass ? ` class="${escapeHtml(bodyClass)}"` : ''}>
   <a class="skip-link" href="#main">Skip to content</a>

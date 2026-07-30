@@ -256,6 +256,49 @@ const BLOB_INTRO = {
   HOLD: 0.2,
 };
 
+/* The exit: the entrance played backwards, scrubbed to scroll position.
+ *
+ * The hero is a tall section with a sticky stage inside it (see hero.css), so
+ * the browser pins the stage on screen while that extra height scrolls past.
+ * How far through that pinned distance the page has scrolled is a number from 0
+ * to 1, and that number drives the intro in reverse: blobs travel back out to
+ * the sides, wordmark comes apart and lifts away. Scroll back up and it
+ * re-assembles, because nothing here is an animation that was "played" — every
+ * frame is drawn from the current scroll position, so it is reversible by
+ * construction.
+ *
+ * The distance itself is NOT configured here. hero.js measures the element, and
+ * --hero-scroll in hero.css is the single place it is set — two copies of the
+ * same number in two files is how they end up disagreeing.
+ */
+const SCROLL = {
+  ENABLED: true,
+
+  // Per-blob stagger on the way out, in scrub units (0..1). The entrance
+  // staggers in seconds; the exit has to stagger in scroll, since that is its
+  // clock. Reversed order, so the blob that arrived first leaves last.
+  EXIT_STAGGER: 0.14,
+
+  // Shape of the exit against scroll position. Above 1 the blobs hold near
+  // home through the early scroll and leave late, which is what spreads the
+  // movement across the whole gesture.
+  //
+  // Measured, not guessed: a blob is off the edge of the screen once it is
+  // roughly halfway back to where it started, because it starts most of a
+  // viewport beyond the frame. Drive that journey evenly and the blobs are
+  // gone by the halfway point of the scroll, leaving the second half of a
+  // pinned screen with nothing happening on it — which reads as the page
+  // having jammed. At 2.2 they are still nearly home at the halfway mark and
+  // only clear the frame in the last third.
+  EXIT_CURVE: 2.2,
+
+  // How far past the hero the animation loop keeps running, in viewport
+  // heights. Not zero: stopping the instant the last pixel leaves means a
+  // one-pixel scroll back up finds a frozen hero for a frame. A fifth of a
+  // screen of slack is cheap and makes the boundary unnoticeable.
+  PAUSE_SLACK: 0.2,
+};
+
 /* ---- dot-grid texture ---------------------------------------------------
  * A halftone of the same kind of noise field the blobs use: a fixed grid of
  * dots whose radius is driven by 3D simplex sampled at (x, y, time), so
@@ -363,8 +406,9 @@ const MOUSE = {
  *
  * The names here must match what Adobe actually serves — Adobe's CSS name is
  * usually lowercase and hyphenated ("argent-pixel-cf"), not the marketing name.
- * Confirm each in fonts.adobe.com -> Web Projects -> your project, and see the
- * comment block at the top of hero.html for where to paste the embed.
+ * Confirm each in fonts.adobe.com -> Web Projects -> your project. The embed
+ * itself lives in the shared <head> in tools/templates/page.js, so it is on
+ * every page of the site rather than pasted into each one.
  *
  * Anything in here that isn't really loaded is dropped at startup (see
  * resolveFonts) rather than rendering as a fallback, so wrong names fail
@@ -540,6 +584,10 @@ function makeNoise3D(seed) {
 const SVGNS = 'http://www.w3.org/2000/svg';
 
 function createPicselHero(root) {
+  /* root is the tall section; the stage is the one-screen box sticking to the
+     top of the viewport inside it. Everything is drawn into the stage, and the
+     gap between their two heights is the distance the scrub runs over. */
+  const stage = root.querySelector('.hero__stage') || root;
   const svg = root.querySelector('#blobs');
   const defs = root.querySelector('#blob-defs');
   const group = root.querySelector('#blob-group');
@@ -559,6 +607,16 @@ function createPicselHero(root) {
   let stacked = false;
   let raf = null, last = null, elapsed = 0;
   let destroyed = false;
+
+  /* ---- the scroll scrub -------------------------------------------------
+     scrubRange is the pinned distance in pixels, measured on resize; exit is
+     where we currently are along it, 0 (hero at rest) to 1 (fully un-built).
+     Reduced motion disables the whole mechanism: exit stays 0 and the hero
+     simply scrolls away like any other section. */
+  let scrubRange = 0;
+  let heroTop = 0;
+  let exit = 0;
+  const scrubOn = SCROLL.ENABLED && !reduced;
 
   /* ---- blobs ------------------------------------------------------------ */
 
@@ -965,9 +1023,21 @@ function createPicselHero(root) {
   /* ---- resize ----------------------------------------------------------- */
 
   function resize() {
-    vw = window.innerWidth;
-    vh = window.innerHeight;
+    /* Measured off the stage, not the window. The stage is 100svh — the height
+       of the screen WITH a phone's address bar showing — while
+       window.innerHeight is the height without it. Sizing the canvas to the
+       window would then stretch the drawing slightly taller than the box it is
+       drawn in, and the dot grid would sit visibly off-square on a phone. */
+    vw = stage.clientWidth;
+    vh = stage.clientHeight;
     minDim = Math.min(vw, vh);
+
+    /* The pinned distance: how much taller the section is than the stage. That
+       is exactly how far the page scrolls while the stage is held on screen,
+       and therefore the length of the reverse intro. Under reduced motion
+       hero.css sets it to zero and the guard below leaves the hero alone. */
+    scrubRange = root.offsetHeight - stage.offsetHeight;
+    heroTop = root.offsetTop;
     stacked = vw <= BLOBS.STACK_BELOW;
     svg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
 
@@ -984,6 +1054,76 @@ function createPicselHero(root) {
   }
   window.addEventListener('resize', resize);
   resize();
+
+  /* ---- reverse-on-scroll ------------------------------------------------ */
+
+  /* Where the page is along the pinned distance, 0 to 1. Read from
+     window.scrollY rather than from the element's position on screen: scrollY
+     is a number the browser already has, while asking an element where it is
+     forces a fresh layout calculation — sixty times a second, mid-scroll, on
+     the one thread that also has to move the page. */
+  function readScroll() {
+    if (!scrubOn || scrubRange <= 0) return 0;
+    return clamp((window.scrollY - heroTop) / scrubRange, 0, 1);
+  }
+
+  /* The exit, expressed as a position on the ENTRANCE's own progress line, so
+     the two share one piece of drawing code and cannot drift apart in style:
+     1 is home, 0 is off-screen where the blob started. Reversing the entrance
+     is then literally running its own numbers backwards.
+     Returns 1 (home, no effect) whenever the scrub is off.
+
+     Two adjustments make it read correctly:
+
+     - The stagger is REVERSED. The blob that arrived first leaves last, so the
+       hero un-builds in the opposite order it was built, the way a reversed
+       film runs rather than the way a second identical sequence would.
+
+     - The entrance's ease-out is UNDONE before the scroll drives it. Ease-out
+       spends most of its movement in the first fraction of its progress; drive
+       it straight from scroll and the blob would sit almost still for half the
+       scrub, then bolt off screen at the end. Undoing it puts the scroll in
+       charge of the blob's actual position on screen rather than of a curve,
+       which is what EXIT_CURVE can then shape deliberately. The smoothstep
+       gives the two ends their soft start and stop. */
+  function exitProgress(i) {
+    if (!scrubOn || exit <= 0) return 1;
+
+    const offset = (count - 1 - i) * SCROLL.EXIT_STAGGER;
+    // Guard: enough blobs and a big enough stagger would otherwise leave the
+    // last one with no scroll distance left to travel over.
+    const span = Math.max(0.25, 1 - (count - 1) * SCROLL.EXIT_STAGGER);
+    const s = clamp((exit - offset) / span, 0, 1);
+
+    const travel = 1 - Math.pow(smoothstep(s), SCROLL.EXIT_CURVE);
+    return 1 - Math.pow(1 - travel, 1 / BLOB_INTRO.EASE);
+  }
+
+  /* One number, published to CSS, that the wordmark and the scroll cue style
+     themselves from. Keeping their movement in CSS rather than setting styles
+     per element from here means the browser can do it off the main thread, and
+     it is one write per frame instead of one per element. */
+  function publishExit() {
+    document.documentElement.style.setProperty('--hero-exit', exit.toFixed(4));
+  }
+
+  /* The loop is stopped once the hero is fully off screen. A hero nobody can
+     see, still drawing blobs sixty times a second, is pure battery cost — and
+     on a long page that is most of the visit. Scrolling back up restarts it. */
+  function heroOnScreen() {
+    if (!scrubOn) return true;
+    const past = window.scrollY - (heroTop + root.offsetHeight);
+    return past < window.innerHeight * SCROLL.PAUSE_SLACK;
+  }
+
+  function onScroll() {
+    if (destroyed || !scrubOn) return;
+    // Restarted from the scroll event rather than from a permanently running
+    // frame — the whole point is that nothing runs while the hero is away.
+    if (raf === null && heroOnScreen()) start();
+  }
+
+  if (scrubOn) window.addEventListener('scroll', onScroll, { passive: true });
 
   /* ---- blob frame ------------------------------------------------------- */
 
@@ -1067,7 +1207,14 @@ function createPicselHero(root) {
       let stretchX = 1, stretchY = 1;
       if (BLOB_INTRO.ENABLED && !reduced) {
         const since = blobIntroAt === null ? -1 : time - blobIntroAt;
-        const p = clamp((since - i * BLOB_INTRO.DELAY) / BLOB_INTRO.DURATION, 0, 1);
+        const pIn = clamp((since - i * BLOB_INTRO.DELAY) / BLOB_INTRO.DURATION, 0, 1);
+
+        /* Whichever has this blob further from home wins. During the intro
+           that is the intro; once scrolling starts it is the scrub. Taking the
+           minimum rather than switching between them means a visitor who
+           scrolls while the hero is still arriving gets one continuous
+           movement instead of the blob jumping between two positions. */
+        const p = Math.min(pIn, exitProgress(i));
         if (p < 1) {
           const e = 1 - Math.pow(1 - p, BLOB_INTRO.EASE);
 
@@ -1311,7 +1458,7 @@ function createPicselHero(root) {
     if (missing.length) {
       console.warn(
         `[picsel hero] Not loaded, dropped from the glitch rotation: ${missing.join(', ')}.\n` +
-        `              Paste your Adobe Fonts embed into the marked block in hero.html,\n` +
+        `              Check the Adobe Fonts embed in tools/templates/page.js,\n` +
         `              then match FONTS.ROTATION to the family names Adobe lists\n` +
         `              (usually lowercase-hyphenated, e.g. "argent-pixel-cf").`
       );
@@ -1369,6 +1516,15 @@ function createPicselHero(root) {
 
   function glitchOnce() {
     if (destroyed || !fonts.length) return;
+
+    /* Scrolled past: the wordmark has faded out, so a glitch would be a font
+       swap nobody can see. Skipped rather than stopped — the timer keeps
+       ticking so the effect is simply there again on the way back up, with no
+       restart logic to get wrong. */
+    if (exit >= 1) {
+      glitchTimer = setTimeout(glitchOnce, rand(...(reduced ? GLITCH.REDUCED_RATE : GLITCH.RATE)) * 1000);
+      return;
+    }
 
     if (!reduced && Math.random() < GLITCH.CASCADE_CHANCE) {
       // Occasional run across the whole word.
@@ -1488,22 +1644,55 @@ function createPicselHero(root) {
     last = now;
     elapsed += dt;
 
+    /* Read the scroll first, draw second — one read and one write per frame,
+       in that order, so nothing forces the browser to recalculate layout it
+       has already done. */
+    if (scrubOn) {
+      const next = readScroll();
+      if (next !== exit) {
+        exit = next;
+        publishExit();
+      }
+    }
+
     // Same clock as the blobs, so the whole hero breathes together.
     drawDots(elapsed);
     drawBlobs(elapsed, dt);
+
+    if (!heroOnScreen()) {
+      stop();
+      return;
+    }
     raf = requestAnimationFrame(frame);
   }
-  raf = requestAnimationFrame(frame);
+
+  function start() {
+    if (destroyed || raf !== null) return;
+    // Cleared so the first frame back measures no elapsed time. Without it the
+    // gap since the last frame — possibly minutes — arrives as one enormous
+    // step and the blobs teleport.
+    last = null;
+    raf = requestAnimationFrame(frame);
+  }
+
+  function stop() {
+    if (raf !== null) cancelAnimationFrame(raf);
+    raf = null;
+    last = null;
+  }
+
+  start();
 
   /* ---- teardown --------------------------------------------------------- */
 
   return {
     destroy() {
       destroyed = true;
-      if (raf !== null) cancelAnimationFrame(raf);
+      stop();
       if (glitchTimer !== null) clearTimeout(glitchTimer);
       introTimers.forEach(clearTimeout);
       window.removeEventListener('resize', resize);
+      if (scrubOn) window.removeEventListener('scroll', onScroll);
       if (mouseOn) {
         window.removeEventListener('pointermove', onPointerMove);
         document.removeEventListener('pointerleave', onPointerLeave);

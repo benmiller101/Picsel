@@ -39,7 +39,7 @@ Single source of truth. If a fact changes, change it here first, then everywhere
 | Dedicated studio email | `[DECISION]` use benwmiller101@gmail.com for now, or set up info@ on the Picsel domain |
 | Domain | `[DECISION]` not chosen yet (e.g. a picsel… .co.uk / .studio). Register in Picsel's own account |
 | Hosting | Cloudflare Pages (same as client builds) |
-| Stack | Static multi-page HTML/CSS/JS, built **on top of the existing hero** (`hero.html/.css/.js`). No framework. Pages are generated from one shared template by `tools/build.js` (`npm run build`) so the `<head>`, nav and footer exist once; the output is plain static HTML |
+| Stack | Static multi-page HTML/CSS/JS, built **on top of the existing hero** (`hero.css`/`hero.js`; the prototype `hero.html`, `nav.css` and `nav.js` were deleted in Section 3 when the hero became the homepage). No framework. Pages are generated from one shared template by `tools/build.js` (`npm run build`) so the `<head>`, nav and footer exist once; the output is plain static HTML |
 | Repo | Local git repo on `main`. **Pending:** no GitHub remote yet — the `gh` CLI is not installed on this machine, so the remote must be created before Cloudflare Pages can connect (Section 12) |
 | Fonts | Adobe Fonts web project `ior4aly` (`argent-pixel-cf`, `gridlite-pe-variable`, `pf-pixelscript`, `pixelify-sans`) + Google `Lexend` (body) and `Pixelify Sans` (fallback pixel face) |
 | Contact form | Web3Forms (free, access key in the dashboard) |
@@ -259,20 +259,76 @@ and button clears the 44-pixel tap minimum, and there is no sideways scrolling a
 ## Section 3: Hero and scroll behaviour
 **Priority: CRITICAL | Effort: half a day**
 
-- [ ] Keep the load-in intro (wordmark glitches in, blobs slide from the sides to centre)
-- [ ] Convert the hero from a fixed full-screen splash into the **first section of a scrolling
+- [x] Keep the load-in intro (wordmark glitches in, blobs slide from the sides to centre)
+- [x] Convert the hero from a fixed full-screen splash into the **first section of a scrolling
       homepage** (remove the `body { overflow: hidden }` lock and `position: fixed` splash behaviour)
-- [ ] **Reverse-on-scroll:** as the visitor scrolls the first screen, play the intro in reverse,
+- [x] **Reverse-on-scroll:** as the visitor scrolls the first screen, play the intro in reverse,
       **scrubbed to scroll position** — blobs travel back to the sides, wordmark glitches/fades out —
       then release into normal scrolling. Pinned hero over a defined `SCROLL_RANGE`, eased and reversible
-- [ ] Blobs are hero-only; only the dark + drifting dot-grid carries through the rest of the site
-- [ ] `prefers-reduced-motion`: skip the scrub (show hero, then content) and calm the background
-- [ ] Pause the hero animation loop once scrolled fully past (perf/battery)
+      — *shipped as a sticky element measured in CSS rather than a JS constant; see the decision below*
+- [x] Blobs are hero-only; only the dark + drifting dot-grid carries through the rest of the site
+- [x] `prefers-reduced-motion`: skip the scrub (show hero, then content) and calm the background
+- [x] Pause the hero animation loop once scrolled fully past (perf/battery)
 
 **What we built:**
+
+The splash is now the top of a real page. It used to be a fixed screen with the page's scrolling
+switched off — fine for a one-screen experiment, useless as the front of a site. The hero is now a
+tall section with a screen-sized panel that sticks to the top of the window: the panel holds still
+while the page slides past behind it, and how far you have slid is what plays the opening backwards.
+Blobs travel back out to the sides, the PICSEL wordmark comes apart into its red and cyan halves and
+lifts away, and then the page releases into ordinary scrolling with the faint drifting dots behind
+it. Scroll back up and it all re-assembles, because nothing is being "played" — every frame is drawn
+from where the page currently is, so it follows the scroll wheel in both directions.
+
+This also made the homepage exist. `/` is now a real route with the hero, the one plain sentence
+about what Picsel is, and the footer; Section 4 builds the rest of the page around it. Because a new
+route appeared, `sitemap.xml` now generates from the same page list the pages themselves come from —
+so a route can no longer exist without being listed, which is the Sitemap Law obeyed by machinery
+rather than by memory. The three prototype files that were only propping up the old experiment page
+(`hero.html`, `nav.css`, `nav.js`) are deleted.
+
+Checked in a browser rather than assumed: the intro plays and settles, the wordmark splits and fades
+on scroll, the page hands off cleanly to the copy and footer below, there are no errors in the
+console, and at 375 pixels wide the nav still fits on one line with 77 pixels to spare and nothing
+scrolls sideways.
+
 **Decisions made:**
 
-**Done when:** the hero plays in on load, un-builds smoothly and reversibly as you scroll, and hands off to normal page scroll with the background drifting behind.
+- **The hero is pinned by the browser, not by JavaScript.** A sticky element inside a taller section
+  does the pinning natively, so the hero stays put even while JavaScript is busy and the layout is
+  correct before a single line of script runs. The alternative — positioning the hero from scroll
+  events — is the standard way these effects judder.
+- **The scroll distance is set once, in CSS.** `--hero-scroll` in `hero.css` is the only place the
+  length of the reverse intro is written; `hero.js` measures the element instead of holding its own
+  copy of the number. The plan called for a `SCROLL_RANGE` constant in the script, which would have
+  been the same number written in two files — and two copies of a number are two numbers that will
+  eventually disagree.
+- **The exit holds, then releases.** Driving the reverse evenly against scroll looked wrong: the
+  blobs start most of a screen beyond the edge, so an even journey has them gone by the halfway
+  point and the rest of the pinned screen has nothing happening on it, which reads as the page
+  having jammed. They now sit near home through the early scroll and clear the frame in the last
+  third. The wordmark leaves earlier, by about 70% through, so the end of the gesture is the blobs
+  alone travelling out.
+- **The wordmark leaves by breaking apart, not by fading.** The red/cyan split the glitch already
+  flashes is simply held open and widened as you scroll, so the exit is made of the brand's own
+  fault rather than a generic fade. It is one CSS variable published per frame, which the browser
+  can then apply without any per-element JavaScript.
+- **The h1 is the hero, and it is readable aloud.** The wordmark is chopped into one span per letter
+  so the glitch can re-font them individually — which would make a screen reader spell "P-I-C-S-E-L"
+  out. The letters are hidden from assistive technology and the heading carries an ordinary hidden
+  line of text, so the page is seen as a pixel wordmark and heard as "Picsel — Design Studio".
+- **A one-word scroll cue.** The hero fills the screen and nothing else says the site continues
+  below it. For a mostly non-technical, phone-first audience that is worth one quiet word, and it
+  fades out as soon as any scrolling starts.
+- **Under reduced motion the extra scroll distance disappears entirely.** Skipping only the
+  animation would have left a screen of pinned scrolling where nothing happens. The hero becomes an
+  ordinary full-height section instead, and the page below arrives a screen sooner.
+- **The animation loop stops when the hero is off screen and restarts on the way back up.** On a
+  long page most of a visit is spent past the hero, and a loop redrawing blobs nobody can see is
+  pure battery cost.
+
+**Done when:** the hero plays in on load, un-builds smoothly and reversibly as you scroll, and hands off to normal page scroll with the background drifting behind. ✅
 
 ---
 
@@ -529,7 +585,7 @@ Lighter than a client engagement — this is Picsel's shop window, kept fresh.
 
 - [x] Section 1: Setup, structure and content model
 - [x] Section 2: Design system and site-wide background
-- [ ] Section 3: Hero and scroll behaviour
+- [x] Section 3: Hero and scroll behaviour
 - [ ] Section 4: Homepage
 - [ ] Section 5: Work index
 - [ ] Section 6: Project pages
