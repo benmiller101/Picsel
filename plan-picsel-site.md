@@ -419,17 +419,63 @@ line with 77 pixels to spare and nothing scrolls sideways.
 ## Section 7: Screenshot pipeline
 **Priority: HIGH | Effort: 2 hours**
 
-- [ ] A repeatable script (`npm run shots`) that reads `projects.js` and **auto-captures** each live
+> **Taken out of order, before Section 4.** The homepage's Selected Work grid is built around these
+> screenshots, and building that grid twice — once around placeholders and again around the real
+> images — is wasted work. Section 7 only ever depended on Section 1, so nothing was jumped.
+
+- [x] A repeatable script (`npm run shots`) that reads `projects.js` and **auto-captures** each live
       `url` at desktop (~1440px) and mobile (~390px) with a headless browser (Playwright/Puppeteer)
-- [ ] Save to `assets/work/<slug>/desktop.webp` and `mobile.webp`, optimised; real `alt` text
-      ("Screenshot of the <name> website")
-- [ ] Unreachable URL → neat placeholder + a logged warning, never a broken build
-- [ ] Document the one command so Ben can refresh shots when a client site changes or a project is added
+      — *Puppeteer, driving the Chrome already on the machine; see the decision below*
+- [x] Save to `assets/work/<slug>/desktop.webp` and `mobile.webp`, optimised; real `alt` text
+      ("Screenshot of the <name> website") — alt text already lives in `projects.js`
+- [x] Unreachable URL → neat placeholder + a logged warning, never a broken build
+- [x] Document the one command so Ben can refresh shots when a client site changes or a project is added
 
 **What we built:**
+
+One command, `npm run shots`, now opens all five client sites in a headless browser — a real Chrome
+with no window — and photographs each one at desktop and phone size. The pictures land in
+`assets/work/<slug>/` as webp, which is about a fifth of the size of an ordinary screenshot for the
+same quality, and the whole set of ten comes to roughly a megabyte. `npm run shots -- lanora-house`
+re-does a single client when only one of them has changed.
+
+This exists because client sites change and hand-taken screenshots quietly rot. A portfolio full of
+sites that no longer look like that is worse than no portfolio, and nobody notices because nobody
+re-checks. Refreshing every shot is now a minute rather than an afternoon, which is the difference
+between it happening and not.
+
+Two of the five needed the script to be cleverer than "wait a few seconds". Julie Miller Art plays a
+"loading portfolio" animation on arrival, and the first attempt photographed the loading screen. AJC
+Removals never goes quiet — something on the page keeps a connection open permanently, so waiting
+for the network to settle waited forever on a page that had finished long before. Both are handled
+by watching the page instead: it is photographed every second or so until two looks come out
+identical, and only then is the real picture taken.
+
 **Decisions made:**
 
-**Done when:** running the script produces current desktop and mobile shots for all five sites and they appear on the Work and project pages.
+- **Puppeteer driving the Chrome already installed, rather than its own copy.** The usual setup
+  downloads a private 150MB browser on every machine and in CI. Ben has Chrome; the script finds it
+  in the standard places and uses it, so installing the project stays small. `PUPPETEER_EXECUTABLE_PATH`
+  overrides it if Chrome ever lives somewhere unusual, and the error message says so.
+- **Cookie banners are hidden, never accepted.** Almost every site has one and it sits over exactly
+  the part of the page a portfolio card shows. Clicking "accept all" would be agreeing to tracking
+  on someone else's behalf, which is not a script's decision to make even on a client's own site —
+  and it is not needed, since all that is wanted is a clean picture. The overlay is hidden and
+  nothing underneath is touched or consented to.
+- **The wait is adaptive, not a fixed number of seconds.** A number long enough for the slowest site
+  would be spent staring at every other one, and one short enough to be tolerable photographs the
+  slow one mid-load. Waiting for the page to stop changing handles both, and a site with a permanent
+  animation simply hits a twenty-second ceiling and is captured as it is.
+- **A failed capture writes a placeholder under the same filename a real one would use.** The
+  alternative — a differently-named fallback file — makes every page that shows a screenshot ask
+  which of two files exists, and get it wrong on the day the capture starts working again. One name,
+  always present, and the pages never need to know.
+- **A client's server being down can never break Picsel's build.** A failure logs a warning, keeps
+  last week's good screenshot if there is one, and moves on.
+- **The top of the page, not the whole page.** A card wants the site's front door; a full-length
+  capture of a long homepage becomes an unreadable sliver once it is scaled into a card.
+
+**Done when:** running the script produces current desktop and mobile shots for all five sites and they appear on the Work and project pages. ✅ *(All ten captured with no warnings. "They appear on the pages" follows in Sections 4–6.)*
 
 ---
 
@@ -622,7 +668,7 @@ Lighter than a client engagement — this is Picsel's shop window, kept fresh.
 - [ ] Section 4: Homepage
 - [ ] Section 5: Work index
 - [ ] Section 6: Project pages
-- [ ] Section 7: Screenshot pipeline
+- [x] Section 7: Screenshot pipeline (taken early — see the section note)
 - [ ] Section 8: Contact page and form
 - [ ] Section 9: SEO infrastructure
 - [ ] Section 10: GEO layer
