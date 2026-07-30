@@ -151,6 +151,38 @@ const BLOBS = {
   COLOR_LERP: 0.22,      // per-second approach rate toward the new gradient
 };
 
+/* ---- the pixel grid -----------------------------------------------------
+ * The blobs are not smooth shapes with a pixelate effect laid over them. They
+ * are DRAWN at a low resolution and scaled up — the hero's own small display.
+ *
+ * The difference is in the movement, and it is the whole point. Pixelate a
+ * smoothly-moving shape and the shape still moves smoothly underneath: the
+ * blocks along its edge shimmer and crawl, which reads as a filter. Draw it on
+ * a fixed grid and an edge block does not move at all until the shape crosses a
+ * whole cell boundary, then it flips in one step. The motion becomes chunky and
+ * deliberate. That only happens if the grid is fixed to the screen and the
+ * drawing is genuinely sampled onto it, which is what this does.
+ *
+ * Everything is rendered into canvases CELL times smaller than the stage and
+ * scaled back up with nearest-neighbour, so one source pixel becomes one block
+ * of one flat colour. Cheap, too: a 1440-wide screen is 180 x 100 pixels of
+ * actual drawing, which is why the per-pixel compositing below costs nothing.
+ */
+const PIXEL = {
+  // Block size in CSS pixels. Fixed size rather than a fixed number of blocks
+  // across, so the grain reads the same on a phone as on a desktop instead of
+  // getting finer as the screen gets smaller.
+  CELL: 8,
+
+  // Alpha at which a blurred cell counts as inside the blob, 0-255. Derived
+  // from the goo constants rather than picked: the SVG version this replaced
+  // mapped alpha through (a * GOO_SHARPEN - GOO_THRESHOLD), so its edge sat
+  // where that crosses a half — which is (0.5 + 19) / 45, about 0.43. Keeping
+  // the same cut keeps the silhouette that was tuned there, and the hard yes/no
+  // is what the grid needs anyway.
+  ALPHA_CUT: Math.round(((0.5 + 19) / 45) * 255),
+};
+
 // Sourced from colour-palette.txt (the same six gradients the mesh-wheel page
 // uses). Edit here rather than re-reading that file: this page is a plain
 // static file and fetch() is blocked on file://, so the palette is inlined
@@ -198,15 +230,22 @@ const BLOB_GRADIENTS = [
  * The offset is RADIAL from the centre of the screen and grows toward the
  * edges, mimicking a real lens — nothing at the optical axis, worst in the
  * corners.
+ *
+ * On the pixel grid it is measured in WHOLE BLOCKS, because a fringe narrower
+ * than one block cannot be drawn: sub-block separation would either vanish or,
+ * worse, round unevenly along an edge and read as a rendering fault. So the
+ * middle of the frame is clean and the far corners split by exactly one block —
+ * the lens idea kept, told in the grid's own units.
  */
 const CHROMA = {
   BLOBS: true,
-  MIN: 0,        // px of separation at dead centre
-  MAX: 7,        // px at the far corners. Subtle — a hint of lens fringing at
-                 // the edges, not a visible colour split.
-  FALLOFF: 2.1,  // exponent on normalised distance. >1 keeps the middle of the
-                 // frame clean and concentrates what little there is at the
-                 // very edges.
+  MIN: 0,          // blocks of separation at dead centre
+  MAX_CELLS: 1.4,  // blocks at the far corners, before rounding. 1.4 means the
+                   // outer fifth or so of the frame carries a one-block split
+                   // and everything inside it is untouched.
+  FALLOFF: 2.1,    // exponent on normalised distance. >1 keeps the middle of
+                   // the frame clean and concentrates what little there is at
+                   // the very edges.
 };
 
 /* The blobs' entrance: dragged in from off-page, left and right.
@@ -502,6 +541,9 @@ const hexToRgb = h => {
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 };
 const rgbToCss = c => `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`;
+// Same, with an opacity — the colour spots fade out through their own hue
+// rather than toward another one.
+const rgbaCss = (c, a) => `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`;
 
 /* ==========================  simplex noise 3D  ===========================
  * Inlined rather than pulled in as a dependency — it's ~60 lines and this page
@@ -581,16 +623,11 @@ function makeNoise3D(seed) {
 
 /* ===========================  the hero  ================================== */
 
-const SVGNS = 'http://www.w3.org/2000/svg';
-
 function createPicselHero(root) {
   /* root is the tall section; the stage is the one-screen box sticking to the
      top of the viewport inside it. Everything is drawn into the stage, and the
      gap between their two heights is the distance the scrub runs over. */
   const stage = root.querySelector('.hero__stage') || root;
-  const svg = root.querySelector('#blobs');
-  const defs = root.querySelector('#blob-defs');
-  const group = root.querySelector('#blob-group');
   const wordmarkEl = root.querySelector('#wordmark');
   const taglineEl = root.querySelector('#tagline');
 
@@ -623,158 +660,81 @@ function createPicselHero(root) {
   const count = isSmall ? BLOBS.COUNT_SMALL : BLOBS.COUNT;
   const pointCount = isSmall ? BLOBS.POINTS_SMALL : BLOBS.POINTS;
 
-  if (BLOBS.GOO) {
-    const filter = document.createElementNS(SVGNS, 'filter');
-    filter.setAttribute('id', 'hero-goo');
-    filter.setAttribute('color-interpolation-filters', 'sRGB');
-    filter.setAttribute('x', '-30%');
-    filter.setAttribute('y', '-30%');
-    filter.setAttribute('width', '160%');
-    filter.setAttribute('height', '160%');
+  /* The four surfaces the blobs are built from, all of them CELL times smaller
+     than the stage. Three are working surfaces the visitor never sees:
 
-    const blur = document.createElementNS(SVGNS, 'feGaussianBlur');
-    blur.setAttribute('in', 'SourceGraphic');
-    blur.setAttribute('stdDeviation', String(BLOBS.GOO_BLUR));
-    blur.setAttribute('result', 'blurred');
+       shape   the lobes, filled flat white, hard-edged and overlapping
+       mask    that same picture blurred — the goo. Blurring the lobes as ONE
+               image is what lets neighbours bleed into each other and bridge;
+               blurring them separately and stacking the results would not
+       field   the mesh gradient: a flat backing plus the drifting colour spots
+       colour  the field, blurred, which is what melts the spots into each other
 
-    // RGB rows identity — this only ever reshapes the silhouette via alpha.
-    const matrix = document.createElementNS(SVGNS, 'feColorMatrix');
-    matrix.setAttribute('in', 'blurred');
-    matrix.setAttribute('type', 'matrix');
-    matrix.setAttribute('values',
-      `1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  ` +
-      `0 0 0 ${BLOBS.GOO_SHARPEN} -${BLOBS.GOO_THRESHOLD}`);
+     and the last, blobCanvas, is what ends up on the page: for every cell,
+     the colour from `colour` wherever `mask` is solid enough to count as inside
+     the blob, and nothing anywhere else. The browser scales it up with
+     image-rendering: pixelated in hero.css, so one pixel here is one block of
+     one flat colour on screen.
 
-    filter.appendChild(blur);
-    filter.appendChild(matrix);
-    defs.appendChild(filter);
-  }
+     Deliberately NOT scaled by device pixel ratio, unlike the dot-grid canvas.
+     A retina screen drawing the blobs at twice the resolution is the one thing
+     this must not do — a block is meant to be a block. */
+  const blobCanvas = root.querySelector('#blobs');
+  const blobCtx = blobCanvas.getContext('2d');
+  const shapeCanvas = document.createElement('canvas');
+  const shapeCtx = shapeCanvas.getContext('2d');
+  const fieldCanvas = document.createElement('canvas');
+  const fieldCtx = fieldCanvas.getContext('2d');
+  /* willReadFrequently: these two are read back pixel by pixel on every frame.
+     The flag tells the browser to keep them in ordinary memory rather than on
+     the graphics card, where reading back means stalling until the card
+     catches up. */
+  const maskCanvas = document.createElement('canvas');
+  const maskCtx = maskCanvas.getContext('2d', { willReadFrequently: true });
+  const colourCanvas = document.createElement('canvas');
+  const colourCtx = colourCanvas.getContext('2d', { willReadFrequently: true });
 
-  /* Each blob is built as SILHOUETTE-AS-MASK + COLOUR-FIELD-BEHIND-IT.
+  /* Grid size in cells, and the per-cell buffers. All allocated once in
+     resize() and reused every frame — a 180x100 grid is 72KB of pixel data per
+     buffer, and allocating that sixty times a second would keep the garbage
+     collector permanently busy for no reason. */
+  let cols = 0, rows = 0;
+  let outImage = null;
+  // The patch of grid the blobs occupy this frame, in cells. Set by drawBlobs,
+  // read by compositeBlobs.
+  let boxMinX = 0, boxMinY = 0, boxMaxX = -1, boxMaxY = -1;
+  /* Per-cell chromatic offset, in cells, packed as one signed byte each. Only
+     depends on where a cell sits in the frame, so it is computed on resize and
+     never touched again — the alternative is a square root per cell per frame
+     to answer a question whose answer never changes. */
+  let chromaDX = null, chromaDY = null;
+
+  /* Each blob is a CLUSTER OF LOBES with a COLOUR FIELD behind it — the same
+   * two-part construction as before, now described as plain numbers rather than
+   * as SVG elements. Nothing here draws anything; drawBlobs() reads these every
+   * frame and paints them onto the grid.
    *
-   * That split is what lets the edge be vector-sharp while the colour is a soft
-   * mesh. The lobes are drawn in white into a <mask>, goo-filtered there, so the
-   * mask alone defines the outline. The visible content is a separate group of
-   * overlapping radial colour spots, blurred hard for smooth blending, clipped
-   * to that mask. The blur can be as heavy as it likes — it is behind the mask
-   * and can never soften the silhouette.
+   * The split is what lets the edge be hard while the colour is soft. The lobes
+   * define the silhouette only, in flat white; the colour is a separate field
+   * of overlapping spots that is blurred as heavily as it likes, because the
+   * silhouette is decided by the mask and not by the colour.
    *
-   * It also gets the mesh gradient moving with the blob for free: one colour
-   * spot rides on each lobe, so as the lobes orbit and pulse the colours travel
-   * and re-blend with them. A single linear gradient across the blob, which is
-   * what this replaced, just slid over a shape that moved underneath it.
+   * It also gets the mesh gradient moving with the blob for free: the spots
+   * orbit the cluster centre, so as the lobes swing and pulse the colours
+   * travel and re-blend with them. A single fixed gradient, which is what this
+   * replaced long ago, just slid over a shape moving underneath it.
    */
   const blobs = [];
   for (let i = 0; i < count; i++) {
     const family = BLOB_GRADIENTS[i % BLOB_GRADIENTS.length];
     const startStops = family[0];
 
-    // --- the silhouette, as a mask ---
-    const mask = document.createElementNS(SVGNS, 'mask');
-    mask.setAttribute('id', `blob-mask-${i}`);
-    // userSpaceOnUse + an explicit region set in resize(): the default region
-    // is a percentage of the bounding box, which clips the goo's bleed and
-    // shaves flat sides onto the blob.
-    mask.setAttribute('maskUnits', 'userSpaceOnUse');
-    const maskGroup = document.createElementNS(SVGNS, 'g');
-    if (BLOBS.GOO) maskGroup.setAttribute('filter', 'url(#hero-goo)');
-    mask.appendChild(maskGroup);
-    defs.appendChild(mask);
-
-    // --- the colour field's blur ---
-    const meshFilter = document.createElementNS(SVGNS, 'filter');
-    meshFilter.setAttribute('id', `mesh-blur-${i}`);
-    meshFilter.setAttribute('color-interpolation-filters', 'sRGB');
-    meshFilter.setAttribute('x', '-50%');
-    meshFilter.setAttribute('y', '-50%');
-    meshFilter.setAttribute('width', '200%');
-    meshFilter.setAttribute('height', '200%');
-    const meshBlur = document.createElementNS(SVGNS, 'feGaussianBlur');
-    meshBlur.setAttribute('stdDeviation', String(BLOBS.MESH_BLUR));
-    meshFilter.appendChild(meshBlur);
-    defs.appendChild(meshFilter);
-
-    /* --- chromatic aberration ---
-     * Applied to a group OUTSIDE the masked one, on purpose. SVG renders
-     * filter, then clip, then mask — so a filter on the masked element itself
-     * would have its fringes cropped back to the silhouette and you'd see
-     * nothing outside the edge. Wrapping it lets the fringes extend past the
-     * blob, which is the entire effect. */
-    let chromaOffsets = null;
-    if (CHROMA.BLOBS) {
-      const f = document.createElementNS(SVGNS, 'filter');
-      f.setAttribute('id', `chroma-${i}`);
-      f.setAttribute('color-interpolation-filters', 'sRGB');
-      f.setAttribute('x', '-25%');
-      f.setAttribute('y', '-25%');
-      f.setAttribute('width', '150%');
-      f.setAttribute('height', '150%');
-
-      const mk = (tag, attrs) => {
-        const el = document.createElementNS(SVGNS, tag);
-        for (const k in attrs) el.setAttribute(k, attrs[k]);
-        f.appendChild(el);
-        return el;
-      };
-
-      // Red, shifted one way.
-      const offR = mk('feOffset', { in: 'SourceGraphic', dx: 0, dy: 0, result: 'rShift' });
-      mk('feColorMatrix', {
-        in: 'rShift', type: 'matrix', result: 'rOnly',
-        values: '1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0',
-      });
-      // Blue, shifted the other.
-      const offB = mk('feOffset', { in: 'SourceGraphic', dx: 0, dy: 0, result: 'bShift' });
-      mk('feColorMatrix', {
-        in: 'bShift', type: 'matrix', result: 'bOnly',
-        values: '0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0',
-      });
-      // Green stays where it is — it's the reference the other two split around.
-      mk('feColorMatrix', {
-        in: 'SourceGraphic', type: 'matrix', result: 'gOnly',
-        values: '0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0',
-      });
-      mk('feBlend', { mode: 'screen', in: 'rOnly', in2: 'gOnly', result: 'rg' });
-      mk('feBlend', { mode: 'screen', in: 'rg', in2: 'bOnly' });
-
-      defs.appendChild(f);
-      chromaOffsets = [offR, offB];
-    }
-
-    const masked = document.createElementNS(SVGNS, 'g');
-    masked.setAttribute('mask', `url(#blob-mask-${i})`);
-    const meshGroup = document.createElementNS(SVGNS, 'g');
-    meshGroup.setAttribute('filter', `url(#mesh-blur-${i})`);
-    masked.appendChild(meshGroup);
-
-    if (chromaOffsets) {
-      const chromaGroup = document.createElementNS(SVGNS, 'g');
-      chromaGroup.setAttribute('filter', `url(#chroma-${i})`);
-      chromaGroup.appendChild(masked);
-      group.appendChild(chromaGroup);
-    } else {
-      group.appendChild(masked);
-    }
-
-    // Flat backing in the palette's mid colour, so the gaps between spots are
-    // never transparent — a hole in the colour field would show as a black
-    // patch inside an otherwise solid blob.
-    const baseRect = document.createElementNS(SVGNS, 'rect');
-    baseRect.setAttribute('fill', startStops[1]);
-    meshGroup.appendChild(baseRect);
-
     const lobeCount = randInt(...BLOBS.LOBES);
     const base = Math.random() * Math.PI * 2;
     const lobes = [];
     for (let l = 0; l < lobeCount; l++) {
-      // Silhouette contribution: white, into the mask.
-      const path = document.createElementNS(SVGNS, 'path');
-      path.setAttribute('fill', '#fff');
-      maskGroup.appendChild(path);
-
       const radius = BLOBS.LOBE_RADIUS + rand(-1, 1) * BLOBS.LOBE_RADIUS_VARIANCE;
       lobes.push({
-        path,
         radius,
         // Spread evenly around the cluster, then jittered, so lobes don't stack
         // up on one side and leave the blob lopsided. `base` tilts the whole
@@ -799,44 +759,14 @@ function createPicselHero(root) {
       });
     }
 
-    // The mesh itself: colour spots orbiting the cluster, each cycling through
-    // the palette so every colour appears more than once at different radii.
+    // The mesh itself: colour spots orbiting the cluster, each taking one
+    // colour from the palette so every hue in the gradient actually appears on
+    // the blob. Spots are their own thing, NOT one per lobe — tying them to
+    // lobes caps the mesh at two or three colours and pins them to the lobe
+    // centres, so the blob reads as one flat colour with a hotspot.
     const spots = [];
     for (let sIdx = 0; sIdx < BLOBS.MESH_SPOTS; sIdx++) {
-      const spotGrad = document.createElementNS(SVGNS, 'radialGradient');
-      spotGrad.setAttribute('id', `mesh-spot-${i}-${sIdx}`);
-      const hex = startStops[sIdx % startStops.length];
-      // Both stops share a colour and only the opacity differs, so a spot fades
-      // to transparent rather than toward another hue — fading between hues
-      // bands visibly once it's blurred.
-      const inner = document.createElementNS(SVGNS, 'stop');
-      inner.setAttribute('offset', '0%');
-      inner.setAttribute('stop-color', hex);
-      // A near-opaque plateau before the fade. With a straight 0->100% ramp
-      // most of a spot's area is semi-transparent, so every colour mixes with
-      // every other one and the whole blob drifts to pastel. Holding the core
-      // solid to 55% gives each hue a patch where it is undiluted, and confines
-      // the blending to the rims — bold colours with soft transitions, instead
-      // of a uniform wash.
-      const mid = document.createElementNS(SVGNS, 'stop');
-      mid.setAttribute('offset', '55%');
-      mid.setAttribute('stop-color', hex);
-      mid.setAttribute('stop-opacity', '0.92');
-      const outer = document.createElementNS(SVGNS, 'stop');
-      outer.setAttribute('offset', '100%');
-      outer.setAttribute('stop-color', hex);
-      outer.setAttribute('stop-opacity', '0');
-      spotGrad.appendChild(inner);
-      spotGrad.appendChild(mid);
-      spotGrad.appendChild(outer);
-      defs.appendChild(spotGrad);
-
-      const circle = document.createElementNS(SVGNS, 'circle');
-      circle.setAttribute('fill', `url(#mesh-spot-${i}-${sIdx})`);
-      meshGroup.appendChild(circle);
-
       spots.push({
-        circle, stops: [inner, mid, outer],
         colorIndex: sIdx % startStops.length,
         angle: (sIdx / BLOBS.MESH_SPOTS) * Math.PI * 2 + rand(-0.5, 0.5),
         // Staggered radii, so the spots don't all sit on one ring and leave the
@@ -848,7 +778,7 @@ function createPicselHero(root) {
     }
 
     blobs.push({
-      lobes, spots, family, mask, baseRect, chromaOffsets,
+      lobes, spots, family,
       rgb: startStops.map(hexToRgb),
       target: startStops.map(hexToRgb),
       nextColorAt: rand(...BLOBS.COLOR_HOLD),
@@ -860,29 +790,32 @@ function createPicselHero(root) {
       px: Math.random() * Math.PI * 2,
       py: Math.random() * Math.PI * 2,
       home: BLOBS.HOMES[i % BLOBS.HOMES.length],
-      rot: Math.random() * 360,
       lean: [0, 0],
     });
   }
 
-  /* Closed Catmull-Rom through the sampled points, converted to cubic beziers.
-   * A polyline would show facets on a shape this large even after blurring. */
-  function pathFrom(points) {
+  /* Closed Catmull-Rom through the sampled points, traced straight into a
+   * canvas path as cubic beziers. A polyline would show facets on a shape this
+   * large, and they survive the blur.
+   *
+   * Traced rather than built as a path string: the string version this replaced
+   * had to format sixty-four points to two decimal places per lobe per frame,
+   * only for the browser to parse the numbers straight back out again. */
+  function traceBlobPath(ctx, points) {
     const n = points.length;
-    let d = `M${points[0][0].toFixed(2)},${points[0][1].toFixed(2)}`;
+    ctx.moveTo(points[0][0], points[0][1]);
     for (let i = 0; i < n; i++) {
       const p0 = points[(i - 1 + n) % n];
       const p1 = points[i];
       const p2 = points[(i + 1) % n];
       const p3 = points[(i + 2) % n];
-      const c1x = p1[0] + (p2[0] - p0[0]) / 6;
-      const c1y = p1[1] + (p2[1] - p0[1]) / 6;
-      const c2x = p2[0] - (p3[0] - p1[0]) / 6;
-      const c2y = p2[1] - (p3[1] - p1[1]) / 6;
-      d += `C${c1x.toFixed(2)},${c1y.toFixed(2)} ${c2x.toFixed(2)},${c2y.toFixed(2)} ` +
-           `${p2[0].toFixed(2)},${p2[1].toFixed(2)}`;
+      ctx.bezierCurveTo(
+        p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6,
+        p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6,
+        p2[0], p2[1],
+      );
     }
-    return d + 'Z';
+    ctx.closePath();
   }
 
   /* ---- pointer ---------------------------------------------------------- */
@@ -1032,6 +965,8 @@ function createPicselHero(root) {
     vh = stage.clientHeight;
     minDim = Math.min(vw, vh);
 
+    resizeGrid();
+
     /* The pinned distance: how much taller the section is than the stage. That
        is exactly how far the page scrolls while the stage is held on screen,
        and therefore the length of the reverse intro. Under reduced motion
@@ -1039,18 +974,55 @@ function createPicselHero(root) {
     scrubRange = root.offsetHeight - stage.offsetHeight;
     heroTop = root.offsetTop;
     stacked = vw <= BLOBS.STACK_BELOW;
-    svg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
-
-    // Explicit mask region, generous enough that a blob drifting toward an edge
-    // never has the mask clip a flat side onto it.
-    for (const b of blobs) {
-      b.mask.setAttribute('x', String(-vw));
-      b.mask.setAttribute('y', String(-vh));
-      b.mask.setAttribute('width', String(vw * 3));
-      b.mask.setAttribute('height', String(vh * 3));
-    }
 
     buildDotGrid();
+  }
+
+  /* Lays out the pixel grid for the current stage size: how many cells fit,
+     how big the buffers need to be, and where the chromatic fringe falls. */
+  function resizeGrid() {
+    const cell = PIXEL.CELL;
+    // Rounded UP, so the grid always covers the stage rather than leaving a
+    // sliver of bare background down one edge.
+    cols = Math.max(1, Math.ceil(vw / cell));
+    rows = Math.max(1, Math.ceil(vh / cell));
+
+    for (const c of [blobCanvas, shapeCanvas, fieldCanvas, maskCanvas, colourCanvas]) {
+      c.width = cols;
+      c.height = rows;
+    }
+
+    /* The visible canvas is stretched back to EXACTLY cols x rows whole cells,
+       not to the stage width. Stretching it to the stage instead would scale
+       cols cells into a slightly narrower box and every block would come out
+       7.94 pixels wide — a grid that no longer lines up with anything and
+       whose blocks land on fractional pixels. The overhang is under one cell
+       and the stage clips it. */
+    blobCanvas.style.width = `${cols * cell}px`;
+    blobCanvas.style.height = `${rows * cell}px`;
+
+    const cellCount = cols * rows;
+    outImage = blobCtx.createImageData(cols, rows);
+    chromaDX = new Int8Array(cellCount);
+    chromaDY = new Int8Array(cellCount);
+
+    if (!CHROMA.BLOBS) return;
+
+    /* Radial from the centre of the frame, strongest in the corners, rounded
+       to whole cells — see CHROMA. Computed once here rather than per frame. */
+    const midX = (cols - 1) / 2, midY = (rows - 1) / 2;
+    const maxLen = Math.hypot(midX, midY) || 1;
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        const ox = x - midX, oy = y - midY;
+        const len = Math.hypot(ox, oy) || 1;
+        const amount = CHROMA.MIN +
+          (CHROMA.MAX_CELLS - CHROMA.MIN) * Math.pow(clamp(len / maxLen, 0, 1), CHROMA.FALLOFF);
+        const idx = y * cols + x;
+        chromaDX[idx] = Math.round((ox / len) * amount);
+        chromaDY[idx] = Math.round((oy / len) * amount);
+      }
+    }
   }
   window.addEventListener('resize', resize);
   resize();
@@ -1151,6 +1123,31 @@ function createPicselHero(root) {
   function drawBlobs(time, dt) {
     // Reduced motion: hold the shapes still rather than removing them.
     const t = reduced ? 0 : time;
+
+    const cell = PIXEL.CELL;
+
+    /* Both source surfaces are cleared, then set to draw in STAGE pixels: the
+       transform divides every coordinate by the cell size on its way in, so all
+       the geometry below can go on thinking in ordinary screen pixels and lands
+       on the grid automatically.
+
+       Blur radii are the exception — a canvas filter works in the surface's own
+       pixels and ignores the transform, so those are divided by hand. */
+    shapeCtx.setTransform(1, 0, 0, 1, 0, 0);
+    shapeCtx.clearRect(0, 0, cols, rows);
+    shapeCtx.setTransform(1 / cell, 0, 0, 1 / cell, 0, 0);
+    shapeCtx.fillStyle = '#fff';
+
+    fieldCtx.setTransform(1, 0, 0, 1, 0, 0);
+    fieldCtx.clearRect(0, 0, cols, rows);
+    fieldCtx.setTransform(1 / cell, 0, 0, 1 / cell, 0, 0);
+
+    /* The patch of grid the blobs actually occupy this frame, grown as each one
+       is placed. The compositing pass below reads and writes only inside it.
+       Worth the bookkeeping: the blobs cover a fraction of a wide screen, and
+       the alternative is reading back and re-deciding twenty thousand cells
+       every frame to answer "still empty?" about most of them. */
+    boxMinX = cols; boxMinY = rows; boxMaxX = -1; boxMaxY = -1;
 
     pointerPx = pointer.x * vw;
     pointerPy = pointer.y * vh;
@@ -1316,45 +1313,14 @@ function createPicselHero(root) {
           const dyp = (ly - cy) + Math.sin(a) * r;
           pts.push([cx + dxp * stretchX, cy + dyp * stretchY]);
         }
-        lobe.path.setAttribute('d', pathFrom(pts));
-      }
 
-      // Place the mesh spots. Anchored to the cluster centre and scaled by its
-      // extent, so the whole colour field travels, grows and shrinks WITH the
-      // blob — which is the thing a fixed linear gradient couldn't do.
-      // Spots ride the same stretch, or the colour field would stay a neat
-      // circle inside an elongated silhouette.
-      for (const spot of b.spots) {
-        const sa = spot.angle + (reduced ? 0 : t * BLOBS.MESH_SWIRL * spot.swirl);
-        const sd = spot.dist * extent;
-        spot.circle.setAttribute('cx', (cx + Math.cos(sa) * sd * stretchX).toFixed(1));
-        spot.circle.setAttribute('cy', (cy + Math.sin(sa) * sd * stretchY).toFixed(1));
-        spot.circle.setAttribute('r', (extent * spot.size).toFixed(1));
+        /* Straight onto the silhouette surface, in flat white. Every lobe of
+           every blob goes into this one picture, which is what lets the blur
+           below bridge them into a single melted shape. */
+        shapeCtx.beginPath();
+        traceBlobPath(shapeCtx, pts);
+        shapeCtx.fill();
       }
-
-      // Backing rect for the colour field. Sized to the cluster plus the blur's
-      // reach, so its own blurred edge never lands inside the silhouette — that
-      // would show as the blob fading out towards black at its rim.
-      // Chromatic aberration: separation grows with distance from the centre of
-      // the screen and points radially outward, like a real lens.
-      if (b.chromaOffsets) {
-        const ox = cx - vw / 2, oy = cy - vh / 2;
-        const len = Math.hypot(ox, oy) || 1;
-        const maxLen = Math.hypot(vw, vh) / 2;
-        const amount = CHROMA.MIN +
-          (CHROMA.MAX - CHROMA.MIN) * Math.pow(clamp(len / maxLen, 0, 1), CHROMA.FALLOFF);
-        const dx = (ox / len) * amount, dy = (oy / len) * amount;
-        b.chromaOffsets[0].setAttribute('dx', dx.toFixed(2));
-        b.chromaOffsets[0].setAttribute('dy', dy.toFixed(2));
-        b.chromaOffsets[1].setAttribute('dx', (-dx).toFixed(2));
-        b.chromaOffsets[1].setAttribute('dy', (-dy).toFixed(2));
-      }
-
-      const pad = extent * Math.max(1, stretchX) + BLOBS.MESH_BLUR * 3;
-      b.baseRect.setAttribute('x', (cx - pad).toFixed(1));
-      b.baseRect.setAttribute('y', (cy - pad).toFixed(1));
-      b.baseRect.setAttribute('width', (pad * 2).toFixed(1));
-      b.baseRect.setAttribute('height', (pad * 2).toFixed(1));
 
       // Colour breathing: drift toward a new palette gradient now and then.
       if (!reduced) {
@@ -1366,26 +1332,157 @@ function createPicselHero(root) {
           b.nextColorAt = rand(...BLOBS.COLOR_HOLD);
         }
         const ck = approach(BLOBS.COLOR_LERP, dt);
-        let moved = false;
         for (let s = 0; s < b.rgb.length; s++) {
           const tgt = b.target[s % b.target.length];
           for (let c = 0; c < 3; c++) {
-            const next = lerp(b.rgb[s][c], tgt[c], ck);
-            if (Math.abs(next - b.rgb[s][c]) > 0.25) moved = true;
-            b.rgb[s][c] = next;
+            b.rgb[s][c] = lerp(b.rgb[s][c], tgt[c], ck);
           }
-        }
-        if (moved) {
-          for (const spot of b.spots) {
-            const css = rgbToCss(b.rgb[spot.colorIndex]);
-            // Every stop, not just the ends — they all carry the same hue and
-            // differ only in opacity.
-            for (const st of spot.stops) st.setAttribute('stop-color', css);
-          }
-          b.baseRect.setAttribute('fill', rgbToCss(b.rgb[1 % b.rgb.length]));
         }
       }
+
+      /* The colour field, painted flat here and blurred in one go afterwards.
+         A backing square first, sized to the cluster plus the blur's reach, so
+         that when the whole field is softened its own outer edge is nowhere
+         near the silhouette — otherwise the blob fades toward black at its rim
+         instead of ending on a hard edge. */
+      const pad = extent * Math.max(1, stretchX) + BLOBS.MESH_BLUR * 3;
+      fieldCtx.fillStyle = rgbToCss(b.rgb[1 % b.rgb.length]);
+      fieldCtx.fillRect(cx - pad, cy - pad, pad * 2, pad * 2);
+
+      /* This blob's footprint on the grid. One cell of margin covers the
+         chromatic offset reading a neighbour just outside the box. */
+      const bx0 = Math.floor((cx - pad) / cell) - 1;
+      const by0 = Math.floor((cy - pad) / cell) - 1;
+      const bx1 = Math.ceil((cx + pad) / cell) + 1;
+      const by1 = Math.ceil((cy + pad) / cell) + 1;
+      if (bx0 < boxMinX) boxMinX = bx0;
+      if (by0 < boxMinY) boxMinY = by0;
+      if (bx1 > boxMaxX) boxMaxX = bx1;
+      if (by1 > boxMaxY) boxMaxY = by1;
+
+      /* Then the spots. Anchored to the cluster centre and scaled by its
+         extent, so the whole colour field travels, grows and shrinks WITH the
+         blob — the thing a fixed gradient could never do. They ride the same
+         stretch as the silhouette, or the colour would stay a neat circle
+         inside an elongated shape. */
+      for (const spot of b.spots) {
+        const sa = spot.angle + (reduced ? 0 : t * BLOBS.MESH_SWIRL * spot.swirl);
+        const sd = spot.dist * extent;
+        const sx = cx + Math.cos(sa) * sd * stretchX;
+        const sy = cy + Math.sin(sa) * sd * stretchY;
+        const sr = Math.max(1, extent * spot.size);
+        const rgb = b.rgb[spot.colorIndex];
+
+        const grad = fieldCtx.createRadialGradient(sx, sy, 0, sx, sy, sr);
+        /* A near-opaque plateau before the fade, and all three stops the same
+           hue. With a straight solid-to-transparent ramp most of a spot is
+           semi-transparent, so every colour mixes with every other one and the
+           blob drifts to pastel; holding the core solid to 55% gives each hue a
+           patch where it is undiluted and confines the blending to the rims.
+           Fading toward another hue instead of toward transparent bands
+           visibly once blurred. */
+        grad.addColorStop(0, rgbaCss(rgb, 1));
+        grad.addColorStop(0.55, rgbaCss(rgb, 0.92));
+        grad.addColorStop(1, rgbaCss(rgb, 0));
+        fieldCtx.fillStyle = grad;
+        fieldCtx.beginPath();
+        fieldCtx.arc(sx, sy, sr, 0, Math.PI * 2);
+        fieldCtx.fill();
+      }
     }
+
+    compositeBlobs();
+  }
+
+  /* Turns the three working surfaces into the picture on the page.
+   *
+   * Blurring happens here, once per surface, on the whole image rather than
+   * per shape. That matters for the silhouette: the lobes have to be blurred
+   * TOGETHER for neighbours to bleed into one another and bridge into a single
+   * melted outline. Blur them one at a time and each just gets its own soft
+   * edge, and the necks between them never form. */
+  function compositeBlobs() {
+    const cell = PIXEL.CELL;
+
+    // Whatever was on screen last frame goes, always — the blobs may have moved
+    // out of the patch they were in, and a patch-sized write would leave the
+    // old picture stranded outside it.
+    blobCtx.clearRect(0, 0, cols, rows);
+
+    // Everything off screen: nothing to composite, and no readback to pay for.
+    // This is the state the whole hero sits in once the visitor has scrolled
+    // past, and it is worth costing nothing.
+    const x0 = Math.max(0, boxMinX), y0 = Math.max(0, boxMinY);
+    const x1 = Math.min(cols - 1, boxMaxX), y1 = Math.min(rows - 1, boxMaxY);
+    if (x1 < x0 || y1 < y0) return;
+    const w = x1 - x0 + 1, h = y1 - y0 + 1;
+
+    maskCtx.setTransform(1, 0, 0, 1, 0, 0);
+    maskCtx.clearRect(0, 0, cols, rows);
+    /* Blurred one patch at a time rather than the whole surface: the blur is
+       the most expensive thing here and there is no point softening acres of
+       empty grid. Safe to crop, because the patch is already the blob plus
+       three times the wider of the two blur radii, so nothing outside it could
+       have bled in. */
+    maskCtx.filter = `blur(${(BLOBS.GOO_BLUR / cell).toFixed(2)}px)`;
+    maskCtx.drawImage(shapeCanvas, x0, y0, w, h, x0, y0, w, h);
+    maskCtx.filter = 'none';
+
+    colourCtx.setTransform(1, 0, 0, 1, 0, 0);
+    colourCtx.clearRect(0, 0, cols, rows);
+    colourCtx.filter = `blur(${(BLOBS.MESH_BLUR / cell).toFixed(2)}px)`;
+    colourCtx.drawImage(fieldCanvas, x0, y0, w, h, x0, y0, w, h);
+    colourCtx.filter = 'none';
+
+    /* Read back only the patch. Both buffers are indexed in PATCH coordinates
+       from here on; outImage stays full-size so the write below can name the
+       patch by its real position on the grid. */
+    const mask = maskCtx.getImageData(x0, y0, w, h).data;
+    const colour = colourCtx.getImageData(x0, y0, w, h).data;
+    const out = outImage.data;
+    const cut = PIXEL.ALPHA_CUT;
+
+    for (let ly = 0; ly < h; ly++) {
+      const gy = y0 + ly;
+      for (let lx = 0; lx < w; lx++) {
+        const lp = (ly * w + lx) * 4;
+        const gp = (gy * cols + x0 + lx) * 4;
+
+        /* The hard yes/no that makes this a pixel display rather than a
+           pixelated photograph. A cell is either wholly inside the blob or
+           wholly outside it — no half-lit cells along the edge, which is
+           exactly what stops the edge shimmering as the shape moves. Nothing
+           changes on screen until the shape crosses a whole cell boundary. */
+        if (mask[lp + 3] < cut) {
+          out[gp + 3] = 0;
+          continue;
+        }
+
+        /* Chromatic aberration, in whole cells: the red channel is read from a
+           cell one way, the blue from a cell the other way, green from where we
+           actually are. In the flat middle of a blob the three neighbours are
+           the same colour and nothing happens; only where the colour is
+           changing — the rims — do the channels disagree and fringe. */
+        const dx = chromaDX[gy * cols + x0 + lx], dy = chromaDY[gy * cols + x0 + lx];
+        if (dx === 0 && dy === 0) {
+          out[gp] = colour[lp];
+          out[gp + 1] = colour[lp + 1];
+          out[gp + 2] = colour[lp + 2];
+        } else {
+          // Clamped into the patch: a cell just outside it is transparent
+          // anyway, since the patch is the blob plus its blur.
+          const rx = clamp(lx + dx, 0, w - 1), ry = clamp(ly + dy, 0, h - 1);
+          const bx = clamp(lx - dx, 0, w - 1), by = clamp(ly - dy, 0, h - 1);
+          out[gp] = colour[(ry * w + rx) * 4];
+          out[gp + 1] = colour[lp + 1];
+          out[gp + 2] = colour[(by * w + bx) * 4 + 2];
+        }
+        out[gp + 3] = 255;
+      }
+    }
+
+    // Only the patch is written; the rest of the canvas was cleared above.
+    blobCtx.putImageData(outImage, 0, 0, x0, y0, w, h);
   }
 
   /* ---- wordmark + glitch ------------------------------------------------ */

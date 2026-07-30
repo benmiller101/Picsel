@@ -34,12 +34,6 @@
     var(--aberration-rest) + (var(--aberration-exit) - var(--aberration-rest)) * var(--hero-exit)
   );
 
-  /* Zero. The silhouette now comes from a mask and the goo threshold, both of
-     which produce a vector-hard edge — any blur here goes straight back to
-     softening it. The colour field is blurred instead, BEHIND the mask, where
-     it can be as soft as it likes without touching the outline. */
-  --blob-softness: 0px;
-
   /* How far the page scrolls while the hero is pinned — the length of the
      reverse intro, in viewport heights. One screen of scrolling: long enough
      to read the blobs travelling back out, short enough that nobody thinks the
@@ -105,15 +99,20 @@
 
 /* ---- Layer 1: blobs ----------------------------------------------------- */
 
+/* The blobs are drawn one eighth of full size and stretched back up here. This
+   one line is what makes them a low-resolution picture rather than a blurry
+   one: without it the browser smooths the upscale and every block turns into a
+   soft gradient, which is the opposite of the intent. With it, one drawn pixel
+   becomes one hard block of one flat colour.
+
+   No width/height: hero.js sets both in whole blocks, so the grid is always an
+   exact number of cells and never lands on fractional pixels. */
 .hero-blobs {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
+  top: 0;
+  left: 0;
   z-index: 1;
-  filter: blur(var(--blob-softness));
-  will-change: filter;
+  image-rendering: pixelated;
   pointer-events: none;
 }
 

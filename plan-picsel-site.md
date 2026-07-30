@@ -269,6 +269,9 @@ and button clears the 44-pixel tap minimum, and there is no sideways scrolling a
 - [x] Blobs are hero-only; only the dark + drifting dot-grid carries through the rest of the site
 - [x] `prefers-reduced-motion`: skip the scrub (show hero, then content) and calm the background
 - [x] Pause the hero animation loop once scrolled fully past (perf/battery)
+- [x] **Blobs drawn on a pixel grid** — added mid-section at Ben's request: the blobs are rendered
+      at low resolution on a fixed 8px grid rather than smoothed, so their movement steps block by
+      block. Blobs only; the dot field and the wordmark are untouched
 
 **What we built:**
 
@@ -288,10 +291,19 @@ so a route can no longer exist without being listed, which is the Sitemap Law ob
 rather than by memory. The three prototype files that were only propping up the old experiment page
 (`hero.html`, `nav.css`, `nav.js`) are deleted.
 
+The blobs are now shown on a low-resolution grid — the hero's own small display. They are not smooth
+shapes with a pixel effect over the top: the whole picture is drawn eight times smaller and stretched
+back up with hard edges, so a block of colour is genuinely one drawn dot. The difference is in the
+movement. A pixel effect laid over a smooth shape leaves the shape sliding smoothly underneath, and
+the blocks along its edge shimmer and crawl; drawn on a fixed grid, a block does not budge until the
+blob crosses a whole cell, then it flips in one step. At a normal frame only five to eight blocks out
+of about thirteen hundred change, which is what makes the movement read as chunky and deliberate
+rather than as a filter.
+
 Checked in a browser rather than assumed: the intro plays and settles, the wordmark splits and fades
-on scroll, the page hands off cleanly to the copy and footer below, there are no errors in the
-console, and at 375 pixels wide the nav still fits on one line with 77 pixels to spare and nothing
-scrolls sideways.
+on scroll, scrolling away and back rebuilds the blobs, the page hands off cleanly to the copy and
+footer below, there are no errors in the console, and at 375 pixels wide the nav still fits on one
+line with 77 pixels to spare and nothing scrolls sideways.
 
 **Decisions made:**
 
@@ -327,6 +339,27 @@ scrolls sideways.
 - **The animation loop stops when the hero is off screen and restarts on the way back up.** On a
   long page most of a visit is spent past the hero, and a loop redrawing blobs nobody can see is
   pure battery cost.
+- **The blobs moved from SVG shapes to a drawn low-resolution picture.** A pixel effect over the
+  existing shapes would have looked pixelated while still moving smoothly, which is the thing Ben
+  specifically did not want. Drawing them small and scaling up is the only way the movement itself
+  lands on the grid. All the shape and motion work is untouched — the same lobes, the same noise,
+  the same entrance and scroll scrub — it is only the last step, putting them on screen, that
+  changed. Two things did not survive: the blur-based "goo" filter and the mask that went with it
+  are now the grid's own hard yes-or-no, and the blob edge fringing was rebuilt (below).
+- **8 pixel blocks, fixed size rather than a fixed number across.** So the grain reads the same on a
+  phone as on a desktop. It does mean a blob on a phone is built from fewer blocks, since the blob
+  itself is smaller — which is exactly what a real small display would do, and it looks right.
+- **One flat colour per block, and no palette reduction or dithering.** The gradient still sweeps
+  smoothly across the blob; it is the blocks that are hard. Banding it down to a handful of colours
+  would have been more retro and would have thrown away the brand's own gradient.
+- **The lens fringing is now measured in whole blocks.** A colour fringe thinner than one block
+  cannot be drawn, and rounding it unevenly along an edge reads as a fault rather than an effect. So
+  the middle of the frame is clean and the far corners split by exactly one block — the same idea in
+  the grid's units.
+- **Only the patch of grid the blobs occupy is recomputed each frame.** The compositing decides each
+  block individually, and on a wide screen most blocks are empty every frame. Restricting the work
+  to the blobs' own footprint took a frame from 4.3 to 2.7 milliseconds against a 16.7 budget. Worth
+  re-measuring on a real phone in Section 11 — that is where the margin is thinnest.
 
 **Done when:** the hero plays in on load, un-builds smoothly and reversibly as you scroll, and hands off to normal page scroll with the background drifting behind. ✅
 
