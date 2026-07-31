@@ -165,14 +165,14 @@ const BLOBS = {
  *
  * Everything is rendered into canvases CELL times smaller than the stage and
  * scaled back up with nearest-neighbour, so one source pixel becomes one block
- * of one flat colour. Cheap, too: a 1440-wide screen is 180 x 100 pixels of
+ * of one flat colour. Cheap, too: a 1440-wide screen is 120 x 67 pixels of
  * actual drawing, which is why the per-pixel compositing below costs nothing.
  */
 const PIXEL = {
   // Block size in CSS pixels. Fixed size rather than a fixed number of blocks
   // across, so the grain reads the same on a phone as on a desktop instead of
   // getting finer as the screen gets smaller.
-  CELL: 8,
+  CELL: 12,
 
   // Alpha at which a blurred cell counts as inside the blob, 0-255. Derived
   // from the goo constants rather than picked: the SVG version this replaced

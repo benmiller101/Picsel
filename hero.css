@@ -99,7 +99,8 @@
 
 /* ---- Layer 1: blobs ----------------------------------------------------- */
 
-/* The blobs are drawn one eighth of full size and stretched back up here. This
+/* The blobs are drawn at a fraction of full size (one twelfth — PIXEL.CELL in
+   hero.js is the single source of that number) and stretched back up here. This
    one line is what makes them a low-resolution picture rather than a blurry
    one: without it the browser smooths the upscale and every block turns into a
    soft gradient, which is the opposite of the intent. With it, one drawn pixel
@@ -258,6 +259,16 @@
   text-transform: uppercase;
   color: var(--ink-faint);
 
+  /* A halo of the page's own background, not a box behind the word. On a narrow
+     screen the blobs stack vertically and the lower one settles right where the
+     cue sits, which left pale grey text on bright yellow — unreadable at exactly
+     the width where the cue matters most. Two soft shadows in --bg keep the
+     letterforms legible over any blob colour while staying invisible against the
+     near-black everywhere else, which a solid plate would not. */
+  text-shadow:
+    0 0 6px var(--bg),
+    0 0 12px var(--bg);
+
   /* Gone by a fifth of the way through the scrub — the moment the visitor has
      scrolled at all, they know the page scrolls. */
   opacity: clamp(0, calc(1 - var(--hero-exit) / 0.2), 1);
@@ -274,6 +285,9 @@
   height: var(--space-6);
   margin: var(--space-2) auto 0;
   background: linear-gradient(to bottom, var(--ink-faint), transparent);
+  /* The same halo as the word above it, so the pair reads as one mark rather
+     than a legible word over a line that has half vanished into a blob. */
+  filter: drop-shadow(0 0 4px var(--bg));
   animation: hero-cue-drift 2.6s var(--ease) infinite;
 }
 

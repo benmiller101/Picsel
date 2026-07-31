@@ -368,18 +368,72 @@ line with 77 pixels to spare and nothing scrolls sideways.
 ## Section 4: Homepage
 **Priority: CRITICAL | Effort: half a day**
 
-- [ ] Below the hero: one plain sentence on what Picsel does (no slogan)
-- [ ] **Selected work** grid (the `featured` projects from `projects.js`): screenshot, name, sector,
+- [x] Below the hero: one plain sentence on what Picsel does (no slogan)
+- [x] **Selected work** grid (the `featured` projects from `projects.js`): screenshot, name, sector,
       linking to each project page. Let the screenshots carry the colour
-- [ ] Short, plain services note: websites, SEO & GEO, Google Business Profile help, custom
+- [x] Short, plain services note: websites, SEO & GEO, Google Business Profile help, custom
       automation tools — and the one-client-per-trade-per-town idea in a sentence. No "Why choose us"
-- [ ] `[DECISION]` Founding-offer pricing block if Ben wants it on the site
-- [ ] Closing **contact band**: a line, a big "Get in touch" button, the phone number
+- [ ] `[DECISION]` Founding-offer pricing block if Ben wants it on the site — **pending Ben.**
+      Nothing is built for it and nothing is stubbed; the page reads as finished without it. If it
+      goes in, it sits between the services list and the contact band
+- [x] Closing **contact band**: a line, a big "Get in touch" button, the phone number
 
 **What we built:**
+
+The homepage is now a whole page rather than a hero with a footer under it. Past the hero it says in
+one sentence who Picsel is, where it is and what it does, then shows the five sites, then explains
+the four services in the words a builder would use, then asks for the call. That order is
+deliberate and it is not the usual one: the work comes before the services list, because someone
+sent here by a tradesperson wants to know whether the sites are any good before they will read a
+list of what is on offer.
+
+The work grid is the page's one piece of real composition. Five identical rectangles in a row is
+the thing that makes a portfolio look generated, so the cards cycle through four shapes — a wide
+lead, a phone-shaped one, two halves and a full-width banner. The phone shape is not decoration: it
+is the same client's site at phone size, which is where nearly all of their customers will actually
+see it. Everything around the screenshots is near-black on purpose, because five client sites in
+five different palettes will fight anything else trying to be colourful.
+
+Two partials were pulled out rather than written inline. The card is shared with `/work` in Section
+5, so the two grids cannot drift into looking like different components, and the contact band is
+shared with every project page in Section 6, so the phone number can never rot in one place and not
+another. Every fact on a card comes from `projects.js` — nothing is typed into markup.
+
+Checked in a real browser at 375, 768, 1024 and 1440: no sideways scrolling at any width, no
+interactive element under the 44-pixel tap minimum at any width, and no console errors. Every
+screenshot declares its true pixel size, verified against the files rather than assumed, so no text
+jumps down the page as the images arrive.
+
 **Decisions made:**
 
-**Done when:** the homepage tells a non-technical visitor what Picsel is, shows the work, and makes contact obvious, with no placeholder text.
+- **Card shape is a fact about the layout, not about the client.** The shapes cycle by position in
+  the grid rather than being stored per project. Putting a size in `projects.js` would mean adding a
+  sixth project could quietly break the fifth one's row, and it would be recording a layout decision
+  in the content file. The cycle adds up to two full rows plus a banner, so any number of projects
+  fills tidily.
+- **Real `width` and `height` on every screenshot, taken from the capture script's own sizes.**
+  Without them the text under each card jumps down as each image loads. Verified in the browser:
+  all five images' declared sizes match the files exactly.
+- **The intro is written to be lifted whole.** The first sentence after the hero names the studio,
+  the county and the work in one plain line, so an assistant answering "who builds websites in
+  Cornwall" can quote it and still be accurate. This is Section 10's first-50-words test satisfied
+  early, because retrofitting it later would have meant rewriting the opening.
+- **No pricing block, and no placeholder for one.** The founding-offer decision is Ben's and still
+  open. A greyed-out "pricing coming soon" would be worse than nothing on a site whose whole pitch
+  is that it is finished and real.
+- **The blob grid moved from 8px blocks to 12px**, at Ben's request mid-section. Bigger blocks mean
+  a coarser picture: the hero now draws 120 x 67 pixels on a 1440 screen instead of 180 x 100, so
+  the grain is more obviously a choice and the per-frame cost went down rather than up. The number
+  lives in one place (`PIXEL.CELL` in `hero.js`) and the canvas sizes itself from it.
+- **The scroll cue got a halo of the page's own background.** Found in the review pass, not
+  predicted: at 375px the blobs stack vertically and the lower one settles exactly where the cue
+  sits, leaving pale grey text on bright yellow. Two soft shadows in `--bg` keep the word legible
+  over any blob colour and stay invisible against the near-black everywhere else, which a solid
+  plate behind the text would not.
+- **`/shell-check/` is deleted, as Section 2 said it would be.** It was scaffolding for judging the
+  design system before there were real pages to judge. The homepage is now the proof sheet.
+
+**Done when:** the homepage tells a non-technical visitor what Picsel is, shows the work, and makes contact obvious, with no placeholder text. ✅ *(Pricing block pending Ben's decision; the page is complete without it.)*
 
 ---
 
@@ -665,7 +719,7 @@ Lighter than a client engagement — this is Picsel's shop window, kept fresh.
 - [x] Section 1: Setup, structure and content model
 - [x] Section 2: Design system and site-wide background
 - [x] Section 3: Hero and scroll behaviour
-- [ ] Section 4: Homepage
+- [x] Section 4: Homepage (pricing block still pending Ben's decision)
 - [ ] Section 5: Work index
 - [ ] Section 6: Project pages
 - [x] Section 7: Screenshot pipeline (taken early — see the section note)

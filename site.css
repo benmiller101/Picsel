@@ -164,6 +164,283 @@
   background: rgba(255, 255, 255, 0.05);
 }
 
+/* ---- Section heads -------------------------------------------------------
+   A heading with a link opposite it — "Selected work" and "See every project".
+   Baseline-aligned rather than centre-aligned so the two sit on the same line
+   of type despite being different sizes. */
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.section-head__link {
+  min-height: var(--tap-min);
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  transition: color var(--dur-fast) var(--ease),
+              text-decoration-color var(--dur-fast) var(--ease);
+}
+
+.section-head__link:hover {
+  color: var(--ink);
+  text-decoration-color: var(--accent);
+}
+
+/* ---- The opening statement ------------------------------------------------
+   Not a centred stack. The statement sits at reading width against the left
+   edge of the grid, with the quieter line set below and indented on wide
+   screens — the shape says "this is the important sentence" without making it
+   bigger or louder. */
+.intro__inner > * + * {
+  margin-top: var(--space-4);
+}
+
+.intro__statement {
+  /* Wider than --measure: this is the one sentence on the page that is meant to
+     be read as a statement rather than as body copy, and breaking it into four
+     short lines makes it look like a paragraph. */
+  max-width: 46rem;
+}
+
+.intro__aside {
+  max-width: var(--measure);
+  color: var(--ink-faint);
+}
+
+@media (min-width: 64rem) {
+  .intro__aside {
+    /* Steps in to sit under the body of the statement rather than under its
+       first word, which is what makes the pair read as one composition instead
+       of two stacked paragraphs. */
+    margin-left: var(--space-16);
+  }
+}
+
+/* ---- Work grid -----------------------------------------------------------
+   Six columns, and the cards take different spans in a repeating cycle — see
+   SHAPES in tools/partials/work-card.js, which must agree with the classes
+   below. Five identical rectangles would be a list; the varied rhythm is what
+   makes it a composition.
+
+   Mobile first: one column, every card full width. The spans only exist from
+   the tablet breakpoint up, where there is room for two things side by side. */
+.work-grid {
+  display: grid;
+  gap: var(--space-6);
+}
+
+@media (min-width: 48rem) {
+  .work-grid {
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--space-6) var(--space-6);
+  }
+
+  .work-card--lead { grid-column: span 4; }
+  .work-card--phone { grid-column: span 2; }
+  .work-card--half { grid-column: span 3; }
+  .work-card--banner { grid-column: span 6; }
+}
+
+/* ---- Work card -----------------------------------------------------------
+   The whole card is one link: a bigger, more forgiving target than a link on
+   the title alone, which matters most on a phone. */
+.work-card__link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* The screenshot's frame. Deliberately plain — a hairline and a small radius,
+   no glass, no glow, no stacked shadows. Five client sites in five different
+   palettes are the colour on this page; anything decorative around them turns
+   the grid into noise. */
+.work-card__frame {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--bg-raised);
+  /* Set per card from the shape — the ratio is what gives the grid its rhythm,
+     so it travels with the markup rather than being guessed here. */
+  aspect-ratio: var(--card-ratio, 16 / 10);
+  transition: border-color var(--dur-base) var(--ease);
+}
+
+.work-card__shot {
+  width: 100%;
+  height: 100%;
+  /* cover, anchored to the top: a screenshot cropped from the bottom still
+     shows the site's front door, which is the part worth showing. Cropping
+     from the middle would cut the header off. */
+  object-fit: cover;
+  object-position: top center;
+  transition: transform var(--dur-base) var(--ease);
+}
+
+/* Hover and keyboard focus get the SAME treatment. A card that only responds
+   to a mouse is a card that looks broken to anyone using a keyboard. */
+.work-card__link:hover .work-card__frame,
+.work-card__link:focus-visible .work-card__frame {
+  border-color: var(--line-strong);
+}
+
+.work-card__link:hover .work-card__shot,
+.work-card__link:focus-visible .work-card__shot {
+  /* A small push in, not a lift out. Scaling the image inside a fixed frame
+     reads as looking closer at the work; scaling the whole card would shove
+     its neighbours around. */
+  transform: scale(1.02);
+}
+
+.work-card__meta {
+  display: block;
+  margin-top: var(--space-3);
+}
+
+.work-card__name {
+  font-size: var(--text-lg);
+  color: var(--ink);
+}
+
+.work-card__link:hover .work-card__name {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 0.25em;
+}
+
+.work-card__sector {
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
+/* ---- Services ------------------------------------------------------------
+   Two columns from tablet up: the heading and its sentence hold the left, the
+   list runs down the right. A single centred column of four items would be the
+   default shape every generated site uses. */
+.services__inner {
+  display: grid;
+  gap: var(--space-8);
+}
+
+@media (min-width: 64rem) {
+  .services__inner {
+    grid-template-columns: 2fr 3fr;
+    gap: var(--space-16);
+  }
+
+  /* The closing promise spans both columns and sits below the pair. */
+  .services__exclusive {
+    grid-column: 1 / -1;
+  }
+}
+
+.services__intro > * + * {
+  margin-top: var(--space-4);
+}
+
+.services__list {
+  margin: 0;
+  display: grid;
+  gap: var(--space-6);
+}
+
+/* A real <dl>: each service is a term and its description, which is exactly
+   what this is. Screen readers announce the pairing; a stack of divs would
+   leave a listener to infer it. */
+.services__item {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+
+.services__item dt {
+  font-size: var(--text-lg);
+  color: var(--ink);
+}
+
+.services__item dd {
+  margin: var(--space-2) 0 0;
+  max-width: var(--measure);
+}
+
+.services__exclusive {
+  margin-top: var(--space-4);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--line);
+}
+
+.services__exclusive strong {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+}
+
+/* ---- Contact band --------------------------------------------------------
+   The closing band on the homepage, the work index and every project page. One
+   sentence, one button, and the number itself — the two ways this audience
+   actually makes contact, side by side. */
+.contact-band {
+  margin-top: var(--section-y);
+  padding-block: var(--section-y);
+  border-top: 1px solid var(--line);
+}
+
+.contact-band__inner {
+  display: grid;
+  gap: var(--space-8);
+  align-items: end;
+}
+
+@media (min-width: 64rem) {
+  .contact-band__inner {
+    grid-template-columns: 3fr 2fr;
+    gap: var(--space-16);
+  }
+}
+
+.contact-band__heading {
+  font-size: var(--text-2xl);
+}
+
+.contact-band__body {
+  margin-top: var(--space-4);
+  max-width: var(--measure);
+}
+
+.contact-band__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
+}
+
+/* The number reads as a number, at a size worth looking at — not as a second
+   button competing with the accent one beside it. */
+.contact-band__phone {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+  font-size: var(--text-xl);
+  color: var(--ink);
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  white-space: nowrap;
+  transition: text-decoration-color var(--dur-fast) var(--ease);
+}
+
+.contact-band__phone:hover {
+  text-decoration-color: var(--accent);
+}
+
 /* ---- Footer --------------------------------------------------------------
    Carries the phone number and email on every page. The audience is trades and
    small businesses, often reading on a phone between jobs — whatever page
