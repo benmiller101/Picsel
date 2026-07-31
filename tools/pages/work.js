@@ -9,6 +9,8 @@
    copy, the project page and the sitemap all follow. */
 
 import { PROJECTS } from '../../projects.js';
+import { absoluteUrl } from '../../site.config.js';
+import { breadcrumbs } from '../templates/schema.js';
 import { renderWorkGrid } from '../partials/work-card.js';
 import { renderContactBand } from '../partials/contact-band.js';
 
@@ -52,6 +54,28 @@ ${renderWorkGrid(PROJECTS, { variant: 'index' })}
 
 export const WORK_PAGE = {
   path: '/work/',
+  /* CollectionPage rather than WebPage: this page's job is to list other
+     pages, and saying so is more useful to a crawler than saying it exists.
+     The ItemList names them in the order they appear, which is the order the
+     data is in. */
+  schemaType: 'CollectionPage',
+  schemaExtra: [
+    {
+      '@type': 'ItemList',
+      name: 'Websites built by Picsel',
+      numberOfItems: PROJECTS.length,
+      itemListElement: PROJECTS.map((project, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: project.name,
+        url: absoluteUrl(`/work/${project.slug}/`),
+      })),
+    },
+    breadcrumbs([
+      { name: 'Home', path: '/' },
+      { name: 'Work', path: '/work/' },
+    ]),
+  ],
   title: 'Work: websites Picsel has built in Cornwall',
   description:
     `The ${countWord} sites Picsel has built for trades and small businesses, mostly in Cornwall. Every one links out to the live site.`,

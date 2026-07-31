@@ -15,6 +15,7 @@
 
 import { SITE, absoluteUrl } from '../../site.config.js';
 import { escapeHtml } from '../templates/page.js';
+import { breadcrumbs } from '../templates/schema.js';
 
 /* ---- The direct details ---------------------------------------------------
    A real definition list: each of these is a label and its value, which is
@@ -214,6 +215,16 @@ ${renderForm()}
 
 export const CONTACT_PAGE = {
   path: '/contact/',
+  /* ContactPage is one of the few page types a crawler acts on: it is how the
+     phone number on this page gets associated with the business rather than
+     read as another number in a paragraph. */
+  schemaType: 'ContactPage',
+  schemaExtra: [
+    breadcrumbs([
+      { name: 'Home', path: '/' },
+      { name: 'Contact', path: '/contact/' },
+    ]),
+  ],
   title: 'Contact Picsel: web design in Cornwall',
   description:
     `Ring Picsel on ${SITE.contact.phoneDisplay}, email ${SITE.contact.email}, or send an enquiry. Web design and automation for small businesses in Cornwall.`,

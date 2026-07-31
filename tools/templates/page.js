@@ -14,6 +14,7 @@
    page nine. */
 
 import { SITE, absoluteUrl } from '../../site.config.js';
+import { renderSchema } from './schema.js';
 
 /* Page copy is written by hand, but it still passes through here on its way
    into an HTML attribute. An unescaped apostrophe or ampersand in a meta
@@ -78,7 +79,7 @@ function normalisePath(path = '/') {
    Canonical matters more than it looks: it tells search engines which address
    is the real one for this page, so the same content reachable at two URLs is
    not read as two competing pages. */
-function renderHead({ title, description, path, ogImage, styles, extraHead }) {
+function renderHead({ title, description, path, ogImage, styles, extraHead, schema }) {
   const canonical = absoluteUrl(path);
   const image = ogImage ? absoluteUrl(ogImage) : null;
 
@@ -135,7 +136,12 @@ function renderHead({ title, description, path, ogImage, styles, extraHead }) {
   <link rel="stylesheet" href="/base.css" />
   <link rel="stylesheet" href="/site.css" />${styles
     .map((href) => `\n  <link rel="stylesheet" href="${escapeHtml(href)}" />`)
-    .join('')}${extraHead ? `\n${extraHead}` : ''}`;
+    .join('')}${extraHead ? `\n${extraHead}` : ''}
+
+  <!-- Structured data: the machine-readable version of what this page already
+       says in words. Rendered here rather than per page so that no page can be
+       built without it. See templates/schema.js. -->
+${schema}`;
 }
 
 /* ---- Footer ---------------------------------------------------------------
@@ -177,25 +183,29 @@ const FOOTER_YEAR = new Date().getFullYear();
  *                                    Only the pages that need a sheet load it — hero.css
  *                                    is 8KB of blob and glitch styling that the contact
  *                                    page has no use for.
- * @param {string} [page.extraHead]   Additional head markup, e.g. a JSON-LD block.
+ * @param {string} [page.extraHead]   Additional head markup, e.g. a robots tag.
+ * @param {string} [page.schemaType]  A more specific schema.org type than WebPage.
+ * @param {object[]} [page.schemaExtra] Extra JSON-LD nodes for this page's @graph.
  * @param {string} [page.extraScripts] Script tags for the end of <body>. Enhancement only.
  * @returns {string} A complete HTML document.
  */
-export function renderPage({
-  title,
-  description,
-  path,
-  content,
-  bodyClass = '',
-  ogImage = null,
-  styles = [],
-  extraHead = '',
-  extraScripts = '',
-}) {
+export function renderPage(page) {
+  const {
+    title,
+    description,
+    path,
+    content,
+    bodyClass = '',
+    ogImage = null,
+    styles = [],
+    extraHead = '',
+    extraScripts = '',
+  } = page;
+
   return `<!DOCTYPE html>
 <html lang="en-GB">
 <head>
-${renderHead({ title, description, path, ogImage, styles, extraHead })}
+${renderHead({ title, description, path, ogImage, styles, extraHead, schema: renderSchema(page) })}
 </head>
 <body${bodyClass ? ` class="${escapeHtml(bodyClass)}"` : ''}>
   <a class="skip-link" href="#main">Skip to content</a>

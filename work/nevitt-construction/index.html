@@ -48,6 +48,104 @@
   <link rel="stylesheet" href="/tokens.css" />
   <link rel="stylesheet" href="/base.css" />
   <link rel="stylesheet" href="/site.css" />
+
+  <!-- Structured data: the machine-readable version of what this page already
+       says in words. Rendered here rather than per page so that no page can be
+       built without it. See templates/schema.js. -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://picsel.example/#organization",
+      "name": "Picsel",
+      "legalName": "Picsel",
+      "url": "https://picsel.example/",
+      "description": "Picsel is a web design and automation studio in Cornwall, building websites and doing search work for local trades and small businesses.",
+      "areaServed": {
+        "@type": "AdministrativeArea",
+        "name": "Cornwall"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "telephone": "+447456809049",
+        "email": "benwmiller101@gmail.com",
+        "areaServed": "GB",
+        "availableLanguage": "English"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://picsel.example/#website",
+      "url": "https://picsel.example/",
+      "name": "Picsel",
+      "description": "Picsel is a web design and automation studio in Cornwall, building websites and doing search work for local trades and small businesses.",
+      "publisher": {
+        "@id": "https://picsel.example/#organization"
+      },
+      "inLanguage": "en-GB"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://picsel.example/work/nevitt-construction/#webpage",
+      "url": "https://picsel.example/work/nevitt-construction/",
+      "name": "A Nevitt Construction | Picsel",
+      "description": "A site for a family-run building contractor in Hayle, covering everything from single-storey extensions to full design-and-build new homes.",
+      "isPartOf": {
+        "@id": "https://picsel.example/#website"
+      },
+      "about": {
+        "@id": "https://haylebuilders.com/#website"
+      },
+      "inLanguage": "en-GB",
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://picsel.example/assets/work/nevitt-construction/desktop.webp"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://haylebuilders.com/#website",
+      "url": "https://haylebuilders.com/",
+      "name": "A Nevitt Construction",
+      "description": "A site for a family-run building contractor in Hayle, covering everything from single-storey extensions to full design-and-build new homes. The work is organised by service so a homeowner can find the job they have in mind, and the whole of west Cornwall is covered without a page per town.",
+      "creator": {
+        "@id": "https://picsel.example/#organization"
+      },
+      "image": "https://picsel.example/assets/work/nevitt-construction/desktop.webp",
+      "about": {
+        "@type": "Thing",
+        "name": "Construction in Hayle, Cornwall"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://picsel.example/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Work",
+          "item": "https://picsel.example/work/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "A Nevitt Construction",
+          "item": "https://picsel.example/work/nevitt-construction/"
+        }
+      ]
+    }
+  ]
+}
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>

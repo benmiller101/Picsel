@@ -749,20 +749,76 @@ than with a `.focus()` call that `:focus-visible` would have ignored.
 
 Picsel sells SEO, so its own site must model it (per `CLAUDE.md` SEO rules).
 
-- [ ] Unique title (≤60) and meta description (≤155) per page; one `<h1>` each; sensible heading order
-- [ ] `sitemap.xml` from the real route list (home, work, each project, contact); `robots.txt`;
+- [x] Unique title (≤60) and meta description (≤155) per page; one `<h1>` each; sensible heading order
+      — *enforced by the build since Section 1; audited across all nine pages here, no level skipped*
+- [x] `sitemap.xml` from the real route list (home, work, each project, contact); `robots.txt`;
       canonical on every page
-- [ ] Open Graph + Twitter tags on every page; project pages use their desktop screenshot as the OG image
-- [ ] Schema (JSON-LD): `Organization`/`ProfessionalService` for Picsel across the site (name, area
+- [x] Open Graph + Twitter tags on every page; project pages use their desktop screenshot as the OG image
+- [x] Schema (JSON-LD): `Organization`/`ProfessionalService` for Picsel across the site (name, area
       served Cornwall, contact), and a simple `CreativeWork`/`WebSite` reference per project linking
-      to the live URL. Alt text on every meaningful image
-- [ ] Local signal: mention Cornwall naturally where it fits (not on the Julie Miller page — that
+      to the live URL. Alt text on every meaningful image — *`Organization`, not `ProfessionalService`;
+      see the decision below*
+- [x] Local signal: mention Cornwall naturally where it fits (not on the Julie Miller page — that
       client is in the Scottish Borders)
 
 **What we built:**
+
+The site now says in machine-readable form what it already says in words. Every page carries one
+block of structured data describing three things: the studio, the site, and the page you are on.
+They are joined by stable identifiers, so a crawler reads nine pages belonging to one business
+rather than nine descriptions of nine possible businesses. Project pages add a fourth thing, the
+client's own site, with Picsel named as the one who built it. Nothing in any of it is typed by hand:
+every value is read from `site.config.js` or `projects.js`, the same two files the visible copy comes
+from, so the schema cannot drift away from the page and quietly start making a different claim.
+
+`robots.txt` is generated rather than written, for one reason: it has to carry an absolute link to
+the sitemap, and a hand-written file would still be pointing at `picsel.example` long after the real
+domain was set. Now it follows the same constant everything else does.
+
+What was already right was checked rather than assumed. Nine titles and descriptions, all unique and
+inside their limits, one `h1` a page, no heading level skipped anywhere, canonical and Open Graph on
+every page, alt text on all ten screenshots. The sitemap was compared against the pages that actually
+exist on disk, in both directions: nothing indexable is missing from it and nothing in it lacks a
+page. The one omission is deliberate and confirmed absent, which is the confirmation page.
+
 **Decisions made:**
 
-**Done when:** the sitemap is complete and valid, schema passes the Rich Results Test, and Lighthouse SEO is 100 on home, work and a project page.
+- **`Organization`, not `LocalBusiness` or `ProfessionalService`, which is a departure from the
+  checklist above.** Both of those are physical-premises types whose whole purpose is an address and
+  opening hours that put a pin on a map. Picsel has neither yet, and inventing a street address to
+  satisfy a schema type is precisely the fabrication the Positioning Boundaries forbid. It would also
+  be the kind of thing nobody ever notices is false. `Organization` states what is true today: a
+  business, working in Cornwall, reachable on this number. Section 15 upgrades it when the Google
+  Business Profile exists and there is a real address to declare.
+- **`sameAs` is omitted rather than left empty.** Picsel has no public profiles yet. An empty array
+  says "checked, and there are none", which is a different and worse claim than saying nothing at
+  all. It appears on its own the moment `socialProfiles` is populated.
+- **A project page is `about` the client's site, not about Picsel.** The obvious wiring points every
+  page at the Organization. That is right for the homepage and the contact page and wrong for a
+  project page, and it is most wrong on the Julie Miller Art page: it would have attached a studio
+  description reading "in Cornwall" to a Scottish Borders project, in the one place the plan
+  specifically says not to. The visible copy already obeyed that rule; this is the same rule applied
+  to the markup a person cannot see.
+- **`/contact/sent/` is `noindex` and deliberately NOT `Disallow`ed in robots.txt.** These are not
+  two ways of doing the same thing, and using the wrong one is a common way to get the opposite of
+  what you wanted. `Disallow` stops a crawler fetching the page, which means it never reads the
+  `noindex` — so a page linked from anywhere can still be indexed, listed with no description, and
+  never removed. Letting it be crawled is what lets the `noindex` do its job.
+- **Breadcrumbs were added although the checklist does not ask for them.** They are ordinary SEO
+  infrastructure rather than an extra: Google renders them in the result itself, so a project page
+  shows where it sits in the site instead of a bare URL. Only where a real hierarchy exists — the
+  homepage has none, because a trail of one item describes nothing.
+- **The JSON is escaped against its own closing tag.** A literal `</script>` anywhere inside a blurb
+  or a name would close the block early and spill the rest into the page as markup. Escaping `<` as
+  `<` is still valid JSON, parses identically, and makes that impossible whatever a future blurb
+  contains. Verified by parsing every page's block in a real browser, not just in the build.
+- **Two brand assets are missing and both are outside this section.** There is no favicon, so every
+  page 404s on `/favicon.ico`; and home, work and contact have no Open Graph image, so sharing them
+  anywhere shows no preview. The same missing asset also keeps `logo` out of the Organization schema,
+  which Google's Organization rich result wants. Flagged rather than invented, because it is a design
+  decision. Worth doing before launch.
+
+**Done when:** the sitemap is complete and valid, schema passes the Rich Results Test, and Lighthouse SEO is 100 on home, work and a project page. ⏳ *(Sitemap verified complete and valid against the real routes; JSON-LD verified to parse and every internal reference to resolve. The Rich Results Test and Lighthouse both need a public URL and are Section 12/13.)*
 
 ---
 
@@ -916,7 +972,7 @@ Lighter than a client engagement — this is Picsel's shop window, kept fresh.
 - [x] Section 6: Project pages (shipping pending Ben's client sign-off)
 - [x] Section 7: Screenshot pipeline (taken early — see the section note)
 - [x] Section 8: Contact page and form (a real end-to-end send needs Ben's Web3Forms key)
-- [ ] Section 9: SEO infrastructure
+- [x] Section 9: SEO infrastructure (Rich Results Test and Lighthouse need a live URL)
 - [ ] Section 10: GEO layer
 - [ ] Section 11: Performance, accessibility and responsive pass
 - [ ] Section 12: Launch

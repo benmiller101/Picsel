@@ -48,6 +48,104 @@
   <link rel="stylesheet" href="/tokens.css" />
   <link rel="stylesheet" href="/base.css" />
   <link rel="stylesheet" href="/site.css" />
+
+  <!-- Structured data: the machine-readable version of what this page already
+       says in words. Rendered here rather than per page so that no page can be
+       built without it. See templates/schema.js. -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://picsel.example/#organization",
+      "name": "Picsel",
+      "legalName": "Picsel",
+      "url": "https://picsel.example/",
+      "description": "Picsel is a web design and automation studio in Cornwall, building websites and doing search work for local trades and small businesses.",
+      "areaServed": {
+        "@type": "AdministrativeArea",
+        "name": "Cornwall"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "telephone": "+447456809049",
+        "email": "benwmiller101@gmail.com",
+        "areaServed": "GB",
+        "availableLanguage": "English"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://picsel.example/#website",
+      "url": "https://picsel.example/",
+      "name": "Picsel",
+      "description": "Picsel is a web design and automation studio in Cornwall, building websites and doing search work for local trades and small businesses.",
+      "publisher": {
+        "@id": "https://picsel.example/#organization"
+      },
+      "inLanguage": "en-GB"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://picsel.example/work/julie-miller-art/#webpage",
+      "url": "https://picsel.example/work/julie-miller-art/",
+      "name": "Julie Miller Art | Picsel",
+      "description": "A portfolio for an illustrator working in mixed media in the Scottish Borders, where the landscape drives the work. Built by Picsel.",
+      "isPartOf": {
+        "@id": "https://picsel.example/#website"
+      },
+      "about": {
+        "@id": "https://juliemillerart.co.uk/#website"
+      },
+      "inLanguage": "en-GB",
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://picsel.example/assets/work/julie-miller-art/desktop.webp"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://juliemillerart.co.uk/#website",
+      "url": "https://juliemillerart.co.uk/",
+      "name": "Julie Miller Art",
+      "description": "A portfolio for an illustrator working in mixed media in the Scottish Borders, where the landscape drives the work. The design stays quiet and gives the pieces space, because on an artist site the work is the interface and anything else is in the way.",
+      "creator": {
+        "@id": "https://picsel.example/#organization"
+      },
+      "image": "https://picsel.example/assets/work/julie-miller-art/desktop.webp",
+      "about": {
+        "@type": "Thing",
+        "name": "Artist portfolio in Scottish Borders"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://picsel.example/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Work",
+          "item": "https://picsel.example/work/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Julie Miller Art",
+          "item": "https://picsel.example/work/julie-miller-art/"
+        }
+      ]
+    }
+  ]
+}
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>

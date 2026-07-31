@@ -41,6 +41,15 @@ export const SITE = {
      Julie Miller Art is in the Scottish Borders (see projects.js). */
   areaServed: 'Cornwall',
 
+  /* One sentence describing the studio, used in the Organization schema and
+     nowhere else yet. It deliberately matches the opening line of the homepage
+     almost word for word: the GEO rules ask for entity consistency, and a
+     business whose schema describes it differently from its own front page is
+     giving two answers to the same question. */
+  description:
+    'Picsel is a web design and automation studio in Cornwall, building websites and doing ' +
+    'search work for local trades and small businesses.',
+
   /* Real profiles only. Populating this with invented or empty profiles would
      put a broken sameAs into the schema, which is worse than omitting it. */
   socialProfiles: [],

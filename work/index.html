@@ -46,6 +46,116 @@
   <link rel="stylesheet" href="/tokens.css" />
   <link rel="stylesheet" href="/base.css" />
   <link rel="stylesheet" href="/site.css" />
+
+  <!-- Structured data: the machine-readable version of what this page already
+       says in words. Rendered here rather than per page so that no page can be
+       built without it. See templates/schema.js. -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://picsel.example/#organization",
+      "name": "Picsel",
+      "legalName": "Picsel",
+      "url": "https://picsel.example/",
+      "description": "Picsel is a web design and automation studio in Cornwall, building websites and doing search work for local trades and small businesses.",
+      "areaServed": {
+        "@type": "AdministrativeArea",
+        "name": "Cornwall"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "telephone": "+447456809049",
+        "email": "benwmiller101@gmail.com",
+        "areaServed": "GB",
+        "availableLanguage": "English"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://picsel.example/#website",
+      "url": "https://picsel.example/",
+      "name": "Picsel",
+      "description": "Picsel is a web design and automation studio in Cornwall, building websites and doing search work for local trades and small businesses.",
+      "publisher": {
+        "@id": "https://picsel.example/#organization"
+      },
+      "inLanguage": "en-GB"
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": "https://picsel.example/work/#webpage",
+      "url": "https://picsel.example/work/",
+      "name": "Work: websites Picsel has built in Cornwall",
+      "description": "The five sites Picsel has built for trades and small businesses, mostly in Cornwall. Every one links out to the live site.",
+      "isPartOf": {
+        "@id": "https://picsel.example/#website"
+      },
+      "about": {
+        "@id": "https://picsel.example/#organization"
+      },
+      "inLanguage": "en-GB"
+    },
+    {
+      "@type": "ItemList",
+      "name": "Websites built by Picsel",
+      "numberOfItems": 5,
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "A Nevitt Construction",
+          "url": "https://picsel.example/work/nevitt-construction/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Lanora House",
+          "url": "https://picsel.example/work/lanora-house/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "AJC Removals & Clearances",
+          "url": "https://picsel.example/work/ajc-removals/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Julie Miller Art",
+          "url": "https://picsel.example/work/julie-miller-art/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "House of Cornwall",
+          "url": "https://picsel.example/work/house-of-cornwall/"
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://picsel.example/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Work",
+          "item": "https://picsel.example/work/"
+        }
+      ]
+    }
+  ]
+}
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>

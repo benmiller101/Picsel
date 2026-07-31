@@ -48,6 +48,104 @@
   <link rel="stylesheet" href="/tokens.css" />
   <link rel="stylesheet" href="/base.css" />
   <link rel="stylesheet" href="/site.css" />
+
+  <!-- Structured data: the machine-readable version of what this page already
+       says in words. Rendered here rather than per page so that no page can be
+       built without it. See templates/schema.js. -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://picsel.example/#organization",
+      "name": "Picsel",
+      "legalName": "Picsel",
+      "url": "https://picsel.example/",
+      "description": "Picsel is a web design and automation studio in Cornwall, building websites and doing search work for local trades and small businesses.",
+      "areaServed": {
+        "@type": "AdministrativeArea",
+        "name": "Cornwall"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "telephone": "+447456809049",
+        "email": "benwmiller101@gmail.com",
+        "areaServed": "GB",
+        "availableLanguage": "English"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://picsel.example/#website",
+      "url": "https://picsel.example/",
+      "name": "Picsel",
+      "description": "Picsel is a web design and automation studio in Cornwall, building websites and doing search work for local trades and small businesses.",
+      "publisher": {
+        "@id": "https://picsel.example/#organization"
+      },
+      "inLanguage": "en-GB"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://picsel.example/work/house-of-cornwall/#webpage",
+      "url": "https://picsel.example/work/house-of-cornwall/",
+      "name": "House of Cornwall | Picsel",
+      "description": "Live clearance auctions broadcast from Hayle every week, selling antiques, retro pieces and curiosities that come out of real house clearances.",
+      "isPartOf": {
+        "@id": "https://picsel.example/#website"
+      },
+      "about": {
+        "@id": "https://houseofcornwall.live/#website"
+      },
+      "inLanguage": "en-GB",
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://picsel.example/assets/work/house-of-cornwall/desktop.webp"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://houseofcornwall.live/#website",
+      "url": "https://houseofcornwall.live/",
+      "name": "House of Cornwall",
+      "description": "Live clearance auctions broadcast from Hayle every week, selling antiques, retro pieces and curiosities that come out of real house clearances. The site had to make the next live sale the most obvious thing on the page, and explain a format most visitors will not have come across before.",
+      "creator": {
+        "@id": "https://picsel.example/#organization"
+      },
+      "image": "https://picsel.example/assets/work/house-of-cornwall/desktop.webp",
+      "about": {
+        "@type": "Thing",
+        "name": "Antiques & auctions in Hayle, Cornwall"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://picsel.example/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Work",
+          "item": "https://picsel.example/work/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "House of Cornwall",
+          "item": "https://picsel.example/work/house-of-cornwall/"
+        }
+      ]
+    }
+  ]
+}
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>

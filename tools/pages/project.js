@@ -13,6 +13,8 @@
 
 import { PROJECTS, getAdjacentProjects } from '../../projects.js';
 import { escapeHtml } from '../templates/page.js';
+import { ORG_ID, breadcrumbs } from '../templates/schema.js';
+import { absoluteUrl } from '../../site.config.js';
 import { renderContactBand } from '../partials/contact-band.js';
 
 /* The captures' real pixel sizes, from tools/capture-shots.js — stated on
@@ -177,6 +179,37 @@ ${renderAdjacent(project.slug)}`;
     path: `/work/${project.slug}/`,
     title: `${project.name} | Picsel`,
     description: describe(project),
+    /* This page is about the client's site, not about Picsel. */
+    schemaAbout: { '@id': `${project.url}#website` },
+    /* This page is a page ABOUT a piece of work, so the extra node describes
+       the client's site rather than this one. `creator` is the only claim it
+       makes about Picsel, and it is a true one: Picsel built it. There is no
+       rating, no award and no outcome, because none of those are facts we
+       hold. */
+    schemaExtra: [
+      {
+        '@type': 'WebSite',
+        '@id': `${project.url}#website`,
+        url: project.url,
+        name: project.name,
+        description: project.blurb,
+        creator: { '@id': ORG_ID },
+        image: absoluteUrl(`/assets/work/${project.slug}/desktop.webp`),
+        /* The client's own sector and place, from projects.js. Note this is
+           the CLIENT's location, which is not always Cornwall — Julie Miller
+           Art is in the Scottish Borders, and saying otherwise here would be
+           the same lie in machine-readable form. */
+        about: {
+          '@type': 'Thing',
+          name: `${project.sector} in ${project.location}`,
+        },
+      },
+      breadcrumbs([
+        { name: 'Home', path: '/' },
+        { name: 'Work', path: '/work/' },
+        { name: project.name, path: `/work/${project.slug}/` },
+      ]),
+    ],
     /* The desktop screenshot is the social preview. A link to a project page
        shared anywhere should show the site it is about, not a generic card. */
     ogImage: `/assets/work/${project.slug}/desktop.webp`,
