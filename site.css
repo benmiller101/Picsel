@@ -72,10 +72,13 @@
 
 .roll__inner {
   display: block;
-  /* Slower than the site's fast transition. The whole point is that the eye
-     follows one word out and the next one in, and at 140ms it reads as a
-     flicker instead of a movement. */
-  transition: transform var(--dur-base) var(--ease);
+  /* The whole point is that the eye follows one word out and the next one in.
+     This started at 140ms, which read as a flicker, then 260ms, which Ben still
+     clocked as too fast: at that speed you register that something moved rather
+     than watching it move. --dur-roll is 480ms, roughly double, which is slow
+     enough to read as a deliberate turn and still short enough that the label
+     has settled before you decide to click. */
+  transition: transform var(--dur-roll) var(--ease);
 }
 
 .roll__line {
@@ -125,8 +128,13 @@
   color: var(--ink-muted);
   text-decoration: none;
   white-space: nowrap;
-  transition: color var(--dur-fast) var(--ease),
-              background-color var(--dur-fast) var(--ease);
+  /* Same duration as the roll inside the label. Hovering an item is one
+     gesture, so the pill fading in and the word turning over have to be one
+     response: at 140ms against the roll's 480ms the background snapped into
+     place and then the word caught up, which read as two separate reactions to
+     the same hover. */
+  transition: color var(--dur-roll) var(--ease),
+              background-color var(--dur-roll) var(--ease);
 }
 
 .site-nav__link:hover {
@@ -134,18 +142,25 @@
   background: rgba(255, 255, 255, 0.07);
 }
 
-/* The page you are on, marked for the eye and — via aria-current in the
-   markup — announced for anyone listening rather than looking. */
+/* The page you are on, marked for the eye and, via aria-current in the markup,
+   announced for anyone listening rather than looking.
+
+   No background here. It used to carry the same pill as hover, one step
+   brighter, which gave the bar two filled shapes at rest: the current page and
+   the cyan call to action. Ben's read was that the Home bubble was competing
+   with the button for the one bit of emphasis the bar has, and he is right, so
+   the pill is now purely a hover response. Full-strength text against the muted
+   labels is what marks the current page instead. That is a real difference, not
+   colour alone in the WCAG sense, since it is the same distinction the hover
+   state uses and aria-current carries it independently. */
 .site-nav__link[aria-current='page'] {
   color: var(--ink);
-  background: rgba(255, 255, 255, 0.1);
 }
 
-/* The single call to action, and the only place the accent appears in the
-   chrome. Black text on cyan measures about 11:1, well past the AA floor. */
-/* The one call to action, and the only place the accent appears in the chrome.
-   Wider padding than the plain links so it reads as a button in the bar rather
-   than a link that happens to be coloured in. */
+/* The one call to action, and now the only filled shape in the bar at rest.
+   Wider padding than the plain links so it reads as a button rather than a link
+   that happens to be coloured in. Black text on cyan measures about 11:1, well
+   past the AA floor. */
 .site-nav__link--accent {
   background: var(--accent);
   color: var(--accent-ink);
@@ -153,11 +168,12 @@
   padding-inline: var(--space-6);
 }
 
-/* Keeps the accent when it is also the current page. Without this the
-   [aria-current] rule above wins on specificity and the cyan button turns grey
-   on the one page it points at. */
+/* Keeps the black label when the button is also the current page. Without this
+   the [aria-current] rule above wins on specificity and turns the text on the
+   cyan button white, which is the one place on the site where the accent colour
+   would fail contrast. No background needed here any more: aria-current stopped
+   setting one when the Home bubble came off, so nothing is competing for it. */
 .site-nav__link--accent[aria-current='page'] {
-  background: var(--accent);
   color: var(--accent-ink);
 }
 
