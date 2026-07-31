@@ -81,8 +81,14 @@ export const SITE = {
      practice they read as the same thing twice, which is what Ben said when he
      saw them. One item now, and it opens the top of the contact page rather
      than jumping to the form, because the page leads with the phone number and
-     ringing is what most of this audience will do. */
+     ringing is what most of this audience will do.
+
+     Home is a labelled item rather than a logo. The bar carried a wordmark and
+     then a round P badge; both were a mark you had to already know in order to
+     read as "go back to the start". The audience here is mostly non-technical,
+     and the word costs one item in a bar that has room for it. */
   nav: [
+    { label: 'Home', href: '/' },
     { label: 'Work', href: '/work/' },
     { label: 'Get in touch', href: '/contact/', accent: true },
   ],

@@ -44,48 +44,61 @@
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
 }
 
-/* The home link. Sized to the tap minimum in its own right, so the round badge
-   inside it can be smaller than a thumb without the target being. */
-.site-nav__brand {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--tap-min);
-  height: var(--tap-min);
-  border-radius: var(--radius-pill);
-  text-decoration: none;
-  flex: none;
-  /* The badge is a disc and the link beside it is a pill, so with only the
-     bar's own gap between them their rounded edges nearly touch. A little more
-     air separates the mark from the navigation. */
-  margin-right: var(--space-1);
+/* ---- The rolling label ---------------------------------------------------
+   The window: exactly one line tall, with the overflow clipped. The label is
+   printed twice inside it, so sliding the pair up by one line swaps the word
+   for an identical one arriving from below.
+
+   The line height is a variable because three things have to agree on it: the
+   height of the window, the height of each line, and the distance travelled. A
+   disagreement between any two of them shows up as the text sitting a pixel or
+   two off centre after the roll, which looks like a bug rather than an effect.
+   1.6 and not 1.5, for a reason worth writing down: the nav label is 15px, so
+   1.5 gives a 22.5px line and the roll travels half a pixel short of a whole
+   one. The text then settles on a half-pixel and renders faintly soft. 1.6
+   makes it 24px exactly, so every line, the window and the travel are whole
+   pixels. It also leaves room for descenders, which none of the current labels
+   have and some future one will. */
+.roll {
+  --roll-lh: 1.6;
+
+  display: block;
+  overflow: hidden;
+  height: calc(var(--roll-lh) * 1em);
+  line-height: var(--roll-lh);
 }
 
-/* A single P in the body face, light on dark reversed out of a white disc.
-   Set at 400 rather than a heavier weight: at this size a medium weight closes
-   up the bowl of the P and it starts to read as a solid blob. */
-.site-nav__badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: var(--radius-pill);
-
-  background: var(--ink);
-  color: var(--bg);
-  font-family: var(--font-body);
-  font-weight: var(--weight-regular);
-  font-size: var(--text-lg);
-  /* The cap sits optically high inside a circle; nudging it down centres the
-     letter by eye rather than by box. */
-  line-height: 1;
-  padding-top: 0.06em;
-  transition: transform var(--dur-fast) var(--ease);
+.roll__inner {
+  display: block;
+  /* Slower than the site's fast transition. The whole point is that the eye
+     follows one word out and the next one in, and at 140ms it reads as a
+     flicker instead of a movement. */
+  transition: transform var(--dur-base) var(--ease);
 }
 
-.site-nav__brand:hover .site-nav__badge {
-  transform: scale(1.06);
+.roll__line {
+  display: block;
+  height: calc(var(--roll-lh) * 1em);
+}
+
+/* Half of a two-line stack is exactly one line. Focus gets the same treatment
+   as hover: a keyboard user should see the bar respond the way a mouse user
+   does, not just get an outline. */
+.site-nav__link:hover .roll__inner,
+.site-nav__link:focus-visible .roll__inner {
+  transform: translateY(-50%);
+}
+
+/* Under reduced motion the label must not travel. base.css already collapses
+   every transition to near-zero, which would make the swap instant rather than
+   absent — and an instant swap of a word for the same word is invisible, which
+   is the right outcome. This makes it explicit rather than relying on a
+   duration of 0.01ms landing exactly on the second copy. */
+@media (prefers-reduced-motion: reduce) {
+  .site-nav__link:hover .roll__inner,
+  .site-nav__link:focus-visible .roll__inner {
+    transform: none;
+  }
 }
 
 .site-nav__list {

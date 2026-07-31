@@ -37,6 +37,22 @@ function escapeHtml(value = '') {
    The prototype nav.js this replaced built its markup in JavaScript. That was
    fine for a page of visual experiments and wrong for a real site: it made the
    navigation invisible to anything that does not run scripts. */
+/* ---- The rolling label ----------------------------------------------------
+   A nav label printed twice, one copy above the other inside a window exactly
+   one line tall. On hover the pair slides up by one line, so the word appears
+   to leave through the top while an identical word arrives from underneath.
+
+   Two copies rather than one word animating up and back, because the point of
+   the effect is that the text is REPLACED rather than nudged: with one copy the
+   label would vanish and return, and the gap would read as a flicker.
+
+   The second copy is hidden from assistive technology. It is the same word, and
+   without that a screen reader announces the link as "Home Home". */
+function rollLabel(label) {
+  const text = escapeHtml(label);
+  return `<span class="roll"><span class="roll__inner"><span class="roll__line">${text}</span><span class="roll__line" aria-hidden="true">${text}</span></span></span>`;
+}
+
 function renderNav(currentPath) {
   const items = SITE.nav
     .map((item) => {
@@ -52,23 +68,14 @@ function renderNav(currentPath) {
       const current = isCurrent ? ' aria-current="page"' : '';
       const accent = item.accent ? ' site-nav__link--accent' : '';
 
-      return `        <li><a class="site-nav__link${accent}" href="${escapeHtml(item.href)}"${current}>${escapeHtml(item.label)}</a></li>`;
+      return `        <li><a class="site-nav__link${accent}" href="${escapeHtml(item.href)}"${current}>${rollLabel(item.label)}</a></li>`;
     })
     .join('\n');
 
-  /* The home link is a round badge with a single P, set in the same face as
-     the nav labels rather than the pixel display face. The wordmark used to sit
-     here and it was the only thing in the bar in a different typeface, which
-     read as two designs sharing a strip. The pixel face is not gone, it is
-     rationed harder: it now appears on the hero and on project titles, where it
-     has room to be the signature rather than a mismatch.
-
-     The letter is decorative — a screen reader announcing "P" tells nobody
-     anything — so it is hidden and the link carries its own label. */
+  /* Home is now an ordinary item in the list rather than a separate mark, so
+     it gets the same current-page treatment and the same hover as everything
+     else in the bar. */
   return `    <nav class="site-nav" aria-label="Main">
-      <a class="site-nav__brand" href="/" aria-label="${escapeHtml(SITE.name)}, home">
-        <span class="site-nav__badge" aria-hidden="true">${escapeHtml(SITE.name.charAt(0))}</span>
-      </a>
       <ul class="site-nav__list">
 ${items}
       </ul>
