@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- The site is dark-only. color-scheme tells the browser so, which makes it
+       render scrollbars, form fields and other built-in controls dark to match
+       instead of dropping bright white boxes into the page. theme-color tints
+       the browser's own chrome on mobile, so the bar above the page is the
+       same near-black rather than a hard white edge. -->
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0a0a" />
+
+  <title>Contact Picsel — web design in Cornwall</title>
+  <meta name="description" content="Ring Picsel on 07456 809049, email benwmiller101@gmail.com, or send an enquiry. Web design and automation for small businesses in Cornwall." />
+  <link rel="canonical" href="https://picsel.example/contact/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Picsel" />
+  <meta property="og:title" content="Contact Picsel — web design in Cornwall" />
+  <meta property="og:description" content="Ring Picsel on 07456 809049, email benwmiller101@gmail.com, or send an enquiry. Web design and automation for small businesses in Cornwall." />
+  <meta property="og:url" content="https://picsel.example/contact/" />
+  <meta property="og:locale" content="en_GB" />
+  <meta name="twitter:title" content="Contact Picsel — web design in Cornwall" />
+  <meta name="twitter:description" content="Ring Picsel on 07456 809049, email benwmiller101@gmail.com, or send an enquiry. Web design and automation for small businesses in Cornwall." />
+  <meta name="twitter:card" content="summary" />
+
+  <!-- Adobe Fonts, web project ior4aly: argent-pixel-cf (the resting wordmark)
+       plus the three faces the glitch rotates through. Served by Adobe while
+       the Creative Cloud subscription is live — never self-hosted, per licence. -->
+  <link rel="stylesheet" href="https://use.typekit.net/ior4aly.css" />
+
+  <!-- Lexend carries every word of reading copy on the site. Pixelify Sans is
+       the licence-independent safety net for the wordmark: if Typekit is
+       unreachable the mark still renders as a pixel face instead of dropping
+       to Courier. preconnect opens the connection early so the text is not
+       waiting on a handshake. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Lexend:wght@300;400&display=swap"
+        rel="stylesheet" />
+
+  <!-- Order matters: tokens defines the vocabulary, base uses it, the page
+       sheet overrides. Swapping them silently breaks the cascade. -->
+  <link rel="stylesheet" href="/tokens.css" />
+  <link rel="stylesheet" href="/base.css" />
+  <link rel="stylesheet" href="/site.css" />
+  <link rel="stylesheet" href="/contact.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- The site-wide dot field: a fixed sheet behind every page, drawn by
+       backdrop.js and parallaxing at a third of the scroll speed. Decoration
+       with no meaning to convey, so it is hidden from assistive technology.
+       If the script never runs, base.css's CSS dot layer shows through
+       instead and the page still has its texture. -->
+  <canvas class="backdrop" aria-hidden="true"></canvas>
+
+    <nav class="site-nav" aria-label="Main">
+      <a class="site-nav__brand" href="/">Picsel</a>
+      <ul class="site-nav__list">
+        <li><a class="site-nav__link" href="/work/">Work</a></li>
+        <li><a class="site-nav__link" href="/contact/" aria-current="page">Contact</a></li>
+        <li><a class="site-nav__link site-nav__link--accent" href="/contact/#enquiry">Get in touch</a></li>
+      </ul>
+    </nav>
+
+  <main id="main" tabindex="-1">
+    <section class="section contact-head">
+      <div class="wrap contact-head__inner">
+        <p class="eyebrow">Contact</p>
+        <h1>Get in touch</h1>
+        <p class="lede measure">
+          Ring, email, or fill the form in &mdash; whichever suits. You&rsquo;ll get
+          Ben either way.
+        </p>
+      </div>
+    </section>
+
+    <div class="section contact-main">
+      <div class="wrap contact-main__inner">
+        <div class="contact-direct">
+          <h2 class="visually-hidden">How to reach us</h2>
+
+          <dl class="contact-direct__list">
+            <div class="contact-direct__row">
+              <dt class="eyebrow">Ring</dt>
+              <dd>
+                <a class="contact-direct__phone" href="tel:+447456809049">07456 809049</a>
+                <p class="contact-direct__note">
+                  If we don&rsquo;t pick up we&rsquo;re on a job. Leave a message and we&rsquo;ll ring you back.
+                </p>
+              </dd>
+            </div>
+
+            <div class="contact-direct__row">
+              <dt class="eyebrow">Email</dt>
+              <dd>
+                <a class="contact-direct__email" href="mailto:benwmiller101@gmail.com">benwmiller101@gmail.com</a>
+              </dd>
+            </div>
+
+            <div class="contact-direct__row">
+              <dt class="eyebrow">Where we are</dt>
+              <dd>
+                <p class="contact-direct__note">
+                  Cornwall, near Hayle. Most of our work is in the county, and we&rsquo;ve
+                  built for clients a good deal further north too.
+                </p>
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <section class="enquiry" id="enquiry" aria-labelledby="enquiry-heading">
+          <h2 class="enquiry__heading" id="enquiry-heading">Or send us the details</h2>
+          <p class="enquiry__lede">
+            Tell us what your business does and what you want the site to do. We&rsquo;ll come back
+            with what&rsquo;s involved and what it would cost.
+          </p>
+
+          <form class="enquiry-form"
+                id="enquiry-form"
+                action="https://api.web3forms.com/submit"
+                method="POST">
+            <input type="hidden" name="access_key" value="PASTE-WEB3FORMS-ACCESS-KEY-HERE" />
+            <input type="hidden" name="subject" value="New enquiry from the Picsel website" />
+            <input type="hidden" name="from_name" value="Picsel website" />
+            <input type="hidden" name="redirect" value="https://picsel.example/contact/sent/" />
+
+            <!-- The honeypot. A field no person can see, so anything that fills
+                 it in is a script; Web3Forms rejects the submission when this
+                 checkbox arrives ticked. Hidden off-screen rather than with
+                 display:none, taken out of the tab order, and hidden from
+                 assistive technology, so nobody using a keyboard or a screen
+                 reader can trip it by accident. -->
+            <label class="enquiry-form__botcheck" aria-hidden="true">
+              Leave this box unticked
+              <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" />
+            </label>
+
+            <div class="field">
+              <label class="field__label" for="enquiry-name">Your name</label>
+              <input class="field__input"
+                     id="enquiry-name"
+                     name="name"
+                     type="text"
+                     autocomplete="name"
+                     required />
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="enquiry-email">Email</label>
+              <input class="field__input"
+                     id="enquiry-email"
+                     name="email"
+                     type="email"
+                     autocomplete="email"
+                     required />
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="enquiry-phone">
+                Phone <span class="field__optional">optional</span>
+              </label>
+              <!-- type="tel" so a phone shows the number keypad. inputmode is
+                   belt and braces for the browsers that ignore it. -->
+              <input class="field__input"
+                     id="enquiry-phone"
+                     name="phone"
+                     type="tel"
+                     inputmode="tel"
+                     autocomplete="tel"
+                     aria-describedby="enquiry-phone-hint" />
+              <p class="field__hint" id="enquiry-phone-hint">Worth adding if you&rsquo;d rather we rang you.</p>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="enquiry-need">What do you need?</label>
+              <select class="field__input field__select" id="enquiry-need" name="need" required>
+                <!-- An empty value, plus required on the select, is what makes
+                     the browser treat this prompt as "nothing chosen yet"
+                     rather than as an answer. -->
+                <option value="" selected disabled>Choose one</option>
+                <option value="Website">A new website</option>
+                <option value="Search">Getting found on Google</option>
+                <option value="Automation">A tool to save me time</option>
+                <option value="Other">Something else</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="enquiry-message">What&rsquo;s the job?</label>
+              <textarea class="field__input field__textarea"
+                        id="enquiry-message"
+                        name="message"
+                        rows="6"
+                        aria-describedby="enquiry-message-hint"
+                        required></textarea>
+              <!-- Deliberately not repeating the instruction above the form.
+                   It said what to write; saying it again under the box is the
+                   same sentence twice on one screen. -->
+              <p class="field__hint" id="enquiry-message-hint">A couple of lines is plenty.</p>
+            </div>
+
+            <div class="enquiry-form__foot">
+              <button class="btn btn--primary" type="submit">Send enquiry</button>
+              <p class="enquiry-form__privacy">
+                We use these details to reply to you and nothing else.
+              </p>
+            </div>
+
+            <!-- Where the inline result appears once JavaScript takes the send
+                 over. role="status" announces it without interrupting whatever
+                 a screen reader is in the middle of saying; tabindex lets the
+                 script move focus here, since resetting the form throws focus
+                 back to the top of the document otherwise. -->
+            <p class="enquiry-form__status" id="enquiry-status" role="status" aria-live="polite" tabindex="-1"></p>
+          </form>
+        </section>
+      </div>
+    </div>
+  </main>
+
+    <footer class="site-footer">
+      <div class="wrap site-footer__inner">
+        <p class="site-footer__contact">
+          <a href="tel:+447456809049">07456 809049</a>
+          <a href="mailto:benwmiller101@gmail.com">benwmiller101@gmail.com</a>
+        </p>
+        <p class="site-footer__meta">
+          Picsel — web design and automation in Cornwall.
+          &copy; 2026
+        </p>
+      </div>
+    </footer>
+
+  <!-- type="module" so it can import the shared noise generator. Modules are
+       deferred by default, so this never blocks the page from appearing. -->
+  <script type="module" src="/backdrop.js"></script>
+  <script src="/contact.js" defer></script>
+</body>
+</html>

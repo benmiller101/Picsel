@@ -45,6 +45,23 @@ export const SITE = {
      put a broken sameAs into the schema, which is worse than omitting it. */
   socialProfiles: [],
 
+  /* ---- The enquiry form ---------------------------------------------------
+     There is no server here — the site is static files on a CDN — so the form
+     posts to Web3Forms, which receives the submission and emails it on.
+
+     PENDING MANUAL STEP: the access key is created in the Web3Forms dashboard
+     and pasted in below. Until it is, the form renders and validates but every
+     submission is rejected by their API, so the build warns on every run the
+     same way the placeholder domain does. */
+  form: {
+    endpoint: 'https://api.web3forms.com/submit',
+    accessKey: 'PASTE-WEB3FORMS-ACCESS-KEY-HERE',
+    accessKeyIsPlaceholder: true,
+    /* The subject line of the email that lands in Ben's inbox. Named for the
+       site rather than for the sender, so enquiries are filterable. */
+    subject: 'New enquiry from the Picsel website',
+  },
+
   /* The nav, in order. Rendered as real HTML in every page — never injected by
      JavaScript, because a visitor with JS blocked (or a crawler that does not
      execute it) must still get a working way around the site.

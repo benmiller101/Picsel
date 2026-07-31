@@ -22,6 +22,7 @@ import { renderPage } from './templates/page.js';
 import { HOME_PAGE } from './pages/home.js';
 import { WORK_PAGE } from './pages/work.js';
 import { PROJECT_PAGES } from './pages/project.js';
+import { CONTACT_PAGE, CONTACT_SENT_PAGE } from './pages/contact.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -42,6 +43,8 @@ const PAGES = [
   HOME_PAGE,
   WORK_PAGE,
   ...PROJECT_PAGES,
+  CONTACT_PAGE,
+  CONTACT_SENT_PAGE,
 ];
 
 async function build() {
@@ -54,8 +57,20 @@ async function build() {
      on every run until the real domain is set in site.config.js. */
   if (SITE.originIsPlaceholder) {
     warnings.push(
-      `Domain is still the placeholder ${SITE.origin}. Canonical, Open Graph and sitemap URLs ` +
-        'will be wrong until site.config.js is updated. Do not deploy to production like this.',
+      `Domain is still the placeholder ${SITE.origin}. Canonical, Open Graph, sitemap and the ` +
+        "enquiry form's no-JavaScript redirect will all be wrong until site.config.js is updated. " +
+        'Do not deploy to production like this.',
+    );
+  }
+
+  /* Same class of problem as the placeholder domain, and quieter: the contact
+     page builds and validates perfectly with an unset key, and every enquiry is
+     rejected by Web3Forms the moment someone tries to send one. Nothing on the
+     page can show that, so the build says it on every run. */
+  if (SITE.form.accessKeyIsPlaceholder) {
+    warnings.push(
+      'Web3Forms access key is still a placeholder. The enquiry form on /contact/ will render ' +
+        'and validate, but no submission will reach anyone. Paste the real key into site.config.js.',
     );
   }
 

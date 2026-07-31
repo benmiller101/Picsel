@@ -117,7 +117,9 @@ Picsel is a brand-new studio. Credibility comes from the work shown, not from in
 - [x] `[BEN]` Project list supplied (names, URLs, sectors) — done
 
 ### Required before launch
-- [ ] `[MANUAL]` Web3Forms access key created and pasted into the form
+- [ ] `[MANUAL]` Web3Forms access key created and pasted into the form — **now blocking a real
+      test.** Create the key at web3forms.com and paste it into `SITE.form.accessKey` in
+      `site.config.js`, then set `accessKeyIsPlaceholder: false`. The build warns until you do
 - [ ] `[MANUAL]` Adobe Fonts web project confirmed serving on the production domain
 
 ---
@@ -663,19 +665,82 @@ identical, and only then is the real picture taken.
 ## Section 8: Contact page and form
 **Priority: CRITICAL | Effort: 2 hours**
 
-- [ ] `/contact`: the **phone number big and obvious** as `tel:+447456809049`, the email, and that
+- [x] `/contact`: the **phone number big and obvious** as `tel:+447456809049`, the email, and that
       Picsel is Cornwall-based
-- [ ] **Web3Forms** contact form (access key placeholder for Ben to paste): name, email, phone
+- [x] **Web3Forms** contact form (access key placeholder for Ben to paste): name, email, phone
       (optional), a "what do you need" select (New website / SEO & Google / Automation tool /
       Something else), message. Real `<label>`s, required-field validation, a honeypot, inline
       success and error states (no redirect away)
-- [ ] Repeat the contact band on home and every project page so contact is never more than one
-      obvious click away; `tel:` click-to-call in the header or footer too
+- [x] Repeat the contact band on home and every project page so contact is never more than one
+      obvious click away; `tel:` click-to-call in the header or footer too — *already shipped in
+      Sections 4–6; re-verified across all nine pages here*
 
 **What we built:**
+
+The page every other page has been pointing at. It offers two routes and puts them in the order this
+audience actually uses them: the phone number first, at the largest size anything on the site is set,
+and the form below it for whoever would rather type at nine in the evening. On a phone that ordering
+is the whole point — the number is the first thing under the heading, not something to scroll past a
+form to find.
+
+The form is an ordinary HTML form that works before a line of script runs: a real action, a real
+method, real labels, and the browser's own required-field checking. What JavaScript adds is that the
+answer arrives in place, so someone who has just typed out what their business does doesn't have the
+page swapped for a different one. With scripts off, blocked or broken, the same form posts the old
+way and lands on `/contact/sent/` — a small page of Picsel's own rather than Web3Forms' branded
+confirmation screen.
+
+Every state was exercised rather than assumed, with the network stubbed so nothing was ever sent to
+Web3Forms: an empty submit is blocked by the browser, a filled one sends the right eight fields, a
+rejected key and a dead network both produce the fallback message **and keep the typed message in the
+box**. Losing someone's words because a server hiccuped is the one failure this form is not allowed
+to have. Checked at 375, 768, 1024 and 1440: no sideways scrolling, no tap target under 44 pixels,
+one `<h1>` per page, a clean console, and a visible cyan focus ring reached with the Tab key rather
+than with a `.focus()` call that `:focus-visible` would have ignored.
+
 **Decisions made:**
 
-**Done when:** a test enquiry submits and arrives by email, and the phone link calls on a real phone.
+- **The phone number is set in Lexend, not the pixel display face.** It is the biggest text on the
+  site and the obvious place for the studio's signature face, which is exactly why it was worth
+  thinking about: a phone number is read digit by digit and then dialled, and pixel letterforms turn
+  a 0 and an 8 into a puzzle at the moment accuracy matters most.
+- **No hand-rolled validation messages.** The browser's own are translated into the visitor's
+  language, announced by screen readers, and attached to the field that is actually wrong. Script
+  only takes over once `checkValidity()` passes.
+- **A failed send keeps everything the visitor typed.** The obvious implementation resets the form
+  after submitting; that loses a paragraph of someone's writing on exactly the attempt that failed.
+  Reset happens on success only.
+- **The error message never repeats the API's own.** Web3Forms says things like "Access key is
+  invalid", which is Ben's problem and not the visitor's. They get the phone number instead — and it
+  is read out of the markup rather than written into the script, so this file cannot end up quoting
+  a stale number after `site.config.js` changes.
+- **`/contact/sent/` exists, is `noindex`, and is the second and last opt-out from the Sitemap Law.**
+  A confirmation page has nothing to offer someone arriving from a search result, and indexing it
+  would put "Enquiry sent" in front of people who have not sent one. The opt-out is a named property
+  on the page object, so the decision is visible in the file where it was made.
+- **The honeypot is moved off-screen, not `display: none`.** The crawlers it is meant to catch check
+  for `display: none` and skip the field. Off-screen, out of the tab order and `aria-hidden` means no
+  person meets it and no script can tell it is a trap.
+- **The unset access key warns on every build.** The page renders and validates perfectly with a
+  placeholder key, and every submission is silently rejected — nothing on screen can show that, so
+  the build says it, exactly as it does for the placeholder domain.
+- **The select's options are written the way a customer would say them**, with a short internal word
+  as the value. Someone who wants to be found on Google does not think of it as "SEO & GEO"; that is
+  our word for it, and a form is a bad place to make somebody translate.
+- **The phone number on the sent page was pulled out of its sentence.** Inline it measured 23 pixels
+  tall — under the 44-pixel minimum, on the one page where ringing is the only thing left to do — and
+  an inline link cannot be padded to size without shoving its own line of text apart. Caught by
+  measuring, not by looking.
+- **The section paddings were stacking.** The head's bottom padding and the content's top padding
+  together left nearly a screen of empty near-black under "Get in touch", which on a short page reads
+  as the page having ended. Same fix and the same reason as `.project__shot`.
+- **Copy went through the humanizer pass and lost four things:** a voice wobble (third-person "it's
+  Ben" against the site's "we"), Ben's name used twice in three lines, the same instruction printed
+  above the form and again under the message box, and two vague hedges ("shortly", "when it suits").
+- **Not fixed here, and worth knowing: there is no favicon.** Every page requests `/favicon.ico` and
+  gets a 404. Site-wide and outside this section; flagged for Section 11.
+
+**Done when:** a test enquiry submits and arrives by email, and the phone link calls on a real phone. ⏳ *(Built and fully exercised against a stubbed endpoint; a real end-to-end test needs Ben's Web3Forms key, and the `tel:` link needs a real handset. Both are Section 13.)*
 
 ---
 
@@ -850,7 +915,7 @@ Lighter than a client engagement — this is Picsel's shop window, kept fresh.
 - [x] Section 5: Work index (project pages it links to are Section 6)
 - [x] Section 6: Project pages (shipping pending Ben's client sign-off)
 - [x] Section 7: Screenshot pipeline (taken early — see the section note)
-- [ ] Section 8: Contact page and form
+- [x] Section 8: Contact page and form (a real end-to-end send needs Ben's Web3Forms key)
 - [ ] Section 9: SEO infrastructure
 - [ ] Section 10: GEO layer
 - [ ] Section 11: Performance, accessibility and responsive pass

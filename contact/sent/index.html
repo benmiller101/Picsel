@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- The site is dark-only. color-scheme tells the browser so, which makes it
+       render scrollbars, form fields and other built-in controls dark to match
+       instead of dropping bright white boxes into the page. theme-color tints
+       the browser's own chrome on mobile, so the bar above the page is the
+       same near-black rather than a hard white edge. -->
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0a0a" />
+
+  <title>Enquiry sent — Picsel</title>
+  <meta name="description" content="Your enquiry has reached Picsel. We will come back to you, or ring us if that is quicker." />
+  <link rel="canonical" href="https://picsel.example/contact/sent/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Picsel" />
+  <meta property="og:title" content="Enquiry sent — Picsel" />
+  <meta property="og:description" content="Your enquiry has reached Picsel. We will come back to you, or ring us if that is quicker." />
+  <meta property="og:url" content="https://picsel.example/contact/sent/" />
+  <meta property="og:locale" content="en_GB" />
+  <meta name="twitter:title" content="Enquiry sent — Picsel" />
+  <meta name="twitter:description" content="Your enquiry has reached Picsel. We will come back to you, or ring us if that is quicker." />
+  <meta name="twitter:card" content="summary" />
+
+  <!-- Adobe Fonts, web project ior4aly: argent-pixel-cf (the resting wordmark)
+       plus the three faces the glitch rotates through. Served by Adobe while
+       the Creative Cloud subscription is live — never self-hosted, per licence. -->
+  <link rel="stylesheet" href="https://use.typekit.net/ior4aly.css" />
+
+  <!-- Lexend carries every word of reading copy on the site. Pixelify Sans is
+       the licence-independent safety net for the wordmark: if Typekit is
+       unreachable the mark still renders as a pixel face instead of dropping
+       to Courier. preconnect opens the connection early so the text is not
+       waiting on a handshake. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Lexend:wght@300;400&display=swap"
+        rel="stylesheet" />
+
+  <!-- Order matters: tokens defines the vocabulary, base uses it, the page
+       sheet overrides. Swapping them silently breaks the cascade. -->
+  <link rel="stylesheet" href="/tokens.css" />
+  <link rel="stylesheet" href="/base.css" />
+  <link rel="stylesheet" href="/site.css" />
+  <link rel="stylesheet" href="/contact.css" />
+  <meta name="robots" content="noindex, follow" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- The site-wide dot field: a fixed sheet behind every page, drawn by
+       backdrop.js and parallaxing at a third of the scroll speed. Decoration
+       with no meaning to convey, so it is hidden from assistive technology.
+       If the script never runs, base.css's CSS dot layer shows through
+       instead and the page still has its texture. -->
+  <canvas class="backdrop" aria-hidden="true"></canvas>
+
+    <nav class="site-nav" aria-label="Main">
+      <a class="site-nav__brand" href="/">Picsel</a>
+      <ul class="site-nav__list">
+        <li><a class="site-nav__link" href="/work/">Work</a></li>
+        <li><a class="site-nav__link" href="/contact/">Contact</a></li>
+        <li><a class="site-nav__link site-nav__link--accent" href="/contact/#enquiry">Get in touch</a></li>
+      </ul>
+    </nav>
+
+  <main id="main" tabindex="-1">
+    <section class="section contact-head">
+      <div class="wrap contact-head__inner">
+        <p class="eyebrow">Thanks</p>
+        <h1>That&rsquo;s arrived</h1>
+        <p class="lede measure">
+          We&rsquo;ve got your enquiry and we&rsquo;ll come back to you. If it&rsquo;s quicker to talk,
+          the number&rsquo;s here.
+        </p>
+
+        <!-- The number is its own target rather than a link inside the sentence
+             above. Set inline it measured 23px tall, well under the 44px tap
+             minimum, on the one page where ringing is the only thing left to
+             do — and an inline link cannot be padded to size without shoving
+             its own line of text apart. -->
+        <div class="contact-sent__actions">
+          <a class="contact-sent__phone" href="tel:+447456809049">07456 809049</a>
+          <a class="btn btn--secondary" href="/work/">Have a look at the work</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+    <footer class="site-footer">
+      <div class="wrap site-footer__inner">
+        <p class="site-footer__contact">
+          <a href="tel:+447456809049">07456 809049</a>
+          <a href="mailto:benwmiller101@gmail.com">benwmiller101@gmail.com</a>
+        </p>
+        <p class="site-footer__meta">
+          Picsel — web design and automation in Cornwall.
+          &copy; 2026
+        </p>
+      </div>
+    </footer>
+
+  <!-- type="module" so it can import the shared noise generator. Modules are
+       deferred by default, so this never blocks the page from appearing. -->
+  <script type="module" src="/backdrop.js"></script>
+</body>
+</html>

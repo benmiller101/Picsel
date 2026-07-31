@@ -1,0 +1,329 @@
+/* ---- contact.css — the contact page and the enquiry form ------------------
+   Loaded only by /contact/ and /contact/sent/. The form is the biggest single
+   component on the site and every other page would be paying for its styling
+   for nothing, which is the same reasoning that keeps the hero's blobs in
+   hero.css.
+
+   Everything here uses the tokens. There is no new colour, no new radius and no
+   new type step — a form that invents its own vocabulary is how a site ends up
+   with two design systems. */
+
+/* ---- The two columns ------------------------------------------------------
+   The direct details lead, the form follows. On a phone that ordering is the
+   whole point: this audience rings, so the number is the first thing under the
+   heading and the form is below it for whoever would rather type.
+
+   From the desktop breakpoint the two sit side by side, details narrower. They
+   are not equal halves — one is three lines and a phone number, the other is
+   five fields — and giving them matching columns would leave the left one
+   stranded in white space. */
+/* No padding above: the head's own bottom padding is the whole gap. Stacking
+   both section paddings left nearly a screen of empty near-black between "Get
+   in touch" and the phone number under it, which on a short page reads as the
+   page having ended. Same fix, same reason, as .project__shot in site.css. */
+.contact-main {
+  padding-top: 0;
+}
+
+.contact-main__inner {
+  display: grid;
+  gap: var(--space-16);
+}
+
+@media (min-width: 64rem) {
+  .contact-main__inner {
+    grid-template-columns: 1fr 1.35fr;
+    gap: var(--space-24);
+    align-items: start;
+  }
+
+  /* The number stays on screen while someone scrolls down the form. Someone who
+     reaches the message box, decides typing it out is too much and would rather
+     ring should not have to scroll back up to find the number. */
+  .contact-direct {
+    position: sticky;
+    top: calc(var(--nav-height) + var(--space-8));
+  }
+}
+
+/* ---- The page head -------------------------------------------------------- */
+
+.contact-head__inner > * + * {
+  margin-top: var(--space-4);
+}
+
+/* ---- Ring, email, where we are -------------------------------------------- */
+
+.contact-direct__list {
+  margin: 0;
+  display: grid;
+  gap: var(--space-8);
+}
+
+.contact-direct__row {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+
+.contact-direct__row dd {
+  margin: var(--space-2) 0 0;
+}
+
+/* The largest text on the page, and the only thing on it allowed to be this
+   size. It is set in Lexend rather than the pixel display face on purpose: a
+   phone number is read digit by digit and then dialled, and pixel letterforms
+   turn a 0 and an 8 into a puzzle at exactly the moment accuracy matters. */
+.contact-direct__phone {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+
+  font-size: clamp(1.75rem, 4vw + 0.9rem, 2.5rem);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--ink);
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.18em;
+  white-space: nowrap;
+  transition: text-decoration-color var(--dur-fast) var(--ease);
+}
+
+.contact-direct__phone:hover {
+  text-decoration-color: var(--accent);
+}
+
+.contact-direct__email {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+
+  font-size: var(--text-lg);
+  color: var(--ink);
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  /* Long addresses on a 375px screen would otherwise push the page sideways. */
+  overflow-wrap: anywhere;
+  transition: text-decoration-color var(--dur-fast) var(--ease);
+}
+
+.contact-direct__email:hover {
+  text-decoration-color: var(--accent);
+}
+
+.contact-direct__note {
+  margin-top: var(--space-2);
+  max-width: 26rem;
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
+/* ---- The enquiry section --------------------------------------------------
+   The nav is fixed and takes up no space in the layout, so a jump to #enquiry
+   from the "Get in touch" nav item would land with the heading tucked behind
+   the bar. scroll-margin-top is the browser's own fix for exactly this. */
+.enquiry {
+  scroll-margin-top: calc(var(--nav-height) + var(--space-8));
+}
+
+.enquiry__heading {
+  font-size: var(--text-xl);
+}
+
+.enquiry__lede {
+  margin-top: var(--space-3);
+  max-width: var(--measure);
+}
+
+.enquiry-form {
+  margin-top: var(--space-8);
+  display: grid;
+  gap: var(--space-6);
+  max-width: var(--measure);
+}
+
+/* ---- Fields ---------------------------------------------------------------
+   Label above input, always. Placeholder-as-label is the pattern that looks
+   tidy in a screenshot and fails in use: the label vanishes the moment someone
+   types, so anyone interrupted mid-form has to clear the field to remember what
+   it wanted. */
+.field {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.field__label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-regular);
+  color: var(--ink);
+}
+
+/* Marking the optional field rather than starring the required ones. Four of
+   the five are required, so asterisks everywhere would be noise around the one
+   piece of information that is actually useful. */
+.field__optional {
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+}
+
+.field__input {
+  width: 100%;
+  /* The tap minimum applies to a form field as much as to a button. */
+  min-height: var(--tap-min);
+  padding: var(--space-3) var(--space-4);
+
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  color: var(--ink);
+
+  /* 17px, not the 15px the labels use. Anything under 16px makes iOS Safari
+     zoom the page in when the field is tapped, and it never zooms back out. */
+  font-size: var(--text-base);
+  transition: border-color var(--dur-fast) var(--ease);
+}
+
+.field__input::placeholder {
+  color: var(--ink-faint);
+}
+
+/* The focus ring itself comes from base.css and is the same on every focusable
+   thing on the site. This only warms the border underneath it, so the active
+   field still reads as active in a screenshot or to anyone who has turned the
+   ring off. */
+.field__input:focus {
+  border-color: var(--line-strong);
+}
+
+.field__textarea {
+  /* Vertical only: a textarea dragged wider than its container is the classic
+     way a form ends up causing sideways scrolling. */
+  resize: vertical;
+  min-height: 9rem;
+  line-height: var(--leading-body);
+}
+
+/* A native select on a dark page renders its own arrow in a colour we do not
+   control, so the control is stripped back and given ours: a plain chevron,
+   drawn in the same faint ink as the hints. */
+.field__select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: var(--space-12);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%23ffffff' stroke-opacity='0.52' stroke-width='1.5' stroke-linecap='square'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-4) center;
+  cursor: pointer;
+}
+
+/* The dropdown list itself is drawn by the operating system, and on some
+   platforms it ignores the page's dark scheme unless the options say so. */
+.field__select option {
+  background: var(--bg-raised);
+  color: var(--ink);
+}
+
+.field__hint {
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
+/* ---- The honeypot ---------------------------------------------------------
+   Taken off-screen rather than hidden with display:none. Two reasons: the
+   crawlers this is meant to catch check for display:none and skip the field,
+   and a hidden-by-display field is skipped by screen readers in a way that
+   varies between them. Off-screen, out of the tab order and aria-hidden in the
+   markup means no person will ever meet it and no script can tell it is a
+   trap. */
+.enquiry-form__botcheck {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ---- Submit --------------------------------------------------------------- */
+
+.enquiry-form__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
+}
+
+.enquiry-form__privacy {
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
+/* While the request is in flight. Keeps the button obviously the same button
+   rather than swapping it for a spinner. */
+.enquiry-form button[disabled] {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* ---- The result -----------------------------------------------------------
+   Empty until there is something to say, and takes up no room until then — an
+   always-present empty box below the button would be a permanent gap nobody can
+   explain.
+
+   Both states are ordinary ink on the raised surface with a coloured edge,
+   rather than coloured text. That is partly the palette rule (the accent marks
+   one thing, and the magenta is never text) and partly that a red sentence on
+   near-black is harder to read than a white one at exactly the moment somebody
+   needs to read it. */
+.enquiry-form__status:empty {
+  display: none;
+}
+
+.enquiry-form__status {
+  padding: var(--space-4);
+  border-left: 3px solid var(--line-strong);
+  background: var(--bg-raised);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  color: var(--ink);
+}
+
+.enquiry-form__status.is-ok {
+  border-left-color: var(--accent);
+}
+
+/* The one place the glitch's magenta appears outside the hero, and it is a
+   three-pixel edge rather than something anyone reads — which is the condition
+   tokens.css sets on using it at all. */
+.enquiry-form__status.is-error {
+  border-left-color: var(--glitch-magenta);
+}
+
+/* ---- /contact/sent -------------------------------------------------------- */
+
+/* The number and the way onward, side by side. Same shape as the contact band
+   at the foot of every other page, so the one page that does not carry that
+   band still ends the same way. */
+.contact-sent__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
+  margin-top: var(--space-8);
+}
+
+/* A target in its own right, not a link buried in a sentence — the min-height
+   is the whole reason it was lifted out of the paragraph above it. */
+.contact-sent__phone {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+
+  font-size: var(--text-xl);
+  color: var(--ink);
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  white-space: nowrap;
+  transition: text-decoration-color var(--dur-fast) var(--ease);
+}
+
+.contact-sent__phone:hover {
+  text-decoration-color: var(--accent);
+}
