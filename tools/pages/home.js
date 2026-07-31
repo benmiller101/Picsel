@@ -101,9 +101,8 @@ const SERVICES = `    <section class="section services" aria-labelledby="service
         <div class="services__intro">
           <h2 id="services-heading">What we do</h2>
           <p class="measure">
-            Four things, and they tend to come together: a site that works, being findable
-            when someone goes looking, and getting the repetitive parts of the week off your
-            desk.
+            Four things, and they lean on each other. A site nobody can find is no use, and
+            being easy to find is no use if the site puts people off when they get there.
           </p>
         </div>
 
@@ -126,7 +125,7 @@ const SERVICES = `    <section class="section services" aria-labelledby="service
             <dt>Google Business Profile</dt>
             <dd>
               The free listing that decides whether you appear in the map results. Set up
-              properly, filled in fully, and kept current.
+              properly, then kept current rather than filled in once and forgotten.
             </dd>
           </div>
           <div class="services__item">

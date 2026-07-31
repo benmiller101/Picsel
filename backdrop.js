@@ -25,12 +25,12 @@
 import { makeNoise3D } from './noise.js';
 
 const DOTS = {
-  SPACING: 11,          // px between dots — tight
+  SPACING: 12,          // px between dots — tight
   SPACING_SMALL: 14,    // ...on phones: fewer dots, less to draw
-  MAX_RADIUS: 4,        // px. Diameter ~73% of the pitch, so dots nearly touch.
+  MAX_RADIUS: 6,        // px. Diameter ~73% of the pitch, so dots nearly touch.
 
   TINT: [142, 148, 178], // cool grey, slightly blue
-  MAX_ALPHA: 0.2,        // THE LOUDNESS KNOB. Around 0.08 it is a texture you
+  MAX_ALPHA: 0.1,        // THE LOUDNESS KNOB. Around 0.08 it is a texture you
                          // sense more than see; past ~0.3 it starts competing
                          // with the content for attention.
 
@@ -42,17 +42,17 @@ const DOTS = {
   SIZE_STEP: 0.45,       // how much of the radius also follows the level
   ALPHA_MOD: true,       // modulate alpha by the noise as well as size
 
-  NOISE_SCALE: 0.0042,   // pattern zoom, in 1/px
+  NOISE_SCALE: 0.0032,   // pattern zoom, in 1/px
   FLOW_SPEED: 0.09,      // how fast the field evolves in place
   DRIFT: 7,              // px/sec of slow lateral travel across the field
-  CONTRAST: 1.6,         // >1 keeps big dots sparse and clustered
+  CONTRAST: 2,         // >1 keeps big dots sparse and clustered
 
   /* Parallax: how far the field travels compared to the page. 0 pins it to the
      viewport (no parallax at all), 1 makes it scroll exactly with the content
      and so look painted onto the page. 0.3 is a deliberate middle — clearly
      readable as depth, but a third of the content's speed is slow enough that
      it never drags the eye off a paragraph. */
-  PARALLAX: 0.3,
+  PARALLAX: 0.1,
 
   // A background: updating on alternate frames halves the cost and is
   // imperceptible at these speeds. 1 = every frame.
