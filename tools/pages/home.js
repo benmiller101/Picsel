@@ -25,11 +25,10 @@ const HERO = `    <section class="hero" id="hero">
       <!-- The pinned screen. The section around it is taller, and that extra
            height is the distance the reverse intro is scrubbed over. -->
       <div class="hero__stage">
-        <!-- Layer 0: dot-grid texture. A halftone of a flowing noise field,
-             kept near-invisible. Distinct from the site-wide dot backdrop in
-             base.css: this one is drawn, drifts with the blobs and belongs to
-             the hero; that one is fixed behind every page. -->
-        <canvas id="dotgrid" class="hero-dots" aria-hidden="true"></canvas>
+        <!-- No dot layer here any more. The hero used to draw its own; the
+             site-wide backdrop canvas now runs behind every page, this one
+             included, and the hero sits in front of it. One texture, drawn
+             once, continuous from the hero to the footer. -->
 
         <!-- Layer 1: lava-lamp blobs, drawn by hero.js on a low-resolution
              pixel grid — a canvas one eighth of the screen's size, scaled back
@@ -159,9 +158,11 @@ export const HOME_PAGE = {
   /* Only this page loads the hero's styling and its animation. The contact page
      has no blobs to draw and should not pay for the code that draws them. */
   styles: ['/hero.css'],
-  /* defer: the script waits for the page to be parsed and never blocks it from
-     appearing. Everything it does is decoration — with the file missing,
-     blocked or still loading, the homepage is a complete, readable page. */
-  extraScripts: '  <script src="/hero.js" defer></script>',
+  /* A module, so it can import the noise generator it shares with the site-wide
+     backdrop. Modules are deferred by default: the script waits for the page to
+     be parsed and never blocks it from appearing. Everything it does is
+     decoration — with the file missing, blocked or still loading, the homepage
+     is a complete, readable page. */
+  extraScripts: '  <script type="module" src="/hero.js"></script>',
   content: [HERO, INTRO, WORK, SERVICES, renderContactBand()].join('\n\n'),
 };

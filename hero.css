@@ -75,27 +75,18 @@
 
   display: grid;
   place-items: center;
-  background: var(--bg);
+
+  /* DELIBERATELY TRANSPARENT. This used to be an opaque var(--bg), which was
+     right when the hero drew its own dot layer on top of it. The dot field is
+     now a fixed canvas behind the whole site, so an opaque stage here would
+     mask it and the texture would stop dead at the bottom of the hero — the
+     one place the seam would be most obvious. The page colour is on <html>
+     anyway, so there is nothing to restate. */
+
   /* The blobs travel in from off-screen and must not widen the page while they
      are out there. */
   overflow: hidden;
 }
-
-/* ---- Layer 0: dot-grid texture ------------------------------------------
-   Sits between the background and the blobs, so the dots read mostly in the
-   dark negative space around them. Sizing and DPR are handled in hero.js. */
-.hero-dots {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* DOTGRID.LAYER === 'overlay' — above everything, including the wordmark. */
-.hero-dots.is-overlay { z-index: 3; }
 
 /* ---- Layer 1: blobs ----------------------------------------------------- */
 

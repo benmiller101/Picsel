@@ -73,22 +73,51 @@ body {
 }
 
 /* ---- The site-wide backdrop ----------------------------------------------
-   One fixed layer of faint dots that every page slides over. It does not
-   scroll with the content, and it drifts slowly upward under its own steam —
-   like a slow conveyor behind a shop window. The page feels alive without
-   anything moving that the eye has to follow.
+   THERE ARE TWO OF THESE, and only ever one on screen at a time.
 
-   Built in CSS rather than as a second canvas on top of the hero's. A canvas
-   would mean a JavaScript animation loop running on every page for the whole
-   visit, redrawing thousands of dots and costing battery, to draw something
-   that is barely visible. A repeating gradient does the same job for nothing,
-   and — the part that matters — it still works with JavaScript switched off.
+   The one that normally runs is the canvas below, drawn by backdrop.js: a
+   halftone of a flowing noise field, dots varying in size and shade, moving up
+   at a third of the scroll speed. It is the hero's texture promoted to run
+   behind every page.
+
+   The one immediately after it is the CSS fallback: a plain repeating gradient
+   of identical dots, drifting upward on its own. It is what shows when
+   JavaScript is off, blocked, or still loading — so a page is never a flat
+   sheet of near-black. backdrop.js hides it the moment it takes over, by
+   putting `has-canvas-backdrop` on <html>, which means the fallback is visible
+   by default and switched off only once something better is actually running.
+   That order matters: written the other way round, a JavaScript failure would
+   leave no backdrop at all. */
+
+/* The canvas. Fixed, so it covers exactly one screen however long the page is,
+   and behind everything: z-index -1 puts it under <body>'s content, which is
+   the layer html's own background colour leaves free. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* Its own compositor layer, so scrolling the page never repaints it and
+     redrawing it never repaints the page. */
+  will-change: transform;
+}
+
+/* ---- The no-JavaScript fallback ------------------------------------------
+   One fixed layer of faint dots that every page slides over, drifting slowly
+   upward under its own steam. Deliberately plainer than the canvas: identical
+   dots at one opacity, because that is all a repeating gradient can do.
 
    It moves by transform, not by shifting the background position. Transforms
    are handed to the graphics card and cost nothing per frame; repositioning a
    background makes the browser repaint the entire screen sixty times a second.
    The layer is one tile taller than the viewport so that as it travels up, the
    bottom edge never appears. */
+.has-canvas-backdrop body::before {
+  display: none;
+}
+
 body::before {
   content: '';
   position: fixed;

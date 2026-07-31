@@ -51,6 +51,13 @@
 <body class="page-hero">
   <a class="skip-link" href="#main">Skip to content</a>
 
+  <!-- The site-wide dot field: a fixed sheet behind every page, drawn by
+       backdrop.js and parallaxing at a third of the scroll speed. Decoration
+       with no meaning to convey, so it is hidden from assistive technology.
+       If the script never runs, base.css's CSS dot layer shows through
+       instead and the page still has its texture. -->
+  <canvas class="backdrop" aria-hidden="true"></canvas>
+
     <nav class="site-nav" aria-label="Main">
       <a class="site-nav__brand" href="/">Picsel</a>
       <ul class="site-nav__list">
@@ -65,11 +72,10 @@
       <!-- The pinned screen. The section around it is taller, and that extra
            height is the distance the reverse intro is scrubbed over. -->
       <div class="hero__stage">
-        <!-- Layer 0: dot-grid texture. A halftone of a flowing noise field,
-             kept near-invisible. Distinct from the site-wide dot backdrop in
-             base.css: this one is drawn, drifts with the blobs and belongs to
-             the hero; that one is fixed behind every page. -->
-        <canvas id="dotgrid" class="hero-dots" aria-hidden="true"></canvas>
+        <!-- No dot layer here any more. The hero used to draw its own; the
+             site-wide backdrop canvas now runs behind every page, this one
+             included, and the hero sits in front of it. One texture, drawn
+             once, continuous from the hero to the footer. -->
 
         <!-- Layer 1: lava-lamp blobs, drawn by hero.js on a low-resolution
              pixel grid — a canvas one eighth of the screen's size, scaled back
@@ -294,6 +300,9 @@
       </div>
     </footer>
 
-  <script src="/hero.js" defer></script>
+  <!-- type="module" so it can import the shared noise generator. Modules are
+       deferred by default, so this never blocks the page from appearing. -->
+  <script type="module" src="/backdrop.js"></script>
+  <script type="module" src="/hero.js"></script>
 </body>
 </html>

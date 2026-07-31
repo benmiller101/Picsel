@@ -200,6 +200,13 @@ ${renderHead({ title, description, path, ogImage, styles, extraHead })}
 <body${bodyClass ? ` class="${escapeHtml(bodyClass)}"` : ''}>
   <a class="skip-link" href="#main">Skip to content</a>
 
+  <!-- The site-wide dot field: a fixed sheet behind every page, drawn by
+       backdrop.js and parallaxing at a third of the scroll speed. Decoration
+       with no meaning to convey, so it is hidden from assistive technology.
+       If the script never runs, base.css's CSS dot layer shows through
+       instead and the page still has its texture. -->
+  <canvas class="backdrop" aria-hidden="true"></canvas>
+
 ${renderNav(path)}
 
   <main id="main" tabindex="-1">
@@ -207,7 +214,11 @@ ${content}
   </main>
 
 ${renderFooter()}
-${extraScripts ? `\n${extraScripts}\n` : ''}</body>
+
+  <!-- type="module" so it can import the shared noise generator. Modules are
+       deferred by default, so this never blocks the page from appearing. -->
+  <script type="module" src="/backdrop.js"></script>
+${extraScripts ? `${extraScripts}\n` : ''}</body>
 </html>
 `;
 }

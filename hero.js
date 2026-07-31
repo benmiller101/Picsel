@@ -16,15 +16,23 @@
  *      rotation, so a missing Adobe embed degrades to "fewer fonts in the
  *      cycle" instead of flashing Times New Roman.
  *
+ * The dot texture behind both of them is NOT here. It used to be — it was a
+ * hero layer — but it now runs behind every page on the site, so it lives in
+ * backdrop.js and is drawn on a fixed canvas the hero simply sits in front of.
+ * The two still share the same noise generator, which is why that moved out to
+ * noise.js rather than staying in either of them.
+ *
  * Structured as one factory, createPicselHero(root) -> { destroy }, so the same
  * file drops into React unchanged. See the note at the bottom.
  * ======================================================================== */
+
+import { makeNoise3D } from './noise.js';
 
 /* ===========================  TUNABLES  =================================== */
 
 const BLOBS = {
   COUNT: 2,           // the reference is two, held either side of the wordmark
-  COUNT_SMALL: 2,
+  COUNT_SMALL: 5,
 
   /* --- shape: metaballs, not a wobbly circle ---------------------------
    * Each blob is a CLUSTER of round lobes that slowly orbit their own centre,
@@ -48,7 +56,7 @@ const BLOBS = {
   //   < 0.7  lobes fuse into one round mass
   //   ~1.0   distinct lobes with a clean neck  <- the reference
   //   > 1.4  the goo can't bridge them and they separate into islands
-  LOBE_SPREAD_RATIO: 1.0,
+  LOBE_SPREAD_RATIO: 1.4,
 
   ORBIT_SPEED: 0.15,    // how fast lobes swing around the cluster
 
@@ -172,7 +180,7 @@ const PIXEL = {
   // Block size in CSS pixels. Fixed size rather than a fixed number of blocks
   // across, so the grain reads the same on a phone as on a desktop instead of
   // getting finer as the screen gets smaller.
-  CELL: 12,
+  CELL: 6,
 
   // Alpha at which a blurred cell counts as inside the blob, 0-255. Derived
   // from the goo constants rather than picked: the SVG version this replaced
@@ -338,64 +346,6 @@ const SCROLL = {
   PAUSE_SLACK: 0.2,
 };
 
-/* ---- dot-grid texture ---------------------------------------------------
- * A halftone of the same kind of noise field the blobs use: a fixed grid of
- * dots whose radius is driven by 3D simplex sampled at (x, y, time), so
- * clusters of larger dots swell and drift through the field.
- *
- * The defaults are set at the near-invisible end on purpose — it should read as
- * texture you notice rather than see. DOT_MAX_ALPHA is the knob to reach for
- * first; everything else changes the character, not the loudness.
- */
-const DOTGRID = {
-  ENABLED: true,
-  LAYER: 'behind',      // 'behind' the blobs (default) or 'overlay' on top of
-                        // everything including the wordmark
-
-  SPACING: 11,          // px between dots — tight
-  SPACING_SMALL: 14,    // ...on phones: fewer dots, less to draw
-  MAX_RADIUS: 4,        // px. Diameter ~73% of the pitch, so the dots nearly
-                        // touch, as in the reference.
-
-  TINT: [142, 148, 178], // cool grey, slightly blue
-  MAX_ALPHA: 0.2,        // THE LOUDNESS KNOB. Around 0.08 it's a texture you
-                         // sense more than see; past ~0.3 the grid starts
-                         // competing with the blobs for attention.
-
-  /* Number of discrete shades. THIS IS WHAT MAKES IT FLICKER.
-   *
-   * With a continuous mapping from noise to alpha, a dot eases between shades
-   * and the field reads as a soft gradient. Quantising to a handful of levels
-   * means a dot has to JUMP from one shade to the next as the noise drifts past
-   * a threshold — which is the posterised, blinking quality of the reference.
-   * More levels = smoother and less flicker; 3 or 4 is very stark. */
-  LEVELS: 5,
-  SIZE_STEP: 0.45,       // how much of the dot's radius also follows the level,
-                         // 0 = every dot the same size (purely a shade grid),
-                         // 1 = size varies as much as shade does
-  ALPHA_MOD: true,       // modulate alpha by the noise as well as size
-
-  NOISE_SCALE: 0.0042,   // pattern zoom, in 1/px. Higher = smaller, busier
-                         // clusters; lower = broad slow swells.
-  FLOW_SPEED: 0.09,      // how fast the field evolves
-  DRIFT: 7,              // px/sec of slow lateral travel across the field, on
-                         // top of the evolution
-  CONTRAST: 1.6,         // exponent on the noise. >1 pushes more of the field
-                         // toward small dots and keeps the big ones sparse,
-                         // which is what makes it read as clusters rather than
-                         // an even stipple.
-
-  CURSOR_GLOW: false,    // faint brightening around the pointer. Off — the
-                         // brief asks for minimal by default.
-  CURSOR_RADIUS: 0.22,   // in viewport-short-side units
-  CURSOR_GAIN: 1.5,      // peak alpha multiplier under the cursor
-
-  // The texture is a background: updating it on alternate frames halves its
-  // cost and is imperceptible at these speeds. 1 = every frame.
-  UPDATE_EVERY: 2,
-  MAX_DPR: 1.5,          // dots are 2px; past this it's invisible detail
-};
-
 const MOUSE = {
   ENABLED: true,
   ATTRACT: true,      // false = the surface shrinks away from the cursor and
@@ -544,82 +494,6 @@ const rgbToCss = c => `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`;
 // Same, with an opacity — the colour spots fade out through their own hue
 // rather than toward another one.
 const rgbaCss = (c, a) => `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`;
-
-/* ==========================  simplex noise 3D  ===========================
- * Inlined rather than pulled in as a dependency — it's ~60 lines and this page
- * is meant to run by opening the file. Classic Gustavson/Perlin simplex.
- * Seeded permutation, so the motion is identical every reload.
- */
-function makeNoise3D(seed) {
-  const p = new Uint8Array(256);
-  for (let i = 0; i < 256; i++) p[i] = i;
-  // Deterministic shuffle (mulberry32), so no Math.random in the render path.
-  let a = seed >>> 0;
-  const rnd = () => {
-    a = (a + 0x6D2B79F5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-  for (let i = 255; i > 0; i--) {
-    const j = Math.floor(rnd() * (i + 1));
-    const tmp = p[i]; p[i] = p[j]; p[j] = tmp;
-  }
-  const perm = new Uint8Array(512);
-  const permMod12 = new Uint8Array(512);
-  for (let i = 0; i < 512; i++) {
-    perm[i] = p[i & 255];
-    permMod12[i] = perm[i] % 12;
-  }
-
-  const GRAD = [
-    [1, 1, 0], [-1, 1, 0], [1, -1, 0], [-1, -1, 0],
-    [1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1],
-    [0, 1, 1], [0, -1, 1], [0, 1, -1], [0, -1, -1],
-  ];
-  const F3 = 1 / 3, G3 = 1 / 6;
-
-  return function noise3(xin, yin, zin) {
-    const s = (xin + yin + zin) * F3;
-    const i = Math.floor(xin + s), j = Math.floor(yin + s), k = Math.floor(zin + s);
-    const t = (i + j + k) * G3;
-    const x0 = xin - (i - t), y0 = yin - (j - t), z0 = zin - (k - t);
-
-    let i1, j1, k1, i2, j2, k2;
-    if (x0 >= y0) {
-      if (y0 >= z0)      { i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 1; k2 = 0; }
-      else if (x0 >= z0) { i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 0; k2 = 1; }
-      else               { i1 = 0; j1 = 0; k1 = 1; i2 = 1; j2 = 0; k2 = 1; }
-    } else {
-      if (y0 < z0)       { i1 = 0; j1 = 0; k1 = 1; i2 = 0; j2 = 1; k2 = 1; }
-      else if (x0 < z0)  { i1 = 0; j1 = 1; k1 = 0; i2 = 0; j2 = 1; k2 = 1; }
-      else               { i1 = 0; j1 = 1; k1 = 0; i2 = 1; j2 = 1; k2 = 0; }
-    }
-
-    const x1 = x0 - i1 + G3, y1 = y0 - j1 + G3, z1 = z0 - k1 + G3;
-    const x2 = x0 - i2 + 2 * G3, y2 = y0 - j2 + 2 * G3, z2 = z0 - k2 + 2 * G3;
-    const x3 = x0 - 1 + 3 * G3, y3 = y0 - 1 + 3 * G3, z3 = z0 - 1 + 3 * G3;
-
-    const ii = i & 255, jj = j & 255, kk = k & 255;
-    let n = 0;
-
-    const corner = (gi, x, y, z) => {
-      let t2 = 0.6 - x * x - y * y - z * z;
-      if (t2 < 0) return 0;
-      t2 *= t2;
-      const g = GRAD[gi];
-      return t2 * t2 * (g[0] * x + g[1] * y + g[2] * z);
-    };
-
-    n += corner(permMod12[ii + perm[jj + perm[kk]]], x0, y0, z0);
-    n += corner(permMod12[ii + i1 + perm[jj + j1 + perm[kk + k1]]], x1, y1, z1);
-    n += corner(permMod12[ii + i2 + perm[jj + j2 + perm[kk + k2]]], x2, y2, z2);
-    n += corner(permMod12[ii + 1 + perm[jj + 1 + perm[kk + 1]]], x3, y3, z3);
-
-    return 32 * n; // ~[-1, 1]
-  };
-}
 
 /* ===========================  the hero  ================================== */
 
@@ -835,124 +709,6 @@ function createPicselHero(root) {
     document.addEventListener('pointerleave', onPointerLeave);
   }
 
-  /* ---- dot grid ---------------------------------------------------------
-   * Grid positions are built once per resize and only the radius and alpha are
-   * recomputed per frame — at ~16px spacing a 1920x1080 viewport is over 8000
-   * dots, so anything per-dot that can be hoisted out of the loop must be.
-   *
-   * Dots are batched into a few alpha buckets and each bucket drawn as ONE
-   * path. Setting fillStyle per dot would mean thousands of style changes and
-   * as many string allocations every frame; this way it's a handful.
-   */
-  const dotCanvas = root.querySelector('#dotgrid');
-  const dotCtx = dotCanvas ? dotCanvas.getContext('2d') : null;
-  const dotsOn = DOTGRID.ENABLED && !!dotCtx;
-  // One bucket per shade — the quantisation and the draw batching are the same
-  // thing, so each level is a single path with a single fillStyle.
-  const DOT_BUCKETS = Math.max(2, DOTGRID.LEVELS | 0);
-
-  if (dotsOn && DOTGRID.LAYER === 'overlay') dotCanvas.classList.add('is-overlay');
-
-  let dotXs = new Float32Array(0);
-  let dotYs = new Float32Array(0);
-  let dotDpr = 1;
-  let dotFrame = 0;
-  // Pre-built fill styles, one per bucket — computed on resize, not per frame.
-  let dotFills = [];
-
-  function buildDotGrid() {
-    if (!dotsOn) return;
-
-    const spacing = isSmall ? DOTGRID.SPACING_SMALL : DOTGRID.SPACING;
-    dotDpr = Math.min(window.devicePixelRatio || 1, DOTGRID.MAX_DPR);
-    dotCanvas.width = Math.max(1, Math.round(vw * dotDpr));
-    dotCanvas.height = Math.max(1, Math.round(vh * dotDpr));
-
-    const cols = Math.ceil(vw / spacing) + 1;
-    const rows = Math.ceil(vh / spacing) + 1;
-    dotXs = new Float32Array(cols * rows);
-    dotYs = new Float32Array(cols * rows);
-
-    let i = 0;
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        dotXs[i] = c * spacing;
-        dotYs[i] = r * spacing;
-        i++;
-      }
-    }
-
-    const [tr, tg, tb] = DOTGRID.TINT;
-    dotFills = [];
-    for (let b = 0; b < DOT_BUCKETS; b++) {
-      // Evenly spaced shades from faintest to MAX_ALPHA. A dot is always
-      // exactly one of these — never between two.
-      const a = DOTGRID.MAX_ALPHA * ((b + 1) / DOT_BUCKETS);
-      dotFills.push(`rgba(${tr},${tg},${tb},${a.toFixed(4)})`);
-    }
-  }
-
-  function drawDots(time) {
-    if (!dotsOn) return;
-    // Background texture — updating on alternate frames is imperceptible and
-    // halves the cost.
-    if (DOTGRID.UPDATE_EVERY > 1 && dotFrame++ % DOTGRID.UPDATE_EVERY !== 0) return;
-
-    const ctx = dotCtx;
-    ctx.setTransform(dotDpr, 0, 0, dotDpr, 0, 0);
-    ctx.clearRect(0, 0, vw, vh);
-
-    // Reduced motion: a static texture rather than no texture.
-    const t = reduced ? 0 : time;
-    const z = t * DOTGRID.FLOW_SPEED;
-    const drift = t * DOTGRID.DRIFT;
-    const ns = DOTGRID.NOISE_SCALE;
-
-    const glow = DOTGRID.CURSOR_GLOW && mouseOn && pointer.active && !reduced;
-    const gx = pointer.x * vw, gy = pointer.y * vh;
-    const gr = DOTGRID.CURSOR_RADIUS * minDim;
-
-    // One path per alpha bucket.
-    for (let b = 0; b < DOT_BUCKETS; b++) {
-      ctx.fillStyle = dotFills[b];
-      ctx.beginPath();
-      let drew = false;
-
-      for (let i = 0; i < dotXs.length; i++) {
-        const x = dotXs[i], y = dotYs[i];
-        // Noise in [-1,1] -> [0,1], then a contrast curve so big dots stay
-        // sparse and clustered instead of evenly stippled.
-        let n = (noise((x + drift) * ns, y * ns, z) + 1) * 0.5;
-        n = Math.pow(n < 0 ? 0 : n > 1 ? 1 : n, DOTGRID.CONTRAST);
-
-        let level = n;
-        if (glow) {
-          const d = Math.hypot(x - gx, y - gy) / gr;
-          level *= 1 + (DOTGRID.CURSOR_GAIN - 1) * Math.exp(-d * d);
-        }
-        if (level > 1) level = 1;
-
-        // QUANTISE. The dot snaps to one of LEVELS shades — it never sits
-        // between two, which is what produces the flicker as the field drifts
-        // across a threshold.
-        const step = Math.min(DOT_BUCKETS - 1, (level * DOT_BUCKETS) | 0);
-        const bucket = DOTGRID.ALPHA_MOD ? step : DOT_BUCKETS - 1;
-        if (bucket !== b) continue;
-
-        // Size follows the same quantised step, so it steps rather than eases.
-        const q = step / (DOT_BUCKETS - 1);
-        const radius = DOTGRID.MAX_RADIUS * (1 - DOTGRID.SIZE_STEP + DOTGRID.SIZE_STEP * q);
-        if (radius < 0.12) continue; // below this it's a sub-pixel smudge
-
-        ctx.moveTo(x + radius, y);
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        drew = true;
-      }
-
-      if (drew) ctx.fill();
-    }
-  }
-
   /* ---- resize ----------------------------------------------------------- */
 
   function resize() {
@@ -974,8 +730,6 @@ function createPicselHero(root) {
     scrubRange = root.offsetHeight - stage.offsetHeight;
     heroTop = root.offsetTop;
     stacked = vw <= BLOBS.STACK_BELOW;
-
-    buildDotGrid();
   }
 
   /* Lays out the pixel grid for the current stage size: how many cells fit,
@@ -1752,8 +1506,6 @@ function createPicselHero(root) {
       }
     }
 
-    // Same clock as the blobs, so the whole hero breathes together.
-    drawDots(elapsed);
     drawBlobs(elapsed, dt);
 
     if (!heroOnScreen()) {

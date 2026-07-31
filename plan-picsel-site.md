@@ -242,6 +242,9 @@ and button clears the 44-pixel tap minimum, and there is no sideways scrolling a
   frame-based, so the reason delta-time was specified is satisfied anyway. It moves by transform
   and not by shifting the background position, because transforms are handled by the graphics card
   where repositioning a background repaints the whole screen sixty times a second.
+  > **Superseded in Section 4** at Ben's request: the hero's canvas dot-field now runs site-wide
+  > with a scroll parallax, and this CSS layer has been demoted to the JavaScript-off fallback. The
+  > reasoning above is why the fallback was kept rather than deleted. See Section 4's decisions.
 - **The page colour lives on `<html>`, not `<body>`.** Non-obvious but load-bearing: the root
   element's background is what paints the browser canvas, which leaves the layer behind `<body>`
   free for the backdrop. Put it on `<body>` and the dots are covered and never seen.
@@ -432,6 +435,44 @@ jumps down the page as the images arrive.
   plate behind the text would not.
 - **`/shell-check/` is deleted, as Section 2 said it would be.** It was scaffolding for judging the
   design system before there were real pages to judge. The homepage is now the proof sheet.
+- **The hero's dot texture became the whole site's, and it parallaxes.** Asked for by Ben after the
+  page was built. The hero used to draw its own halftone — dots varying in size and shade, flowing
+  on a noise field — while the rest of the site had a plainer CSS version: uniform dots at one
+  opacity. Two textures for one site, and the join was at the bottom of the hero, which is the most
+  visible place a join could be. Now there is one fixed canvas behind every page, and the hero sits
+  in front of it. It moves up at 30% of the scroll speed, so it reads as a surface some way behind
+  the content rather than a pattern stuck to the glass.
+  - **It reverses Section 2's decision, and the reasoning there was sound**, so what that decision
+    was protecting is kept by other means: the CSS layer stays as the fallback and shows whenever
+    the canvas cannot run — JavaScript off, blocked, or a browser that refuses a canvas context to
+    defeat fingerprinting. It is visible by default and hidden only once the canvas is confirmed
+    running, so a script failure can never leave a blank page. Verified with JavaScript disabled:
+    the dots still paint. The loop also stops when the tab is hidden, and under reduced motion the
+    field is drawn once and never animates or parallaxes at all.
+  - **The parallax is measured, not eyeballed.** Direction is the thing that is easy to get
+    backwards — the background must travel the same way as the content, just slower — and a
+    screenshot cannot tell you which way a texture moved. A test scrolls the page 600px with the
+    field's own evolution frozen, then cross-correlates the canvas before and after: it recovers
+    exactly −180px, i.e. up, at the intended 0.3 gearing. I had it inverted on the first attempt
+    and this is what caught it.
+  - **The noise was being sampled five times per dot.** Drawing has to be grouped by shade — one
+    path per shade keeps the field to a handful of fills instead of thousands of style changes —
+    but the obvious way to write that recomputes each dot's shade once per shade and discards four
+    fifths of the work. Shades are now worked out in one pass into a byte per dot, and the drawing
+    is five cheap passes over that. 7.4ms per draw to 3.9ms on a 1440x900 viewport, measured both
+    sides.
+  - **The hero stage lost its opaque background.** It was `var(--bg)`, which was correct when the
+    hero drew its own dots on top of it and is now exactly what would mask the shared field —
+    the texture would have stopped dead at the bottom of the hero. The page colour is on `<html>`
+    anyway, so there was nothing to restate.
+  - **The noise generator moved to its own module.** The blobs and the backdrop both need it, and
+    they now live in different files. One shared `noise.js` rather than two copies of sixty lines
+    of identical maths that could drift apart. Both scripts became ES modules to import it.
+  - **Contrast was re-checked, because the texture now sits behind reading copy** rather than
+    behind an empty hero. Over the brightest possible dot the body text measures 8.5:1 and the
+    faintest label text 5.2:1, against a 4.5:1 floor — so the field can run at full strength
+    without touching legibility. `DOTS.MAX_ALPHA` in `backdrop.js` is the one knob if it ever
+    wants toning down.
 
 **Done when:** the homepage tells a non-technical visitor what Picsel is, shows the work, and makes contact obvious, with no placeholder text. ✅ *(Pricing block pending Ben's decision; the page is complete without it.)*
 
