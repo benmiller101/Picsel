@@ -198,7 +198,7 @@ const HEAD = `    <section class="section contact-head">
         <p class="eyebrow">Contact</p>
         <h1>Get in touch</h1>
         <p class="lede measure">
-          Ring, email, or fill the form in &mdash; whichever suits. You&rsquo;ll get
+          Ring, email, or fill the form in, whichever suits. You&rsquo;ll get
           ${escapeHtml(SITE.contact.person.split(' ')[0])} either way.
         </p>
       </div>
@@ -214,7 +214,7 @@ ${renderForm()}
 
 export const CONTACT_PAGE = {
   path: '/contact/',
-  title: 'Contact Picsel — web design in Cornwall',
+  title: 'Contact Picsel: web design in Cornwall',
   description:
     `Ring Picsel on ${SITE.contact.phoneDisplay}, email ${SITE.contact.email}, or send an enquiry. Web design and automation for small businesses in Cornwall.`,
   styles: ['/contact.css'],
@@ -238,7 +238,7 @@ export const CONTACT_PAGE = {
    the decision was made. */
 export const CONTACT_SENT_PAGE = {
   path: '/contact/sent/',
-  title: 'Enquiry sent — Picsel',
+  title: 'Enquiry sent | Picsel',
   description:
     'Your enquiry has reached Picsel. We will come back to you, or ring us if that is quicker.',
   excludeFromSitemap: true,

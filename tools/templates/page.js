@@ -152,7 +152,7 @@ function renderFooter() {
           <a href="mailto:${escapeHtml(SITE.contact.email)}">${escapeHtml(SITE.contact.email)}</a>
         </p>
         <p class="site-footer__meta">
-          ${escapeHtml(SITE.name)} — web design and automation in ${escapeHtml(SITE.areaServed)}.
+          ${escapeHtml(SITE.name)}. Web design and automation in ${escapeHtml(SITE.areaServed)}.
           &copy; ${year}
         </p>
       </div>

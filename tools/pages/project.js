@@ -163,7 +163,7 @@ ${renderTags(project)}
                rel="noopener noreferrer">
               Visit the live site
             </a>
-            <p class="project__host">${escapeHtml(host)} &mdash; opens in a new tab</p>
+            <p class="project__host">Opens ${escapeHtml(host)} in a new tab</p>
           </div>
 
 ${renderMobileShot(project)}
@@ -175,7 +175,7 @@ ${renderAdjacent(project.slug)}`;
 
   return {
     path: `/work/${project.slug}/`,
-    title: `${project.name} — Picsel`,
+    title: `${project.name} | Picsel`,
     description: describe(project),
     /* The desktop screenshot is the social preview. A link to a project page
        shared anywhere should show the site it is about, not a generic card. */

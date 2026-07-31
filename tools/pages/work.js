@@ -52,7 +52,7 @@ ${renderWorkGrid(PROJECTS, { variant: 'index' })}
 
 export const WORK_PAGE = {
   path: '/work/',
-  title: 'Work — websites Picsel has built in Cornwall',
+  title: 'Work: websites Picsel has built in Cornwall',
   description:
     `The ${countWord} sites Picsel has built for trades and small businesses, mostly in Cornwall. Every one links out to the live site.`,
   content: [INTRO, GRID, renderContactBand({

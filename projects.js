@@ -66,8 +66,8 @@ export const PROJECTS = [
     tags: ['Website'],
     blurb:
       'A licensed house clearance and cleaning firm working across Cornwall and the ' +
-      'South West. The site sets out the full range — probate and bereavement clearances ' +
-      'through to end-of-tenancy cleans — and gives proper room to how much of what they ' +
+      'South West. The site sets out the full range, from probate and bereavement clearances ' +
+      'through to end-of-tenancy cleans. It also gives proper room to how much of what they ' +
       'clear is kept out of landfill, because that is what makes them different.',
     alt: 'Screenshot of the Lanora House website',
   },

@@ -44,7 +44,7 @@ const HERO = `    <section class="hero" id="hero">
              is carried by the visually-hidden line above them. Seen: a pixel
              wordmark. Heard: "Picsel — Design Studio". -->
         <h1 class="hero-mark">
-          <span class="visually-hidden">Picsel — Design Studio</span>
+          <span class="visually-hidden">Picsel, Design Studio</span>
           <span class="wordmark" id="wordmark" aria-hidden="true">PICSEL</span>
           <span class="tagline" id="tagline" aria-hidden="true">Design Studio</span>
         </h1>
@@ -69,7 +69,7 @@ const INTRO = `    <section class="section intro">
         </p>
         <p class="intro__aside">
           Five sites are live. They are all below, and each one links straight out to the
-          real thing &mdash; not a mock-up.
+          real thing. Not a mock-up.
         </p>
       </div>
     </section>`;
@@ -114,8 +114,8 @@ const SERVICES = `    <section class="section services" aria-labelledby="service
           <div class="services__item">
             <dt>Websites</dt>
             <dd>
-              Quick on a bad signal and easy to read on a small screen &mdash; that is where most
-              of your customers will see it.
+              Quick on a bad signal and easy to read on a small screen. That is where most of
+              your customers will see it.
             </dd>
           </div>
           <div class="services__item">
@@ -135,8 +135,8 @@ const SERVICES = `    <section class="section services" aria-labelledby="service
           <div class="services__item">
             <dt>Custom tools</dt>
             <dd>
-              Small pieces of software for whatever you retype every week &mdash; quotes, booking
-              confirmations &mdash; built around how you already work rather than the other way round.
+              Small pieces of software for whatever you retype every week: quotes, booking
+              confirmations. Built around how you already work, not the other way round.
             </dd>
           </div>
         </dl>
@@ -151,7 +151,7 @@ const SERVICES = `    <section class="section services" aria-labelledby="service
 
 export const HOME_PAGE = {
   path: '/',
-  title: 'Picsel — web design and automation in Cornwall',
+  title: 'Picsel: web design and automation in Cornwall',
   /* Kept in step with the opening line on the page itself. A description that
      promises one thing and a page that says another is the sort of mismatch
      that costs a click and is never noticed, because nobody re-reads their own

@@ -37,6 +37,11 @@ These are the fingerprints of a vibe-coded site. Do not use them.
   bottom. Use real composition.
 - **No raw system font / unstyled Inter** as the entire type system (see §3).
 - **No rainbow of soft drop shadows** on every card. Shadow is an accent, not a texture.
+- **No em dashes in copy.** Use a full stop, a comma or a colon. A pile-up of em dashes is one of
+  the most recognisable signs of machine-written text. This covers visible page copy, page titles
+  and meta descriptions, and it covers both the character and the `&mdash;` entity. Watch the two
+  structural cases that multiply silently: a separator in a shared footer line or in a title
+  template appears on every page at once.
 
 If a design brief or reference *explicitly* asks for one of these (e.g. the client genuinely
 wants purple), the brief wins — but confirm it's intentional, and execute it with care so it
@@ -146,8 +151,9 @@ the code runs.
 1. **Screenshot / preview** the page at desktop and mobile widths if the environment allows.
    A picture is worth 1000 tokens.
 2. **Run the vibe-code checklist** below. If any box is checked, fix it.
-3. **Read your own copy** — does it sound like an interchangeable SaaS template? Rewrite it
-   to be specific and plain.
+3. **Run the `humanizer` skill over every word of user-facing text.** Every time, not only when the
+   copy feels wrong. Then read it back: does it sound like an interchangeable SaaS template? Rewrite
+   it to be specific and plain. Scan the *rendered* output for em dashes, not the source.
 4. **Click through** key interactions (nav, mobile menu, buttons, forms) and confirm they work.
 5. Apply Chanel's rule: look at the finished page and remove one thing that isn't earning its
    place.
@@ -162,6 +168,7 @@ the code runs.
 - [ ] Is there a "Why Choose us?" or generic SaaS-slogan section?
 - [ ] Is everything centered in one column?
 - [ ] Is the type just default Inter/system with no display face?
+- [ ] Are there any em dashes in the rendered copy, titles or meta descriptions?
 - [ ] Do cards have frosted-glass + soft-glow styling?
 - [ ] Does it break or look unstyled on mobile?
 
