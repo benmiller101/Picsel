@@ -76,15 +76,15 @@ export const SITE = {
      execute it) must still get a working way around the site.
      `accent` marks the one call-to-action styled differently from the rest.
 
-     'Contact' and 'Get in touch' are both on the bar on purpose, and they are
-     not the same link: Contact opens the page (phone number, email, where
-     Picsel is), while Get in touch jumps straight to the enquiry form on it.
-     Two nav items pointing at the identical URL would just be clutter; these
-     give someone who wants to call and someone who wants to type a route each. */
+     There was a 'Contact' link here as well as 'Get in touch', pointing at the
+     page and at the form on it. In theory they served two different people; in
+     practice they read as the same thing twice, which is what Ben said when he
+     saw them. One item now, and it opens the top of the contact page rather
+     than jumping to the form, because the page leads with the phone number and
+     ringing is what most of this audience will do. */
   nav: [
     { label: 'Work', href: '/work/' },
-    { label: 'Contact', href: '/contact/' },
-    { label: 'Get in touch', href: '/contact/#enquiry', accent: true },
+    { label: 'Get in touch', href: '/contact/', accent: true },
   ],
 };
 

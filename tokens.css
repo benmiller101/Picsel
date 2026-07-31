@@ -138,7 +138,11 @@
      Named here because base.css needs it to reserve the gap, and the two must
      never disagree — a hardcoded guess in base.css is exactly how content ends
      up tucked behind the nav on one page and not another. */
-  --nav-height: 3.5rem;
+  /* 62px: a 44px tap target, 8px of padding either side of it, and the 1px
+     border. Measured from the built bar rather than guessed — it was 3.5rem
+     when the bar held a text wordmark, and content began sliding under it the
+     moment the round badge made the bar taller. */
+  --nav-height: 3.875rem;
 
   /* The minimum size of anything you tap. 44px is the accessibility floor, not
      a target to design down to. */

@@ -44,18 +44,31 @@ function renderNav(currentPath) {
          same page rather than quietly failing to highlight. */
       const isCurrent = normalisePath(item.href) === normalisePath(currentPath);
 
-      /* The accent item is a call to action pointing at a page the visitor may
-         already be on. Marking it aria-current too would announce the page
-         twice; it is deliberately excluded. */
-      const current = isCurrent && !item.accent ? ' aria-current="page"' : '';
+      /* The accent item used to be excluded here, because a separate 'Contact'
+         link pointed at the same page and marking both would have announced the
+         current page twice. That second link is gone, so excluding it now just
+         means someone on the contact page is told nothing at all about where
+         they are. Every item that matches is marked. */
+      const current = isCurrent ? ' aria-current="page"' : '';
       const accent = item.accent ? ' site-nav__link--accent' : '';
 
       return `        <li><a class="site-nav__link${accent}" href="${escapeHtml(item.href)}"${current}>${escapeHtml(item.label)}</a></li>`;
     })
     .join('\n');
 
+  /* The home link is a round badge with a single P, set in the same face as
+     the nav labels rather than the pixel display face. The wordmark used to sit
+     here and it was the only thing in the bar in a different typeface, which
+     read as two designs sharing a strip. The pixel face is not gone, it is
+     rationed harder: it now appears on the hero and on project titles, where it
+     has room to be the signature rather than a mismatch.
+
+     The letter is decorative — a screen reader announcing "P" tells nobody
+     anything — so it is hidden and the link carries its own label. */
   return `    <nav class="site-nav" aria-label="Main">
-      <a class="site-nav__brand" href="/">${escapeHtml(SITE.name)}</a>
+      <a class="site-nav__brand" href="/" aria-label="${escapeHtml(SITE.name)}, home">
+        <span class="site-nav__badge" aria-hidden="true">${escapeHtml(SITE.name.charAt(0))}</span>
+      </a>
       <ul class="site-nav__list">
 ${items}
       </ul>

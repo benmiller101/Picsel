@@ -25,42 +25,67 @@
 
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-1);
 
   max-width: calc(100% - (var(--space-4) * 2));
-  padding: var(--space-2) var(--space-4);
+  /* Even padding all round, so the round badge and the pill button sit inside
+     the bar with the same margin on every side. That even inset is most of
+     what makes a floating bar look made rather than assembled. */
+  padding: var(--space-2);
   border-radius: var(--radius-pill);
 
-  /* Deliberately not glassmorphism: no glow, no heavy frost, no soft shadow
-     stack. A quiet translucent bar with a hairline edge — enough to separate
-     it from the page, not enough to become an ornament. */
-  background: rgba(255, 255, 255, 0.06);
+  /* Solid, not frosted. The bar used to be translucent with a blur behind it,
+     which meant the hero's blobs slid about underneath the labels. A solid bar
+     is calmer, is legible over anything, and costs no per-frame blur. One soft
+     shadow, not a stack: the bar genuinely floats above the page and the shadow
+     is what says so. */
+  background: var(--bg-raised);
   border: 1px solid var(--line);
-  backdrop-filter: blur(14px) saturate(1.2);
-  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
 }
 
+/* The home link. Sized to the tap minimum in its own right, so the round badge
+   inside it can be smaller than a thumb without the target being. */
 .site-nav__brand {
-  /* Padded to a full tap height like every other link in the bar. The text
-     itself is only ~26px tall, and a target that size is one most thumbs
-     miss — the home link should not be the hardest thing to hit. */
   display: flex;
   align-items: center;
-  min-height: var(--tap-min);
-  padding-inline: var(--space-2);
-
-  font-family: var(--font-display);
-  /* 400, never 700 — see the note on .display in base.css. */
-  font-weight: var(--weight-regular);
-  font-size: var(--text-base);
-  letter-spacing: var(--tracking-display);
-  /* Reclaims the gap letter-spacing leaves after the final letter, so the
-     wordmark sits optically centred in its own padding rather than shunted
-     left by an invisible space on its right. */
-  margin-right: calc(var(--tracking-display) * -1);
-  color: var(--ink);
+  justify-content: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  border-radius: var(--radius-pill);
   text-decoration: none;
-  white-space: nowrap;
+  flex: none;
+  /* The badge is a disc and the link beside it is a pill, so with only the
+     bar's own gap between them their rounded edges nearly touch. A little more
+     air separates the mark from the navigation. */
+  margin-right: var(--space-1);
+}
+
+/* A single P in the body face, light on dark reversed out of a white disc.
+   Set at 400 rather than a heavier weight: at this size a medium weight closes
+   up the bowl of the P and it starts to read as a solid blob. */
+.site-nav__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-pill);
+
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--font-body);
+  font-weight: var(--weight-regular);
+  font-size: var(--text-lg);
+  /* The cap sits optically high inside a circle; nudging it down centres the
+     letter by eye rather than by box. */
+  line-height: 1;
+  padding-top: 0.06em;
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.site-nav__brand:hover .site-nav__badge {
+  transform: scale(1.06);
 }
 
 .site-nav__list {
@@ -78,7 +103,7 @@
   /* Tap targets must clear 44px. The min-height guarantees it outright rather
      than relying on padding plus an inherited line-height to add up. */
   min-height: var(--tap-min);
-  padding-inline: var(--space-3);
+  padding-inline: var(--space-4);
   border-radius: var(--radius-pill);
 
   font-size: var(--text-sm);
@@ -103,10 +128,22 @@
 
 /* The single call to action, and the only place the accent appears in the
    chrome. Black text on cyan measures about 11:1, well past the AA floor. */
+/* The one call to action, and the only place the accent appears in the chrome.
+   Wider padding than the plain links so it reads as a button in the bar rather
+   than a link that happens to be coloured in. */
 .site-nav__link--accent {
   background: var(--accent);
   color: var(--accent-ink);
   font-weight: var(--weight-medium);
+  padding-inline: var(--space-6);
+}
+
+/* Keeps the accent when it is also the current page. Without this the
+   [aria-current] rule above wins on specificity and the cyan button turns grey
+   on the one page it points at. */
+.site-nav__link--accent[aria-current='page'] {
+  background: var(--accent);
+  color: var(--accent-ink);
 }
 
 .site-nav__link--accent:hover {
@@ -601,20 +638,20 @@
    The bar tightens rather than collapsing. Everything stays reachable; only
    the padding and the label size give ground. Tap heights do not — they are
    held at 44px by min-height, which padding changes cannot undercut. */
+/* With two items in the bar there is room to spare even at 375px, so small
+   screens only tighten the padding. Tap heights do not give ground: they are
+   held at 44px by min-height, which padding changes cannot undercut. */
 @media (max-width: 640px) {
   .site-nav {
-    gap: var(--space-2);
-    padding: var(--space-1) var(--space-2);
-  }
-
-  .site-nav__brand {
-    font-size: var(--text-sm);
-    padding-inline: var(--space-1);
+    padding: var(--space-1);
   }
 
   .site-nav__link {
-    padding-inline: var(--space-2);
-    font-size: var(--text-xs);
+    padding-inline: var(--space-4);
+  }
+
+  .site-nav__link--accent {
+    padding-inline: var(--space-4);
   }
 
   .site-footer__inner {
