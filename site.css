@@ -540,3 +540,200 @@
     gap: var(--space-4);
   }
 }
+
+/* ==========================================================================
+   Project page  (/work/<slug>)
+   ========================================================================== */
+
+.project__head > .wrap > * + * {
+  margin-top: var(--space-4);
+}
+
+/* The one place the pixel face carries a whole heading. It is rationed on
+   purpose — see .display in base.css — and this is the moment it earns its
+   keep: the project name is the title of the page and short enough to stay
+   readable in a face drawn on a grid. Capped smaller than the /work heading
+   because pixel letterforms at a large size start to look like a logo rather
+   than a title. */
+.project__name {
+  font-size: clamp(1.75rem, 3vw + 0.9rem, 2.75rem);
+  color: var(--ink);
+}
+
+/* Pulled tight to the heading: the screenshot IS the page's opening statement,
+   so the gap above it should read as part of the same block rather than as a
+   new section. */
+.project__shot {
+  padding-top: 0;
+}
+
+/* ---- The browser frame ---------------------------------------------------
+   A bar, three dots, the domain. The plainest thing that reads as "a website".
+   No gloss, no reflection, no frosted panel — the client's own palette is the
+   colour here, and a decorated frame competes with what it is framing. */
+.browser {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--bg-raised);
+}
+
+.browser__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.browser__dots {
+  display: flex;
+  gap: var(--space-2);
+  flex: none;
+}
+
+.browser__dots i {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background: var(--line-strong);
+}
+
+.browser__host {
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--ink-faint);
+}
+
+.browser__shot {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ---- Body: words beside the phone --------------------------------------- */
+
+.project__body-inner {
+  display: grid;
+  gap: var(--space-12);
+}
+
+@media (min-width: 64rem) {
+  .project__body-inner {
+    /* The words lead and the phone sits beside them, narrower — a phone shot
+       given equal width to a paragraph reads as the more important of the
+       two, which it is not. */
+    grid-template-columns: 1fr 18rem;
+    gap: var(--space-16);
+    align-items: start;
+  }
+}
+
+.project__words > * + * {
+  margin-top: var(--space-6);
+}
+
+.project__tags-title {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: var(--space-3);
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* An outline, not a filled pill. These are quiet labels stating a fact, and a
+   row of solid badges under a heading is the pill-clutter CLAUDE.md bans. */
+.tag {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  color: var(--ink-muted);
+}
+
+.project__visit {
+  display: inline-flex;
+}
+
+.project__host {
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+}
+
+/* ---- The phone ----------------------------------------------------------- */
+
+.phone {
+  margin: 0;
+  border: 1px solid var(--line);
+  /* A larger radius than the browser frame, because that is the one detail
+     that says "phone" without drawing a notch, a speaker and a home button
+     nobody asked for. */
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg-raised);
+}
+
+.phone__shot {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ---- Previous / next ----------------------------------------------------- */
+
+.project-nav__inner {
+  display: grid;
+  gap: var(--space-4);
+  border-top: 1px solid var(--line);
+  padding-top: var(--space-8);
+}
+
+@media (min-width: 48rem) {
+  .project-nav__inner {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* The next link sits at the right-hand end and reads right-aligned, so the
+     pair reads as a spread rather than as two left-aligned links that happen
+     to be in columns. */
+  .project-nav__link--next {
+    text-align: right;
+  }
+}
+
+.project-nav__link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  padding: var(--space-3) 0;
+}
+
+.project-nav__direction {
+  display: block;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.project-nav__name {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: var(--text-lg);
+  color: var(--ink);
+}
+
+.project-nav__link:hover .project-nav__name {
+  color: var(--accent);
+}

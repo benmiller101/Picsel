@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- The site is dark-only. color-scheme tells the browser so, which makes it
+       render scrollbars, form fields and other built-in controls dark to match
+       instead of dropping bright white boxes into the page. theme-color tints
+       the browser's own chrome on mobile, so the bar above the page is the
+       same near-black rather than a hard white edge. -->
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0a0a" />
+
+  <title>Julie Miller Art — Picsel</title>
+  <meta name="description" content="A portfolio for an illustrator working in mixed media in the Scottish Borders, where the landscape drives the work. Built by Picsel." />
+  <link rel="canonical" href="https://picsel.example/work/julie-miller-art/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Picsel" />
+  <meta property="og:title" content="Julie Miller Art — Picsel" />
+  <meta property="og:description" content="A portfolio for an illustrator working in mixed media in the Scottish Borders, where the landscape drives the work. Built by Picsel." />
+  <meta property="og:url" content="https://picsel.example/work/julie-miller-art/" />
+  <meta property="og:locale" content="en_GB" />
+  <meta name="twitter:title" content="Julie Miller Art — Picsel" />
+  <meta name="twitter:description" content="A portfolio for an illustrator working in mixed media in the Scottish Borders, where the landscape drives the work. Built by Picsel." />
+  <meta property="og:image" content="https://picsel.example/assets/work/julie-miller-art/desktop.webp" />
+  <meta name="twitter:image" content="https://picsel.example/assets/work/julie-miller-art/desktop.webp" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Adobe Fonts, web project ior4aly: argent-pixel-cf (the resting wordmark)
+       plus the three faces the glitch rotates through. Served by Adobe while
+       the Creative Cloud subscription is live — never self-hosted, per licence. -->
+  <link rel="stylesheet" href="https://use.typekit.net/ior4aly.css" />
+
+  <!-- Lexend carries every word of reading copy on the site. Pixelify Sans is
+       the licence-independent safety net for the wordmark: if Typekit is
+       unreachable the mark still renders as a pixel face instead of dropping
+       to Courier. preconnect opens the connection early so the text is not
+       waiting on a handshake. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Lexend:wght@300;400&display=swap"
+        rel="stylesheet" />
+
+  <!-- Order matters: tokens defines the vocabulary, base uses it, the page
+       sheet overrides. Swapping them silently breaks the cascade. -->
+  <link rel="stylesheet" href="/tokens.css" />
+  <link rel="stylesheet" href="/base.css" />
+  <link rel="stylesheet" href="/site.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- The site-wide dot field: a fixed sheet behind every page, drawn by
+       backdrop.js and parallaxing at a third of the scroll speed. Decoration
+       with no meaning to convey, so it is hidden from assistive technology.
+       If the script never runs, base.css's CSS dot layer shows through
+       instead and the page still has its texture. -->
+  <canvas class="backdrop" aria-hidden="true"></canvas>
+
+    <nav class="site-nav" aria-label="Main">
+      <a class="site-nav__brand" href="/">Picsel</a>
+      <ul class="site-nav__list">
+        <li><a class="site-nav__link" href="/work/">Work</a></li>
+        <li><a class="site-nav__link" href="/contact/">Contact</a></li>
+        <li><a class="site-nav__link site-nav__link--accent" href="/contact/#enquiry">Get in touch</a></li>
+      </ul>
+    </nav>
+
+  <main id="main" tabindex="-1">
+    <article class="project">
+      <header class="section project__head">
+        <div class="wrap">
+          <p class="eyebrow">Artist portfolio &middot; Scottish Borders</p>
+          <h1 class="display project__name">Julie Miller Art</h1>
+        </div>
+      </header>
+
+      <div class="section project__shot">
+        <div class="wrap">
+        <figure class="browser">
+          <div class="browser__bar" aria-hidden="true">
+            <span class="browser__dots"><i></i><i></i><i></i></span>
+            <span class="browser__host">juliemillerart.co.uk</span>
+          </div>
+          <img
+            class="browser__shot"
+            src="/assets/work/julie-miller-art/desktop.webp"
+            alt="Screenshot of the Julie Miller Art website"
+            width="1440"
+            height="900"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </figure>
+        </div>
+      </div>
+
+      <div class="section project__body">
+        <div class="wrap project__body-inner">
+          <div class="project__words">
+            <p class="lede">A portfolio for an illustrator working in mixed media in the Scottish Borders, where the landscape drives the work. The design stays quiet and gives the pieces space, because on an artist site the work is the interface and anything else is in the way.</p>
+
+            <div class="project__tags">
+              <h2 class="project__tags-title">What we did</h2>
+              <ul class="tag-list">
+              <li class="tag">Website</li>
+              </ul>
+            </div>
+
+            <!-- The point of the page. target=_blank because sending someone
+                 away from the portfolio to a client site is a one-way trip
+                 otherwise; rel=noopener because a page opened this way can
+                 otherwise reach back into the one that opened it. -->
+            <a class="btn btn--primary project__visit"
+               href="https://juliemillerart.co.uk/"
+               target="_blank"
+               rel="noopener noreferrer">
+              Visit the live site
+            </a>
+            <p class="project__host">juliemillerart.co.uk &mdash; opens in a new tab</p>
+          </div>
+
+          <figure class="phone">
+            <img
+              class="phone__shot"
+              src="/assets/work/julie-miller-art/mobile.webp"
+              alt="Screenshot of the Julie Miller Art website, shown on a phone"
+              width="780"
+              height="1688"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+        </div>
+      </div>
+    </article>
+
+    <nav class="section project-nav" aria-label="More projects">
+      <div class="wrap project-nav__inner">
+        <a class="project-nav__link project-nav__link--previous" href="/work/ajc-removals/">
+          <span class="project-nav__direction">Previous project</span>
+          <span class="project-nav__name">AJC Removals &amp; Clearances</span>
+        </a>
+        <a class="project-nav__link project-nav__link--next" href="/work/house-of-cornwall/">
+          <span class="project-nav__direction">Next project</span>
+          <span class="project-nav__name">House of Cornwall</span>
+        </a>
+      </div>
+    </nav>
+
+    <section class="contact-band" aria-labelledby="contact-band-heading">
+      <div class="wrap contact-band__inner">
+        <div class="contact-band__words">
+          <h2 class="contact-band__heading" id="contact-band-heading">Want something like this?</h2>
+          <p class="contact-band__body">Tell us what your business does and what you want the site to do, and we&rsquo;ll tell you what&rsquo;s involved. Plain English, and no obligation.</p>
+        </div>
+
+        <div class="contact-band__actions">
+          <a class="btn btn--primary" href="/contact/#enquiry">Get in touch</a>
+          <!-- Written out in full rather than hidden behind "call us": on a
+               phone it dials, and on a desktop it is the number itself, which
+               is what someone with a landline in their hand needs to see. -->
+          <a class="contact-band__phone" href="tel:+447456809049">
+            07456 809049
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+    <footer class="site-footer">
+      <div class="wrap site-footer__inner">
+        <p class="site-footer__contact">
+          <a href="tel:+447456809049">07456 809049</a>
+          <a href="mailto:benwmiller101@gmail.com">benwmiller101@gmail.com</a>
+        </p>
+        <p class="site-footer__meta">
+          Picsel — web design and automation in Cornwall.
+          &copy; 2026
+        </p>
+      </div>
+    </footer>
+
+  <!-- type="module" so it can import the shared noise generator. Modules are
+       deferred by default, so this never blocks the page from appearing. -->
+  <script type="module" src="/backdrop.js"></script>
+</body>
+</html>

@@ -21,6 +21,7 @@ import { SITE, absoluteUrl } from '../site.config.js';
 import { renderPage } from './templates/page.js';
 import { HOME_PAGE } from './pages/home.js';
 import { WORK_PAGE } from './pages/work.js';
+import { PROJECT_PAGES } from './pages/project.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -34,11 +35,13 @@ const DESCRIPTION_MAX = 155;
    sitemap.xml in the same commit that creates it — generating both from this
    one list is what makes obeying it automatic rather than a thing to remember.
 
-   Project pages are not listed here: they are generated from projects.js in
-   Section 6, so adding a project never means editing this file. */
+   Project pages are not listed individually: they are generated from
+   projects.js, so adding a project adds a route, a page and a sitemap entry
+   without this file changing at all. */
 const PAGES = [
   HOME_PAGE,
   WORK_PAGE,
+  ...PROJECT_PAGES,
 ];
 
 async function build() {

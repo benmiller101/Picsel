@@ -533,18 +533,67 @@ pixels, one `<h1>`, a clean console, and all five links matching their slugs in 
 ## Section 6: Project pages
 **Priority: CRITICAL | Effort: half a day**
 
-- [ ] One **static HTML page per project** (own URL, title, meta) generated from `projects.js` + a
+- [x] One **static HTML page per project** (own URL, title, meta) generated from `projects.js` + a
       shared template
-- [ ] Layout: project name (pixel display, restrained), sector label, the desktop screenshot as the
+- [x] Layout: project name (pixel display, restrained), sector label, the desktop screenshot as the
       page hero, the blurb in Lexend, the small "what we did" tags, a **prominent "Visit the live
       site" button** opening the client `url` in a new tab (`rel="noopener"`), the mobile screenshot
       alongside, previous/next project links, and the contact band
-- [ ] Calm dark framing so the screenshot carries the colour; simple device/browser frame, no glassmorphism
+- [x] Calm dark framing so the screenshot carries the colour; simple device/browser frame, no glassmorphism
 
 **What we built:**
+
+Five pages from one template and one list. Nothing is written per client — name, sector, location,
+blurb, live URL, screenshots and alt text all come from `projects.js` — so a sixth project adds a
+sixth page, a sixth route and a sixth sitemap entry without a line of new code. `tools/build.js` no
+longer names project pages individually; it spreads the generated list.
+
+The page has a narrow job. Someone clicked a card because a screenshot looked like the kind of site
+they want, and they are deciding whether to ring. The fastest way to convince them is not more words
+about the build — it is the live site. So the page is arranged to get them there: the screenshot
+large at the top in a plain browser frame, one paragraph, and the button.
+
+The browser frame shows the real domain without the `www.`, which is the one piece of chrome that
+earns its place: it tells the visitor where the button is about to take them before they press it.
+The phone shot sits beside the words at a deliberately narrower column, because most of these
+clients' customers are on a phone and a portfolio for small businesses should show the small screen
+was designed rather than left to shrink.
+
+Audited across all five pages rather than spot-checked: one `<h1>` each, unique titles and
+descriptions within their limits, both screenshots carrying non-identical alt text, the live-site
+link on every page carrying `target="_blank"` with `rel="noopener noreferrer"` and pointing at the
+right client URL, and the Open Graph image set to that project's own desktop capture. No sideways
+scrolling and no tap target under 44 pixels at 375, 768, 1024 or 1440.
+
 **Decisions made:**
 
-**Done when:** each of the five projects has its own page passing a read-aloud check, with a working live-site link and prev/next.
+- **The pixel face carries the project name, and this is the one page where it carries a whole
+  heading.** Section 2 rationed it to the wordmark and the occasional title precisely so it would
+  still mean something here. Capped smaller than the `/work` heading: pixel letterforms at a large
+  size start reading as a logo rather than a title.
+- **The meta description is derived from the blurb, not written beside it.** A description
+  hand-written next to a blurb is a second copy of the same sentence, and the two drift the moment
+  one is edited. It takes the blurb's first sentence and appends "Built by Picsel." only when that
+  still fits inside 155 characters — which it does on three of the five.
+- **The two screenshots do not share alt text.** Both come from one `alt` field in `projects.js`,
+  so the phone shot appends ", shown on a phone". Two images with identical alt text on one page
+  tells a screen-reader user there are two of the same picture.
+- **`rel="noopener noreferrer"` on the live-site links, not just `noopener`.** The plan asked for
+  `noopener`, which stops the opened page reaching back into this one. `noreferrer` also stops
+  Picsel's URL being handed to the client's analytics — these are live client sites, and quietly
+  appearing in their referrer logs is not something a portfolio needs to do.
+- **Prev/next carry the project's name, not just a direction.** A link that says only "Next" tells
+  someone skimming, and anyone using a screen reader, nothing about where it goes. The pair wraps
+  around the list so neither link is ever dead.
+- **Tags say only what `projects.js` says**, which is `Website` and nothing else on all five. The
+  heading is "What we did" rather than "Services": one is a fact about this job, the other is a
+  menu. They are outlined rather than filled, because a row of solid badges is the pill-clutter
+  `CLAUDE.md` bans.
+- **The Julie Miller Art page never says Cornwall**, verified rather than assumed. It is the one
+  project in the Scottish Borders, and Section 9's local-signal rule exists so the site does not
+  claim a place that is not true of the work.
+
+**Done when:** each of the five projects has its own page passing a read-aloud check, with a working live-site link and prev/next. ✅ *(Shipping still needs Ben's confirmation that each client is happy to be featured — see the standing item above.)*
 
 ---
 
@@ -799,7 +848,7 @@ Lighter than a client engagement — this is Picsel's shop window, kept fresh.
 - [x] Section 3: Hero and scroll behaviour
 - [x] Section 4: Homepage (pricing block still pending Ben's decision)
 - [x] Section 5: Work index (project pages it links to are Section 6)
-- [ ] Section 6: Project pages
+- [x] Section 6: Project pages (shipping pending Ben's client sign-off)
 - [x] Section 7: Screenshot pipeline (taken early — see the section note)
 - [ ] Section 8: Contact page and form
 - [ ] Section 9: SEO infrastructure
