@@ -10,12 +10,14 @@
 
 /* ---- Nav -----------------------------------------------------------------
    Pinned to the top and floating over the content, carried across from the
-   prototype's treatment. The blur keeps the labels legible over whatever is
-   moving underneath — on the homepage that is the hero's blobs.
+   prototype's treatment. The bar is solid rather than frosted, so the labels
+   stay legible over whatever is moving underneath: on the homepage that is the
+   hero's blobs.
 
-   There is no hamburger. With four things in the bar, all four fit at 375px,
-   and hiding a phone-first audience's route to contact behind a button they
-   have to find first would be worse design than a slightly tighter bar. */
+   There is no hamburger. Three items (Home, Work, Get in touch) measure about
+   275px at the small-screen padding, so the whole bar fits inside 375px with
+   room to spare, and hiding a phone-first audience's route to contact behind a
+   button they have to find first would be worse design than a tighter bar. */
 .site-nav {
   position: fixed;
   top: var(--space-4);
@@ -648,12 +650,11 @@
 }
 
 /* ---- Small screens -------------------------------------------------------
-   The bar tightens rather than collapsing. Everything stays reachable; only
-   the padding and the label size give ground. Tap heights do not — they are
-   held at 44px by min-height, which padding changes cannot undercut. */
-/* With two items in the bar there is room to spare even at 375px, so small
-   screens only tighten the padding. Tap heights do not give ground: they are
-   held at 44px by min-height, which padding changes cannot undercut. */
+   The bar tightens rather than collapsing. All three items stay reachable and
+   only the padding gives ground: the labels keep their size, and tap heights
+   keep theirs too, held at 44px by min-height, which padding cannot undercut.
+   The accent loses its wider inset here so it matches the plain links, which
+   is the difference between the bar fitting 375px and crowding it. */
 @media (max-width: 640px) {
   .site-nav {
     padding: var(--space-1);
