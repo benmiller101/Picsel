@@ -32,7 +32,16 @@ import { makeNoise3D } from './noise.js';
 
 const BLOBS = {
   COUNT: 2,           // the reference is two, held either side of the wordmark
-  COUNT_SMALL: 4,
+
+  /* Was 4. Four blobs on a narrow screen filled the column better than two,
+     which is why it was set that way, but it meant a phone ran twice the blob
+     geometry and twice the composite area of a desktop: the heaviest path on
+     the weakest hardware, and measurably the reason mobile scored 31 points
+     below desktop. Two matches the desktop composition and halves the work.
+     The stacked layout still reads as full because the blobs are sized off the
+     viewport's short side, so on a narrow screen each one is already large
+     relative to the column. */
+  COUNT_SMALL: 2,
 
   /* --- shape: metaballs, not a wobbly circle ---------------------------
    * Each blob is a CLUSTER of round lobes that slowly orbit their own centre,
@@ -182,6 +191,20 @@ const PIXEL = {
   // getting finer as the screen gets smaller.
   CELL: 6,
 
+  /* Bigger blocks on phones, and this is a performance setting rather than an
+     aesthetic one. Every cost in the composite pass scales with the number of
+     cells, which is (width / CELL) * (height / CELL) — so the cell size is
+     squared in the bill. Going 6 -> 8 is a third off each axis and 44% off the
+     cell count, which is the cheapest large saving available here.
+
+     It is a visible change: the grain is coarser on a phone than on a desktop,
+     where the note above says it should read the same. That trade is worth
+     naming rather than hiding. On a small screen the wordmark and the blobs are
+     both physically smaller, the grain is proportionally closer to the desktop
+     look than the number suggests, and 8 was checked against 6 on a phone-width
+     viewport before it went in. */
+  CELL_SMALL: 8,
+
   // Alpha at which a blurred cell counts as inside the blob, 0-255. Derived
   // from the goo constants rather than picked: the SVG version this replaced
   // mapped alpha through (a * GOO_SHARPEN - GOO_THRESHOLD), so its edge sat
@@ -254,6 +277,37 @@ const CHROMA = {
   FALLOFF: 2.1,    // exponent on normalised distance. >1 keeps the middle of
                    // the frame clean and concentrates what little there is at
                    // the very edges.
+};
+
+/* ---- what the blob loop is allowed to cost ------------------------------
+ * Measured, not guessed. Lighthouse on emulated mobile put the homepage at 67
+ * against /work/'s 92, and the whole difference was total blocking time: 1,180ms
+ * here, 0ms there, on two pages that differ only by this file. The composite
+ * pass is the reason. It runs two canvas blurs, two getImageData readbacks and
+ * a per-pixel loop every frame, and getImageData is a GPU-to-CPU stall that
+ * cannot be hidden.
+ *
+ * The setting below does not change what the hero looks like. It changes how
+ * often the blobs redraw, not what they draw.
+ *
+ * REJECTED, and recorded so it is not tried again: deferring the blob redraw
+ * until after the window load event. It is the obvious move and it made things
+ * measurably worse, 84 down to 59, because total blocking time counts long
+ * tasks BETWEEN first contentful paint and interactive. Work done before first
+ * paint is not counted at all, so delaying the composite pass moved it out of
+ * the free window and into the measured one. Start this work early or make it
+ * cheap; do not move it later.
+ */
+const BLOB_COST = {
+  /* Frames per second for the blob redraw. The scroll scrub is deliberately NOT
+     throttled with it (see the frame loop): scrub is tied to the visitor's
+     finger and reads as broken at anything under the display's rate, whereas
+     the blobs are a slow lava lamp on a chunky pixel grid, where 30 is
+     indistinguishable from 60. Halving the redraws halves the readback bill,
+     which is the single biggest per-frame cost on the page.
+
+     0 disables the cap and draws every frame. */
+  FPS: 30,
 };
 
 /* The blobs' entrance: dragged in from off-page, left and right.
@@ -534,6 +588,18 @@ function createPicselHero(root) {
   const count = isSmall ? BLOBS.COUNT_SMALL : BLOBS.COUNT;
   const pointCount = isSmall ? BLOBS.POINTS_SMALL : BLOBS.POINTS;
 
+  /* Read once, here, rather than reaching for PIXEL.CELL at each of the three
+     places that need it. Those three have to agree: the surfaces are allocated
+     at one cell size, the geometry is scaled by it and the composite indexes by
+     it, so a disagreement between any two is a garbled picture rather than a
+     slightly wrong one. Deciding it in a single place makes that impossible.
+
+     Fixed for the life of the instance, like `count` above. Crossing the
+     breakpoint by resizing a desktop window will not re-grain the hero until
+     reload, which matches how `count` already behaves and is not worth the
+     reallocation of all four surfaces mid-drag. */
+  const cellSize = isSmall ? PIXEL.CELL_SMALL : PIXEL.CELL;
+
   /* The four surfaces the blobs are built from, all of them CELL times smaller
      than the stage. Three are working surfaces the visitor never sees:
 
@@ -735,7 +801,7 @@ function createPicselHero(root) {
   /* Lays out the pixel grid for the current stage size: how many cells fit,
      how big the buffers need to be, and where the chromatic fringe falls. */
   function resizeGrid() {
-    const cell = PIXEL.CELL;
+    const cell = cellSize;
     // Rounded UP, so the grid always covers the stage rather than leaving a
     // sliver of bare background down one edge.
     cols = Math.max(1, Math.ceil(vw / cell));
@@ -878,7 +944,7 @@ function createPicselHero(root) {
     // Reduced motion: hold the shapes still rather than removing them.
     const t = reduced ? 0 : time;
 
-    const cell = PIXEL.CELL;
+    const cell = cellSize;
 
     /* Both source surfaces are cleared, then set to draw in STAGE pixels: the
        transform divides every coordinate by the cell size on its way in, so all
@@ -1156,7 +1222,7 @@ function createPicselHero(root) {
    * melted outline. Blur them one at a time and each just gets its own soft
    * edge, and the necks between them never form. */
   function compositeBlobs() {
-    const cell = PIXEL.CELL;
+    const cell = cellSize;
 
     // Whatever was on screen last frame goes, always — the blobs may have moved
     // out of the patch they were in, and a patch-sized write would leave the
@@ -1488,6 +1554,16 @@ function createPicselHero(root) {
 
   /* ---- the loop --------------------------------------------------------- */
 
+  /* Time banked toward the next blob redraw. See BLOB_COST. `blobDt` accumulates
+     the real elapsed time across skipped frames so the drawn frame integrates
+     the full interval: every rate in drawBlobs is a per-second constant applied
+     through approach() or a multiply by dt, so handing it the accumulated value
+     makes a 30fps redraw land in exactly the same place a 60fps one would.
+     Dropping the skipped time instead would silently halve every speed in the
+     file. */
+  let blobDt = 0;
+  const blobInterval = BLOB_COST.FPS > 0 ? 1 / BLOB_COST.FPS : 0;
+
   function frame(now) {
     if (last === null) last = now;
     // Clamped so a backgrounded tab doesn't teleport the animation on return.
@@ -1497,7 +1573,13 @@ function createPicselHero(root) {
 
     /* Read the scroll first, draw second — one read and one write per frame,
        in that order, so nothing forces the browser to recalculate layout it
-       has already done. */
+       has already done.
+
+       This runs on every frame, deliberately, while the blob redraw below may
+       not. The scrub is driven by the visitor's own scrolling and has to track
+       it at the display's rate to feel attached to the finger; the blobs are
+       ambient and do not. Throttling both together was the obvious way to write
+       this and it makes the hero's one interactive moment feel broken. */
     if (scrubOn) {
       const next = readScroll();
       if (next !== exit) {
@@ -1506,7 +1588,11 @@ function createPicselHero(root) {
       }
     }
 
-    drawBlobs(elapsed, dt);
+    blobDt += dt;
+    if (blobDt >= blobInterval) {
+      drawBlobs(elapsed, blobDt);
+      blobDt = 0;
+    }
 
     if (!heroOnScreen()) {
       stop();
