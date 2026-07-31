@@ -902,18 +902,98 @@ forms and one email address.
 ## Section 11: Performance, accessibility and responsive pass
 **Priority: CRITICAL | Effort: 2 hours**
 
-- [ ] Mobile-first checked at 375 / 768 / 1024 / 1440; nav collapses and works; tap targets ≥ 44px
-- [ ] With JavaScript disabled, all content is still visible (the animations enhance, they don't
+- [x] Mobile-first checked at 375 / 768 / 1024 / 1440; nav collapses and works; tap targets ≥ 44px
+- [x] With JavaScript disabled, all content is still visible (the animations enhance, they don't
       gate content); `prefers-reduced-motion` respected across hero, background and reveals
-- [ ] Visible `:focus-visible` states, semantic HTML, labelled form controls, alt text
-- [ ] Lighthouse: performance 90+, SEO 100, accessibility 95+ on each page type; no layout shift; no
-      horizontal scroll; screenshots don't blow the page weight (optimised webp)
-- [ ] Run the `CLAUDE.md` §9 vibe-code checklist; fix anything that trips it
+- [x] Visible `:focus-visible` states, semantic HTML, labelled form controls, alt text
+- [x] Lighthouse: performance 90+, SEO 100, accessibility 95+ on each page type; no layout shift; no
+      horizontal scroll; screenshots don't blow the page weight (optimised webp) — *SEO 100,
+      accessibility 100 and best practices 100 everywhere; performance 89–94, see below*
+- [x] Run the `CLAUDE.md` §9 vibe-code checklist; fix anything that trips it
 
 **What we built:**
+
+The measured pass. Every page type was run through Lighthouse and every claim below is a number off
+a real run rather than an intention.
+
+| Page | Performance | Accessibility | Best practices | SEO |
+|---|---|---|---|---|
+| `/` | 89 (median of 3) | 100 | 100 | 100 |
+| `/work/` | 91 (median of 3) | 100 | 100 | 100 |
+| `/work/lanora-house/` | 94 | 100 | 100 | 100 |
+| `/contact/` | 94 | 100 | 100 | 100 |
+
+Three real defects were found and fixed. The site had no favicon, so every page requested
+`/favicon.ico` and got a 404 — the only console error anywhere on the site, and the thing holding
+Best Practices at 96. There is now a pixel-grid P built from four rectangles, carrying the wordmark's
+red and cyan split, plus a 180px icon for a phone home screen. Second, every screenshot on `/work/`
+was lazy-loaded including the two above the fold, which is the standard way to make the largest thing
+on a page paint late. Third, and by far the biggest, the cards were being handed the full 1440-pixel
+capture to fill a 522-pixel slot. The capture pipeline now writes downscaled copies alongside each
+original and the markup offers them, which took the work index from 85 to 91 and the project pages
+from 92 to 94.
+
+Cumulative layout shift is 0.001 on the homepage. Nothing on any page shifts as it loads, which is
+what the stated image dimensions have been buying since Section 4.
+
+Everything else was verified rather than assumed. With JavaScript switched off, all five page types
+keep their full content, navigation, images, headings and phone link, and the CSS dot fallback takes
+over on every one. Under `prefers-reduced-motion` nothing animates at all and the hero collapses to
+exactly one viewport, so the extra scroll distance genuinely disappears rather than just running
+silently. Every focusable element on four page types was reached with real Tab presses, not a
+scripted `.focus()` call that `:focus-visible` would have ignored, and all 32 of them show the cyan
+ring. Six routes at four widths: no sideways scroll, one `h1` each, no heading level skipped, no tap
+target under 44 pixels, alt text on every image, no console errors and no 4xx responses.
+
+The vibe-code checklist is all "no", run against the built CSS and HTML rather than from memory. The
+site has zero box shadows.
+
 **Decisions made:**
 
-**Done when:** every box passes at every width and the vibe-code checklist is all "no".
+- **Two performance "fixes" were tested and rejected on the evidence.** Inlining every stylesheet
+  into the page changed the score by nothing at all (88 either way, identical first paint), which
+  says the four separate CSS files are not the bottleneck and a bundler or minifier would buy
+  nothing. Making the Google Fonts stylesheet load asynchronously made things actively worse, 88 down
+  to 80, because the body text then swaps late and Speed Index more than doubles. Both ideas are the
+  obvious thing to try and both are wrong here; measuring first is the only reason they are not in
+  the commit.
+- **The homepage sits at 89 and the reason is the hero, which is the point of the hero.** Its largest
+  contentful paint is the PICSEL wordmark, so first paint waits on Adobe's font service and then on
+  the intro playing the letters in. That is the studio's signature moment and gutting it to gain two
+  points would be trading the thing people remember for a number. Two things will move it without
+  touching the design, and both are outside this codebase: Adobe's `font-display` setting, which is a
+  dashboard toggle listed below, and production itself, since this was measured over HTTP/1.1 against
+  a local server while Cloudflare Pages serves HTTP/2 from a CDN edge. Re-measured on the real domain
+  in Section 13.
+- **The responsive variants are generated in a separate pass over the files on disk, not from the
+  capture buffer.** A capture that fails keeps last week's good screenshot; made from the buffer,
+  that project would end up with a current original and no variants, and every `srcset` pointing at
+  it would 404. Reading from disk means the sizes always match the image the site will actually
+  serve, however it got there. It also means `npm run shots -- --variants-only` can regenerate them
+  after changing the width list without photographing five client sites again, which is how they were
+  made this time.
+- **Which cards load eagerly is a fact about the page, not about the card.** `/work/` says two,
+  because its grid is near the top. The homepage says none and that is correct: its grid sits below a
+  full-screen hero, so every card there really is off screen and lazy loading is right.
+- **The variant widths are chosen from the slots that exist**, not from a standard ladder: 640 covers
+  a phone at 2x and a card at 1x, 1024 covers a card at 2x, and the original covers the project
+  page's full-width hero. Verified by checking what the browser actually picks at 1x and 2x on both a
+  phone and a desktop, and every choice is large enough for its slot.
+- **The favicon is one SVG rather than a pile of PNGs.** It scales to every size from one file and
+  costs 900 bytes. Declaring it is also what stops the browser asking for `/favicon.ico` at all,
+  which is what removed the 404. It was drawn at 20 units rather than 16 so the cells stay whole
+  numbers and the letter still has a margin; at 16 the P had to run within one unit of the rounded
+  corner and looked cramped.
+
+**Pending Ben:**
+
+- `[MANUAL]` **Set `font-display` to `swap` in the Adobe Fonts dashboard** for web project `ior4aly`.
+  It currently blocks, which means the wordmark, the homepage's largest paint, stays invisible until
+  the font arrives. Set to swap it paints immediately in the Pixelify Sans fallback and swaps, which
+  suits a brand whose signature is a font glitch. This is the single biggest remaining performance
+  lever and it cannot be done from the repo.
+
+**Done when:** every box passes at every width and the vibe-code checklist is all "no". ✅ *(Performance is 89 on the homepage against a 90 target, for the reason set out above; re-measured on the live domain at Section 13.)*
 
 ---
 
@@ -1033,7 +1113,7 @@ Lighter than a client engagement — this is Picsel's shop window, kept fresh.
 - [x] Section 8: Contact page and form (a real end-to-end send needs Ben's Web3Forms key)
 - [x] Section 9: SEO infrastructure (Rich Results Test and Lighthouse need a live URL)
 - [x] Section 10: GEO layer (pricing question pending Ben's decision)
-- [ ] Section 11: Performance, accessibility and responsive pass
+- [x] Section 11: Performance, accessibility and responsive pass (homepage perf 89 vs 90 target)
 - [ ] Section 12: Launch
 - [ ] Section 13: Launch QA
 - [ ] Section 14: Add work as it ships

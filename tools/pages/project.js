@@ -13,18 +13,15 @@
 
 import { PROJECTS, getAdjacentProjects } from '../../projects.js';
 import { escapeHtml } from '../templates/page.js';
+import { SHOT_SIZES, shotSrcset } from '../templates/images.js';
 import { ORG_ID, breadcrumbs } from '../templates/schema.js';
 import { absoluteUrl } from '../../site.config.js';
 import { renderContactBand } from '../partials/contact-band.js';
 
-/* The captures' real pixel sizes, from tools/capture-shots.js — stated on
-   every <img> so the browser reserves the right space before the file lands
-   and nothing below it jumps as the page loads. Same numbers as the work card
-   uses, for the same reason. */
-const SHOT_SIZES = {
-  desktop: { width: 1440, height: 900 },
-  mobile: { width: 780, height: 1688 },
-};
+/* Sizes and srcset both come from templates/images.js, shared with the work
+   card so this page and the grid cannot disagree about which files exist.
+   Still stated on every <img> so the browser reserves the right space before
+   the file lands and nothing below it jumps as the page loads. */
 
 /* The address bar shows the real domain, without the www. It is the one piece
    of chrome that earns its place: it tells the visitor where the button is
@@ -57,9 +54,14 @@ function renderDesktopShot(project) {
             <span class="browser__dots"><i></i><i></i><i></i></span>
             <span class="browser__host">${escapeHtml(displayHost(project.url))}</span>
           </div>
+          <!-- The shot runs the full width of the 72rem wrap, less its gutters,
+               so on a wide screen the slot really is about 68rem. Below that it
+               is very nearly the whole viewport. -->
           <img
             class="browser__shot"
             src="/assets/work/${escapeHtml(project.slug)}/desktop.webp"
+            srcset="${escapeHtml(shotSrcset(project.slug, 'desktop'))}"
+            sizes="(min-width: 76rem) 68rem, 92vw"
             alt="${escapeHtml(project.alt)}"
             width="${size.width}"
             height="${size.height}"
@@ -79,6 +81,8 @@ function renderMobileShot(project) {
             <img
               class="phone__shot"
               src="/assets/work/${escapeHtml(project.slug)}/mobile.webp"
+              srcset="${escapeHtml(shotSrcset(project.slug, 'mobile'))}"
+              sizes="(min-width: 64rem) 18rem, 92vw"
               alt="${escapeHtml(project.alt)}, shown on a phone"
               width="${size.width}"
               height="${size.height}"

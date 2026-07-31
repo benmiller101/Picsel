@@ -15,16 +15,20 @@
    ONE COMMAND
      npm run shots              re-capture every project
      npm run shots -- <slug>    re-capture just one, e.g. `npm run shots -- lanora-house`
+     npm run shots -- --variants-only   redo the downscaled sizes from the images
+                                already on disk, without opening a client site
 
    WHAT IT PRODUCES
      assets/work/<slug>/desktop.webp   1440 x 900, the top of the page
      assets/work/<slug>/mobile.webp    390 x 844, the top of the page
+     plus a downscaled copy at each width in VARIANT_WIDTHS, e.g. desktop-640.webp,
+     so the markup can offer a browser a size that suits the slot it is filling
 
    A site that will not load is never fatal: it logs a warning, leaves any
    existing image alone, and carries on to the next one. A broken client server
    must not be able to break Picsel's build. */
 
-import { mkdir, writeFile, access } from 'node:fs/promises';
+import { mkdir, writeFile, readFile, access } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -48,6 +52,23 @@ const VIEWPORTS = [
    flat web design, at roughly a fifth of the size of a PNG. Page weight is a
    ranking factor and this is the heaviest thing on the site, so it matters. */
 const IMAGE_QUALITY = 82;
+
+/* ---- Responsive variants --------------------------------------------------
+   The capture above is the full-size original. These are downscaled copies of
+   the SAME picture, written alongside it, so the browser can pick a size that
+   suits the slot it is filling.
+
+   The reason this matters here more than on most sites: a card in the /work
+   grid is about 540px wide on a desktop, and it was being handed the whole
+   1440px capture. That is seven times the pixels actually used, on the largest
+   image on the page, for an audience the plan describes as phone-first and
+   often on a poor signal. It was the single heaviest thing the site did.
+
+   Widths are chosen from the slots that exist, not from a standard ladder:
+   640 covers a phone at 2x and a card at 1x, 1024 covers a card at 2x and the
+   project page at 1x, and the original covers the project page hero at full
+   width. Nothing is upscaled — a variant wider than the original is skipped. */
+const VARIANT_WIDTHS = [640, 1024];
 
 /* How long to give a client's server before giving up on it. Generous: some of
    these are small shared hosts that take a moment to wake up, and a false
@@ -328,7 +349,13 @@ async function hideCookieBanner(page) {
 async function main() {
   /* `npm run shots -- <slug>` re-captures one project. Useful when a single
      client redesigns and there is no reason to hammer the other four. */
-  const onlySlug = process.argv[2];
+  /* --variants-only regenerates the downscaled sizes from the images already on
+     disk, without opening a single client site. That is what you want after
+     changing VARIANT_WIDTHS: the pictures have not changed, only the sizes
+     wanted from them. */
+  const args = process.argv.slice(2);
+  const variantsOnly = args.includes('--variants-only');
+  const onlySlug = args.find((arg) => !arg.startsWith('--'));
   const targets = onlySlug
     ? PROJECTS.filter((project) => project.slug === onlySlug)
     : PROJECTS;
@@ -354,7 +381,10 @@ async function main() {
     // One site at a time. These are small client servers, and firing five
     // concurrent headless browsers at them is rude for no gain.
     for (const project of targets) {
-      await captureProject(browser, project, warnings);
+      if (!variantsOnly) await captureProject(browser, project, warnings);
+      /* Always, even when the capture above failed: the variants are made from
+         whatever image is on disk, so they match what the site will serve. */
+      await writeVariants(browser, project, warnings);
     }
   } finally {
     await browser.close();
@@ -369,6 +399,81 @@ async function main() {
     `\nCaptured ${targets.length} project(s)` +
       `${warnings.length ? ` with ${warnings.length} warning(s)` : ''}.`,
   );
+}
+
+/* ---- Making the variants --------------------------------------------------
+   Deliberately a separate pass over the files ON DISK rather than something
+   done to the buffer inside captureProject. Two reasons, and both are about
+   not producing a half-built set:
+
+   1. A capture that fails keeps last week's good screenshot. If variants were
+      made from the capture buffer, that project would end up with a current
+      original and no variants, and every srcset pointing at it would 404.
+      Reading from disk means the variants always match whatever image the
+      site is actually going to serve, however it got there.
+   2. It can be re-run on its own. Changing VARIANT_WIDTHS should not mean
+      photographing five client sites again.
+
+   The downscaling is done by the browser that is already open: the image is
+   drawn into a canvas at the target width and read back out as webp. It is not
+   a general image library and does not need to be — one bilinear downscale of
+   a screenshot is exactly what a canvas is good at. */
+async function writeVariants(browser, project, warnings) {
+  const outDir = join(ROOT, 'assets', 'work', project.slug);
+  const page = await browser.newPage();
+
+  try {
+    for (const viewport of VIEWPORTS) {
+      const source = join(outDir, `${viewport.name}.webp`);
+      if (!(await fileExists(source))) continue;
+
+      const dataUrl = `data:image/webp;base64,${(await readFile(source)).toString('base64')}`;
+
+      for (const width of VARIANT_WIDTHS) {
+        const result = await page.evaluate(
+          (src, targetWidth, quality) =>
+            new Promise((resolve) => {
+              const img = new Image();
+              img.onload = () => {
+                /* Never upscale. A 640-wide variant of a 390-wide phone capture
+                   would be a bigger file carrying no more detail. */
+                if (img.naturalWidth <= targetWidth) return resolve(null);
+
+                const canvas = document.createElement('canvas');
+                canvas.width = targetWidth;
+                canvas.height = Math.round(img.naturalHeight * (targetWidth / img.naturalWidth));
+                const ctx = canvas.getContext('2d');
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                resolve({
+                  data: canvas.toDataURL('image/webp', quality).split(',')[1],
+                  height: canvas.height,
+                });
+              };
+              img.onerror = () => resolve(null);
+              img.src = src;
+            }),
+          dataUrl,
+          width,
+          IMAGE_QUALITY / 100,
+        );
+
+        if (!result) continue;
+
+        const outPath = join(outDir, `${viewport.name}-${width}.webp`);
+        const buffer = Buffer.from(result.data, 'base64');
+        await writeFile(outPath, buffer);
+        console.log(
+          `  size   ${project.slug.padEnd(22)} ${`${viewport.name}-${width}`.padEnd(14)} ` +
+            `${(buffer.length / 1024).toFixed(0)}KB`,
+        );
+      }
+    }
+  } catch (error) {
+    warnings.push(`${project.slug}: could not write responsive variants — ${error.message}`);
+  } finally {
+    await page.close();
+  }
 }
 
 main().catch((error) => {

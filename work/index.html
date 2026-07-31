@@ -26,9 +26,27 @@
   <meta name="twitter:description" content="The five sites Picsel has built for trades and small businesses, mostly in Cornwall. Every one links out to the live site." />
   <meta name="twitter:card" content="summary" />
 
+  <!-- The icon. Declaring it is also what stops the browser asking for
+       /favicon.ico and getting a 404 on every page, which was the only error in
+       the console anywhere on this site. SVG so one file covers every size. -->
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
   <!-- Adobe Fonts, web project ior4aly: argent-pixel-cf (the resting wordmark)
        plus the three faces the glitch rotates through. Served by Adobe while
-       the Creative Cloud subscription is live — never self-hosted, per licence. -->
+       the Creative Cloud subscription is live — never self-hosted, per licence.
+
+       These preconnects are not decoration. The wordmark is the homepage's
+       largest contentful paint, so the whole measured load time waits on this
+       stylesheet, the second sheet it imports from p.typekit.net, and then the
+       font file itself. Opening the sockets while the HTML is still parsing
+       takes the DNS lookup and TLS handshake off that critical path.
+       use.typekit.net appears twice on purpose: it serves both the stylesheet,
+       which is fetched without CORS, and the font files, which fonts always
+       fetch with it. The two use separate connections, so both are warmed. -->
+  <link rel="preconnect" href="https://use.typekit.net" />
+  <link rel="preconnect" href="https://use.typekit.net" crossorigin />
+  <link rel="preconnect" href="https://p.typekit.net" />
   <link rel="stylesheet" href="https://use.typekit.net/ior4aly.css" />
 
   <!-- Lexend carries every word of reading copy on the site. Pixelify Sans is
@@ -199,10 +217,12 @@
               <img
                 class="work-card__shot"
                 src="/assets/work/nevitt-construction/desktop.webp"
+                srcset="/assets/work/nevitt-construction/desktop-640.webp 640w, /assets/work/nevitt-construction/desktop-1024.webp 1024w, /assets/work/nevitt-construction/desktop.webp 1440w"
+                sizes="(min-width: 48rem) 36rem, 92vw"
                 alt="Screenshot of the A Nevitt Construction website"
                 width="1440"
                 height="900"
-                loading="lazy" decoding="async"
+                fetchpriority="high" decoding="async"
               />
             </span>
             <span class="work-card__meta">
@@ -217,10 +237,12 @@
               <img
                 class="work-card__shot"
                 src="/assets/work/lanora-house/desktop.webp"
+                srcset="/assets/work/lanora-house/desktop-640.webp 640w, /assets/work/lanora-house/desktop-1024.webp 1024w, /assets/work/lanora-house/desktop.webp 1440w"
+                sizes="(min-width: 48rem) 36rem, 92vw"
                 alt="Screenshot of the Lanora House website"
                 width="1440"
                 height="900"
-                loading="lazy" decoding="async"
+                decoding="async"
               />
             </span>
             <span class="work-card__meta">
@@ -235,6 +257,8 @@
               <img
                 class="work-card__shot"
                 src="/assets/work/ajc-removals/desktop.webp"
+                srcset="/assets/work/ajc-removals/desktop-640.webp 640w, /assets/work/ajc-removals/desktop-1024.webp 1024w, /assets/work/ajc-removals/desktop.webp 1440w"
+                sizes="(min-width: 48rem) 36rem, 92vw"
                 alt="Screenshot of the AJC Removals &amp; Clearances website"
                 width="1440"
                 height="900"
@@ -253,6 +277,8 @@
               <img
                 class="work-card__shot"
                 src="/assets/work/julie-miller-art/desktop.webp"
+                srcset="/assets/work/julie-miller-art/desktop-640.webp 640w, /assets/work/julie-miller-art/desktop-1024.webp 1024w, /assets/work/julie-miller-art/desktop.webp 1440w"
+                sizes="(min-width: 48rem) 36rem, 92vw"
                 alt="Screenshot of the Julie Miller Art website"
                 width="1440"
                 height="900"
@@ -271,6 +297,8 @@
               <img
                 class="work-card__shot"
                 src="/assets/work/house-of-cornwall/desktop.webp"
+                srcset="/assets/work/house-of-cornwall/desktop-640.webp 640w, /assets/work/house-of-cornwall/desktop-1024.webp 1024w, /assets/work/house-of-cornwall/desktop.webp 1440w"
+                sizes="(min-width: 48rem) 36rem, 92vw"
                 alt="Screenshot of the House of Cornwall website"
                 width="1440"
                 height="900"

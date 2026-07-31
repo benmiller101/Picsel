@@ -8,6 +8,7 @@
    disagree with the one in projects.js. */
 
 import { escapeHtml } from '../templates/page.js';
+import { SHOT_SIZES, shotSrcset, cardSizes } from '../templates/images.js';
 
 /* The shapes a card can take, cycled through by position in the grid. This is
    what stops the grid being five identical rectangles in a row — the rhythm is
@@ -41,25 +42,26 @@ const SHAPES = [
    looking like different things. */
 const INDEX_SHAPE = { name: 'index', span: 3, shot: 'desktop', ratio: '16 / 10' };
 
-/* The captures' real pixel sizes, from tools/capture-shots.js. Stated on every
-   <img> so the browser can reserve the right space before the file arrives —
-   without it the text below each card jumps down as each screenshot loads,
-   which is both unpleasant and a measurable ranking penalty. */
-const SHOT_SIZES = {
-  desktop: { width: 1440, height: 900 },
-  mobile: { width: 780, height: 1688 },
-};
+/* The captures' real pixel sizes now live in templates/images.js, next to the
+   variant widths they have to agree with. They are still stated on every <img>
+   for the same reason as before: without them the text below each card jumps
+   down as each screenshot loads, which is both unpleasant and a measurable
+   ranking penalty. */
 
 /**
  * @param {object} project  A record from projects.js.
  * @param {number} index    Position in the grid, which picks the shape.
  * @param {object} [options]
  * @param {boolean} [options.eager]   Skip lazy-loading — for a card that is
- *                                    above the fold on its own page.
+ *                                    above the fold on its own page. The first
+ *                                    such card also gets fetchpriority="high",
+ *                                    because it is the one the browser should
+ *                                    fetch before anything else on the page.
+ * @param {boolean} [options.first]   True for the highest-priority card.
  * @param {'showcase'|'index'} [options.variant]  'showcase' cycles the shapes
  *                                    above; 'index' makes every card the same.
  */
-export function renderWorkCard(project, index, { eager = false, variant = 'showcase' } = {}) {
+export function renderWorkCard(project, index, { eager = false, first = false, variant = 'showcase' } = {}) {
   const shape = variant === 'index' ? INDEX_SHAPE : SHAPES[index % SHAPES.length];
   const size = SHOT_SIZES[shape.shot];
   const src = `/assets/work/${project.slug}/${shape.shot}.webp`;
@@ -75,10 +77,12 @@ export function renderWorkCard(project, index, { eager = false, variant = 'showc
               <img
                 class="work-card__shot"
                 src="${escapeHtml(src)}"
+                srcset="${escapeHtml(shotSrcset(project.slug, shape.shot))}"
+                sizes="${escapeHtml(cardSizes(shape.span))}"
                 alt="${alt}"
                 width="${size.width}"
                 height="${size.height}"
-                ${eager ? '' : 'loading="lazy" '}decoding="async"
+                ${eager ? '' : 'loading="lazy" '}${first ? 'fetchpriority="high" ' : ''}decoding="async"
               />
             </span>
             <span class="work-card__meta">
@@ -89,11 +93,36 @@ export function renderWorkCard(project, index, { eager = false, variant = 'showc
         </article>`;
 }
 
-/** The whole grid, for a list of projects. */
+/**
+ * The whole grid, for a list of projects.
+ *
+ * @param {object[]} projects
+ * @param {object}  [options]
+ * @param {number}  [options.eagerCount]  How many cards are above the fold on
+ *   this page, and therefore must NOT be lazy-loaded. Defaults to none.
+ *
+ *   This matters more than it looks. Lazy-loading an image that is already on
+ *   screen is the standard way to make a page measurably slower: the browser
+ *   holds the request back, then discovers it needs it after all, and the
+ *   largest thing on the page paints late. Which cards are above the fold is a
+ *   fact about the PAGE, not about the card, so the page says how many.
+ *
+ *   The homepage passes nothing on purpose. Its grid sits below a full-screen
+ *   hero, so every card there genuinely is off screen and lazy is correct.
+ */
 export function renderWorkGrid(projects, options = {}) {
   const modifier = options.variant === 'index' ? ' work-grid--index' : '';
+  const eagerCount = options.eagerCount ?? 0;
 
   return `      <div class="work-grid${modifier}">
-${projects.map((project, index) => renderWorkCard(project, index, options)).join('\n')}
+${projects
+  .map((project, index) =>
+    renderWorkCard(project, index, {
+      ...options,
+      eager: index < eagerCount,
+      first: index === 0 && eagerCount > 0,
+    }),
+  )
+  .join('\n')}
       </div>`;
 }

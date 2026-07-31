@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" role="img" aria-label="Picsel">
+  <!-- The mark: a P drawn on the same pixel grid the wordmark uses, in cells of
+       two units on a twenty-unit square. Four rectangles, because that is all a
+       pixel P is:
+
+         X X X X .      stem      col 0, every row
+         X . . . X      top bar   cols 1-3, row 0
+         X . . . X      right     col 4, rows 1-2
+         X X X X .      bowl      cols 1-3, row 3
+         X . . . .
+         X . . . .
+         X . . . .
+
+       Twenty units and not sixteen so the cells stay whole numbers AND the
+       letter still has a margin. At sixteen the P had to run to within one unit
+       of the edge, where the rounded corner crowds it.
+
+       Behind the white letter sit a cyan and a red copy, offset six tenths of a
+       unit either way. That is the wordmark's chromatic split at icon size, and
+       it is the reason this reads as Picsel rather than as any P on a dark
+       square. It is the smallest offset that survives being drawn at 16px; more
+       turns to mud at the size it is seen at most. -->
+  <rect width="20" height="20" rx="4" fill="#0a0a0a"/>
+  <g fill="#00e1ff" transform="translate(-0.6 0)">
+    <rect x="5" y="3" width="2" height="14"/>
+    <rect x="7" y="3" width="6" height="2"/>
+    <rect x="13" y="5" width="2" height="4"/>
+    <rect x="7" y="9" width="6" height="2"/>
+  </g>
+  <g fill="#ff0050" transform="translate(0.6 0)">
+    <rect x="5" y="3" width="2" height="14"/>
+    <rect x="7" y="3" width="6" height="2"/>
+    <rect x="13" y="5" width="2" height="4"/>
+    <rect x="7" y="9" width="6" height="2"/>
+  </g>
+  <g fill="#ffffff">
+    <rect x="5" y="3" width="2" height="14"/>
+    <rect x="7" y="3" width="6" height="2"/>
+    <rect x="13" y="5" width="2" height="4"/>
+    <rect x="7" y="9" width="6" height="2"/>
+  </g>
+</svg>
