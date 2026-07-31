@@ -38,17 +38,25 @@ function escapeHtml(value = '') {
    fine for a page of visual experiments and wrong for a real site: it made the
    navigation invisible to anything that does not run scripts. */
 /* ---- The rolling label ----------------------------------------------------
-   A nav label printed twice, one copy above the other inside a window exactly
-   one line tall. On hover the pair slides up by one line, so the word appears
-   to leave through the top while an identical word arrives from underneath.
+   A label printed twice, one copy directly beneath the other inside a window
+   exactly one copy tall. On hover the pair slides up, so the text appears to
+   leave through the top while an identical copy arrives from underneath.
 
    Two copies rather than one word animating up and back, because the point of
    the effect is that the text is REPLACED rather than nudged: with one copy the
    label would vanish and return, and the gap would read as a flicker.
 
    The second copy is hidden from assistive technology. It is the same word, and
-   without that a screen reader announces the link as "Home Home". */
-function rollLabel(label) {
+   without that a screen reader announces the link as "Home Home".
+
+   Exported because three templates now build one: the nav here, the work card,
+   and the previous/next links on a project page. Copying the markup into each
+   would have meant three places to keep in step with the CSS, and the two have
+   to agree exactly or the effect silently does nothing at all.
+
+   Whatever wraps this must carry the `roll-trigger` class. That is what the CSS
+   hangs the hover and focus states off; this markup on its own does nothing. */
+export function rollLabel(label) {
   const text = escapeHtml(label);
   return `<span class="roll"><span class="roll__inner"><span class="roll__line">${text}</span><span class="roll__line" aria-hidden="true">${text}</span></span></span>`;
 }
@@ -68,7 +76,7 @@ function renderNav(currentPath) {
       const current = isCurrent ? ' aria-current="page"' : '';
       const accent = item.accent ? ' site-nav__link--accent' : '';
 
-      return `        <li><a class="site-nav__link${accent}" href="${escapeHtml(item.href)}"${current}>${rollLabel(item.label)}</a></li>`;
+      return `        <li><a class="site-nav__link roll-trigger${accent}" href="${escapeHtml(item.href)}"${current}>${rollLabel(item.label)}</a></li>`;
     })
     .join('\n');
 

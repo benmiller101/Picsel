@@ -7,7 +7,7 @@
    hand into the markup — a name typed into a page is a name that will one day
    disagree with the one in projects.js. */
 
-import { escapeHtml } from '../templates/page.js';
+import { escapeHtml, rollLabel } from '../templates/page.js';
 import { SHOT_SIZES, shotSrcset, cardSizes } from '../templates/images.js';
 
 /* The shapes a card can take, cycled through by position in the grid. This is
@@ -72,7 +72,7 @@ export function renderWorkCard(project, index, { eager = false, first = false, v
   const alt = escapeHtml(project.alt);
 
   return `        <article class="work-card work-card--${shape.name}">
-          <a class="work-card__link" href="/work/${escapeHtml(project.slug)}/">
+          <a class="work-card__link roll-trigger" href="/work/${escapeHtml(project.slug)}/">
             <span class="work-card__frame" style="--card-ratio: ${shape.ratio}">
               <img
                 class="work-card__shot"
@@ -86,7 +86,7 @@ export function renderWorkCard(project, index, { eager = false, first = false, v
               />
             </span>
             <span class="work-card__meta">
-              <h3 class="work-card__name">${escapeHtml(project.name)}</h3>
+              <h3 class="work-card__name">${rollLabel(project.name)}</h3>
               <p class="work-card__sector">${escapeHtml(project.sector)} &middot; ${escapeHtml(project.location)}</p>
             </span>
           </a>

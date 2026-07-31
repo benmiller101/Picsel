@@ -51,27 +51,38 @@
    printed twice inside it, so sliding the pair up by one line swaps the word
    for an identical one arriving from below.
 
-   The line height is a variable because three things have to agree on it: the
-   height of the window, the height of each line, and the distance travelled. A
-   disagreement between any two of them shows up as the text sitting a pixel or
-   two off centre after the roll, which looks like a bug rather than an effect.
-   1.6 and not 1.5, for a reason worth writing down: the nav label is 15px, so
-   1.5 gives a 22.5px line and the roll travels half a pixel short of a whole
-   one. The text then settles on a half-pixel and renders faintly soft. 1.6
-   makes it 24px exactly, so every line, the window and the travel are whole
-   pixels. It also leaves room for descenders, which none of the current labels
-   have and some future one will. */
-.roll {
-  --roll-lh: 1.6;
+   It started in the nav, where every label is one short word, and the first
+   version was built for exactly that: a window with a hard height of one line,
+   two copies stacked inside it, and a travel of half the pair. That works right
+   up until the text wraps, and then the window is one line tall around
+   something two lines tall and the label is sliced in half.
 
+   It is used on project titles now, which are real names of real businesses and
+   not a word chosen to fit. "AJC Removals & Clearances" is 272px at the card's
+   size, which fits a 343px card on a 375px phone, but only just, and the next
+   client Picsel signs does not know that. So nothing here states a height.
+
+   How it works instead: the SECOND copy is taken out of the flow and pinned
+   directly under the first. The window then takes its height from the first
+   copy alone, whatever that turns out to be, and one line or three is decided
+   by the text rather than by this file. The travel is -100% of the inner
+   element, and the inner element is exactly one copy tall, so the distance is
+   always precisely one copy. Nothing has to be told the line height and nothing
+   can disagree with anything else about it.
+
+   The whole-pixel argument that picked 1.6 for the nav is preserved and moved
+   to the nav itself, which is the only place that knows its own font size. */
+.roll {
   display: block;
   overflow: hidden;
-  height: calc(var(--roll-lh) * 1em);
-  line-height: var(--roll-lh);
 }
 
 .roll__inner {
   display: block;
+  /* The containing block for the pinned second copy below, so that copy is
+     positioned against the inner element and is carried along by its
+     transform rather than staying put while the first copy slides off. */
+  position: relative;
   /* The whole point is that the eye follows one word out and the next one in.
      This started at 140ms, which read as a flicker, then 260ms, which Ben still
      clocked as too fast: at that speed you register that something moved rather
@@ -83,25 +94,34 @@
 
 .roll__line {
   display: block;
-  height: calc(var(--roll-lh) * 1em);
 }
 
-/* Half of a two-line stack is exactly one line. Focus gets the same treatment
-   as hover: a keyboard user should see the bar respond the way a mouse user
-   does, not just get an outline. */
-.site-nav__link:hover .roll__inner,
-.site-nav__link:focus-visible .roll__inner {
-  transform: translateY(-50%);
+/* The second copy, and only ever the second: pinned immediately below the
+   first and stretched to the same width so it wraps into the same shape. Out
+   of the flow, so it adds nothing to the height the window measures. */
+.roll__line + .roll__line {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+/* One copy exactly, however tall a copy turned out to be. Focus gets the same
+   treatment as hover throughout: a control that only responds to a mouse is a
+   control that looks broken to anyone using a keyboard. */
+.roll-trigger:hover .roll__inner,
+.roll-trigger:focus-visible .roll__inner {
+  transform: translateY(-100%);
 }
 
 /* Under reduced motion the label must not travel. base.css already collapses
    every transition to near-zero, which would make the swap instant rather than
-   absent — and an instant swap of a word for the same word is invisible, which
+   absent, and an instant swap of a word for the same word is invisible, which
    is the right outcome. This makes it explicit rather than relying on a
    duration of 0.01ms landing exactly on the second copy. */
 @media (prefers-reduced-motion: reduce) {
-  .site-nav__link:hover .roll__inner,
-  .site-nav__link:focus-visible .roll__inner {
+  .roll-trigger:hover .roll__inner,
+  .roll-trigger:focus-visible .roll__inner {
     transform: none;
   }
 }
@@ -125,6 +145,16 @@
   border-radius: var(--radius-pill);
 
   font-size: var(--text-sm);
+  /* The roll's travel is one line box, so the line height decides it, and it
+     wants to be a whole number of pixels: the label is 15px, and the site's
+     1.5 would give a 22.5px line, leaving the text settled on a half pixel
+     after the roll and rendering faintly soft. 1.6 makes it 24px exactly.
+
+     This lived on .roll until project titles started using the same effect at
+     a different size. Forcing 1.6 on them would have re-led every card title
+     to 32px and moved the grid around, so the rule now sits with the nav,
+     which is the only thing that knows the nav's font size. */
+  line-height: 1.6;
   color: var(--ink-muted);
   text-decoration: none;
   white-space: nowrap;
@@ -453,11 +483,13 @@
   color: var(--ink);
 }
 
-.work-card__link:hover .work-card__name {
-  text-decoration: underline;
-  text-decoration-color: var(--accent);
-  text-underline-offset: 0.25em;
-}
+/* The title used to take an accent underline on hover. It cannot now: the
+   underline is drawn on the text, the text is what slides, so the rule travels
+   up with the first copy and ends up as a line floating above the title with
+   nothing under it. Two hover affordances on one title was one too many in any
+   case, and the roll is the more distinctive of them. The card still answers a
+   hover in two other ways, the frame border lifting and the screenshot easing
+   in, so nothing is lost by taking this out. */
 
 .work-card__sector {
   margin-top: var(--space-1);

@@ -12,7 +12,7 @@
    and a button that opens the real thing. */
 
 import { PROJECTS, getAdjacentProjects } from '../../projects.js';
-import { escapeHtml } from '../templates/page.js';
+import { escapeHtml, rollLabel } from '../templates/page.js';
 import { SHOT_SIZES, shotSrcset } from '../templates/images.js';
 import { ORG_ID, breadcrumbs } from '../templates/schema.js';
 import { absoluteUrl } from '../../site.config.js';
@@ -121,9 +121,9 @@ function renderAdjacent(slug) {
 
   const link = (project, direction, label) => {
     if (!project) return '';
-    return `        <a class="project-nav__link project-nav__link--${direction}" href="/work/${escapeHtml(project.slug)}/">
+    return `        <a class="project-nav__link project-nav__link--${direction} roll-trigger" href="/work/${escapeHtml(project.slug)}/">
           <span class="project-nav__direction">${label}</span>
-          <span class="project-nav__name">${escapeHtml(project.name)}</span>
+          <span class="project-nav__name">${rollLabel(project.name)}</span>
         </a>`;
   };
 
