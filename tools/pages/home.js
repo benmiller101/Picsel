@@ -63,13 +63,13 @@ const INTRO = `    <section class="section intro">
       <div class="wrap intro__inner">
         <p class="eyebrow">Cornwall</p>
         <p class="lede intro__statement">
-          Picsel is a web design and automation studio in Cornwall. We build affordable,
-          effective websites for local trades and small businesses &mdash; and the search work
-          and custom tools that keep them earning.
+          Picsel is a web design and automation studio in Cornwall. We build websites for
+          local trades and small businesses, and do the search work that gets them found.
+          Priced for a small business, not an agency retainer.
         </p>
         <p class="intro__aside">
-          Five sites are live and doing their job. They are all below, and every one links
-          out to the real thing rather than a mock-up.
+          Five sites are live. They are all below, and each one links straight out to the
+          real thing &mdash; not a mock-up.
         </p>
       </div>
     </section>`;
@@ -81,7 +81,11 @@ const INTRO = `    <section class="section intro">
 const WORK = `    <section class="section work" aria-labelledby="work-heading">
       <div class="wrap">
         <div class="section-head">
-          <h2 class="section-head__title" id="work-heading">Selected work</h2>
+          <!-- "Recent work", not "Selected work". There are five builds and all
+               five are on this page, so there is no selection happening —
+               "selected" would imply a larger body of work being curated down,
+               which is a claim a studio this new should not be making. -->
+          <h2 class="section-head__title" id="work-heading">Recent work</h2>
           <a class="section-head__link" href="/work/">See every project</a>
         </div>
 
@@ -110,37 +114,37 @@ const SERVICES = `    <section class="section services" aria-labelledby="service
           <div class="services__item">
             <dt>Websites</dt>
             <dd>
-              Built to be quick on a phone signal and easy to read on a small screen, because
-              that is where most of your customers will see it.
+              Quick on a bad signal and easy to read on a small screen &mdash; that is where most
+              of your customers will see it.
             </dd>
           </div>
           <div class="services__item">
             <dt>Search, and AI answers</dt>
             <dd>
-              Being found on Google for the jobs and the towns that actually bring you work &mdash;
-              and increasingly, being the answer when someone asks an AI assistant instead.
+              Being found on Google for the jobs and the towns that bring you work. And, more
+              and more, being the answer when someone asks an AI assistant instead.
             </dd>
           </div>
           <div class="services__item">
             <dt>Google Business Profile</dt>
             <dd>
-              The free listing that decides whether you appear in the map results. Set up
-              properly, then kept current rather than filled in once and forgotten.
+              The free listing that decides whether you appear in the map results. Easy to
+              set up once and then never touch again. We keep yours current.
             </dd>
           </div>
           <div class="services__item">
             <dt>Custom tools</dt>
             <dd>
-              Small pieces of software for the repetitive parts &mdash; quotes, bookings,
-              reminders &mdash; built around how you already work.
+              Small pieces of software for whatever you retype every week &mdash; quotes, booking
+              confirmations &mdash; built around how you already work rather than the other way round.
             </dd>
           </div>
         </dl>
 
         <p class="services__exclusive measure">
           <strong>One client per trade, per town.</strong> If we build for a builder in Hayle,
-          we will not take on another one. You are not paying us to help your competitor get
-          ahead of you.
+          we won&rsquo;t take on another one. You&rsquo;re not paying us to help your competitor
+          catch up.
         </p>
       </div>
     </section>`;
@@ -148,8 +152,12 @@ const SERVICES = `    <section class="section services" aria-labelledby="service
 export const HOME_PAGE = {
   path: '/',
   title: 'Picsel — web design and automation in Cornwall',
+  /* Kept in step with the opening line on the page itself. A description that
+     promises one thing and a page that says another is the sort of mismatch
+     that costs a click and is never noticed, because nobody re-reads their own
+     meta tags. */
   description:
-    'Picsel is a web design and automation studio in Cornwall, building affordable, effective websites for local trades and small businesses.',
+    'Picsel is a web design and automation studio in Cornwall. Websites and search work for local trades and small businesses, priced for a small business.',
   /* Opts the page out of the gap base.css reserves under the floating nav: the
      hero is a full-screen composition that starts at the very top and
      deliberately runs behind the nav. */

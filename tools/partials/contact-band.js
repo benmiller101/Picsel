@@ -20,7 +20,7 @@ import { escapeHtml } from '../templates/page.js';
  */
 export function renderContactBand({
   heading = 'Thinking about a site?',
-  body = 'Tell us what your business does and what you want the site to do, and we&rsquo;ll tell you what&rsquo;s involved. No jargon, and no obligation to go ahead.',
+  body = 'Tell us what your business does and what you want the site to do, and we&rsquo;ll tell you what&rsquo;s involved. Plain English, and no obligation.',
 } = {}) {
   return `    <section class="contact-band" aria-labelledby="contact-band-heading">
       <div class="wrap contact-band__inner">
