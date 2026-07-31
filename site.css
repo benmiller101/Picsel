@@ -138,6 +138,8 @@
 .site-nav__link {
   display: flex;
   align-items: center;
+  /* The containing block for the underline below. */
+  position: relative;
   /* Tap targets must clear 44px. The min-height guarantees it outright rather
      than relying on padding plus an inherited line-height to add up. */
   min-height: var(--tap-min);
@@ -170,6 +172,59 @@
 .site-nav__link:hover {
   color: var(--ink);
   background: rgba(255, 255, 255, 0.07);
+}
+
+/* ---- The accent underline ------------------------------------------------
+   One rule doing two jobs: it marks the page you are on, and it answers a
+   hover. Both are the accent, so they read as the same language, and they are
+   told apart by weight and by behaviour rather than by colour. The current page
+   holds a full-strength line the whole time you are on that page. A hover draws
+   a fainter one, and draws it: it wipes in from the left over the roll's own
+   duration, so the line arriving and the word turning over are one movement.
+
+   Deliberately a pseudo-element on the LINK rather than a text-decoration on
+   the label. This is the mistake that had to be undone on the work cards: an
+   underline drawn on the text rides up with the text when the roll runs, and
+   ends up as a line hanging above the label with nothing beneath it. Anchored
+   to the link, it stays where it is put while the word travels past it.
+
+   Inset to match the link's own padding, so the line spans the label rather
+   than the whole tap target, which is 44px tall and much wider than the word. */
+.site-nav__link::after {
+  content: '';
+  position: absolute;
+  left: var(--space-4);
+  right: var(--space-4);
+  bottom: 9px;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+
+  opacity: 0.55;
+  transform: scaleX(0);
+  /* From the left, so the line is drawn in the direction the label is read. */
+  transform-origin: left center;
+  transition: transform var(--dur-roll) var(--ease),
+              opacity var(--dur-roll) var(--ease);
+}
+
+.site-nav__link:hover::after,
+.site-nav__link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* The current page: already drawn, and at full strength. Sitting at scaleX(1)
+   from the first paint rather than transitioning to it, so the line is simply
+   there when the page arrives instead of wiping itself in on every load. */
+.site-nav__link[aria-current='page']::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+/* Not on the call to action. It is a solid cyan button, so a cyan line on top
+   of it is invisible, and it does not need a second way of standing out. */
+.site-nav__link--accent::after {
+  content: none;
 }
 
 /* The page you are on, marked for the eye and, via aria-current in the markup,

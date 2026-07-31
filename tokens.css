@@ -163,13 +163,21 @@
      ===================================================================== */
   --dur-fast: 140ms;
   --dur-base: 260ms;
-  /* The nav's rolling label, and the only thing using it. It gets its own
-     duration because it is the one piece of motion a visitor watches on
-     purpose: they hover a word to see it turn over. At --dur-base the roll was
-     over before the eye caught it. Everything else on the site is feedback
-     rather than a thing to look at, and should stay quick, so this is a
-     separate value instead of a slower --dur-base. */
-  --dur-roll: 480ms;
+  /* The rolling label: the nav, the work-card titles and the previous/next
+     links on a project page. It gets its own duration because it is the one
+     piece of motion a visitor watches on purpose, hovering a word to see it
+     turn over. Everything else on the site is feedback rather than a thing to
+     look at and should stay quick, which is why this is a separate value
+     rather than a slower --dur-base.
+
+     140 -> 260 -> 480 -> 700, each step because Ben looked at it and said it
+     was still too fast. Worth knowing where the ceiling is: the roll has to
+     finish before the pointer does. Someone crossing the nav to click "Get in
+     touch" passes over "Work" in roughly a fifth of a second, and a label that
+     is still turning over when the cursor leaves snaps back mid-flight, which
+     reads as a glitch rather than an effect. 700ms is slow enough to watch and
+     still short of the point where a deliberate hover outlasts it. */
+  --dur-roll: 700ms;
   /* Quick to start, slow to settle — movement that decelerates reads as
      physical, where a linear ease reads as mechanical. */
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
