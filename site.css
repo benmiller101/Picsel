@@ -410,6 +410,41 @@
   font-weight: var(--weight-medium);
 }
 
+/* ---- Common questions ----------------------------------------------------
+   Two across from the tablet breakpoint. The services list directly above is a
+   vertical stack, and a second vertical stack under it would make the whole
+   bottom half of the page read as one long undifferentiated list. */
+.faq__grid {
+  display: grid;
+  gap: var(--space-8);
+}
+
+@media (min-width: 48rem) {
+  .faq__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-12) var(--space-16);
+  }
+}
+
+.faq__item {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+
+/* The question is the thing being scanned, so it sits forward in full ink
+   while the answer stays at reading weight. No larger, though: a question set
+   big enough to compete with the section heading turns the section into a list
+   of headlines. */
+.faq__q {
+  font-size: var(--text-lg);
+  color: var(--ink);
+}
+
+.faq__a {
+  margin-top: var(--space-3);
+  max-width: var(--measure);
+}
+
 /* ---- Contact band --------------------------------------------------------
    The closing band on the homepage, the work index and every project page. One
    sentence, one button, and the number itself — the two ways this audience

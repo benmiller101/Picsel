@@ -825,18 +825,77 @@ page. The one omission is deliberate and confirmed absent, which is the confirma
 ## Section 10: GEO layer (AI search visibility)
 **Priority: HIGH | Effort: 2 hours**
 
-- [ ] Direct answer in the first ~50 words of the homepage: "Picsel is a web design and automation
+- [x] Direct answer in the first ~50 words of the homepage: "Picsel is a web design and automation
       studio in Cornwall building affordable, effective websites for local trades and small
-      businesses…" — liftable by an assistant
-- [ ] Entity consistency: same name, phone and email on every page and any external profile
-- [ ] `robots.txt` allows AI crawlers (GPTBot, ClaudeBot, PerplexityBot and peers); optional
+      businesses…" — liftable by an assistant — *written in Section 4, verified word-for-word here*
+- [x] Entity consistency: same name, phone and email on every page and any external profile
+      — *now enforced by the build, not just checked once*
+- [x] `robots.txt` allows AI crawlers (GPTBot, ClaudeBot, PerplexityBot and peers); optional
       `llms.txt` summarising Picsel, its services and the work
-- [ ] Question-led copy where it fits ("How much does a website cost?" etc.) answered plainly first
+- [x] Question-led copy where it fits ("How much does a website cost?" etc.) answered plainly first
+      — *four questions on the homepage. The pricing question is deliberately not one of them;
+      see the pending item below*
 
 **What we built:**
+
+Four questions on the homepage, sitting between what the studio does and the ask, because someone
+who has read the services list and is close to ringing has exactly these things in their head. Each
+answer leads with the answer. No preamble and nothing that needs the question re-read to make sense
+of it, so a line can be lifted whole by an assistant and still be true on its own.
+
+The questions are written once and render twice: into the visible section, and into the FAQ
+structured data underneath it. That is the point of doing it that way. Written separately, the
+machine-readable answer and the printed one drift apart the first time either is edited, and the
+version a person reads stops matching the version an assistant quotes.
+
+`robots.txt` now names eight AI crawlers individually and allows all of them. `llms.txt` is a plain
+summary of the studio, its services, the five projects and every page, generated from the same
+constants the pages are, so it cannot describe a different business from the one the site describes.
+
+The first-50-words test passes on the real rendered page rather than on the intention: the opening
+line names the studio, what it does and where, inside the first 33 words. Entity consistency was
+checked across all nine pages and found clean, with exactly one phone number in its two intended
+forms and one email address.
+
 **Decisions made:**
 
-**Done when:** the homepage passes the first-50-words test and robots reflects the crawler decision.
+- **Naming the AI crawlers is not redundant with the wildcard, and that is the reason to do it.** A
+  crawler that matches its own group ignores the wildcard group entirely, so a site that later
+  restricts `*` would cut all of these off without anyone meaning to. Naming them makes the
+  permission survive that change. The decision itself is easy here: Picsel sells being the answer an
+  assistant gives, and blocking the assistants would mean refusing the studio the thing it sells.
+- **No "how much does it cost" question, and no placeholder for one.** It is the most asked question
+  and the most valuable one to answer, and it cannot be answered without Ben's pricing decision. A
+  vague non-answer would be worse than the gap, because a question that resolves to "it depends" is
+  the thing that makes a visitor close the tab. Listed as pending below with exactly what is needed.
+- **"Nobody can promise that, and anyone who does is guessing."** The honest answer to the Google
+  question, and the one that does the most work. This audience has been cold-called by enough people
+  promising page one to recognise the claim. Saying plainly that it cannot be promised, then saying
+  what actually can be done, is worth more than a promise that would have to be kept.
+- **The FAQ block is `FAQPage` with a fragment id and no `url` of its own.** It describes the FAQ
+  content within the homepage; giving it the page's own address would put two competing page types
+  on one URL. Worth being straight about what it buys: Google narrowed FAQ rich results to
+  government and health sites in 2023, so this will not put drop-downs in a search result. It is
+  there for the other reader.
+- **Entity consistency became a build check rather than an inspection.** Everything already reads
+  from `site.config.js`, so it passes by construction today. The check exists for the day somebody
+  types a number straight into a page because it was quicker, which is exactly the edit nobody
+  reviews. Tested by deliberately planting a wrong number and a wrong email: the build named both and
+  refused to write anything.
+- **The two-column question grid, rather than a fifth stacked list.** The services list directly above
+  is a vertical stack and the contact band follows it; a third stack between them would have made the
+  whole bottom of the page read as one undifferentiated column.
+- **A words-for-numbers helper now exists in one place.** `/work` had its own copy and the homepage
+  needed the same thing. Two lookup tables are two tables that eventually disagree, on a site whose
+  argument is that its numbers are real.
+
+**Pending Ben:**
+
+- `[DECISION]` **The pricing question.** If the founding offer goes on the site, "How much does a
+  website cost?" becomes a fifth question here and answers with the real figure. Say the word and it
+  is a two-line change. The plan records the offer as £199 build plus £39/month, rising to £299.
+
+**Done when:** the homepage passes the first-50-words test and robots reflects the crawler decision. ✅
 
 ---
 
@@ -973,7 +1032,7 @@ Lighter than a client engagement — this is Picsel's shop window, kept fresh.
 - [x] Section 7: Screenshot pipeline (taken early — see the section note)
 - [x] Section 8: Contact page and form (a real end-to-end send needs Ben's Web3Forms key)
 - [x] Section 9: SEO infrastructure (Rich Results Test and Lighthouse need a live URL)
-- [ ] Section 10: GEO layer
+- [x] Section 10: GEO layer (pricing question pending Ben's decision)
 - [ ] Section 11: Performance, accessibility and responsive pass
 - [ ] Section 12: Launch
 - [ ] Section 13: Launch QA

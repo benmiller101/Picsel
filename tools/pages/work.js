@@ -11,16 +11,16 @@
 import { PROJECTS } from '../../projects.js';
 import { absoluteUrl } from '../../site.config.js';
 import { breadcrumbs } from '../templates/schema.js';
+import { countWord } from '../templates/words.js';
 import { renderWorkGrid } from '../partials/work-card.js';
 import { renderContactBand } from '../partials/contact-band.js';
 
 /* Written from the data, not typed out. "Five" is a fact that will stop being
    true the day a sixth project is added, and a number hand-written into copy
    is a number nobody remembers to update — it just quietly becomes a lie on a
-   page whose whole argument is that the work is real. */
-const COUNT_WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
+   page whose whole argument is that the work is real. The words-for-numbers
+   lookup moved to templates/words.js when the homepage needed the same one. */
 const count = PROJECTS.length;
-const countWord = COUNT_WORDS[count] || String(count);
 
 /* Cornwall is named because it is true of most of the list and it is what
    someone local is looking for — but the sentence is built from the data
@@ -34,9 +34,9 @@ const INTRO = `    <section class="section work-intro">
         <p class="eyebrow">Work</p>
         <h1 class="work-intro__title">Every site we have built</h1>
         <p class="lede measure">
-          ${countWord.charAt(0).toUpperCase() + countWord.slice(1)} live sites${
+          ${countWord(count, { capitalise: true })} live sites${
             elsewhere > 0
-              ? `, ${cornwallCount === 1 ? 'one' : COUNT_WORDS[cornwallCount] || cornwallCount} of them in Cornwall`
+              ? `, ${countWord(cornwallCount)} of them in Cornwall`
               : ', all of them in Cornwall'
           }. Each one links straight out to the real site, so you can judge it
           the way a customer would rather than take our word for it.
@@ -78,7 +78,7 @@ export const WORK_PAGE = {
   ],
   title: 'Work: websites Picsel has built in Cornwall',
   description:
-    `The ${countWord} sites Picsel has built for trades and small businesses, mostly in Cornwall. Every one links out to the live site.`,
+    `The ${countWord(count)} sites Picsel has built for trades and small businesses, mostly in Cornwall. Every one links out to the live site.`,
   content: [INTRO, GRID, renderContactBand({
     heading: 'Want one of these?',
     body: 'Tell us what your business does and what you want the site to do, and we&rsquo;ll tell you what&rsquo;s involved. Plain English, and no obligation.',

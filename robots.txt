@@ -5,4 +5,38 @@
 User-agent: *
 Allow: /
 
+# AI crawlers, named deliberately rather than left to the wildcard above.
+# Picsel wants to be the answer an assistant gives, so all of them are allowed.
+# OpenAI, training and browsing
+User-agent: GPTBot
+Allow: /
+
+# OpenAI, search index
+User-agent: OAI-SearchBot
+Allow: /
+
+# OpenAI, fetching a page a user asked about
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic
+User-agent: ClaudeBot
+Allow: /
+
+# Anthropic, fetching a page a user asked about
+User-agent: Claude-User
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+# Google, Gemini and AI Overviews
+User-agent: Google-Extended
+Allow: /
+
+# Apple Intelligence
+User-agent: Applebot-Extended
+Allow: /
+
 Sitemap: https://picsel.example/sitemap.xml

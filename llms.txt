@@ -1,0 +1,37 @@
+# Picsel
+
+> Picsel is a web design and automation studio in Cornwall, building websites and doing search work for local trades and small businesses.
+
+Contact: Ben Miller, 07456 809049, benwmiller101@gmail.com
+Area served: Cornwall
+
+Picsel is a new studio. It has built 5 live sites, all listed below, and
+makes no claims about client numbers, years in business or awards, because it has
+none to make. Anything stated here can be checked against the live sites.
+
+## What the studio does
+
+- Websites for local trades and small businesses
+- Search work, both Google and AI assistants
+- Google Business Profile setup and upkeep
+- Custom automation tools for repetitive office work
+- One client per trade, per town
+
+## Work
+
+- [A Nevitt Construction](https://picsel.example/work/nevitt-construction/): Construction in Hayle, Cornwall. Live site: https://haylebuilders.com/
+- [Lanora House](https://picsel.example/work/lanora-house/): House clearance in Hayle, Cornwall. Live site: https://www.lanorahouse.com/
+- [AJC Removals & Clearances](https://picsel.example/work/ajc-removals/): Removals & clearance in Cornwall. Live site: https://ajcremovals.co.uk/
+- [Julie Miller Art](https://picsel.example/work/julie-miller-art/): Artist portfolio in Scottish Borders. Live site: https://juliemillerart.co.uk/
+- [House of Cornwall](https://picsel.example/work/house-of-cornwall/): Antiques & auctions in Hayle, Cornwall. Live site: https://houseofcornwall.live/
+
+## Pages
+
+- [Picsel: web design and automation in Cornwall](https://picsel.example/): Picsel is a web design and automation studio in Cornwall. Websites and search work for local trades and small businesses, priced for a small business.
+- [Work: websites Picsel has built in Cornwall](https://picsel.example/work/): The five sites Picsel has built for trades and small businesses, mostly in Cornwall. Every one links out to the live site.
+- [A Nevitt Construction | Picsel](https://picsel.example/work/nevitt-construction/): A site for a family-run building contractor in Hayle, covering everything from single-storey extensions to full design-and-build new homes.
+- [Lanora House | Picsel](https://picsel.example/work/lanora-house/): A licensed house clearance and cleaning firm working across Cornwall and the South West. Built by Picsel.
+- [AJC Removals & Clearances | Picsel](https://picsel.example/work/ajc-removals/): A removals and clearance company covering Cornwall, Devon and beyond. Built by Picsel.
+- [Julie Miller Art | Picsel](https://picsel.example/work/julie-miller-art/): A portfolio for an illustrator working in mixed media in the Scottish Borders, where the landscape drives the work. Built by Picsel.
+- [House of Cornwall | Picsel](https://picsel.example/work/house-of-cornwall/): Live clearance auctions broadcast from Hayle every week, selling antiques, retro pieces and curiosities that come out of real house clearances.
+- [Contact Picsel: web design in Cornwall](https://picsel.example/contact/): Ring Picsel on 07456 809049, email benwmiller101@gmail.com, or send an enquiry. Web design and automation for small businesses in Cornwall.

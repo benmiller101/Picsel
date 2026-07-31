@@ -12,7 +12,9 @@
    is content — it deserves to be somewhere you would think to look for it,
    next to the other pages, rather than nested inside a build script. */
 
-import { FEATURED_PROJECTS } from '../../projects.js';
+import { FEATURED_PROJECTS, PROJECTS } from '../../projects.js';
+import { SITE } from '../../site.config.js';
+import { countWord } from '../templates/words.js';
 import { renderWorkGrid } from '../partials/work-card.js';
 import { renderContactBand } from '../partials/contact-band.js';
 
@@ -149,8 +151,108 @@ const SERVICES = `    <section class="section services" aria-labelledby="service
       </div>
     </section>`;
 
+/* ---- Common questions -----------------------------------------------------
+   Written as questions because that is how people ask them, out loud and into
+   a search box, and increasingly into an assistant that will answer on our
+   behalf. The answer to each one leads with the answer. No preamble, nothing
+   that needs the question re-read to make sense of it, so a line can be lifted
+   whole and still be true.
+
+   ONE SOURCE. This array renders the visible section AND the FAQ structured
+   data below it. The alternative is writing each answer twice and letting the
+   two drift, which ends with a machine-readable answer that contradicts the
+   page it sits on.
+
+   What is NOT here matters as much. There is no "how much does it cost"
+   question, because the pricing decision is still Ben's and inventing a range
+   would be worse than the gap. See the pending item in the plan. */
+const CORNWALL_COUNT = PROJECTS.filter((p) => /cornwall/i.test(p.location)).length;
+const ELSEWHERE_COUNT = PROJECTS.length - CORNWALL_COUNT;
+
+const QUESTIONS = [
+  {
+    q: 'Do I need to know anything about websites?',
+    a:
+      'No. Tell us what your business does and what you want someone to do when they land on ' +
+      'the site, and we deal with the rest of it. You will not be sent a list of technical ' +
+      'decisions to make.',
+  },
+  {
+    q: 'Do you only work in Cornwall?',
+    /* Counted from the project list rather than typed, for the same reason the
+       /work page counts its own. The day the mix changes, a hand-written
+       "four of the five" becomes a lie on a page whose argument is that the
+       work is real and checkable. */
+    a:
+      `Most of our work is here, but no. ${countWord(CORNWALL_COUNT, { capitalise: true })} of the ` +
+      `${countWord(PROJECTS.length)} sites on this page are for Cornish businesses and ` +
+      `${ELSEWHERE_COUNT === 1 ? 'one is' : `${countWord(ELSEWHERE_COUNT)} are`} further afield. ` +
+      'Being local matters for the search work more than it does for the build.',
+  },
+  {
+    q: 'Can you get me to the top of Google?',
+    /* The honest answer, and the one that does the most work. A studio that
+       promises a position is either guessing or lying, and this audience has
+       been called by enough of them to know it. Saying so plainly is worth
+       more than a claim we would have to keep. */
+    a:
+      'Nobody can promise that, and anyone who does is guessing. What we can do is make sure ' +
+      'Google can read your site, that it says plainly what you do and which towns you cover, ' +
+      'and that your Google Business Profile is filled in properly. That is what decides ' +
+      'whether you turn up in the map results.',
+  },
+  {
+    q: 'Who will I be dealing with?',
+    a:
+      `${SITE.contact.person}, who builds the sites and answers the phone. There is no account ` +
+      'manager and nobody to be passed on to.',
+  },
+];
+
+/* Two across on a wide screen rather than one long column: the services list
+   directly above is already a vertical stack, and repeating that shape twice in
+   a row makes the bottom of the page read as one undifferentiated list. */
+const FAQ = `    <section class="section faq" aria-labelledby="faq-heading">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 class="section-head__title" id="faq-heading">Common questions</h2>
+        </div>
+
+        <div class="faq__grid">
+${QUESTIONS.map(
+  ({ q, a }) => `          <div class="faq__item">
+            <h3 class="faq__q">${q}</h3>
+            <p class="faq__a">${a}</p>
+          </div>`,
+).join('\n\n')}
+        </div>
+      </div>
+    </section>`;
+
 export const HOME_PAGE = {
   path: '/',
+  /* The same four questions, machine-readable, generated from the array above.
+
+     Worth being clear about what this does and does not buy: Google narrowed
+     FAQ rich results in 2023 to government and health sites, so this will not
+     put a row of drop-downs in the search result. It is here for the other
+     reader. An assistant asked "can a Cornwall web designer get me to the top
+     of Google" can lift the answer with the question attached, which is the
+     whole point of this section of the plan. */
+  schemaExtra: [
+    {
+      '@type': 'FAQPage',
+      /* A fragment id, and deliberately no `url`. This describes the FAQ
+         content WITHIN the homepage; giving it the page's own URL would put
+         two competing page types on one address. */
+      '@id': `${SITE.origin}/#faq`,
+      mainEntity: QUESTIONS.map(({ q, a }) => ({
+        '@type': 'Question',
+        name: q,
+        acceptedAnswer: { '@type': 'Answer', text: a },
+      })),
+    },
+  ],
   title: 'Picsel: web design and automation in Cornwall',
   /* Kept in step with the opening line on the page itself. A description that
      promises one thing and a page that says another is the sort of mismatch
@@ -171,5 +273,9 @@ export const HOME_PAGE = {
      decoration — with the file missing, blocked or still loading, the homepage
      is a complete, readable page. */
   extraScripts: '  <script type="module" src="/hero.js"></script>',
-  content: [HERO, INTRO, WORK, SERVICES, renderContactBand()].join('\n\n'),
+  /* The questions sit between what we do and the ask. Someone who has read the
+     services list and is close to ringing has exactly these four things in
+     their head, and answering them is the last thing standing between reading
+     and dialling. */
+  content: [HERO, INTRO, WORK, SERVICES, FAQ, renderContactBand()].join('\n\n'),
 };
