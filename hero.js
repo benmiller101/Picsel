@@ -32,7 +32,7 @@ import { makeNoise3D } from './noise.js';
 
 const BLOBS = {
   COUNT: 2,           // the reference is two, held either side of the wordmark
-  COUNT_SMALL: 5,
+  COUNT_SMALL: 4,
 
   /* --- shape: metaballs, not a wobbly circle ---------------------------
    * Each blob is a CLUSTER of round lobes that slowly orbit their own centre,
@@ -56,9 +56,9 @@ const BLOBS = {
   //   < 0.7  lobes fuse into one round mass
   //   ~1.0   distinct lobes with a clean neck  <- the reference
   //   > 1.4  the goo can't bridge them and they separate into islands
-  LOBE_SPREAD_RATIO: 1.4,
+  LOBE_SPREAD_RATIO: 1,
 
-  ORBIT_SPEED: 0.15,    // how fast lobes swing around the cluster
+  ORBIT_SPEED: 0.05,    // how fast lobes swing around the cluster
 
   /* --- morph ---
    * Three independent noise channels, which is what gives "lots of different

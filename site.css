@@ -239,8 +239,39 @@
   gap: var(--space-6);
 }
 
+/* The index variant on /work: a plain two-up catalogue rather than the
+   homepage's composed rhythm. Same cards, different job — see INDEX_SHAPE in
+   tools/partials/work-card.js. Two columns and not three, because a card
+   narrower than about 300px turns a full desktop screenshot into an unreadable
+   stamp. Every card here is identical, so it works from the tablet width up. */
 @media (min-width: 48rem) {
-  .work-grid {
+  .work-grid--index {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .work-card--index {
+    grid-column: auto;
+  }
+}
+
+/* The homepage's composed rhythm needs a desktop, and starts at 64rem rather
+   than the 48rem the rest of the site uses.
+
+   It was tried at 48rem and the narrowest card in the cycle — the phone shape,
+   two columns of six — came out 220px wide. At that width the caption under it
+   wraps onto a second line while its neighbour's stays on one, so the two
+   cards in that row could not be made to line up: one of the caption and the
+   frame had to sit 25px lower than the other. The composed layout only earns
+   its place when there is room for it, and below 64rem there is not. One column
+   of full-width screenshots is the better answer on a portrait tablet anyway.
+   At 64rem the phone card is 299px, where the caption fits on one line. */
+@media (min-width: 64rem) {
+  /* :not(--index) is load-bearing, not tidiness. Both selectors are one class,
+     so they have identical specificity and the later one simply wins — which
+     silently turned the catalogue into a six-column grid whose cards each
+     occupied one column, 137px wide. Naming who this applies to means the two
+     layouts cannot fight over source order again. */
+  .work-grid:not(.work-grid--index) {
     grid-template-columns: repeat(6, 1fr);
     gap: var(--space-6) var(--space-6);
   }
@@ -249,19 +280,6 @@
   .work-card--phone { grid-column: span 2; }
   .work-card--half { grid-column: span 3; }
   .work-card--banner { grid-column: span 6; }
-
-  /* The index variant on /work: a plain two-up catalogue rather than the
-     homepage's composed rhythm. Same cards, different job — see INDEX_SHAPE in
-     tools/partials/work-card.js. Two columns and not three, because a card
-     narrower than about 300px turns a full desktop screenshot into an
-     unreadable stamp. */
-  .work-grid--index {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .work-card--index {
-    grid-column: auto;
-  }
 }
 
 /* ---- /work page intro ---------------------------------------------------- */
@@ -280,8 +298,33 @@
 /* ---- Work card -----------------------------------------------------------
    The whole card is one link: a bigger, more forgiving target than a link on
    the title alone, which matters most on a phone. */
+
+/* Two cards sharing a row must end on the same line.
+
+   The grid already stretches every cell in a row to the same height, so this
+   was never a grid problem. It was that the frame inside held its exact
+   aspect ratio and left the slack at the bottom of the cell — so the lead card
+   (16/10 across four columns) finished 13px short of the phone card (3/4
+   across two), and the captions under them sat at different heights. Thirteen
+   pixels is the worst possible amount: too small to read as composition, big
+   enough to look like a mistake.
+
+   So the card fills its cell and the frame takes up whatever is left over. The
+   aspect ratio still sets each frame's natural height, which is what gives the
+   grid its rhythm; it just stops being the last word when a neighbour is
+   slightly taller. The image is object-fit: cover already, so the extra height
+   costs a few pixels of crop and nothing else.
+
+   Only the lead-and-phone row is affected. The two halves share a ratio and a
+   span, so they already matched, and on a phone every card is its own row. */
+.work-card {
+  display: flex;
+}
+
 .work-card__link {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   text-decoration: none;
   color: inherit;
 }
@@ -292,6 +335,10 @@
    the grid into noise. */
 .work-card__frame {
   display: block;
+  /* Grows into whatever height the row has spare — see the note above. The
+     aspect-ratio below is the natural size it grows from, not a ceiling. */
+  flex: 1 1 auto;
+  min-height: 0;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
