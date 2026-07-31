@@ -20,6 +20,7 @@ import { fileURLToPath } from 'node:url';
 import { SITE, absoluteUrl } from '../site.config.js';
 import { renderPage } from './templates/page.js';
 import { HOME_PAGE } from './pages/home.js';
+import { WORK_PAGE } from './pages/work.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -37,6 +38,7 @@ const DESCRIPTION_MAX = 155;
    Section 6, so adding a project never means editing this file. */
 const PAGES = [
   HOME_PAGE,
+  WORK_PAGE,
 ];
 
 async function build() {

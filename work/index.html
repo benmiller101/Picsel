@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- The site is dark-only. color-scheme tells the browser so, which makes it
+       render scrollbars, form fields and other built-in controls dark to match
+       instead of dropping bright white boxes into the page. theme-color tints
+       the browser's own chrome on mobile, so the bar above the page is the
+       same near-black rather than a hard white edge. -->
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0a0a" />
+
+  <title>Work — websites Picsel has built in Cornwall</title>
+  <meta name="description" content="The five sites Picsel has built for trades and small businesses, mostly in Cornwall. Every one links out to the live site." />
+  <link rel="canonical" href="https://picsel.example/work/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Picsel" />
+  <meta property="og:title" content="Work — websites Picsel has built in Cornwall" />
+  <meta property="og:description" content="The five sites Picsel has built for trades and small businesses, mostly in Cornwall. Every one links out to the live site." />
+  <meta property="og:url" content="https://picsel.example/work/" />
+  <meta property="og:locale" content="en_GB" />
+  <meta name="twitter:title" content="Work — websites Picsel has built in Cornwall" />
+  <meta name="twitter:description" content="The five sites Picsel has built for trades and small businesses, mostly in Cornwall. Every one links out to the live site." />
+  <meta name="twitter:card" content="summary" />
+
+  <!-- Adobe Fonts, web project ior4aly: argent-pixel-cf (the resting wordmark)
+       plus the three faces the glitch rotates through. Served by Adobe while
+       the Creative Cloud subscription is live — never self-hosted, per licence. -->
+  <link rel="stylesheet" href="https://use.typekit.net/ior4aly.css" />
+
+  <!-- Lexend carries every word of reading copy on the site. Pixelify Sans is
+       the licence-independent safety net for the wordmark: if Typekit is
+       unreachable the mark still renders as a pixel face instead of dropping
+       to Courier. preconnect opens the connection early so the text is not
+       waiting on a handshake. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Lexend:wght@300;400&display=swap"
+        rel="stylesheet" />
+
+  <!-- Order matters: tokens defines the vocabulary, base uses it, the page
+       sheet overrides. Swapping them silently breaks the cascade. -->
+  <link rel="stylesheet" href="/tokens.css" />
+  <link rel="stylesheet" href="/base.css" />
+  <link rel="stylesheet" href="/site.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- The site-wide dot field: a fixed sheet behind every page, drawn by
+       backdrop.js and parallaxing at a third of the scroll speed. Decoration
+       with no meaning to convey, so it is hidden from assistive technology.
+       If the script never runs, base.css's CSS dot layer shows through
+       instead and the page still has its texture. -->
+  <canvas class="backdrop" aria-hidden="true"></canvas>
+
+    <nav class="site-nav" aria-label="Main">
+      <a class="site-nav__brand" href="/">Picsel</a>
+      <ul class="site-nav__list">
+        <li><a class="site-nav__link" href="/work/" aria-current="page">Work</a></li>
+        <li><a class="site-nav__link" href="/contact/">Contact</a></li>
+        <li><a class="site-nav__link site-nav__link--accent" href="/contact/#enquiry">Get in touch</a></li>
+      </ul>
+    </nav>
+
+  <main id="main" tabindex="-1">
+    <section class="section work-intro">
+      <div class="wrap work-intro__inner">
+        <p class="eyebrow">Work</p>
+        <h1 class="work-intro__title">Every site we have built</h1>
+        <p class="lede measure">
+          Five live sites, four of them in Cornwall. Each one links straight out to the real site, so you can judge it
+          the way a customer would rather than take our word for it.
+        </p>
+      </div>
+    </section>
+
+    <section class="section work" aria-labelledby="work-heading">
+      <div class="wrap">
+        <h2 class="visually-hidden" id="work-heading">Projects</h2>
+
+      <div class="work-grid work-grid--index">
+        <article class="work-card work-card--index">
+          <a class="work-card__link" href="/work/nevitt-construction/">
+            <span class="work-card__frame" style="--card-ratio: 16 / 10">
+              <img
+                class="work-card__shot"
+                src="/assets/work/nevitt-construction/desktop.webp"
+                alt="Screenshot of the A Nevitt Construction website"
+                width="1440"
+                height="900"
+                loading="lazy" decoding="async"
+              />
+            </span>
+            <span class="work-card__meta">
+              <h3 class="work-card__name">A Nevitt Construction</h3>
+              <p class="work-card__sector">Construction &middot; Hayle, Cornwall</p>
+            </span>
+          </a>
+        </article>
+        <article class="work-card work-card--index">
+          <a class="work-card__link" href="/work/lanora-house/">
+            <span class="work-card__frame" style="--card-ratio: 16 / 10">
+              <img
+                class="work-card__shot"
+                src="/assets/work/lanora-house/desktop.webp"
+                alt="Screenshot of the Lanora House website"
+                width="1440"
+                height="900"
+                loading="lazy" decoding="async"
+              />
+            </span>
+            <span class="work-card__meta">
+              <h3 class="work-card__name">Lanora House</h3>
+              <p class="work-card__sector">House clearance &middot; Hayle, Cornwall</p>
+            </span>
+          </a>
+        </article>
+        <article class="work-card work-card--index">
+          <a class="work-card__link" href="/work/ajc-removals/">
+            <span class="work-card__frame" style="--card-ratio: 16 / 10">
+              <img
+                class="work-card__shot"
+                src="/assets/work/ajc-removals/desktop.webp"
+                alt="Screenshot of the AJC Removals &amp; Clearances website"
+                width="1440"
+                height="900"
+                loading="lazy" decoding="async"
+              />
+            </span>
+            <span class="work-card__meta">
+              <h3 class="work-card__name">AJC Removals &amp; Clearances</h3>
+              <p class="work-card__sector">Removals &amp; clearance &middot; Cornwall</p>
+            </span>
+          </a>
+        </article>
+        <article class="work-card work-card--index">
+          <a class="work-card__link" href="/work/julie-miller-art/">
+            <span class="work-card__frame" style="--card-ratio: 16 / 10">
+              <img
+                class="work-card__shot"
+                src="/assets/work/julie-miller-art/desktop.webp"
+                alt="Screenshot of the Julie Miller Art website"
+                width="1440"
+                height="900"
+                loading="lazy" decoding="async"
+              />
+            </span>
+            <span class="work-card__meta">
+              <h3 class="work-card__name">Julie Miller Art</h3>
+              <p class="work-card__sector">Artist portfolio &middot; Scottish Borders</p>
+            </span>
+          </a>
+        </article>
+        <article class="work-card work-card--index">
+          <a class="work-card__link" href="/work/house-of-cornwall/">
+            <span class="work-card__frame" style="--card-ratio: 16 / 10">
+              <img
+                class="work-card__shot"
+                src="/assets/work/house-of-cornwall/desktop.webp"
+                alt="Screenshot of the House of Cornwall website"
+                width="1440"
+                height="900"
+                loading="lazy" decoding="async"
+              />
+            </span>
+            <span class="work-card__meta">
+              <h3 class="work-card__name">House of Cornwall</h3>
+              <p class="work-card__sector">Antiques &amp; auctions &middot; Hayle, Cornwall</p>
+            </span>
+          </a>
+        </article>
+      </div>
+      </div>
+    </section>
+
+    <section class="contact-band" aria-labelledby="contact-band-heading">
+      <div class="wrap contact-band__inner">
+        <div class="contact-band__words">
+          <h2 class="contact-band__heading" id="contact-band-heading">Want one of these?</h2>
+          <p class="contact-band__body">Tell us what your business does and what you want the site to do, and we&rsquo;ll tell you what&rsquo;s involved. Plain English, and no obligation.</p>
+        </div>
+
+        <div class="contact-band__actions">
+          <a class="btn btn--primary" href="/contact/#enquiry">Get in touch</a>
+          <!-- Written out in full rather than hidden behind "call us": on a
+               phone it dials, and on a desktop it is the number itself, which
+               is what someone with a landline in their hand needs to see. -->
+          <a class="contact-band__phone" href="tel:+447456809049">
+            07456 809049
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+    <footer class="site-footer">
+      <div class="wrap site-footer__inner">
+        <p class="site-footer__contact">
+          <a href="tel:+447456809049">07456 809049</a>
+          <a href="mailto:benwmiller101@gmail.com">benwmiller101@gmail.com</a>
+        </p>
+        <p class="site-footer__meta">
+          Picsel — web design and automation in Cornwall.
+          &copy; 2026
+        </p>
+      </div>
+    </footer>
+
+  <!-- type="module" so it can import the shared noise generator. Modules are
+       deferred by default, so this never blocks the page from appearing. -->
+  <script type="module" src="/backdrop.js"></script>
+</body>
+</html>

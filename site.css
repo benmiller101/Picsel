@@ -249,6 +249,32 @@
   .work-card--phone { grid-column: span 2; }
   .work-card--half { grid-column: span 3; }
   .work-card--banner { grid-column: span 6; }
+
+  /* The index variant on /work: a plain two-up catalogue rather than the
+     homepage's composed rhythm. Same cards, different job — see INDEX_SHAPE in
+     tools/partials/work-card.js. Two columns and not three, because a card
+     narrower than about 300px turns a full desktop screenshot into an
+     unreadable stamp. */
+  .work-grid--index {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .work-card--index {
+    grid-column: auto;
+  }
+}
+
+/* ---- /work page intro ---------------------------------------------------- */
+
+.work-intro__inner > * + * {
+  margin-top: var(--space-4);
+}
+
+.work-intro__title {
+  font-size: var(--text-3xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--ink);
 }
 
 /* ---- Work card -----------------------------------------------------------

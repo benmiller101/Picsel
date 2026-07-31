@@ -481,15 +481,52 @@ jumps down the page as the images arrive.
 ## Section 5: Work index
 **Priority: HIGH | Effort: 2 hours**
 
-- [ ] `/work`: every project from `projects.js` as a card (desktop screenshot, name, sector label),
+- [x] `/work`: every project from `projects.js` as a card (desktop screenshot, name, sector label),
       generated from the data so adding a project is one entry
-- [ ] Clear hover/focus states (cards must look clickable); links go to `/work/<slug>`
-- [ ] Contact band at the foot
+- [x] Clear hover/focus states (cards must look clickable); links go to `/work/<slug>`
+- [x] Contact band at the foot
 
 **What we built:**
+
+`/work` is the catalogue: every project, not only the ones the homepage features. It reads the full
+list rather than the featured one, so a build that is deliberately kept off the front page still has
+a home here and still gets its own page.
+
+It deliberately does not look like the homepage grid. The homepage composes — one build gets a wide
+card, another a phone-shaped one — because that section is doing persuasion. This page is for
+someone who has come to compare, and varied sizes actively get in the way of comparing: a bigger
+card reads as a better project rather than as a layout decision. So every card here is the same
+size in a plain two-up grid. It is the same card component either way, which is the point of it
+being a partial — the two can look different without being able to drift apart.
+
+The page's own copy is written from the data. "Five live sites, four of them in Cornwall" is
+counted at build time, not typed, because the day a sixth project is added a hand-written number
+becomes a lie on a page whose entire argument is that the work is real. The Cornwall count is
+derived for the same reason — Julie Miller Art is in the Scottish Borders, so a blanket "all in
+Cornwall" would be false.
+
+Checked in a browser at 375, 768, 1024 and 1440: no sideways scrolling, no tap target under 44
+pixels, one `<h1>`, a clean console, and all five links matching their slugs in `projects.js`.
+
 **Decisions made:**
 
-**Done when:** all five projects show as cards and every card opens the right project page.
+- **Hover and focus were measured, not eyeballed.** Both are states a screenshot cannot show, and
+  "cards must look clickable" is a checkbox that is easy to tick without checking. Compared
+  computed styles at rest, on hover and on real keyboard focus: hover brightens the frame hairline
+  from 12% to 22% white and scales the screenshot 2%; keyboard focus adds the 2px cyan outline on
+  top of that. Both confirmed to change something visible.
+- **Focus was tested with the Tab key, not `.focus()`.** `:focus-visible` deliberately does not
+  match a programmatic focus call, so testing it that way would have reported a passing focus ring
+  on a page that had none for a real keyboard user.
+- **The `<h1>` is the page title, and the grid's heading is hidden.** A visible "Projects" heading
+  above a grid of projects says nothing the grid does not; removing it entirely would leave the
+  section unlabelled for a screen reader. So it is there and hidden, which is the case
+  `visually-hidden` exists for.
+- **The five card links 404 until Section 6.** Expected and in plan order — Section 6 generates the
+  project pages from the same list. Flagged here so it is not mistaken for a defect in the
+  meantime.
+
+**Done when:** all five projects show as cards and every card opens the right project page. ⏳ *(Cards and links done and verified; the pages they open are Section 6.)*
 
 ---
 
@@ -761,7 +798,7 @@ Lighter than a client engagement — this is Picsel's shop window, kept fresh.
 - [x] Section 2: Design system and site-wide background
 - [x] Section 3: Hero and scroll behaviour
 - [x] Section 4: Homepage (pricing block still pending Ben's decision)
-- [ ] Section 5: Work index
+- [x] Section 5: Work index (project pages it links to are Section 6)
 - [ ] Section 6: Project pages
 - [x] Section 7: Screenshot pipeline (taken early — see the section note)
 - [ ] Section 8: Contact page and form

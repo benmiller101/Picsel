@@ -31,6 +31,16 @@ const SHAPES = [
   { name: 'banner', span: 6, shot: 'desktop', ratio: '21 / 9' },
 ];
 
+/* The index shape: every card the same, in a plain two-up grid.
+   /work and the homepage do different jobs and should not look identical.
+   The homepage is a showcase — the varied rhythm above is doing persuasion,
+   giving one build more room than another. /work is a catalogue: someone has
+   come to compare, and comparing is exactly what varied sizes make harder,
+   because a bigger card reads as a better project rather than as a layout
+   decision. Same card component either way, so the two can never drift into
+   looking like different things. */
+const INDEX_SHAPE = { name: 'index', span: 3, shot: 'desktop', ratio: '16 / 10' };
+
 /* The captures' real pixel sizes, from tools/capture-shots.js. Stated on every
    <img> so the browser can reserve the right space before the file arrives —
    without it the text below each card jumps down as each screenshot loads,
@@ -44,11 +54,13 @@ const SHOT_SIZES = {
  * @param {object} project  A record from projects.js.
  * @param {number} index    Position in the grid, which picks the shape.
  * @param {object} [options]
- * @param {boolean} [options.eager]  Skip lazy-loading — for a card that is
- *                                   above the fold on its own page.
+ * @param {boolean} [options.eager]   Skip lazy-loading — for a card that is
+ *                                    above the fold on its own page.
+ * @param {'showcase'|'index'} [options.variant]  'showcase' cycles the shapes
+ *                                    above; 'index' makes every card the same.
  */
-export function renderWorkCard(project, index, { eager = false } = {}) {
-  const shape = SHAPES[index % SHAPES.length];
+export function renderWorkCard(project, index, { eager = false, variant = 'showcase' } = {}) {
+  const shape = variant === 'index' ? INDEX_SHAPE : SHAPES[index % SHAPES.length];
   const size = SHOT_SIZES[shape.shot];
   const src = `/assets/work/${project.slug}/${shape.shot}.webp`;
 
@@ -78,8 +90,10 @@ export function renderWorkCard(project, index, { eager = false } = {}) {
 }
 
 /** The whole grid, for a list of projects. */
-export function renderWorkGrid(projects, options) {
-  return `      <div class="work-grid">
+export function renderWorkGrid(projects, options = {}) {
+  const modifier = options.variant === 'index' ? ' work-grid--index' : '';
+
+  return `      <div class="work-grid${modifier}">
 ${projects.map((project, index) => renderWorkCard(project, index, options)).join('\n')}
       </div>`;
 }
