@@ -1,0 +1,36 @@
+/* ---- wrangler.jsonc — how Cloudflare publishes this site ------------------
+   Read by `npx wrangler deploy`, which is the deploy command Cloudflare runs
+   on every push to main.
+
+   There is no `main` field here and that is deliberate: this is an assets-only
+   Worker. No code runs on request. Cloudflare takes the files listed below,
+   puts them on its edge, and serves them as static files. Nothing to boot,
+   nothing to keep alive, nothing that can fall over.
+
+   The assets directory is the repo root rather than a build output folder,
+   because tools/build.js writes the generated HTML alongside the CSS and JS it
+   references, and the pages link to /base.css and /hero.js at the root. That
+   choice is what makes .assetsignore necessary — see the comments in it. */
+{
+  "name": "picsel",
+
+  /* Pins the Workers runtime behaviour to how it worked on this date, so a
+     future platform change cannot alter how the site is served without this
+     line being edited first. */
+  "compatibility_date": "2026-08-01",
+
+  "assets": {
+    "directory": "./",
+
+    /* The site's routes are directories: /work/ is work/index.html on disk.
+       "auto-trailing-slash" resolves those, and also sends /work to /work/ so
+       the address bar matches the canonical URL in the page's own <head>
+       rather than quietly serving the same page at two URLs. */
+    "html_handling": "auto-trailing-slash",
+
+    /* An unknown path gets a 404 rather than the homepage. A catch-all would
+       mean every typo returns HTTP 200 with the homepage on it, which is how
+       a site ends up with search engines indexing junk URLs. */
+    "not_found_handling": "none"
+  }
+}

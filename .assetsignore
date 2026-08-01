@@ -1,0 +1,39 @@
+# What NOT to publish. Same syntax as .gitignore, read by wrangler at deploy.
+#
+# The assets directory is the repo root (see wrangler.jsonc), so without this
+# file every source file in the project would be fetchable on picsel.co.uk:
+# the planning documents, the build tooling, the client list. This is the list
+# of things that live in the repo but are nobody's business on the web.
+#
+# The rule for editing it: if a browser is ever told to load a file, it must
+# NOT appear here. Everything the pages reference is root-relative, so a wrong
+# entry here shows up as a missing stylesheet on the live site and nowhere in
+# local testing. Check against the src= and href= values in the built HTML.
+
+# Dependencies. Installed on the build machine, never served.
+node_modules
+
+# The build step itself, and the data it reads. site.config.js and projects.js
+# are imported by tools/build.js at build time only; their contents are already
+# baked into the generated HTML, so publishing them serves the same facts twice
+# and hands over the phone number and client list in machine-readable form.
+tools
+site.config.js
+projects.js
+
+# Planning and instruction documents. plan-picsel-site.md and CLAUDE.md read as
+# internal notes because they are.
+*.md
+
+# npm metadata. Reveals the toolchain, serves no visitor.
+package.json
+package-lock.json
+
+# Repo and editor plumbing.
+.claude
+.gitattributes
+.gitignore
+
+# This file and the deploy config. Not secret, just not content.
+.assetsignore
+wrangler.jsonc
