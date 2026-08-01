@@ -187,7 +187,8 @@ const QUESTIONS = [
       `Most of our work is here, but no. ${countWord(CORNWALL_COUNT, { capitalise: true })} of the ` +
       `${countWord(PROJECTS.length)} sites on this page are for Cornish businesses and ` +
       `${ELSEWHERE_COUNT === 1 ? 'one is' : `${countWord(ELSEWHERE_COUNT)} are`} further afield. ` +
-      'Being local matters for the search work more than it does for the build.',
+      'Where you are only matters for the search side, because you are competing with the ' +
+      'other firms in your own towns. The site itself is built the same wherever you are.',
   },
   {
     q: 'Can you get me to the top of Google?',

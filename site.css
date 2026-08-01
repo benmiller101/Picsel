@@ -601,10 +601,19 @@
   max-width: var(--measure);
 }
 
+/* The promise is not a fifth service. It used to carry the same hairline as
+   .services__item above, which on desktop reads as a closing note under two
+   columns, and on mobile reads as item five under a sentence that says there
+   are four. Same markup, opposite meaning, purely because the single column
+   put it in the list's rhythm.
+
+   So it gets a rule down the side in the accent rather than across the top in
+   the line colour. The eye sorts it as a different kind of thing before it
+   reads a word of it, at every width. */
 .services__exclusive {
-  margin-top: var(--space-4);
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--line);
+  margin-top: var(--space-12);
+  padding: var(--space-1) 0 var(--space-1) var(--space-6);
+  border-left: 2px solid var(--accent);
 }
 
 .services__exclusive strong {
