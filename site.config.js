@@ -58,14 +58,16 @@ export const SITE = {
      There is no server here — the site is static files on a CDN — so the form
      posts to Web3Forms, which receives the submission and emails it on.
 
-     PENDING MANUAL STEP: the access key is created in the Web3Forms dashboard
-     and pasted in below. Until it is, the form renders and validates but every
-     submission is rejected by their API, so the build warns on every run the
-     same way the placeholder domain does. */
+     The access key below is not a secret and is not treated as one. Web3Forms
+     works by putting it in the form markup, so it is readable by anyone who
+     views source on /contact/ no matter where this file keeps it. What it
+     grants is the ability to send a message to Ben's inbox, which is what the
+     form is for. The thing it must never become is a key that does anything
+     else, so nothing but this form should ever use it. */
   form: {
     endpoint: 'https://api.web3forms.com/submit',
-    accessKey: 'PASTE-WEB3FORMS-ACCESS-KEY-HERE',
-    accessKeyIsPlaceholder: true,
+    accessKey: '7b487923-0a73-4253-beaa-9bb2090edd55',
+    accessKeyIsPlaceholder: false,
     /* The subject line of the email that lands in Ben's inbox. Named for the
        site rather than for the sender, so enquiries are filterable. */
     subject: 'New enquiry from the Picsel website',
