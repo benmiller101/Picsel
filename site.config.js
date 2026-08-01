@@ -16,13 +16,11 @@ export const SITE = {
   /* Used in the <title> suffix and the Organization schema. */
   legalName: 'Picsel',
 
-  /* PENDING DECISION — the domain is not registered yet.
-     Until it is, canonical URLs, Open Graph tags and sitemap.xml have nothing
-     truthful to point at. The build script warns on every run while this is
-     still the placeholder, so it cannot quietly ship to production wrong.
-     Change this ONE value once the domain exists and every page follows. */
-  origin: 'https://picsel.example',
-  originIsPlaceholder: true,
+  /* The registered domain. Canonical URLs, Open Graph tags and sitemap.xml all
+     derive from this one value, so every page follows it automatically.
+     No www: the site is served from the apex, and www redirects to it. */
+  origin: 'https://picsel.co.uk',
+  originIsPlaceholder: false,
 
   contact: {
     person: 'Ben Miller',
@@ -30,10 +28,12 @@ export const SITE = {
        one number and link another. */
     phoneDisplay: '07456 809049',
     phoneHref: 'tel:+447456809049',
-    /* PENDING DECISION — Gmail for now, or info@ on the Picsel domain once it
-       is registered. Whichever wins, it changes here and nowhere else. */
-    email: 'benwmiller101@gmail.com',
-    emailIsPending: true,
+    /* The studio mailbox, on the Picsel domain. A person's name rather than
+       info@, because this audience is small local businesses who reply to a
+       human. hello@ exists as an alias on the same inbox but is deliberately
+       not published: one address on the site, one address in the schema. */
+    email: 'ben@picsel.co.uk',
+    emailIsPending: false,
   },
 
   /* Where Picsel works. Used for the honest local mention and areaServed in

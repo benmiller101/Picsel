@@ -192,7 +192,7 @@ async function captureProject(browser, project, warnings) {
          there is nothing to hide, and a truthful agent string means a site
          owner reading their logs can see exactly what this was. */
       await page.setUserAgent(
-        'Mozilla/5.0 (compatible; PicselPortfolioBot/1.0; +portfolio screenshot; contact benwmiller101@gmail.com)',
+        'Mozilla/5.0 (compatible; PicselPortfolioBot/1.0; +portfolio screenshot; contact ben@picsel.co.uk)',
       );
 
       await openPage(page, project.url);
