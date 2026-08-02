@@ -159,13 +159,19 @@
 
   <main id="main" tabindex="-1">
     <section class="section contact-head">
-      <div class="wrap contact-head__inner">
-        <p class="eyebrow">Contact</p>
-        <h1>Get in touch</h1>
-        <p class="lede measure">
-          Ring, email, or fill the form in, whichever suits. You&rsquo;ll get
-          Ben either way.
-        </p>
+      <div class="wrap page-head">
+        <div class="page-head__text">
+          <p class="eyebrow">Contact</p>
+          <h1>Get in touch</h1>
+          <p class="lede measure">
+            Ring, email, or fill the form in, whichever suits. You&rsquo;ll get
+            Ben either way.
+          </p>
+        </div>
+
+        <div class="page-blob" aria-hidden="true">
+          <canvas class="page-blob__canvas"></canvas>
+        </div>
       </div>
     </section>
 
@@ -331,5 +337,6 @@
        deferred by default, so this never blocks the page from appearing. -->
   <script type="module" src="/backdrop.js"></script>
   <script src="/contact.js" defer></script>
+  <script type="module" src="/page-blob.js"></script>
 </body>
 </html>

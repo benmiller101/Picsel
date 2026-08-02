@@ -48,9 +48,9 @@
 
 /* ---- The page head -------------------------------------------------------- */
 
-.contact-head__inner > * + * {
-  margin-top: var(--space-4);
-}
+/* The head's own layout is .page-head in site.css, shared with /work/. Nothing
+   page-specific is left here, which is the point: the two heads were the same
+   shape described twice. */
 
 /* ---- Ring, email, where we are -------------------------------------------- */
 

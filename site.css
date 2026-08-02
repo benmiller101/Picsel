@@ -435,10 +435,73 @@
   .work-card--banner { grid-column: span 6; }
 }
 
-/* ---- /work page intro ---------------------------------------------------- */
+/* ---- Page heads ----------------------------------------------------------
+   The opening band of /work/ and /contact/: an eyebrow, a heading and a short
+   lede against the left of the grid, with a blob in the space beside them on
+   wide screens. One pair of classes for both pages, because they are the same
+   shape and were already drifting apart as two.
 
-.work-intro__inner > * + * {
+   .page-head is the two-column frame; .page-head__text is the column of type,
+   and it is used on its own on /contact/sent/, which has the same text but no
+   blob. Nesting the type in its own element is what lets the frame become a
+   grid: without it the eyebrow, heading and lede would each be a grid item and
+   lay themselves out in a row. */
+
+.page-head__text > * + * {
   margin-top: var(--space-4);
+}
+
+/* One column until there is genuinely room for a second. 64rem is the width the
+   contact page already splits its details and form at — the same number, so the
+   page does not change shape twice on the way up. */
+@media (min-width: 64rem) {
+  .page-head {
+    display: grid;
+    /* minmax(0, ...) rather than a bare max-width: a grid track sized by its
+       content will not shrink below the longest unbreakable word in it, and the
+       zero minimum is what lets the type column actually give ground as the
+       window narrows instead of pushing the blob out of the page. */
+    grid-template-columns: minmax(0, var(--measure)) 1fr;
+    gap: var(--space-16);
+    align-items: center;
+  }
+}
+
+/* ---- The page-head blob ---------------------------------------------------
+   A square slot for /page-blob.js to draw into, sized off the viewport so it
+   keeps its proportion to the type beside it rather than sitting at one fixed
+   size from 1024px to an ultrawide.
+
+   justify-self: end puts it against the right edge of the grid, so it lines up
+   with the right-hand end of the work cards and the form below rather than
+   floating in the middle of its column.
+
+   Hidden below the breakpoint, and the script checks the same media query
+   before it starts: a phone neither draws this nor pays for the code that
+   would. */
+.page-blob {
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  .page-blob {
+    display: block;
+    justify-self: end;
+    width: clamp(13rem, 20vw, 19rem);
+    aspect-ratio: 1;
+    /* The canvas is stretched to a whole number of 6px blocks, which overhangs
+       the box by up to one block. Clipped here rather than by rounding the box,
+       so the grid stays square with the rest of the site's spacing. */
+    overflow: hidden;
+  }
+
+  .page-blob__canvas {
+    display: block;
+    /* One source pixel becomes one hard block of one flat colour. Without this
+       the browser smooths the upscale and the whole point of drawing at a
+       twelfth of the size is lost. */
+    image-rendering: pixelated;
+  }
 }
 
 .work-intro__title {

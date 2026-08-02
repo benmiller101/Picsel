@@ -14,6 +14,7 @@ import { breadcrumbs } from '../templates/schema.js';
 import { countWord } from '../templates/words.js';
 import { renderWorkGrid } from '../partials/work-card.js';
 import { renderContactBand } from '../partials/contact-band.js';
+import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
 
 /* Written from the data, not typed out. "Five" is a fact that will stop being
    true the day a sixth project is added, and a number hand-written into copy
@@ -29,18 +30,26 @@ const count = PROJECTS.length;
 const cornwallCount = PROJECTS.filter((p) => /cornwall/i.test(p.location)).length;
 const elsewhere = count - cornwallCount;
 
+/* The text is wrapped rather than sitting loose in the inner, because the blob
+   beside it makes the inner a two-column grid on a desktop — without the
+   wrapper the eyebrow, the heading and the lede would each become a grid item
+   and lay themselves out in a row. */
 const INTRO = `    <section class="section work-intro">
-      <div class="wrap work-intro__inner">
-        <p class="eyebrow">Work</p>
-        <h1 class="work-intro__title">Every site we have built</h1>
-        <p class="lede measure">
-          ${countWord(count, { capitalise: true })} live sites${
-            elsewhere > 0
-              ? `, ${countWord(cornwallCount)} of them in Cornwall`
-              : ', all of them in Cornwall'
-          }. Each one links straight out to the real site, so you can judge it
-          the way a customer would rather than take our word for it.
-        </p>
+      <div class="wrap page-head">
+        <div class="page-head__text">
+          <p class="eyebrow">Work</p>
+          <h1 class="work-intro__title">Every site we have built</h1>
+          <p class="lede measure">
+            ${countWord(count, { capitalise: true })} live sites${
+              elsewhere > 0
+                ? `, ${countWord(cornwallCount)} of them in Cornwall`
+                : ', all of them in Cornwall'
+            }. Each one links straight out to the real site, so you can judge it
+            the way a customer would rather than take our word for it.
+          </p>
+        </div>
+
+${PAGE_BLOB}
       </div>
     </section>`;
 
@@ -79,6 +88,7 @@ export const WORK_PAGE = {
   title: 'Work: websites Picsel has built in Cornwall',
   description:
     `The ${countWord(count)} sites Picsel has built for trades and small businesses, mostly in Cornwall. Every one links out to the live site.`,
+  extraScripts: PAGE_BLOB_SCRIPT,
   content: [INTRO, GRID, renderContactBand({
     heading: 'Want one of these?',
     body: 'Tell us what your business does and what you want the site to do, and we&rsquo;ll tell you what&rsquo;s involved. Plain English, and no obligation.',

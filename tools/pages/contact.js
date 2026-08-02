@@ -16,6 +16,7 @@
 import { SITE, absoluteUrl } from '../../site.config.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs } from '../templates/schema.js';
+import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
 
 /* ---- The direct details ---------------------------------------------------
    A real definition list: each of these is a label and its value, which is
@@ -194,14 +195,22 @@ ${NEED_OPTIONS}
         </section>`;
 }
 
+/* The text is wrapped rather than sitting loose in the inner, because the blob
+   beside it makes the inner a two-column grid on a desktop — without the
+   wrapper the eyebrow, the heading and the lede would each become a grid item
+   and lay themselves out in a row. */
 const HEAD = `    <section class="section contact-head">
-      <div class="wrap contact-head__inner">
-        <p class="eyebrow">Contact</p>
-        <h1>Get in touch</h1>
-        <p class="lede measure">
-          Ring, email, or fill the form in, whichever suits. You&rsquo;ll get
-          ${escapeHtml(SITE.contact.person.split(' ')[0])} either way.
-        </p>
+      <div class="wrap page-head">
+        <div class="page-head__text">
+          <p class="eyebrow">Contact</p>
+          <h1>Get in touch</h1>
+          <p class="lede measure">
+            Ring, email, or fill the form in, whichever suits. You&rsquo;ll get
+            ${escapeHtml(SITE.contact.person.split(' ')[0])} either way.
+          </p>
+        </div>
+
+${PAGE_BLOB}
       </div>
     </section>`;
 
@@ -232,7 +241,7 @@ export const CONTACT_PAGE = {
   /* Enhancement only. With this file missing or blocked the form is still a
      working HTML form — it just posts the ordinary way and lands on
      /contact/sent/ instead of answering in place. */
-  extraScripts: '  <script src="/contact.js" defer></script>',
+  extraScripts: `  <script src="/contact.js" defer></script>\n${PAGE_BLOB_SCRIPT}`,
   content: [HEAD, MAIN].join('\n\n'),
 };
 
@@ -255,8 +264,11 @@ export const CONTACT_SENT_PAGE = {
   excludeFromSitemap: true,
   extraHead: '  <meta name="robots" content="noindex, follow" />',
   styles: ['/contact.css'],
+  /* The same text column as the head above, without the two-column grid around
+     it: there is no blob on this page. Someone who has just sent an enquiry is
+     one step from leaving, and a decoration is not what that screen needs. */
   content: `    <section class="section contact-head">
-      <div class="wrap contact-head__inner">
+      <div class="wrap page-head__text">
         <p class="eyebrow">Thanks</p>
         <h1>That&rsquo;s arrived</h1>
         <p class="lede measure">

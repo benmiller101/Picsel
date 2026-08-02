@@ -195,13 +195,19 @@
 
   <main id="main" tabindex="-1">
     <section class="section work-intro">
-      <div class="wrap work-intro__inner">
-        <p class="eyebrow">Work</p>
-        <h1 class="work-intro__title">Every site we have built</h1>
-        <p class="lede measure">
-          Five live sites, four of them in Cornwall. Each one links straight out to the real site, so you can judge it
-          the way a customer would rather than take our word for it.
-        </p>
+      <div class="wrap page-head">
+        <div class="page-head__text">
+          <p class="eyebrow">Work</p>
+          <h1 class="work-intro__title">Every site we have built</h1>
+          <p class="lede measure">
+            Five live sites, four of them in Cornwall. Each one links straight out to the real site, so you can judge it
+            the way a customer would rather than take our word for it.
+          </p>
+        </div>
+
+        <div class="page-blob" aria-hidden="true">
+          <canvas class="page-blob__canvas"></canvas>
+        </div>
       </div>
     </section>
 
@@ -350,5 +356,6 @@
   <!-- type="module" so it can import the shared noise generator. Modules are
        deferred by default, so this never blocks the page from appearing. -->
   <script type="module" src="/backdrop.js"></script>
+  <script type="module" src="/page-blob.js"></script>
 </body>
 </html>
