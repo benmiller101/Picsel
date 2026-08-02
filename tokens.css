@@ -144,6 +144,16 @@
      moment the round badge made the bar taller. */
   --nav-height: 3.875rem;
 
+  /* How far the page has to scroll before the nav comes in. Stated as a
+     fraction of the screen rather than in pixels, so it is the same gesture on
+     a phone as on a desktop: a deliberate scroll, not a twitch of the wheel.
+
+     A quarter of the screen is the shortest distance that cannot be reached by
+     accident. Much less and the bar flickers in and out while somebody nudges
+     the page; much more and on an interior page you are reading the heading
+     with no way back to the rest of the site. */
+  --nav-reveal: 25svh;
+
   /* The minimum size of anything you tap. 44px is the accessibility floor, not
      a target to design down to. */
   --tap-min: 44px;

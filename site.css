@@ -46,6 +46,63 @@
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
 }
 
+/* ---- The nav reveals on scroll -------------------------------------------
+   At the top of a page the bar is not there. It arrives once the page has
+   scrolled a quarter of a screen and stays for the rest of the visit, going
+   away again only on the way back to the top.
+
+   The homepage is the reason. The hero is a full-screen composition — the
+   wordmark, the blobs and the black around them — and a floating bar over the
+   middle of it from the first frame is the one thing in that picture nobody
+   composed. Every other page gets the same treatment, because a nav that
+   behaves differently depending on where you are is worse than either
+   behaviour on its own.
+
+   All of it hangs off .nav-armed, which nav.js puts on <html>. With the script
+   missing, blocked or still loading, none of these rules match and the bar is
+   simply always there, exactly as it was — the fallback is the old behaviour
+   rather than a nav nobody can reach. */
+.nav-armed .site-nav {
+  /* Composed with the centring translate, not replacing it: a second transform
+     declaration would drop the -50% and shunt the bar half its own width to
+     the right on the way out. */
+  transform: translateX(-50%) translateY(calc(-100% - var(--space-4)));
+  opacity: 0;
+  /* Nothing under the bar should be un-clickable while the bar is not there. */
+  pointer-events: none;
+  transition:
+    transform var(--dur-base) var(--ease),
+    opacity var(--dur-base) var(--ease);
+}
+
+/* :focus-within is not a nicety here, it is the difference between the nav
+   working and not. Tab from the skip link at the top of a page and focus lands
+   on Home while the bar is still off-screen; without this the visitor is
+   typing into something they cannot see. */
+.nav-armed.nav-shown .site-nav,
+.nav-armed .site-nav:focus-within {
+  transform: translateX(-50%);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* The trip wire: a strip of nothing down the top of the DOCUMENT, as tall as
+   the reveal distance. nav.js watches whether it is still on screen, which
+   means the browser reports the crossing itself and nothing in this site runs
+   during a scroll. A scroll listener would do the same job by asking for the
+   position sixty times a second to be told the same answer.
+
+   Absolutely positioned, so it is out of the body's flex column and adds
+   nothing to the layout. */
+.nav-sentinel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: var(--nav-reveal);
+  pointer-events: none;
+}
+
 /* ---- The rolling label ---------------------------------------------------
    The window: exactly one line tall, with the overflow clipped. The label is
    printed twice inside it, so sliding the pair up by one line swaps the word

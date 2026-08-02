@@ -184,6 +184,14 @@ function renderHead({ title, description, path, ogImage, styles, extraHead, sche
     .map((href) => `\n  <link rel="stylesheet" href="${escapeHtml(href)}" />`)
     .join('')}${extraHead ? `\n${extraHead}` : ''}
 
+  <!-- The one script on the site allowed to block, and only because of what it
+       does in its first line: it marks the document before anything is painted
+       so the nav can start off screen. Deferred, it would paint the bar and
+       then take it away, and every page load would open with a flinch. A few
+       hundred bytes from this same origin. Blocked or missing, no rule that
+       hides the nav ever matches and the bar is simply always there. -->
+  <script src="/nav.js"></script>
+
   <!-- Structured data: the machine-readable version of what this page already
        says in words. Rendered here rather than per page so that no page can be
        built without it. See templates/schema.js. -->
@@ -262,6 +270,12 @@ ${renderHead({ title, description, path, ogImage, styles, extraHead, schema: ren
        If the script never runs, base.css's CSS dot layer shows through
        instead and the page still has its texture. -->
   <canvas class="backdrop" aria-hidden="true"></canvas>
+
+  <!-- The trip wire for the nav: an empty strip down the top of the page, as
+       tall as --nav-reveal. nav.js watches whether it is still on screen and
+       brings the bar in when it is not. Nothing to see and nothing to say, so
+       it is hidden from assistive technology. -->
+  <div class="nav-sentinel" aria-hidden="true"></div>
 
 ${renderNav(path)}
 

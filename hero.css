@@ -316,4 +316,17 @@
 @media (max-width: 640px) {
   .wordmark { letter-spacing: 0.1em; text-indent: 0.1em; }
   .tagline { letter-spacing: 0.14em; text-indent: 0.14em; }
+
+  /* A tenth bigger than the shared scale gives it. The mark is sized off the
+     viewport, and on a phone that lands it at the bottom of its clamp — small
+     enough that the one piece of type on the opening screen was being read as
+     a caption on the blobs rather than as the studio's name.
+
+     Both terms of each clamp are scaled, not just the floor, so the growth is
+     the same tenth at every width up to the breakpoint rather than a step that
+     appears at 375px and has faded out by 512px, where the viewport term takes
+     over from the floor. The ceilings never bind below 640px; they are scaled
+     with the rest so the numbers stay readable as one set. */
+  .wordmark { font-size: clamp(1.76rem, 5.5vw, 4.675rem); }
+  .tagline { font-size: clamp(0.605rem, 1.485vw, 1.1rem); }
 }

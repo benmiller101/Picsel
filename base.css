@@ -49,6 +49,13 @@ body {
   min-height: 100vh;
   color: var(--ink-muted);
 
+  /* The containing block for .nav-sentinel, the strip at the top of the page
+     that tells nav.js when to bring the nav in. Positioning body does not
+     affect the two fixed layers on it — the backdrop below and the nav itself
+     — because position: relative is not one of the things that captures a
+     fixed element. */
+  position: relative;
+
   /* A column so the footer can be pushed to the bottom on short pages. Without
      it, a page with little content leaves the footer stranded halfway down with
      dead space beneath — which reads as a page that failed to load rather than
