@@ -117,9 +117,12 @@ Picsel is a brand-new studio. Credibility comes from the work shown, not from in
 - [x] `[BEN]` Project list supplied (names, URLs, sectors) — done
 
 ### Required before launch
-- [x] `[MANUAL]` Web3Forms access key created and in `SITE.form.accessKey`, with
-      `accessKeyIsPlaceholder: false`. Ben supplied a replacement key in August 2026; the earlier one
-      is still in git history and live until it is deleted in the Web3Forms dashboard
+- [x] `[MANUAL]` Web3Forms access key in `SITE.form.accessKey`, with `accessKeyIsPlaceholder: false`.
+      A second key was tried in August 2026 and reverted; the site is on the original
+      `7b487923…`. Both delivered to Ben's old Gmail rather than the studio address
+- [ ] `[MANUAL]` **Point the enquiries at ben@picsel.co.uk.** They currently arrive at
+      benwmiller101@gmail.com, because Web3Forms mails to the address registered against the key and
+      nothing in this repo can change that. Fix it in the Web3Forms dashboard, then send one test
 - [ ] `[MANUAL]` Adobe Fonts web project confirmed serving on the production domain. `ior4aly.css`
       returns 200, but Adobe gates by domain allowlist: load picsel.co.uk and confirm the pixel faces
       render rather than the fallbacks

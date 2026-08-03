@@ -63,10 +63,16 @@ export const SITE = {
      views source on /contact/ no matter where this file keeps it. What it
      grants is the ability to send a message to Ben's inbox, which is what the
      form is for. The thing it must never become is a key that does anything
-     else, so nothing but this form should ever use it. */
+     else, so nothing but this form should ever use it.
+
+     WHERE THE ENQUIRIES LAND IS NOT SET HERE. Web3Forms mails to the address
+     registered against the key in their dashboard, and there is no field in the
+     form that can override it. So an enquiry arriving at the wrong inbox is
+     never a bug in this repo and cannot be fixed from it: change the recipient
+     on the key, or issue a key from an account on the right address. */
   form: {
     endpoint: 'https://api.web3forms.com/submit',
-    accessKey: 'ba5982cf-dca9-4465-897f-2dd37870301e',
+    accessKey: '7b487923-0a73-4253-beaa-9bb2090edd55',
     accessKeyIsPlaceholder: false,
     /* The subject line of the email that lands in Ben's inbox. Named for the
        site rather than for the sender, so enquiries are filterable. */
