@@ -66,7 +66,7 @@ export const SITE = {
      else, so nothing but this form should ever use it. */
   form: {
     endpoint: 'https://api.web3forms.com/submit',
-    accessKey: '7b487923-0a73-4253-beaa-9bb2090edd55',
+    accessKey: 'ba5982cf-dca9-4465-897f-2dd37870301e',
     accessKeyIsPlaceholder: false,
     /* The subject line of the email that lands in Ben's inbox. Named for the
        site rather than for the sender, so enquiries are filterable. */

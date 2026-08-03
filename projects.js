@@ -27,10 +27,11 @@
      alt       string   Screenshot alt text, per the SEO rules.
 
    TWO STANDING CAUTIONS
-     `tags` is a public claim about work performed. Every entry currently reads
-     ['Website'] because that is the only thing verifiable from the live sites.
-     Do not add 'SEO' or 'Google Profile' to a project until Ben confirms that
-     is what Picsel actually delivered for that client.
+     `tags` is a public claim about work performed, so it says only what Ben has
+     confirmed Picsel actually delivered — not what is guessable from looking at
+     the live site. He confirmed SEO on A Nevitt Construction and Lanora House;
+     the other three are the build alone. Do not add 'SEO' or 'Google Profile'
+     to a project on inference.
 
      `blurb` text below is a factual first draft written from what each live
      site says about itself — deliberately describing the build, never claiming
@@ -48,7 +49,7 @@ export const PROJECTS = [
     sector: 'Construction',
     location: 'Hayle, Cornwall',
     featured: true,
-    tags: ['Website'],
+    tags: ['Website', 'SEO'],
     blurb:
       'A site for a family-run building contractor in Hayle, covering everything from ' +
       'single-storey extensions to full design-and-build new homes. The work is organised ' +
@@ -63,7 +64,7 @@ export const PROJECTS = [
     sector: 'House clearance',
     location: 'Hayle, Cornwall',
     featured: true,
-    tags: ['Website'],
+    tags: ['Website', 'SEO'],
     blurb:
       'A licensed house clearance and cleaning firm working across Cornwall and the ' +
       'South West. The site sets out the full range, from probate and bereavement clearances ' +

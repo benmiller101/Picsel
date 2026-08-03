@@ -164,8 +164,9 @@ const SERVICES = `    <section class="section services" aria-labelledby="service
    page it sits on.
 
    What is NOT here matters as much. There is no "how much does it cost"
-   question, because the pricing decision is still Ben's and inventing a range
-   would be worse than the gap. See the pending item in the plan. */
+   question, and that is settled rather than pending: Ben decided prices stay
+   off the site, so they are quoted in the conversation instead. Do not add a
+   price, a range or a "from £" to this section or anywhere else. */
 const CORNWALL_COUNT = PROJECTS.filter((p) => /cornwall/i.test(p.location)).length;
 const ELSEWHERE_COUNT = PROJECTS.length - CORNWALL_COUNT;
 

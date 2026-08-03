@@ -36,15 +36,15 @@ Single source of truth. If a fact changes, change it here first, then everywhere
 | Audience | Small businesses and trades, mostly Cornwall, mostly **not tech-savvy** — easy nav and an obvious way to make contact are the whole job |
 | Positioning | Affordable but effective websites, SEO and GEO, Google Business Profile help, and custom automation tools; one client per trade per town (exclusivity); local and fast |
 | Owner / contact | Ben Miller · 07456 809049 (`tel:+447456809049`) · benwmiller101@gmail.com |
-| Dedicated studio email | `[DECISION]` use benwmiller101@gmail.com for now, or set up info@ on the Picsel domain |
-| Domain | `[DECISION]` not chosen yet (e.g. a picsel… .co.uk / .studio). Register in Picsel's own account |
-| Hosting | Cloudflare Pages (same as client builds) |
+| Dedicated studio email | **ben@picsel.co.uk**, on the Picsel domain. `hello@` is an alias on the same inbox, deliberately unpublished: one address on the site, one in the schema |
+| Domain | **picsel.co.uk**, registered and live. Served from the apex; www redirects to it |
+| Hosting | Cloudflare, as an **assets-only Worker** (`wrangler.jsonc`) rather than Pages. No code runs on request; a push to `main` deploys |
 | Stack | Static multi-page HTML/CSS/JS, built **on top of the existing hero** (`hero.css`/`hero.js`; the prototype `hero.html`, `nav.css` and `nav.js` were deleted in Section 3 when the hero became the homepage). No framework. Pages are generated from one shared template by `tools/build.js` (`npm run build`) so the `<head>`, nav and footer exist once; the output is plain static HTML |
-| Repo | Local git repo on `main`. **Pending:** no GitHub remote yet — the `gh` CLI is not installed on this machine, so the remote must be created before Cloudflare Pages can connect (Section 12) |
+| Repo | `github.com/benmiller101/Picsel`, on `main`. Cloudflare deploys on every push |
 | Fonts | Adobe Fonts web project `ior4aly` (`argent-pixel-cf`, `gridlite-pe-variable`, `pf-pixelscript`, `pixelify-sans`) + Google `Lexend` (body) and `Pixelify Sans` (fallback pixel face) |
 | Contact form | Web3Forms (free, access key in the dashboard) |
 | Brand aesthetic | Dark near-black, lava-lamp gradient blobs (hero only), near-invisible dot-grid texture, PICSEL pixel wordmark with a font-glitch |
-| Show pricing? | `[DECISION]` the founding offer is £199 build + £39/mo (rising to £299). Deciding whether to state it on the site |
+| Show pricing? | **No. Settled August 2026.** The founding offer (£199 build + £39/mo, rising to £299) is quoted in conversation, not published. No price, range or "from £" goes anywhere on the site |
 | Featured projects | The five below |
 
 ### The five projects (source of truth for `projects.js`)
@@ -100,27 +100,29 @@ Picsel is a brand-new studio. Credibility comes from the work shown, not from in
 ## What we need before work starts
 
 ### Required now
-- [ ] `[DECISION]` Domain chosen and registered in Picsel's own account
-- [ ] `[DECISION]` Studio contact email (Gmail for now vs info@ on the domain)
-- [ ] `[DECISION]` Whether to show the founding-offer pricing on the site
-- [ ] `[BEN]` **Confirm each of the five clients is happy to be featured.** Blocks Section 6 shipping.
-      Worth a specific note on two: Lanora House (Ben is a director) and House of Cornwall, whose own
-      site states it is affiliated with Lanora House — two of the five featured projects are
-      connected businesses, which is fine to show but should be a conscious choice
+- [x] `[DECISION]` Domain chosen and registered — **picsel.co.uk**
+- [x] `[DECISION]` Studio contact email — **ben@picsel.co.uk** on the domain
+- [x] `[DECISION]` Whether to show the founding-offer pricing — **no.** Prices stay off the site and
+      are quoted in the conversation. Nothing is stubbed for one; do not add a "from £" anywhere
+- [x] `[BEN]` **Confirm each of the five clients is happy to be featured** — all five cleared,
+      August 2026, including Lanora House (Ben is a director) and House of Cornwall, which states an
+      affiliation with Lanora House on its own site. Two of the five being connected businesses is a
+      conscious choice, not an oversight
 - [x] `[BEN]` First project's display name — settled as **A Nevitt Construction** (its own site's
       header and title; `haylebuilders.com` is only the domain)
 - [ ] `[BEN]` Reword the five draft blurbs if wanted. Drafts are in `projects.js`, written from what
       each live site says about itself and claiming no outcomes
-- [ ] `[BEN]` **Confirm the `tags` per project.** All five currently read `['Website']` only, since
-      that is all that is verifiable from the outside. Add `'SEO'` / `'Google Profile'` only where
-      Picsel actually did that work — these are public claims
+- [x] `[BEN]` **Confirm the `tags` per project** — done. A Nevitt Construction and Lanora House carry
+      `['Website', 'SEO']`; the other three are the build alone. No project claims Google Profile work
 - [x] `[BEN]` Project list supplied (names, URLs, sectors) — done
 
 ### Required before launch
-- [ ] `[MANUAL]` Web3Forms access key created and pasted into the form — **now blocking a real
-      test.** Create the key at web3forms.com and paste it into `SITE.form.accessKey` in
-      `site.config.js`, then set `accessKeyIsPlaceholder: false`. The build warns until you do
-- [ ] `[MANUAL]` Adobe Fonts web project confirmed serving on the production domain
+- [x] `[MANUAL]` Web3Forms access key created and in `SITE.form.accessKey`, with
+      `accessKeyIsPlaceholder: false`. Ben supplied a replacement key in August 2026; the earlier one
+      is still in git history and live until it is deleted in the Web3Forms dashboard
+- [ ] `[MANUAL]` Adobe Fonts web project confirmed serving on the production domain. `ior4aly.css`
+      returns 200, but Adobe gates by domain allowlist: load picsel.co.uk and confirm the pixel faces
+      render rather than the fallbacks
 
 ---
 
@@ -378,9 +380,8 @@ line with 77 pixels to spare and nothing scrolls sideways.
       linking to each project page. Let the screenshots carry the colour
 - [x] Short, plain services note: websites, SEO & GEO, Google Business Profile help, custom
       automation tools — and the one-client-per-trade-per-town idea in a sentence. No "Why choose us"
-- [ ] `[DECISION]` Founding-offer pricing block if Ben wants it on the site — **pending Ben.**
-      Nothing is built for it and nothing is stubbed; the page reads as finished without it. If it
-      goes in, it sits between the services list and the contact band
+- [x] `[DECISION]` Founding-offer pricing block — **decided against.** Nothing is built for it and
+      nothing is stubbed; the page reads as finished without it
 - [x] Closing **contact band**: a line, a big "Get in touch" button, the phone number
 
 **What we built:**
@@ -423,9 +424,10 @@ jumps down the page as the images arrive.
   the county and the work in one plain line, so an assistant answering "who builds websites in
   Cornwall" can quote it and still be accurate. This is Section 10's first-50-words test satisfied
   early, because retrofitting it later would have meant rewriting the opening.
-- **No pricing block, and no placeholder for one.** The founding-offer decision is Ben's and still
-  open. A greyed-out "pricing coming soon" would be worse than nothing on a site whose whole pitch
-  is that it is finished and real.
+- **No pricing block, and no placeholder for one.** Built that way while the decision was open, and
+  it now stands as the answer: Ben decided in August 2026 that prices stay off the site. A greyed-out
+  "pricing coming soon" would have been worse than nothing on a site whose whole pitch is that it is
+  finished and real.
 - **The blob grid moved from 8px blocks to 12px**, at Ben's request mid-section. Bigger blocks mean
   a coarser picture: the hero now draws 120 x 67 pixels on a 1440 screen instead of 180 x 100, so
   the grain is more obviously a choice and the per-frame cost went down rather than up. The number
@@ -476,7 +478,7 @@ jumps down the page as the images arrive.
     without touching legibility. `DOTS.MAX_ALPHA` in `backdrop.js` is the one knob if it ever
     wants toning down.
 
-**Done when:** the homepage tells a non-technical visitor what Picsel is, shows the work, and makes contact obvious, with no placeholder text. ✅ *(Pricing block pending Ben's decision; the page is complete without it.)*
+**Done when:** the homepage tells a non-technical visitor what Picsel is, shows the work, and makes contact obvious, with no placeholder text. ✅
 
 ---
 
@@ -595,7 +597,7 @@ scrolling and no tap target under 44 pixels at 375, 768, 1024 or 1440.
   project in the Scottish Borders, and Section 9's local-signal rule exists so the site does not
   claim a place that is not true of the work.
 
-**Done when:** each of the five projects has its own page passing a read-aloud check, with a working live-site link and prev/next. ✅ *(Shipping still needs Ben's confirmation that each client is happy to be featured — see the standing item above.)*
+**Done when:** each of the five projects has its own page passing a read-aloud check, with a working live-site link and prev/next. ✅ *(All five clients cleared to feature, August 2026.)*
 
 ---
 
@@ -833,8 +835,8 @@ page. The one omission is deliberate and confirmed absent, which is the confirma
 - [x] `robots.txt` allows AI crawlers (GPTBot, ClaudeBot, PerplexityBot and peers); optional
       `llms.txt` summarising Picsel, its services and the work
 - [x] Question-led copy where it fits ("How much does a website cost?" etc.) answered plainly first
-      — *four questions on the homepage. The pricing question is deliberately not one of them;
-      see the pending item below*
+      — *four questions on the homepage. The pricing question is deliberately not one of them,
+      and now permanently so: prices stay off the site*
 
 **What we built:**
 
@@ -865,9 +867,10 @@ forms and one email address.
   permission survive that change. The decision itself is easy here: Picsel sells being the answer an
   assistant gives, and blocking the assistants would mean refusing the studio the thing it sells.
 - **No "how much does it cost" question, and no placeholder for one.** It is the most asked question
-  and the most valuable one to answer, and it cannot be answered without Ben's pricing decision. A
-  vague non-answer would be worse than the gap, because a question that resolves to "it depends" is
-  the thing that makes a visitor close the tab. Listed as pending below with exactly what is needed.
+  and the most valuable one to answer, which is the case for putting a figure here. Ben decided
+  against it: prices are quoted in the conversation. The gap is deliberate, and it stays a gap rather
+  than becoming a vague non-answer, because a question that resolves to "it depends" is the thing
+  that makes a visitor close the tab.
 - **"Nobody can promise that, and anyone who does is guessing."** The honest answer to the Google
   question, and the one that does the most work. This audience has been cold-called by enough people
   promising page one to recognise the claim. Saying plainly that it cannot be promised, then saying
@@ -889,11 +892,10 @@ forms and one email address.
   needed the same thing. Two lookup tables are two tables that eventually disagree, on a site whose
   argument is that its numbers are real.
 
-**Pending Ben:**
+**Settled since:**
 
-- `[DECISION]` **The pricing question.** If the founding offer goes on the site, "How much does a
-  website cost?" becomes a fifth question here and answers with the real figure. Say the word and it
-  is a two-line change. The plan records the offer as £199 build plus £39/month, rising to £299.
+- `[DECISION]` **The pricing question — no.** Prices stay off the site, so there is no fifth question
+  and no figure anywhere in the copy or the schema.
 
 **Done when:** the homepage passes the first-50-words test and robots reflects the crawler decision. ✅
 
@@ -1000,16 +1002,34 @@ site has zero box shadows.
 ## Section 12: Launch
 **Priority: CRITICAL | Effort: half a day plus DNS wait**
 
-- [ ] Deploy to Cloudflare Pages; confirm the preview on the pages.dev URL
-- [ ] `[MANUAL]` Web3Forms key and any secrets set in the dashboard, not the repo
-- [ ] `[MANUAL]` Point the chosen domain's DNS at Cloudflare Pages; confirm HTTPS
+- [x] Deployed to Cloudflare; the site serves from picsel.co.uk
+- [x] Web3Forms key in `site.config.js`. It is not a secret: Web3Forms works by putting the key in
+      the form markup, so it is readable in the page source wherever the repo keeps it
+- [x] `[MANUAL]` DNS pointed at Cloudflare; HTTPS confirmed
 - [ ] `[MANUAL]` Confirm the Adobe Fonts web project serves on the production domain
 - [ ] `[MANUAL]` Google Search Console: add the property, submit the sitemap, request indexing on
       home, work and each project page; Bing Webmaster Tools: add site, submit sitemap
-- [ ] Canonicals, sitemap and schema all reference the production domain
+- [x] Canonicals, sitemap and schema all reference the production domain
 
 **What we built:**
+
+- **An assets-only Worker, not Cloudflare Pages.** `wrangler.jsonc` declares no `main`, so no code
+  runs on request: Cloudflare takes the files and serves them from the edge. The assets directory is
+  the repo root, because `tools/build.js` writes generated HTML alongside the CSS and JS it
+  references, which is why `.assetsignore` exists to keep source out of the deploy.
+- **Routes are directories.** `html_handling: auto-trailing-slash` resolves `/work/` to
+  `work/index.html` and redirects `/work` to `/work/`, so the address bar matches the canonical URL
+  rather than quietly serving one page at two addresses.
+- **An unknown path returns 404, not the homepage.** Verified live: `/`, `/work/`, each project page,
+  `/contact/`, `/sitemap.xml`, `/robots.txt` and `/llms.txt` all return 200; a junk path returns 404.
+  A catch-all would mean every typo returned 200 with the homepage on it, which is how a site ends up
+  with search engines indexing invented URLs.
+
 **Decisions made:**
+
+- **Deploy on push to `main`, from `github.com/benmiller101/Picsel`.** No separate deploy step to
+  remember and no build output to keep in sync by hand. The consequence worth knowing: any push
+  publishes, so there is no staging step between a commit and the live site.
 
 **Done when:** the site is live on the domain with HTTPS, fonts serve, the form works, and both search consoles have the sitemap.
 
@@ -1106,15 +1126,15 @@ Lighter than a client engagement — this is Picsel's shop window, kept fresh.
 - [x] Section 1: Setup, structure and content model
 - [x] Section 2: Design system and site-wide background
 - [x] Section 3: Hero and scroll behaviour
-- [x] Section 4: Homepage (pricing block still pending Ben's decision)
+- [x] Section 4: Homepage
 - [x] Section 5: Work index (project pages it links to are Section 6)
-- [x] Section 6: Project pages (shipping pending Ben's client sign-off)
+- [x] Section 6: Project pages (all five clients cleared to feature)
 - [x] Section 7: Screenshot pipeline (taken early — see the section note)
-- [x] Section 8: Contact page and form (a real end-to-end send needs Ben's Web3Forms key)
+- [x] Section 8: Contact page and form (key in place; a real end-to-end send is a Section 13 check)
 - [x] Section 9: SEO infrastructure (Rich Results Test and Lighthouse need a live URL)
-- [x] Section 10: GEO layer (pricing question pending Ben's decision)
+- [x] Section 10: GEO layer
 - [x] Section 11: Performance, accessibility and responsive pass (homepage perf 89 vs 90 target)
-- [ ] Section 12: Launch
+- [ ] Section 12: Launch (live on picsel.co.uk; the two search consoles and the Adobe Fonts check remain)
 - [ ] Section 13: Launch QA
 - [ ] Section 14: Add work as it ships
 - [ ] Section 15: Picsel's own SEO, GBP and reach

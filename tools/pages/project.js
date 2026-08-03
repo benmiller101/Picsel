@@ -93,7 +93,7 @@ function renderMobileShot(project) {
 }
 
 /* Tags are a public claim about work performed, so they say only what
-   projects.js says — currently 'Website' and nothing else on every project.
+   projects.js says, and that file only says what Ben has confirmed.
    The heading is "What we did" rather than "Services", because one is a fact
    about this job and the other is a menu. */
 function renderTags(project) {
