@@ -57,7 +57,11 @@
 
 .hero {
   position: relative;
-  height: calc(100svh + var(--hero-scroll));
+  /* lvh, to match the stage below. The pinned distance is the difference
+     between these two heights, so stating the section in the same unit the
+     stage ends up being keeps that distance exactly --hero-scroll rather than
+     --hero-scroll minus the height of a phone's address bar. */
+  height: calc(100lvh + var(--hero-scroll));
 
   /* isolate keeps the blobs' blending and stacking to themselves, so nothing
      in the hero can paint over the nav or the sections below it. */
@@ -68,10 +72,30 @@
   position: sticky;
   top: 0;
 
-  /* svh — the SMALL viewport height, i.e. the screen with the mobile browser's
-     address bar showing. 100vh on a phone means the height WITHOUT it, so the
-     bottom of the hero starts life hidden behind the browser's own chrome. */
+  /* TWO HEIGHTS, AND THEY ARE NOT THE SAME QUESTION.
+     A phone has two viewport heights: svh, the screen with the address bar
+     showing, and lvh, the screen once it has retracted. Scrolling moves you
+     from one to the other, and a sticky box stated in either one alone is
+     wrong half the time.
+
+     What the composition is laid out against must be svh. 100vh, or lvh, means
+     the bottom of the hero starts life hidden behind the browser's own chrome.
+
+     What is PAINTED has to reach lvh. This was one height, svh, and it was a
+     bug you could only see on a real phone: scroll, the address bar slides
+     away, the screen gets taller, and the stage does not — so the bottom of
+     the screen is a band with no hero in it and the lower blob ends on a hard
+     flat edge partway up.
+
+     So: the content box is svh, which is what place-items centres the wordmark
+     in and what hero.js positions the blobs against; the padding takes the
+     border box out to lvh, which is what overflow below clips at and what the
+     blob canvas is free to fill. content-box, explicitly, against the global
+     border-box — with border-box the padding would eat the content height
+     instead of adding to it and the wordmark would ride high. */
+  box-sizing: content-box;
   height: 100svh;
+  padding-bottom: calc(100lvh - 100svh);
 
   display: grid;
   place-items: center;

@@ -533,7 +533,17 @@ function createPicselHero(root) {
   // makes "is that a bug or just the noise?" answerable.
   const noise = makeNoise3D(0xC5E1);
 
-  let vw = 0, vh = 0, minDim = 0;
+  /* vh is the height of the SURFACE — how far down the screen there is
+     anything to paint on. layoutH is the height of the COMPOSITION — the box
+     the blobs are positioned inside and the wordmark is centred in.
+
+     On a desktop they are the same number. On a phone they are not, and
+     conflating them was a bug: the two viewport heights (svh with the address
+     bar showing, lvh once it has gone) differ by the height of that bar, and a
+     surface stated in the smaller one leaves a band of bare screen along the
+     bottom the moment the bar retracts. hero.css sets the stage's content box
+     to svh and pads its border box out to lvh; these two read one each. */
+  let vw = 0, vh = 0, layoutH = 0, minDim = 0;
   // Recomputed on resize, so rotating a phone or dragging a window across the
   // breakpoint re-lays-out rather than needing a reload.
   let stacked = false;
@@ -745,16 +755,25 @@ function createPicselHero(root) {
   /* ---- resize ----------------------------------------------------------- */
 
   function resize() {
-    /* Measured off the stage, not the window. The stage is 100svh — the height
-       of the screen WITH a phone's address bar showing — while
-       window.innerHeight is the height without it. Sizing the canvas to the
-       window would then stretch the drawing slightly taller than the box it is
-       drawn in, and the dot grid would sit visibly off-square on a phone. */
+    /* Measured off the stage, not the window: window.innerHeight is whatever
+       the browser's chrome is doing this second, and sizing the drawing to it
+       would stretch the picture taller than the box it is drawn in.
+
+       clientHeight INCLUDES padding, and here that is the point — hero.css
+       pads the stage's border box out to lvh precisely so this number reaches
+       the bottom of the screen once a phone's address bar has gone. The
+       composition height is that minus the padding, which is the content box
+       and is svh. */
     vw = stage.clientWidth;
     vh = stage.clientHeight;
-    minDim = Math.min(vw, vh);
+    layoutH = vh - parseFloat(getComputedStyle(stage).paddingBottom || 0);
+    /* Off the composition, not the surface, so a blob is the same size whether
+       or not the address bar happens to be showing. Sized off the surface it
+       would grow by the height of that bar mid-scroll, on the one axis a phone
+       has least of. */
+    minDim = Math.min(vw, layoutH);
 
-    resizeGrid();
+    const regridded = resizeGrid();
 
     /* The pinned distance: how much taller the section is than the stage. That
        is exactly how far the page scrolls while the stage is held on screen,
@@ -763,16 +782,37 @@ function createPicselHero(root) {
     scrubRange = root.offsetHeight - stage.offsetHeight;
     heroTop = root.offsetTop;
     stacked = vw <= BLOBS.STACK_BELOW;
+
+    return regridded;
   }
 
   /* Lays out the pixel grid for the current stage size: how many cells fit,
-     how big the buffers need to be, and where the chromatic fringe falls. */
+     how big the buffers need to be, and where the chromatic fringe falls.
+     Returns whether it actually did anything. */
   function resizeGrid() {
     const cell = cellSize;
     // Rounded UP, so the grid always covers the stage rather than leaving a
     // sliver of bare background down one edge.
-    cols = Math.max(1, Math.ceil(vw / cell));
-    rows = Math.max(1, Math.ceil(vh / cell));
+    const nextCols = Math.max(1, Math.ceil(vw / cell));
+    const nextRows = Math.max(1, Math.ceil(vh / cell));
+
+    /* NOTHING BELOW THIS LINE MAY RUN ON A RESIZE THAT CHANGED NOTHING, and
+       that is not an optimisation — it is the whole of the "blobs flash while
+       scrolling" bug. Assigning canvas.width RESETS the bitmap whether or not
+       the number is different, so every resize event wiped the blobs and left
+       the screen blank until the next redraw, up to a thirtieth of a second
+       later. On a desktop a resize event is something a person does with a
+       mouse. On a phone it is what the address bar sliding away fires, over
+       and over, in the middle of a scroll — so the blobs strobed exactly when
+       someone was looking at them.
+
+       Guarding on the cell counts rather than on vw/vh is deliberate: the grid
+       is what the buffers are shaped by, and a window that changed by three
+       pixels does not change it. */
+    if (nextCols === cols && nextRows === rows && outImage) return false;
+
+    cols = nextCols;
+    rows = nextRows;
 
     for (const c of [blobCanvas, shapeCanvas, fieldCanvas, maskCanvas, colourCanvas]) {
       c.width = cols;
@@ -793,7 +833,7 @@ function createPicselHero(root) {
     chromaDX = new Int8Array(cellCount);
     chromaDY = new Int8Array(cellCount);
 
-    if (!CHROMA.BLOBS) return;
+    if (!CHROMA.BLOBS) return true;
 
     /* Radial from the centre of the frame, strongest in the corners, rounded
        to whole cells — see CHROMA. Computed once here rather than per frame. */
@@ -810,8 +850,19 @@ function createPicselHero(root) {
         chromaDY[idx] = Math.round((oy / len) * amount);
       }
     }
+    return true;
   }
-  window.addEventListener('resize', resize);
+
+  /* A resize that DID reallocate has just cleared the visible canvas, so it is
+     repainted here and now rather than at the next throttled redraw. Without
+     this the genuine resizes flash for the same reason the spurious ones used
+     to, and a resize while the loop is stopped — a rotated phone on a page
+     scrolled past the hero, then scrolled back — would leave a blank canvas
+     with nothing scheduled to fill it. */
+  function onResize() {
+    if (resize()) drawBlobs(elapsed, 0);
+  }
+  window.addEventListener('resize', onResize);
   resize();
 
   /* ---- reverse-on-scroll ------------------------------------------------ */
@@ -961,8 +1012,13 @@ function createPicselHero(root) {
       const dx = Math.sin(t * dsp * b.fx + b.px) * BLOBS.DRIFT;
       const dy = Math.cos(t * dsp * b.fy + b.py) * BLOBS.DRIFT;
 
+      /* Against layoutH, not the surface height. The homes are fractions of the
+         composition — 0.17 and 0.85 put the stacked pair above and below the
+         wordmark — and the wordmark is centred in the content box. Measured
+         against the padded surface instead, the lower blob would slide down by
+         most of the height of a phone's address bar and sit half behind it. */
       let cx = (home[0] + dx) * vw;
-      let cy = (home[1] + dy) * vh;
+      let cy = (home[1] + dy) * layoutH;
 
       // Pointer lean, eased. Falls off with distance so only nearby blobs
       // respond, and it's always a fraction of the viewport so it reads the
@@ -1013,7 +1069,9 @@ function createPicselHero(root) {
           // elongation has to be vertical or it reads as squashing sideways
           // while travelling down.
           if (alongY) {
-            const fromY = (home[1] < 0.5 ? -BLOB_INTRO.FROM : 1 + BLOB_INTRO.FROM) * vh;
+            // layoutH, to match the home it is travelling to, so the journey is
+            // the same length whatever the address bar is doing.
+            const fromY = (home[1] < 0.5 ? -BLOB_INTRO.FROM : 1 + BLOB_INTRO.FROM) * layoutH;
             cy = lerp(fromY, cy, e);
             stretchY = stretch;
             stretchX = BLOB_INTRO.AREA_PRESERVE
@@ -1593,7 +1651,7 @@ function createPicselHero(root) {
       stop();
       if (glitchTimer !== null) clearTimeout(glitchTimer);
       introTimers.forEach(clearTimeout);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener('resize', onResize);
       if (scrubOn) window.removeEventListener('scroll', onScroll);
       if (mouseOn) {
         window.removeEventListener('pointermove', onPointerMove);
