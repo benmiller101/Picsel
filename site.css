@@ -932,11 +932,25 @@
   color: var(--ink);
 }
 
-/* Pulled tight to the heading: the screenshot IS the page's opening statement,
-   so the gap above it should read as part of the same block rather than as a
-   new section. */
+/* ---- The joins between this page's bands ---------------------------------
+   .section gives every band a full --section-y top AND bottom, which is right
+   when bands are the only thing setting the rhythm. Stack four of them, as this
+   page does, and every join between two bands is paying it twice: 240px of
+   empty page between the screenshot and the copy that describes it, and again
+   before the previous/next links, and again before the contact band.
+
+   So a join here owns ONE rhythm, not two. Which of the pair gives its padding
+   up is chosen by what reads as belonging to what: the screenshot surrenders
+   both, because it is the page's opening statement and belongs to the title
+   above it rather than to the copy below; the previous/next nav surrenders
+   both, because it is a footnote to the article and the contact band already
+   brings its own margin. */
 .project__shot {
-  padding-top: 0;
+  padding-block: 0;
+}
+
+.project-nav {
+  padding-block: 0;
 }
 
 /* ---- The browser frame ---------------------------------------------------
