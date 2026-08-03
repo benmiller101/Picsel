@@ -7,7 +7,8 @@
   "scripts": {
     "build": "node tools/build.js",
     "dev": "npm run build && npx --yes serve . --listen 3000",
-    "shots": "node tools/capture-shots.js"
+    "shots": "node tools/capture-shots.js",
+    "backdrop": "node tools/export-backdrop.js"
   },
   "engines": {
     "node": ">=20"

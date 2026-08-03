@@ -16,6 +16,12 @@ assets/work/**/*.jpeg
 assets/work/**/*.jpg
 .shots-cache/
 
+# Backdrop stills. `npm run backdrop` writes ~11MB of print-resolution PNGs for
+# use behind documents. Same reasoning as the screenshots above: large, exactly
+# regenerable from dot-field.js, and nothing on the site links to them, so
+# versioning them would only bloat the history and publish them by accident.
+assets/backdrop/
+
 # Claude Code's per-machine approvals. settings.json IS committed (it's the
 # shared permission policy); settings.local.json holds this machine's
 # "don't ask again" answers and is personal.

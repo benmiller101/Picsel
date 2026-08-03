@@ -914,6 +914,13 @@
   margin-top: var(--space-4);
 }
 
+/* The title and the screenshot are one block, so the full section rhythm
+   between them reads as a gap that isn't there. Cut the space below the
+   heading to about a third of a normal band. */
+.project__head {
+  padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+}
+
 /* The one place the pixel face carries a whole heading. It is rationed on
    purpose — see .display in base.css — and this is the moment it earns its
    keep: the project name is the title of the page and short enough to stay

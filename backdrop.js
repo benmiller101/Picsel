@@ -23,42 +23,19 @@
    without JavaScript. See the class toggle at the bottom of this file. */
 
 import { makeNoise3D } from './noise.js';
-
-const DOTS = {
-  SPACING: 12,          // px between dots — tight
-  SPACING_SMALL: 14,    // ...on phones: fewer dots, less to draw
-  MAX_RADIUS: 6,        // px. Diameter ~73% of the pitch, so dots nearly touch.
-
-  TINT: [142, 148, 178], // cool grey, slightly blue
-  MAX_ALPHA: 0.1,        // THE LOUDNESS KNOB. Around 0.08 it is a texture you
-                         // sense more than see; past ~0.3 it starts competing
-                         // with the content for attention.
-
-  /* Number of discrete shades. THIS IS WHAT MAKES IT FLICKER. With a
-     continuous mapping from noise to alpha a dot eases between shades and the
-     field reads as a soft gradient. Quantising to a handful of levels means a
-     dot has to JUMP as the noise drifts past a threshold. */
-  LEVELS: 5,
-  SIZE_STEP: 0.45,       // how much of the radius also follows the level
-  ALPHA_MOD: true,       // modulate alpha by the noise as well as size
-
-  NOISE_SCALE: 0.0032,   // pattern zoom, in 1/px
-  FLOW_SPEED: 0.09,      // how fast the field evolves in place
-  DRIFT: 7,              // px/sec of slow lateral travel across the field
-  CONTRAST: 2,         // >1 keeps big dots sparse and clustered
-
-  /* Parallax: how far the field travels compared to the page. 0 pins it to the
-     viewport (no parallax at all), 1 makes it scroll exactly with the content
-     and so look painted onto the page. 0.3 is a deliberate middle — clearly
-     readable as depth, but a third of the content's speed is slow enough that
-     it never drags the eye off a paragraph. */
-  PARALLAX: 0.1,
-
-  // A background: updating on alternate frames halves the cost and is
-  // imperceptible at these speeds. 1 = every frame.
-  UPDATE_EVERY: 2,
-  MAX_DPR: 1.5,          // dots are ~2px; past this it is invisible detail
-};
+/* The numbers and the quantising maths live in dot-field.js, not here, because
+   tools/export-backdrop.js needs exactly the same ones to freeze this field
+   into a print-resolution still. Two copies would agree right up until the
+   first time one of them was tuned. What stays in this file is everything about
+   RUNNING the field: the grid, the animation, the parallax and the two-pass
+   draw. */
+import {
+  DOTS,
+  BUCKETS,
+  quantise,
+  levelRadius,
+  levelFills,
+} from './dot-field.js';
 
 const canvas = document.querySelector('.backdrop');
 const ctx = canvas ? canvas.getContext('2d') : null;
@@ -76,8 +53,6 @@ function start(canvas, ctx) {
   const noise = makeNoise3D(0xC5E1);
   const reducedQuery = matchMedia('(prefers-reduced-motion: reduce)');
   let reduced = reducedQuery.matches;
-
-  const BUCKETS = Math.max(2, DOTS.LEVELS | 0);
 
   let vw = 0, vh = 0, dpr = 1;
   let xs = new Float32Array(0);
@@ -122,14 +97,9 @@ function start(canvas, ctx) {
       }
     }
 
-    const [tr, tg, tb] = DOTS.TINT;
-    fills = [];
-    for (let b = 0; b < BUCKETS; b++) {
-      // Evenly spaced shades from faintest to MAX_ALPHA. A dot is always
-      // exactly one of these — never between two.
-      const a = DOTS.MAX_ALPHA * ((b + 1) / BUCKETS);
-      fills.push(`rgba(${tr},${tg},${tb},${a.toFixed(4)})`);
-    }
+    // Evenly spaced shades from faintest to MAX_ALPHA. A dot is always exactly
+    // one of these — never between two.
+    fills = levelFills();
   }
 
   function draw(time) {
@@ -188,14 +158,10 @@ function start(canvas, ctx) {
       // have not seen before, instead of the same pattern following you down.
       const worldY = ys[i] - offset + shift;
 
-      // Noise in [-1,1] -> [0,1], then a contrast curve so big dots stay
-      // sparse and clustered instead of evenly stippled.
-      let n = (noise((xs[i] + drift) * ns, worldY * ns, z) + 1) * 0.5;
-      n = Math.pow(n < 0 ? 0 : n > 1 ? 1 : n, DOTS.CONTRAST);
-
-      // QUANTISE. The dot snaps to one of LEVELS shades — it never sits
-      // between two, which is what produces the flicker as the field moves.
-      steps[i] = Math.min(BUCKETS - 1, (n * BUCKETS) | 0);
+      // Contrast curve, then QUANTISE: the dot snaps to one of LEVELS shades
+      // and never sits between two, which is what produces the flicker as the
+      // field moves. Both live in dot-field.js — see the note there.
+      steps[i] = quantise(noise((xs[i] + drift) * ns, worldY * ns, z));
     }
 
     /* PASS TWO: one path per shade, so the whole field is a handful of fills
@@ -203,8 +169,7 @@ function start(canvas, ctx) {
     for (let b = 0; b < BUCKETS; b++) {
       // Size follows the same quantised step as the shade, so it steps rather
       // than eases. Constant across the bucket, so it is hoisted out.
-      const q = b / (BUCKETS - 1);
-      const radius = DOTS.MAX_RADIUS * (1 - DOTS.SIZE_STEP + DOTS.SIZE_STEP * q);
+      const radius = levelRadius(b);
       if (radius < 0.12) continue; // below this it is a sub-pixel smudge
 
       ctx.fillStyle = fills[b];
