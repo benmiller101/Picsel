@@ -39,22 +39,34 @@ if (form && status) {
       const data = new FormData(form);
 
       /* The redirect field is for the no-JavaScript path only. Left in, the API
-         answers this background request with a redirect instead of the JSON
-         result we need to know whether it worked. */
+         answers this background request with a redirect instead of the result
+         we need in order to know whether it worked. */
       data.delete('redirect');
+
+      /* Sent as JSON, and that is load-bearing rather than a style choice.
+         Web3Forms decides its response format from the request body and ignores
+         the Accept header: post multipart FormData and it replies with an HTML
+         "Form submitted successfully" page, post JSON and it replies with JSON.
+         This request is read by code, not by a person, so it has to be the
+         second one. Sending the form as multipart and asking for JSON politely
+         is what this file did until the first real submission, and it made
+         every successful send report itself as a failure. */
+      const payload = Object.fromEntries(data.entries());
 
       const response = await fetch(form.action, {
         method: 'POST',
-        /* Asks for the JSON answer rather than a redirect or an HTML page. */
-        headers: { Accept: 'application/json' },
-        body: data,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
       });
 
       const result = await response.json().catch(() => ({}));
 
       if (response.ok && result.success) {
         form.reset();
-        setStatus('Thanks — that’s arrived. We’ll come back to you.', 'ok');
+        setStatus('Thanks, that’s arrived. We’ll come back to you.', 'ok');
       } else {
         /* Deliberately not showing the API's own message. It is written for a
            developer ("Access key is invalid"), and it is not the visitor's
@@ -81,8 +93,8 @@ if (form && status) {
     const phone = phoneLink ? phoneLink.textContent.trim() : '';
 
     return phone
-      ? `That didn’t send. Ring us on ${phone} or email us instead — we’d rather not lose it.`
-      : 'That didn’t send. Ring or email us instead — we’d rather not lose it.';
+      ? `That didn’t send. Ring us on ${phone} or email us instead. We’d rather not lose it.`
+      : 'That didn’t send. Ring or email us instead. We’d rather not lose it.';
   }
 
   function setStatus(message, kind) {
