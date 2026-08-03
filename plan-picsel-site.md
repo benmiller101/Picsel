@@ -1009,7 +1009,9 @@ site has zero box shadows.
 - [x] Web3Forms key in `site.config.js`. It is not a secret: Web3Forms works by putting the key in
       the form markup, so it is readable in the page source wherever the repo keeps it
 - [x] `[MANUAL]` DNS pointed at Cloudflare; HTTPS confirmed
-- [ ] `[MANUAL]` Confirm the Adobe Fonts web project serves on the production domain
+- [x] `[MANUAL]` Adobe Fonts web project confirmed serving on the production domain. Checked in the
+      browser on picsel.co.uk rather than by eye: `document.fonts` reports `argent-pixel-cf` and
+      `gridlite-pe-variable` both loaded, and the wordmark renders in the real face, not the fallback
 - [ ] `[MANUAL]` Google Search Console: add the property, submit the sitemap, request indexing on
       home, work and each project page; Bing Webmaster Tools: add site, submit sitemap
 - [x] Canonicals, sitemap and schema all reference the production domain
@@ -1041,17 +1043,41 @@ site has zero box shadows.
 ## Section 13: Launch QA
 **Priority: CRITICAL | Effort: 2 hours**
 
-- [ ] Every page in a browser; console clean; screenshot home, work, a project page and contact at
+- [x] Every page in a browser; console clean; home, work, a project page and contact screenshotted at
       desktop and mobile
-- [ ] Reverse-scroll hero and the drifting background checked on real scroll and on mobile
-- [ ] Form submitted for real (email arrives); phone link tapped on a real phone
-- [ ] Sitemap audit (the Sitemap Law); schema re-validated on live URLs
-- [ ] Read every page aloud: plain language, no placeholder text, no invented claims, nothing that
+- [x] Reverse-scroll hero and the drifting background checked on real scroll, desktop and mobile
+- [~] Form submitted for real. It sends and the page now says so, but the email lands in the old
+      Gmail rather than ben@picsel.co.uk. Re-test after the recipient is changed in Web3Forms
+- [ ] `[BEN]` Phone link tapped on a real phone
+- [x] Sitemap audit (the Sitemap Law); schema re-validated on live URLs
+- [x] Read every page aloud: plain language, no placeholder text, no invented claims, nothing that
       overstates a brand-new studio
 - [ ] `[BEN]` walkthrough and sign-off
 
 **What we built:**
+
+- **The Sitemap Law holds.** Eight URLs in `sitemap.xml`, all returning 200, and the one route
+  deliberately absent is `/contact/sent/`, which carries `noindex, follow`. A thank-you page in the
+  index is a page that can win a search for the brand and show a visitor a dead end.
+- **Schema parsed rather than eyeballed.** Every JSON-LD block on home, work, a project page and
+  contact parses, and the graph is what it claims: Organization, WebSite, the per-page type,
+  FAQPage with four questions on the homepage, ItemList of five on `/work/`, BreadcrumbLists. The
+  Organization's `contactPoint` carries the same number and address as `site.config.js`, which is
+  the entity-consistency check the GEO section asks for.
+- **No horizontal overflow and no undersized tap targets** on work, a project page or contact. The
+  single control under 44px is the honeypot input, which is hidden from people on purpose.
+- **One `h1` per page, no image without alt text, no unlabelled form control**, and the duplicated
+  labels the rolling hover needs are all `aria-hidden`, so a screen reader hears each one once
+  rather than twice.
+- **Console clean.** The only errors are Chrome extension noise, from no script on the site.
+
 **Decisions made:**
+
+- **Copy shipped as written.** Ran the humanizer pass over every rendered page and changed nothing:
+  the sentence lengths vary, the claims are countable ("Five sites are live", "Four of the five"),
+  and the register suits a builder reading it on a phone. The only copy fixed this session was three
+  status lines in `contact.js` that a visitor sees only after submitting, which is how they kept
+  their em dashes through the earlier passes.
 
 **Done when:** every box is ticked and Ben has signed off.
 
@@ -1137,8 +1163,9 @@ Lighter than a client engagement — this is Picsel's shop window, kept fresh.
 - [x] Section 9: SEO infrastructure (Rich Results Test and Lighthouse need a live URL)
 - [x] Section 10: GEO layer
 - [x] Section 11: Performance, accessibility and responsive pass (homepage perf 89 vs 90 target)
-- [ ] Section 12: Launch (live on picsel.co.uk; the two search consoles and the Adobe Fonts check remain)
-- [ ] Section 13: Launch QA
+- [ ] Section 12: Launch (live on picsel.co.uk; only the two search consoles remain, both `[MANUAL]`)
+- [ ] Section 13: Launch QA (everything checkable from here passes; waiting on the form recipient
+      fix, a phone tap and Ben's sign-off)
 - [ ] Section 14: Add work as it ships
 - [ ] Section 15: Picsel's own SEO, GBP and reach
 
