@@ -429,19 +429,11 @@
   color: var(--ink-muted);
 }
 
-.intro__aside {
-  max-width: var(--measure);
-  color: var(--ink-faint);
-}
-
-@media (min-width: 64rem) {
-  .intro__aside {
-    /* Steps in to sit under the body of the statement rather than under its
-       first word, which is what makes the pair read as one composition instead
-       of two stacked paragraphs. */
-    margin-left: var(--space-16);
-  }
-}
+/* .intro__aside is gone with the paragraph it styled. The line read "Five sites
+   are live. They are all below, and each one links straight out to the real
+   thing. Not a mock-up." It was defending the work against a suspicion nobody
+   had voiced, and the grid underneath it already makes the point without
+   asking to be believed. */
 
 /* ---- Work grid -----------------------------------------------------------
    Six columns, and the cards take different spans in a repeating cycle — see

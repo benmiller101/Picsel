@@ -96,7 +96,7 @@ const GUIDES = [
         ],
       },
       {
-        h2: 'Reviews, on the page and not just on Google',
+        h2: 'Reviews, where someone will actually read them',
         paragraphs: [
           'A handful of real reviews with the customer\'s first name and their town does more ' +
             'than a page of claims about yourself. Keep them honest and keep them short. If ' +
@@ -183,9 +183,8 @@ const GUIDES = [
             'listing might be for a different business, and the listing quietly gets trusted ' +
             'less.',
           'A word on the name itself: adding your keywords to it, so "Smith Plumbing" becomes ' +
-            '"Smith Plumbing Heating Boilers Bathrooms", is against Google\'s rules and is the ' +
-            'most commonly reported and suspended thing on the platform. A competitor can ' +
-            'report it in about a minute.',
+            '"Smith Plumbing Heating Boilers Bathrooms", is against Google\'s rules. Google ' +
+            'suspends profiles for it, and a competitor can report yours in about a minute.',
         ],
       },
       {
@@ -221,8 +220,8 @@ const GUIDES = [
         q: 'How long does a Google Business Profile take to show up?',
         a:
           'After verification, usually a few days to a couple of weeks before it settles into ' +
-          'the map results. If nothing has happened after a month, something is wrong with it ' +
-          'rather than slow.',
+          'the map results. If a month goes by with nothing, assume it is broken and go looking ' +
+          'for the reason.',
       },
       {
         q: 'Does a Google Business Profile cost anything?',
@@ -265,9 +264,9 @@ const GUIDES = [
         h2: 'One off, or monthly',
         paragraphs: [
           'A one off payment gets you a site you own outright and are then responsible for. A ' +
-            'monthly plan spreads the cost and includes somebody keeping it working. Neither is ' +
-            'the honest option and neither is the trick. What matters is whether you are told ' +
-            'clearly which one you are buying.',
+            'monthly plan spreads the cost and includes somebody keeping it working. Both are ' +
+            'legitimate. What matters is whether you were told clearly which one you were ' +
+            'buying.',
           'The thing to watch on a monthly deal is what happens at the end. Ask whether you can ' +
             'leave, what you take with you, and who owns the domain name. If the answer to the ' +
             'last one is not "you", walk away.',
@@ -297,9 +296,10 @@ const GUIDES = [
       {
         q: 'Is a cheap website worth it for a tradesman?',
         a:
-          'Yes, if it is genuinely maintained. A simple five page site that is kept online, ' +
-          'kept current and linked to a proper Google listing does the job for most trades. ' +
-          'The risk with a cheap site is not the design, it is that nobody is looking after it.',
+          'Yes, if it is genuinely maintained. A simple five page site that stays online, stays ' +
+          'current and is linked to a proper Google listing does the job for most trades. The ' +
+          'risk with a cheap site is that nobody is looking after it. The design is rarely what ' +
+          'goes wrong.',
       },
       {
         q: 'Should I use Wix or Squarespace instead?',
@@ -314,7 +314,7 @@ const GUIDES = [
       id: 'prices',
       href: '/prices/',
       line:
-        `Ours are published rather than quoted: ${money(ONLINE.build)} to build and ` +
+        `Ours are on the page instead of in a quote: ${money(ONLINE.build)} to build and ` +
         `${money(ONLINE.monthly)} a month at the smallest, with everything each plan covers ` +
         'written down.',
     },
@@ -329,8 +329,7 @@ const GUIDES = [
     answer:
       'GEO means getting your business quoted by AI assistants when someone asks one to ' +
       'recommend a tradesperson. It is to assistants what SEO is to Google. It matters because ' +
-      'a good number of customers now ask an assistant first and never see a results page at ' +
-      'all.',
+      'a customer who asks an assistant first never sees a results page at all.',
     sections: [
       {
         h2: 'What changed',
@@ -348,7 +347,7 @@ const GUIDES = [
             'questions. Plain sentences that state facts. Your trade, your towns, your prices ' +
             'if you publish them, your hours, how to reach you. Written so a single sentence ' +
             'can be lifted out and still be true on its own.',
-          'It also wants to be confident you are one business rather than three similar ones. ' +
+          'It also has to work out whether you are one business or three with similar names. ' +
             'The same name, phone number and address on your site, your Google profile and ' +
             'every directory you appear in. That consistency is boring and it is most of the ' +
             'job.',
@@ -357,23 +356,24 @@ const GUIDES = [
       {
         h2: 'What helps, in order',
         list: [
-          'Pages that answer a real question in the first line, rather than building up to it',
+          'Pages that answer a real question in the first line',
           'The same business details everywhere, character for character',
           'A Google Business Profile that is verified, filled in and active',
           'Schema markup, which is the machine-readable version of what your page already says',
-          'Reviews, because an assistant reads them as evidence rather than decoration',
+          'Reviews, which an assistant reads as evidence',
         ],
       },
       {
         h2: 'What does not help',
         paragraphs: [
           'Stuffing your trade and every town within thirty miles into a paragraph. Assistants ' +
-            'are markedly worse than Google was at rewarding that, because they are summarising ' +
-            'rather than matching, and a page that reads as filler gets summarised as nothing.',
-          'The other thing worth saying plainly: nobody can promise you a place in an ' +
+            'are markedly worse than Google was at rewarding that, because summarising punishes ' +
+            'filler in a way that keyword matching never did. A page of it gets summarised as ' +
+            'nothing.',
+          'Nobody can promise you a place in an ' +
             'assistant\'s answer, and anyone who does is guessing. What can be done is making ' +
-            'sure that when one goes looking, everything it finds about you is clear, correct ' +
-            'and consistent.',
+            'sure that when one goes looking, everything it finds about you agrees with ' +
+            'everything else.',
         ],
       },
       {
@@ -419,15 +419,15 @@ const GUIDES = [
       'Ask every customer in person on the day the job finishes, and hand them a short link. What stops it working, and two things that get you penalised.',
     answer:
       'Ask every customer in person, on the day the job finishes, and give them a short link ' +
-      'straight to your review page. That is the whole method. The two things that stop it ' +
+      'straight to your review page. There is nothing else to it. The two things that stop it ' +
       'working are leaving it a week and asking by text, and asking everybody at once.',
     sections: [
       {
         h2: 'Get the short link first',
         paragraphs: [
           'Google gives every profile a review link. It is in your Business Profile under the ' +
-            'option to ask for reviews, and it opens the review box directly rather than the ' +
-            'listing. Save it as a QR code on your phone and put it on your invoice. Asking ' +
+            'option to ask for reviews, and it opens the review box straight away, skipping the ' +
+            'listing page. Save it as a QR code on your phone and put it on your invoice. Asking ' +
             'someone to "find us on Google and leave a review" loses most of them at the ' +
             'finding.',
         ],

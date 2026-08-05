@@ -45,7 +45,7 @@ const INTRO = `    <section class="section work-intro">
           <p class="lede measure">
             ${countWord(count, { capitalise: true })} live sites, from a building firm to an
             artist four hundred miles away. Each one links straight out to the real site, so
-            you can judge it the way a customer would rather than take our word for it.
+            you can see it the way a customer does.
           </p>
         </div>
 

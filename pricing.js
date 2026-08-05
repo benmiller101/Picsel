@@ -185,8 +185,8 @@ export const EXTRAS = [
     name: 'Google Ads',
     price: `From ${money(129)} a month, plus your ad spend`,
     body:
-      'For when you want the phone to ring this week rather than this quarter. Your ad budget ' +
-      'goes straight to Google and we never take a cut of it.',
+      'For when you need the phone ringing this week and cannot wait a quarter for the search ' +
+      'work to take. Your ad budget goes straight to Google and we never take a cut of it.',
   },
   {
     name: 'Custom tools',
