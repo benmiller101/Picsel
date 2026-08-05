@@ -47,12 +47,24 @@ const DIRECT = `        <div class="contact-direct">
               </dd>
             </div>
 
+            <!-- This row used to name the county and the nearest town. The
+                 question a customer is actually asking under a heading like
+                 that is not where the office is, it is whether being three
+                 hundred miles away is a problem, so the row answers that
+                 instead. Nothing here names a place. The studio works anywhere
+                 and is about to move, and a town buried in a contact page is
+                 the last place anyone would think to check.
+
+                 The old wording is deliberately not quoted here either: an
+                 HTML comment ships to the browser, so a place name in one is
+                 still a place name on the page, and the build check in
+                 tools/build.js counts it. -->
             <div class="contact-direct__row">
-              <dt class="eyebrow">Where we are</dt>
+              <dt class="eyebrow">Where we work</dt>
               <dd>
                 <p class="contact-direct__note">
-                  ${escapeHtml(SITE.areaServed)}, near Hayle. Most of our work is in the county, and we&rsquo;ve
-                  built for clients a good deal further north too.
+                  Anywhere in the UK. The whole job is done by phone and email wherever you are,
+                  and it has been for clients four hundred miles apart.
                 </p>
               </dd>
             </div>
@@ -234,9 +246,9 @@ export const CONTACT_PAGE = {
       { name: 'Contact', path: '/contact/' },
     ]),
   ],
-  title: 'Contact Picsel: web design in Cornwall',
+  title: 'Contact Picsel: websites for tradespeople',
   description:
-    `Ring Picsel on ${SITE.contact.phoneDisplay}, email ${SITE.contact.email}, or send an enquiry. Web design and automation for small businesses in Cornwall.`,
+    `Ring Picsel on ${SITE.contact.phoneDisplay}, email ${SITE.contact.email}, or send an enquiry. Websites and Google visibility for tradespeople anywhere in the UK.`,
   styles: ['/contact.css'],
   /* Enhancement only. With this file missing or blocked the form is still a
      working HTML form — it just posts the ordinary way and lands on

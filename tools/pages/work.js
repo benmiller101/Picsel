@@ -23,12 +23,15 @@ import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
    lookup moved to templates/words.js when the homepage needed the same one. */
 const count = PROJECTS.length;
 
-/* Cornwall is named because it is true of most of the list and it is what
-   someone local is looking for — but the sentence is built from the data
-   rather than asserting it, because Julie Miller Art is in the Scottish
-   Borders and a blanket "all in Cornwall" would be false. */
-const cornwallCount = PROJECTS.filter((p) => /cornwall/i.test(p.location)).length;
-const elsewhere = count - cornwallCount;
+/* This page used to count how many of the projects were in Cornwall and put
+   the number in the opening sentence. It was carefully done, built from the
+   data so it could not go stale, and it is gone: the studio no longer describes
+   itself by county, and a sentence sorting its own portfolio into local and
+   not-local is that description wearing a different hat.
+
+   What is left is the count of sites, which is a fact about the work and still
+   read from the list rather than typed. "Five" stops being true the day a sixth
+   project is added, and a hand-written number is one nobody remembers. */
 
 /* The text is wrapped rather than sitting loose in the inner, because the blob
    beside it makes the inner a two-column grid on a desktop — without the
@@ -40,12 +43,9 @@ const INTRO = `    <section class="section work-intro">
           <p class="eyebrow">Work</p>
           <h1 class="work-intro__title">Every site we have built</h1>
           <p class="lede measure">
-            ${countWord(count, { capitalise: true })} live sites${
-              elsewhere > 0
-                ? `, ${countWord(cornwallCount)} of them in Cornwall`
-                : ', all of them in Cornwall'
-            }. Each one links straight out to the real site, so you can judge it
-            the way a customer would rather than take our word for it.
+            ${countWord(count, { capitalise: true })} live sites, from a building firm to an
+            artist four hundred miles away. Each one links straight out to the real site, so
+            you can judge it the way a customer would rather than take our word for it.
           </p>
         </div>
 
@@ -85,9 +85,9 @@ export const WORK_PAGE = {
       { name: 'Work', path: '/work/' },
     ]),
   ],
-  title: 'Work: websites Picsel has built in Cornwall',
+  title: 'Work: websites built for trades and small firms',
   description:
-    `The ${countWord(count)} sites Picsel has built for trades and small businesses, mostly in Cornwall. Every one links out to the live site.`,
+    `The ${countWord(count)} sites Picsel has built for tradespeople and small businesses. Every one links out to the live site, so you can judge it the way a customer would.`,
   extraScripts: PAGE_BLOB_SCRIPT,
   content: [INTRO, GRID, renderContactBand({
     heading: 'Want one of these?',

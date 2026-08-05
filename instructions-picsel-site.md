@@ -57,11 +57,14 @@ same session. The plan's Site Profile and this block must never disagree; the pl
 | Variable | Value |
 |---|---|
 | Studio name | Picsel (tagline "Design Studio") |
-| Purpose | Portfolio + lead-gen for a Cornwall web design & automation studio |
-| Audience | Cornwall small businesses and trades, mostly non-technical |
-| Owner / contact | Ben Miller · 07456 809049 (`tel:+447456809049`) · benwmiller101@gmail.com |
-| Domain | PENDING `[DECISION]` (register in Picsel's own account) |
-| Hosting | Cloudflare Pages |
+| Purpose | Portfolio + lead-gen for a UK-wide web design & automation studio |
+| Audience | Tradespeople and small businesses **anywhere in the UK**, mostly non-technical, often burned by a previous web person |
+| Service area | **The United Kingdom. No town, county or region is ever named about Picsel** — not in copy, page titles, meta descriptions, alt text, image filenames or schema. Client locations are facts about clients and stay on their own pages. `tools/build.js` fails the build on a breach |
+| Exclusivity | **One trade per patch, on the Growth plan.** A patch is a town plus roughly eight miles. Written once in `SITE.exclusivity`; never print it without naming Growth |
+| Prices | **Published**, on `/prices`, from `pricing.js`. Online £99 + £15/mo · Managed £149 + £29/mo · Growth £149 + £119/mo. Never type a figure into a page: import it |
+| Owner / contact | Ben Miller · 07456 809049 (`tel:+447456809049`) · ben@picsel.co.uk |
+| Domain | **picsel.co.uk**, live. Served from the apex; www redirects to it |
+| Hosting | Cloudflare, as an assets-only Worker (`wrangler.jsonc`). A push to `main` deploys |
 | Stack | Static multi-page HTML/CSS/JS on the existing hero; no framework |
 | Fonts | Adobe web project `ior4aly` (`argent-pixel-cf` resting wordmark; `gridlite-pe-variable`, `pf-pixelscript`, `pixelify-sans` in the glitch) + Google `Lexend` (body) and `Pixelify Sans` (fallback) |
 | Contact form | Web3Forms (access key in the host dashboard, not the repo) |
@@ -71,6 +74,9 @@ same session. The plan's Site Profile and this block must never disagree; the pl
 **The never-do list for this site (absolute):**
 
 - No invented testimonials, client counts, years-in-business, awards or stat rows. Five projects is five.
+- **No place name for Picsel, anywhere.** Not "based in", "local to", "near you" or "in your area" either.
+- **Never state the exclusivity promise without the Growth condition attached.** Short form: "one trade per patch on our Growth plan".
+- **Never use "guaranteed" as an adjective.** The lead guarantee is a named, conditional refund on Growth, stated in full with its terms or not at all.
 - No purple/blue/pink gradients beyond the hero blobs; no gradient-filled headline words.
 - No "Why choose us", no SaaS slogans, no jargon aimed at a non-technical audience.
 - No featuring a client site not cleared to feature; no implied endorsement.

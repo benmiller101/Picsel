@@ -1,0 +1,21 @@
+{
+  "name": "Picsel",
+  "short_name": "Picsel",
+  "description": "Picsel builds websites for tradespeople anywhere in the UK, gets them found on Google and in AI search, and keeps them there.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

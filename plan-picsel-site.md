@@ -25,6 +25,43 @@
 
 ---
 
+## Repositioning, August 2026
+
+**Read this before any section below.** Picsel stopped being a Cornwall business and became a
+UK-wide one. Ben relocates to Edinburgh within three months. Cornwall is now where the first
+clients happen to be, not the market, and several decisions recorded further down this plan were
+made under the old assumption and are no longer in force.
+
+What changed, and what it supersedes:
+
+| Now | Was | Where the old version is recorded |
+|---|---|---|
+| Service area is the UK. No place name appears anywhere about Picsel: not in copy, titles, meta descriptions, alt text or schema | "A web design and automation studio in Cornwall", in the homepage opening line, three page titles, the footer of every page and `areaServed` | Sections 4, 10, 12 |
+| Prices are published on `/prices`, from `pricing.js` | "Prices stay off the site. No price, range or from-£ anywhere" | Sections 10 and 12, and the `[DECISION]` log |
+| **One trade per patch, on the Growth plan.** A patch is a town plus roughly eight miles | "One client per trade, per town", stated with no conditions and no plan attached | Sections 4 and 12 |
+| `areaServed` is `Country: United Kingdom` | `AdministrativeArea: Cornwall` | Section 9 |
+| `sameAs` carries the three live social profiles | Omitted, because there were none | Section 9 |
+| A `/guides` section of question-first pages is the main GEO play | GEO was four FAQ answers on the homepage | Section 10 |
+
+Three of these were not merely out of date, they were **wrong as written**:
+
+1. **The exclusivity promise was wrong twice.** The contract defines the unit as a patch, not a
+   town, so the site was promising less than the contract gives. And full exclusivity is offered on
+   Growth only, where there is active visibility work to protect, so the site was promising it to
+   every customer including a £15 Online one. The wording now lives in `SITE.exclusivity` and
+   `tools/build.js` fails the build if any page prints it without naming Growth.
+2. **The no-prices decision had already broken.** The social bios lead with "from £15 a month". A
+   site naming no number at all was not discretion, it was a contradiction anyone could find in one
+   tab switch.
+3. **The location claims outlived their truth on a known date.** A county in a footer that renders
+   on every page is the single most repeated claim on a site and the last one anybody re-reads.
+
+Two checks in `tools/build.js` now enforce the first and third of those on every build, because
+both are the kind of thing that gets quietly reintroduced by somebody shortening a sentence to fit
+a card.
+
+---
+
 ## Site profile
 
 Single source of truth. If a fact changes, change it here first, then everywhere it appears.
@@ -32,9 +69,11 @@ Single source of truth. If a fact changes, change it here first, then everywhere
 | Field | Value |
 |---|---|
 | Studio name | Picsel (working name; "Design Studio" tagline in the hero) |
-| What it is | Portfolio + lead-gen site for a Cornwall web design and automation studio |
-| Audience | Small businesses and trades, mostly Cornwall, mostly **not tech-savvy** — easy nav and an obvious way to make contact are the whole job |
-| Positioning | Affordable but effective websites, SEO and GEO, Google Business Profile help, and custom automation tools; one client per trade per town (exclusivity); local and fast |
+| What it is | Portfolio + lead-gen site for a UK-wide web design and automation studio. **Was "a Cornwall studio" until August 2026** — see Repositioning below |
+| Audience | Tradespeople and small businesses anywhere in the UK, mostly **not tech-savvy**, often burned by a previous web person. Easy nav and an obvious way to make contact are the whole job |
+| Positioning | Websites and Google visibility for tradespeople, from £15 a month, live in days. SEO and GEO, Google Business Profile help, and custom automation tools. **One trade per patch, on the Growth plan only** (see Exclusivity below) |
+| Service area | **The United Kingdom. No town, county or region is named anywhere on the site, in any title, meta description, alt text or schema block.** Ben relocates to Edinburgh within three months of August 2026, so any place name in the copy is a fact with an expiry date. Enforced by a check in `tools/build.js` |
+| Exclusivity | **One trade per patch, on the Growth plan.** A patch is a town plus roughly eight miles. Written once in `SITE.exclusivity`; the build fails if a page prints it without naming Growth |
 | Owner / contact | Ben Miller · 07456 809049 (`tel:+447456809049`) · benwmiller101@gmail.com |
 | Dedicated studio email | **ben@picsel.co.uk**, on the Picsel domain. `hello@` is an alias on the same inbox, deliberately unpublished: one address on the site, one in the schema |
 | Domain | **picsel.co.uk**, registered and live. Served from the apex; www redirects to it |
@@ -44,7 +83,7 @@ Single source of truth. If a fact changes, change it here first, then everywhere
 | Fonts | Adobe Fonts web project `ior4aly` (`argent-pixel-cf`, `gridlite-pe-variable`, `pf-pixelscript`, `pixelify-sans`) + Google `Lexend` (body) and `Pixelify Sans` (fallback pixel face) |
 | Contact form | Web3Forms (free, access key in the dashboard) |
 | Brand aesthetic | Dark near-black, lava-lamp gradient blobs (hero only), near-invisible dot-grid texture, PICSEL pixel wordmark with a font-glitch |
-| Show pricing? | **No. Settled August 2026.** The founding offer (£199 build + £39/mo, rising to £299) is quoted in conversation, not published. No price, range or "from £" goes anywhere on the site |
+| Show pricing? | **Yes, published on /prices. Reversed August 2026.** It was settled as "no" and overturned for one reason: the social bios lead with "from £15 a month", so a site naming no number was not discretion, it was a public contradiction. Three plans plus add-ons, all read from `pricing.js` |
 | Featured projects | The five below |
 
 ### The five projects (source of truth for `projects.js`)
@@ -52,10 +91,17 @@ Single source of truth. If a fact changes, change it here first, then everywhere
 | Slug | Name | URL | Sector | Location | Featured |
 |---|---|---|---|---|---|
 | nevitt-construction | A Nevitt Construction — settled, the live site brands itself this; haylebuilders.com is only the domain | https://haylebuilders.com/ | Construction | Hayle, Cornwall | yes |
+| julie-miller-art | Julie Miller Art | https://juliemillerart.co.uk/ | Artist portfolio | Scottish Borders | yes |
 | lanora-house | Lanora House | https://www.lanorahouse.com/ | House clearance | Hayle, Cornwall | yes |
 | ajc-removals | AJC Removals & Clearances | https://ajcremovals.co.uk/ | Removals & clearance | Cornwall | yes |
-| julie-miller-art | Julie Miller Art | https://juliemillerart.co.uk/ | Artist portfolio | Scottish Borders | yes |
 | house-of-cornwall | House of Cornwall | https://houseofcornwall.live/ | Antiques & auctions | Hayle, Cornwall | yes |
+
+**The order of this table is the order of the grid, and it changed in August 2026.** It used to run
+four Cornwall businesses with the Scottish one fourth, which was the right order for a Cornwall
+studio. Julie Miller Art is now second: it is several hundred miles from every other client, and
+having it high in the grid demonstrates that distance is not a problem instead of asserting it in
+copy. The Location column stays as it is. These are facts about the CLIENTS, they are true, and
+they appear on each client's own page. Only Picsel is forbidden a location.
 
 Blurbs are drafted in the build brief and are editable by Ben. `work` tags default to `['Website']`;
 add `'SEO'` / `'Google Profile'` per project where that's what Picsel actually did.
@@ -102,8 +148,10 @@ Picsel is a brand-new studio. Credibility comes from the work shown, not from in
 ### Required now
 - [x] `[DECISION]` Domain chosen and registered — **picsel.co.uk**
 - [x] `[DECISION]` Studio contact email — **ben@picsel.co.uk** on the domain
-- [x] `[DECISION]` Whether to show the founding-offer pricing — **no.** Prices stay off the site and
-      are quoted in the conversation. Nothing is stubbed for one; do not add a "from £" anywhere
+- [x] ~~`[DECISION]` Whether to show the founding-offer pricing — **no.**~~ **Reversed August 2026.**
+      Prices are published on `/prices`, read from `pricing.js`. The original decision was overturned
+      because the social bios already led with "from £15 a month", so the site naming no number was
+      not discretion, it was a contradiction. See Repositioning at the top of this plan
 - [x] `[BEN]` **Confirm each of the five clients is happy to be featured** — all five cleared,
       August 2026, including Lanora House (Ben is a director) and House of Cornwall, which states an
       affiliation with Lanora House on its own site. Two of the five being connected businesses is a
@@ -427,10 +475,11 @@ jumps down the page as the images arrive.
   the county and the work in one plain line, so an assistant answering "who builds websites in
   Cornwall" can quote it and still be accurate. This is Section 10's first-50-words test satisfied
   early, because retrofitting it later would have meant rewriting the opening.
-- **No pricing block, and no placeholder for one.** Built that way while the decision was open, and
-  it now stands as the answer: Ben decided in August 2026 that prices stay off the site. A greyed-out
-  "pricing coming soon" would have been worse than nothing on a site whose whole pitch is that it is
-  finished and real.
+- **No pricing block, and no placeholder for one.** Built that way while the decision was open. A
+  greyed-out "pricing coming soon" would have been worse than nothing on a site whose whole pitch is
+  that it is finished and real. *Superseded later in August 2026: the homepage now carries a price
+  rail of the three plans under the services list, and `/prices` carries the rest. The reasoning
+  above is why there was never a placeholder to remove.*
 - **The blob grid moved from 8px blocks to 12px**, at Ben's request mid-section. Bigger blocks mean
   a coarser picture: the hero now draws 120 x 67 pixels on a 1440 screen instead of 180 x 100, so
   the grain is more obviously a choice and the per-frame cost went down rather than up. The number
@@ -506,11 +555,15 @@ card reads as a better project rather than as a layout decision. So every card h
 size in a plain two-up grid. It is the same card component either way, which is the point of it
 being a partial — the two can look different without being able to drift apart.
 
-The page's own copy is written from the data. "Five live sites, four of them in Cornwall" is
-counted at build time, not typed, because the day a sixth project is added a hand-written number
-becomes a lie on a page whose entire argument is that the work is real. The Cornwall count is
-derived for the same reason — Julie Miller Art is in the Scottish Borders, so a blanket "all in
-Cornwall" would be false.
+The page's own copy is written from the data. The count of sites is taken at build time, not typed,
+because the day a sixth project is added a hand-written number becomes a lie on a page whose entire
+argument is that the work is real.
+
+*Changed August 2026:* the sentence used to read "five live sites, four of them in Cornwall", with
+the county count derived from the data for exactly the same reason. The derivation was careful and
+it is gone anyway. A studio that no longer describes itself by county should not be sorting its own
+portfolio into local and not-local, which is that description wearing a different hat. The count of
+sites stays; the count of counties does not.
 
 Checked in a browser at 375, 768, 1024 and 1440: no sideways scrolling, no tap target under 44
 pixels, one `<h1>`, a clean console, and all five links matching their slugs in `projects.js`.
@@ -670,8 +723,9 @@ identical, and only then is the real picture taken.
 ## Section 8: Contact page and form
 **Priority: CRITICAL | Effort: 2 hours**
 
-- [x] `/contact`: the **phone number big and obvious** as `tel:+447456809049`, the email, and that
-      Picsel is Cornwall-based
+- [x] `/contact`: the **phone number big and obvious** as `tel:+447456809049`, the email, and where
+      Picsel works — *"Cornwall, near Hayle" until August 2026; the row now answers the question a
+      customer is actually asking under that heading, which is whether distance is a problem*
 - [x] **Web3Forms** contact form (access key placeholder for Ben to paste): name, email, phone
       (optional), a "what do you need" select (New website / SEO & Google / Automation tool /
       Something else), message. Real `<label>`s, required-field validation, a honeypot, inline
@@ -760,11 +814,14 @@ Picsel sells SEO, so its own site must model it (per `CLAUDE.md` SEO rules).
       canonical on every page
 - [x] Open Graph + Twitter tags on every page; project pages use their desktop screenshot as the OG image
 - [x] Schema (JSON-LD): `Organization`/`ProfessionalService` for Picsel across the site (name, area
-      served Cornwall, contact), and a simple `CreativeWork`/`WebSite` reference per project linking
+      served, contact) — *`areaServed` was `AdministrativeArea: Cornwall` and is now
+      `Country: United Kingdom`* — and a simple `CreativeWork`/`WebSite` reference per project linking
       to the live URL. Alt text on every meaningful image — *`Organization`, not `ProfessionalService`;
       see the decision below*
-- [x] Local signal: mention Cornwall naturally where it fits (not on the Julie Miller page — that
-      client is in the Scottish Borders)
+- [x] ~~Local signal: mention Cornwall naturally where it fits~~ **Removed August 2026.** There is no
+      local signal to give: Picsel names no place of its own anywhere. Client locations stay on the
+      clients' own pages, where they are facts about the client. `tools/build.js` now fails the build
+      if a place name appears in anything that is not project data
 
 **What we built:**
 
@@ -792,12 +849,21 @@ page. The one omission is deliberate and confirmed absent, which is the confirma
   checklist above.** Both of those are physical-premises types whose whole purpose is an address and
   opening hours that put a pin on a map. Picsel has neither yet, and inventing a street address to
   satisfy a schema type is precisely the fabrication the Positioning Boundaries forbid. It would also
-  be the kind of thing nobody ever notices is false. `Organization` states what is true today: a
-  business, working in Cornwall, reachable on this number. Section 15 upgrades it when the Google
-  Business Profile exists and there is a real address to declare.
-- **`sameAs` is omitted rather than left empty.** Picsel has no public profiles yet. An empty array
-  says "checked, and there are none", which is a different and worse claim than saying nothing at
-  all. It appears on its own the moment `socialProfiles` is populated.
+  be the kind of thing nobody ever notices is false. `Organization` states what is true: a UK
+  business, reachable on this number.
+
+  *Reaffirmed and hardened, August 2026.* This entry originally read "a business, working in
+  Cornwall" and promised an upgrade to `ProfessionalService` in Section 15, once there was an address
+  to declare. **That upgrade is now off the table rather than pending.** Picsel serves the whole
+  country and has no premises a customer would ever visit, so there will be no address, and a type
+  implying one would be wrong in a new way. What was a careful choice about fabrication is now also
+  the only type that matches the business.
+- **`sameAs` is omitted rather than left empty.** An empty array says "checked, and there are none",
+  which is a different and worse claim than saying nothing at all, so the key only renders when
+  there is something to put in it. *August 2026: there is. `socialProfiles` now carries the Facebook,
+  Instagram and TikTok accounts, and `sameAs` appears on its own, exactly as this was built to do.
+  It is what ties three accounts and the site into one entity for a search engine, which is the
+  consistency Picsel sells.*
 - **A project page is `about` the client's site, not about Picsel.** The obvious wiring points every
   page at the Organization. That is right for the homepage and the contact page and wrong for a
   project page, and it is most wrong on the Julie Miller Art page: it would have attached a studio
@@ -830,9 +896,10 @@ page. The one omission is deliberate and confirmed absent, which is the confirma
 ## Section 10: GEO layer (AI search visibility)
 **Priority: HIGH | Effort: 2 hours**
 
-- [x] Direct answer in the first ~50 words of the homepage: "Picsel is a web design and automation
-      studio in Cornwall building affordable, effective websites for local trades and small
-      businesses…" — liftable by an assistant — *written in Section 4, verified word-for-word here*
+- [x] Direct answer in the first ~50 words of the homepage — liftable by an assistant. *Rewritten
+      August 2026. It opened "Picsel is a web design and automation studio in Cornwall…", which was
+      the single most quotable location claim on the site. It now opens "Websites and Google
+      visibility for tradespeople", followed by the exclusivity short form and the starting price*
 - [x] Entity consistency: same name, phone and email on every page and any external profile
       — *now enforced by the build, not just checked once*
 - [x] `robots.txt` allows AI crawlers (GPTBot, ClaudeBot, PerplexityBot and peers); optional
@@ -897,8 +964,9 @@ forms and one email address.
 
 **Settled since:**
 
-- `[DECISION]` **The pricing question — no.** Prices stay off the site, so there is no fifth question
-  and no figure anywhere in the copy or the schema.
+- `[DECISION]` ~~**The pricing question — no.**~~ **Reversed August 2026.** "How much does a website
+  cost?" is now the second question on the homepage, answered with the real figures from
+  `pricing.js`, and the five `/guides` pages carry the long-form answers with `FAQPage` schema.
 
 **Done when:** the homepage passes the first-50-words test and robots reflects the crawler decision. ✅
 

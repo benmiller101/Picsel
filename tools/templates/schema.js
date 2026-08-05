@@ -23,17 +23,23 @@ export const ORG_ID = `${SITE.origin}/#organization`;
 export const SITE_ID = `${SITE.origin}/#website`;
 
 /* ---- The studio ----------------------------------------------------------
-   Organization, deliberately NOT LocalBusiness or ProfessionalService.
+   Organization, deliberately NOT LocalBusiness.
 
-   Both of those are physical-premises types: their whole point is an address
-   and opening hours that put a pin on a map. Picsel has neither yet, and
-   inventing a street address to satisfy a schema type would be exactly the
-   fabrication this file exists to avoid. Organization says what is true today
-   — a business, in Cornwall, reachable on this number.
+   LocalBusiness and ProfessionalService are physical-premises types: their
+   whole point is an address and opening hours that put a pin on a map. Picsel
+   has neither, and inventing a street address to satisfy a schema type would be
+   exactly the fabrication this file exists to avoid.
 
-   Upgrade to ProfessionalService in Section 15, when the Google Business
-   Profile exists and there is a real address and a real service area to
-   declare. */
+   That was already true when the studio was in Cornwall. It is the only
+   defensible option now that it is not: a LocalBusiness node is a claim to be
+   local to somewhere, and there is no somewhere. Organization says what is
+   true, which is a UK business reachable on this number.
+
+   The note here used to say "upgrade to ProfessionalService when there is a
+   real address to declare". That upgrade is now off the table rather than
+   pending. Picsel serves the whole country and has no premises a customer would
+   ever visit, so there will not be an address to declare, and a type that
+   implies one would be wrong in a new way. */
 function organization() {
   return {
     '@type': 'Organization',
@@ -43,11 +49,13 @@ function organization() {
     url: absoluteUrl('/'),
     description: SITE.description,
 
-    /* Named as a place rather than a postal address: it is where the work is
-       done from and where the clients are, which is the true and useful
-       version of the claim. */
+    /* Country, not AdministrativeArea. This used to name a county, which told a
+       crawler the business was a Cornwall business and was the machine-readable
+       half of a claim now removed from every page. The whole country is both
+       true and the wider net, and Country is the type that says it without
+       implying a premises inside it. */
     areaServed: {
-      '@type': 'AdministrativeArea',
+      '@type': 'Country',
       name: SITE.areaServed,
     },
 
@@ -63,11 +71,16 @@ function organization() {
       availableLanguage: 'English',
     },
 
-    /* sameAs is omitted rather than empty. socialProfiles is deliberately an
-       empty list in site.config.js — Picsel has no public profiles yet — and
-       an empty sameAs array tells a crawler the business has been checked and
-       has none, which is a different and less useful claim than saying
-       nothing. Populate site.config.js and this appears on its own. */
+    /* sameAs: the three live social accounts, from site.config.js. This is the
+       tag that tells a search engine the Facebook page, the Instagram account,
+       the TikTok account and this site are one business rather than four
+       things with similar names, which is the same entity-consistency argument
+       the phone number gets.
+
+       Still conditional. If socialProfiles is ever emptied, the key disappears
+       rather than rendering as [], because an empty sameAs claims the business
+       was checked and has no profiles, which is a different and worse thing to
+       say than nothing. */
     ...(SITE.socialProfiles.length ? { sameAs: SITE.socialProfiles } : {}),
   };
 }

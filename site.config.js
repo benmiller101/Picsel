@@ -36,23 +36,70 @@ export const SITE = {
     emailIsPending: false,
   },
 
-  /* Where Picsel works. Used for the honest local mention and areaServed in
-     the Organization schema. Note this describes PICSEL, not every client —
-     Julie Miller Art is in the Scottish Borders (see projects.js). */
-  areaServed: 'Cornwall',
+  /* Where Picsel works, and the only geography this site is allowed to claim
+     about itself.
 
-  /* One sentence describing the studio, used in the Organization schema and
-     nowhere else yet. It deliberately matches the opening line of the homepage
-     almost word for word: the GEO rules ask for entity consistency, and a
-     business whose schema describes it differently from its own front page is
-     giving two answers to the same question. */
+     It used to say Cornwall. That stopped being true of the business before it
+     stopped being true of the client list: Ben is moving to Edinburgh, and a
+     county named in a footer, a title and a schema block is a promise the
+     studio would have to keep or quietly break. UK-wide is the honest version
+     and it is also the wider market.
+
+     Client locations are a different thing entirely and they stay. A case study
+     saying a builder works in Hayle is a fact about that builder, and
+     projects.js is where those live. This value describes PICSEL. */
+  areaServed: 'United Kingdom',
+
+  /* One sentence describing the studio, used in the Organization schema and in
+     llms.txt. It deliberately matches the opening line of the homepage almost
+     word for word: the GEO rules ask for entity consistency, and a business
+     whose schema describes it differently from its own front page is giving two
+     answers to the same question. */
   description:
-    'Picsel is a web design and automation studio in Cornwall, building websites and doing ' +
-    'search work for local trades and small businesses.',
+    'Picsel builds websites for tradespeople anywhere in the UK, gets them found on Google ' +
+    'and in AI search, and keeps them there.',
 
-  /* Real profiles only. Populating this with invented or empty profiles would
-     put a broken sameAs into the schema, which is worse than omitting it. */
-  socialProfiles: [],
+  /* ---- The exclusivity promise --------------------------------------------
+     Written once, here, because it is the one sentence on this site that is a
+     CONTRACTUAL promise rather than a description, and it was wrong in two
+     ways when it was loose in the page copy.
+
+     What it said: "One client per trade, per town", with no conditions.
+
+     What is actually true:
+       1. The unit is a PATCH, not a town. The contract says a town plus roughly
+          eight miles. "Town" is narrower than what is being promised, which
+          undersells it and, worse, means the printed words and the signed words
+          disagree.
+       2. It only applies on GROWTH, where there is active visibility work to
+          protect. A £15 Online client is not being promised that Picsel will
+          turn away their competitor, and the business decided deliberately not
+          to make that promise.
+
+     THE RULE: the promise never appears without the Growth condition attached.
+     tools/build.js checks every rendered page for it and fails the build if a
+     page prints one without the other, because this is exactly the kind of line
+     that gets shortened to fit a space and becomes a claim nobody meant. */
+  exclusivity: {
+    full:
+      '<strong>One trade per patch.</strong> On our Growth plan, if we are working for a plumber ' +
+      'in your patch, your town and roughly eight miles around it, we will not take on another ' +
+      'plumber there while you are a client. A different trade in the same patch is fine.',
+    /* For the places a full paragraph will not fit. Still carries the
+       condition, because a short version that drops it is the failure this
+       whole block exists to prevent. */
+    short: 'One trade per patch on our Growth plan',
+  },
+
+  /* Real profiles only. An invented or dead profile in sameAs is worse than no
+     sameAs at all. These three are live, and naming them here is what ties the
+     accounts and the site together as one entity for a search engine or an
+     assistant trying to work out whether they are the same business. */
+  socialProfiles: [
+    'https://www.facebook.com/picseluk',
+    'https://www.instagram.com/picseluk',
+    'https://www.tiktok.com/@picseluk',
+  ],
 
   /* ---- The enquiry form ---------------------------------------------------
      There is no server here — the site is static files on a CDN — so the form
@@ -94,12 +141,41 @@ export const SITE = {
      Home is a labelled item rather than a logo. The bar carried a wordmark and
      then a round P badge; both were a mark you had to already know in order to
      read as "go back to the start". The audience here is mostly non-technical,
-     and the word costs one item in a bar that has room for it. */
+     and the word costs one item in a bar that has room for it.
+
+     Prices is the fourth item and it earns the space. The social bios lead with
+     "from £15 a month" while the site used to name no number at all, which is a
+     contradiction anyone can find in one tab switch. A price in the bar is also
+     the fastest way to stop wasting the time of someone who was never going to
+     spend it.
+
+     Guides is NOT in the bar, and that is a measurement rather than a
+     preference. Five items do not fit 375px without either a hamburger or
+     shrinking the labels, and hiding a phone-first audience's route to the
+     phone number behind a button they have to find first is the worse trade.
+     The guides are reached from the footer, the homepage questions and the
+     prices page instead, all of them real links in the markup. */
   nav: [
     { label: 'Home', href: '/' },
     { label: 'Work', href: '/work/' },
+    { label: 'Prices', href: '/prices/' },
     { label: 'Get in touch', href: '/contact/', accent: true },
   ],
+
+  /* The footer's secondary links: the routes that matter but do not fit in a
+     bar sized for a phone. Rendered as a real <nav> on every page. */
+  footerNav: [
+    { label: 'Guides', href: '/guides/' },
+    { label: 'Work', href: '/work/' },
+    { label: 'Prices', href: '/prices/' },
+    { label: 'Contact', href: '/contact/' },
+  ],
+
+  /* The default social preview, used by any page that does not set its own.
+     Project pages override it with their own screenshot, because a link to a
+     case study should show the site it is about. From the logo suite:
+     06-social/open-graph-share-1200x630.png. */
+  ogImage: '/assets/brand/open-graph-share.png',
 };
 
 /**

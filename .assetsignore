@@ -13,13 +13,20 @@
 # Dependencies. Installed on the build machine, never served.
 node_modules
 
-# The build step itself, and the data it reads. site.config.js and projects.js
-# are imported by tools/build.js at build time only; their contents are already
-# baked into the generated HTML, so publishing them serves the same facts twice
-# and hands over the phone number and client list in machine-readable form.
+# The build step itself, and the data it reads. site.config.js, projects.js and
+# pricing.js are imported by tools/build.js at build time only; their contents
+# are already baked into the generated HTML, so publishing them serves the same
+# facts twice and hands over the phone number and client list in
+# machine-readable form.
+#
+# pricing.js is on this list even though the prices themselves are now public on
+# /prices. What is not public is the commentary next to them: which plans exist
+# to be undercut, why the founding offer is capped, and what the guarantee was
+# written to avoid promising. That is a negotiating position, not a price list.
 tools
 site.config.js
 projects.js
+pricing.js
 
 # Planning and instruction documents. plan-picsel-site.md and CLAUDE.md read as
 # internal notes because they are.

@@ -12,25 +12,37 @@
   <meta name="color-scheme" content="dark" />
   <meta name="theme-color" content="#0a0a0a" />
 
-  <title>Contact Picsel: web design in Cornwall</title>
-  <meta name="description" content="Ring Picsel on 07456 809049, email ben@picsel.co.uk, or send an enquiry. Web design and automation for small businesses in Cornwall." />
+  <title>Contact Picsel: websites for tradespeople</title>
+  <meta name="description" content="Ring Picsel on 07456 809049, email ben@picsel.co.uk, or send an enquiry. Websites and Google visibility for tradespeople anywhere in the UK." />
   <link rel="canonical" href="https://picsel.co.uk/contact/" />
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Picsel" />
-  <meta property="og:title" content="Contact Picsel: web design in Cornwall" />
-  <meta property="og:description" content="Ring Picsel on 07456 809049, email ben@picsel.co.uk, or send an enquiry. Web design and automation for small businesses in Cornwall." />
+  <meta property="og:title" content="Contact Picsel: websites for tradespeople" />
+  <meta property="og:description" content="Ring Picsel on 07456 809049, email ben@picsel.co.uk, or send an enquiry. Websites and Google visibility for tradespeople anywhere in the UK." />
   <meta property="og:url" content="https://picsel.co.uk/contact/" />
   <meta property="og:locale" content="en_GB" />
-  <meta name="twitter:title" content="Contact Picsel: web design in Cornwall" />
-  <meta name="twitter:description" content="Ring Picsel on 07456 809049, email ben@picsel.co.uk, or send an enquiry. Web design and automation for small businesses in Cornwall." />
-  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Contact Picsel: websites for tradespeople" />
+  <meta name="twitter:description" content="Ring Picsel on 07456 809049, email ben@picsel.co.uk, or send an enquiry. Websites and Google visibility for tradespeople anywhere in the UK." />
+  <meta property="og:image" content="https://picsel.co.uk/assets/brand/open-graph-share.png" />
+  <meta name="twitter:image" content="https://picsel.co.uk/assets/brand/open-graph-share.png" />
+  <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- The icon. Declaring it is also what stops the browser asking for
-       /favicon.ico and getting a 404 on every page, which was the only error in
-       the console anywhere on this site. SVG so one file covers every size. -->
+  <!-- The icon set, from the designer's logo suite. The site served a
+       placeholder mark until this landed, which meant the one place the brand
+       appears on every tab in a visitor's browser was the only place it was
+       missing.
+
+       SVG first: modern browsers take it and one file covers every size. The
+       two PNGs are for the ones that do not, and favicon.ico sits at the root
+       for the older still. The mask icon is Safari's pinned-tab silhouette,
+       which is single-colour by design and takes the accent. -->
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
+  <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#00e1ff" />
+  <link rel="manifest" href="/site.webmanifest" />
 
   <!-- Adobe Fonts, web project ior4aly: argent-pixel-cf (the resting wordmark)
        plus the three faces the glitch rotates through. Served by Adobe while
@@ -87,10 +99,10 @@
       "name": "Picsel",
       "legalName": "Picsel",
       "url": "https://picsel.co.uk/",
-      "description": "Picsel is a web design and automation studio in Cornwall, building websites and doing search work for local trades and small businesses.",
+      "description": "Picsel builds websites for tradespeople anywhere in the UK, gets them found on Google and in AI search, and keeps them there.",
       "areaServed": {
-        "@type": "AdministrativeArea",
-        "name": "Cornwall"
+        "@type": "Country",
+        "name": "United Kingdom"
       },
       "contactPoint": {
         "@type": "ContactPoint",
@@ -99,14 +111,19 @@
         "email": "ben@picsel.co.uk",
         "areaServed": "GB",
         "availableLanguage": "English"
-      }
+      },
+      "sameAs": [
+        "https://www.facebook.com/picseluk",
+        "https://www.instagram.com/picseluk",
+        "https://www.tiktok.com/@picseluk"
+      ]
     },
     {
       "@type": "WebSite",
       "@id": "https://picsel.co.uk/#website",
       "url": "https://picsel.co.uk/",
       "name": "Picsel",
-      "description": "Picsel is a web design and automation studio in Cornwall, building websites and doing search work for local trades and small businesses.",
+      "description": "Picsel builds websites for tradespeople anywhere in the UK, gets them found on Google and in AI search, and keeps them there.",
       "publisher": {
         "@id": "https://picsel.co.uk/#organization"
       },
@@ -116,8 +133,8 @@
       "@type": "ContactPage",
       "@id": "https://picsel.co.uk/contact/#webpage",
       "url": "https://picsel.co.uk/contact/",
-      "name": "Contact Picsel: web design in Cornwall",
-      "description": "Ring Picsel on 07456 809049, email ben@picsel.co.uk, or send an enquiry. Web design and automation for small businesses in Cornwall.",
+      "name": "Contact Picsel: websites for tradespeople",
+      "description": "Ring Picsel on 07456 809049, email ben@picsel.co.uk, or send an enquiry. Websites and Google visibility for tradespeople anywhere in the UK.",
       "isPartOf": {
         "@id": "https://picsel.co.uk/#website"
       },
@@ -167,6 +184,7 @@
       <ul class="site-nav__list">
         <li><a class="site-nav__link roll-trigger" href="/"><span class="roll"><span class="roll__inner"><span class="roll__line">Home</span><span class="roll__line" aria-hidden="true">Home</span></span></span></a></li>
         <li><a class="site-nav__link roll-trigger" href="/work/"><span class="roll"><span class="roll__inner"><span class="roll__line">Work</span><span class="roll__line" aria-hidden="true">Work</span></span></span></a></li>
+        <li><a class="site-nav__link roll-trigger" href="/prices/"><span class="roll"><span class="roll__inner"><span class="roll__line">Prices</span><span class="roll__line" aria-hidden="true">Prices</span></span></span></a></li>
         <li><a class="site-nav__link roll-trigger site-nav__link--accent" href="/contact/" aria-current="page"><span class="roll"><span class="roll__inner"><span class="roll__line">Get in touch</span><span class="roll__line" aria-hidden="true">Get in touch</span></span></span></a></li>
       </ul>
     </nav>
@@ -212,12 +230,24 @@
               </dd>
             </div>
 
+            <!-- This row used to name the county and the nearest town. The
+                 question a customer is actually asking under a heading like
+                 that is not where the office is, it is whether being three
+                 hundred miles away is a problem, so the row answers that
+                 instead. Nothing here names a place. The studio works anywhere
+                 and is about to move, and a town buried in a contact page is
+                 the last place anyone would think to check.
+
+                 The old wording is deliberately not quoted here either: an
+                 HTML comment ships to the browser, so a place name in one is
+                 still a place name on the page, and the build check in
+                 tools/build.js counts it. -->
             <div class="contact-direct__row">
-              <dt class="eyebrow">Where we are</dt>
+              <dt class="eyebrow">Where we work</dt>
               <dd>
                 <p class="contact-direct__note">
-                  Cornwall, near Hayle. Most of our work is in the county, and we&rsquo;ve
-                  built for clients a good deal further north too.
+                  Anywhere in the UK. The whole job is done by phone and email wherever you are,
+                  and it has been for clients four hundred miles apart.
                 </p>
               </dd>
             </div>
@@ -336,14 +366,52 @@
 
     <footer class="site-footer">
       <div class="wrap site-footer__inner">
-        <p class="site-footer__contact">
-          <a href="tel:+447456809049">07456 809049</a>
-          <a href="mailto:ben@picsel.co.uk">ben@picsel.co.uk</a>
-        </p>
-        <p class="site-footer__meta">
-          Picsel. Web design and automation in Cornwall.
-          &copy; 2026
-        </p>
+        <div class="site-footer__brand">
+          <!-- The designer's horizontal lockup, the on-dark colour version,
+               which is the primary. SVG rather than a PNG: it is the one logo
+               in the markup and it should be sharp on every screen at a size
+               nobody has to pick in advance. Decorative here, because the
+               studio name is already in the line underneath it, so it carries
+               an empty alt instead of saying "Picsel" to a screen reader twice
+               in the same block.
+
+               The width and height are the file's own, and the file was
+               re-cropped to get them. It shipped as a 1017 square with the
+               horizontal lockup floating in the middle of a lot of nothing,
+               which meant a 136px-wide logo reserved a 136px-TALL box and left
+               a hundred pixels of gap under it in the footer. The viewBox is
+               now the artwork's real bounding box. -->
+          <img class="site-footer__logo"
+               src="/assets/brand/picsel-lockup-horizontal.svg"
+               alt=""
+               width="926"
+               height="230"
+               loading="lazy" />
+          <p class="site-footer__contact">
+            <a href="tel:+447456809049">07456 809049</a>
+            <a href="mailto:ben@picsel.co.uk">ben@picsel.co.uk</a>
+          </p>
+        </div>
+
+        <div class="site-footer__end">
+          <nav class="site-footer__nav" aria-label="Footer">
+            <ul class="site-footer__list">
+            <li><a class="site-footer__link" href="/guides/">Guides</a></li>
+            <li><a class="site-footer__link" href="/work/">Work</a></li>
+            <li><a class="site-footer__link" href="/prices/">Prices</a></li>
+            <li><a class="site-footer__link" href="/contact/">Contact</a></li>
+            </ul>
+          </nav>
+          <!-- No place name. This line named a county, and because it is the
+               footer it did so on every page of the site at once, which made it
+               the most repeated location claim in the markup and the one least
+               likely to be re-read by anybody. What it says now is true
+               wherever the studio is. -->
+          <p class="site-footer__meta">
+            Picsel. Websites for tradespeople, anywhere in the UK.
+            &copy; 2026
+          </p>
+        </div>
       </div>
     </footer>
 

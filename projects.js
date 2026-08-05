@@ -17,8 +17,12 @@
      name      string   Display name, exactly as the client brands themselves.
      url       string   The live site. Opened in a new tab from the project page.
      sector    string   Short human label shown under the name on cards.
-     location  string   Where the client is. Used for the honest local mention;
-                        NOT every project is Cornwall (see julie-miller-art).
+     location  string   Where the CLIENT is. A fact about them, not about
+                        Picsel, which works UK-wide and names no place of its
+                        own anywhere on this site. It appears in the eyebrow on
+                        that client's page and nowhere else: it came off the
+                        work cards when five towns in one grid started reading
+                        as a claim about where the studio is.
      featured  boolean  Shows in the homepage "Selected work" grid. The /work
                         page lists every project regardless.
      tags      string[] What Picsel actually did. See the caution below.
@@ -36,7 +40,24 @@
      `blurb` text below is a factual first draft written from what each live
      site says about itself — deliberately describing the build, never claiming
      an outcome (traffic, enquiries, rankings) that has not been measured. Ben
-     is expected to reword these in his own voice. */
+     is expected to reword these in his own voice.
+
+   THE ORDER OF THIS LIST IS THE ORDER OF THE GRID, and it is now sorted by
+   sector and by what the job involved rather than by geography. It used to run
+   as four Cornwall businesses with the Scottish one fourth, which is a
+   perfectly good order for a Cornwall studio and the wrong one for a studio
+   that works anywhere.
+
+   Julie Miller Art is second on purpose. It is several hundred miles from every
+   other client on this list, and having it high in the grid is how the site
+   demonstrates that distance is not a problem instead of asserting it in copy.
+   A visitor in Newcastle scrolling past five Cornwall towns draws their own
+   conclusion; the same visitor seeing the Scottish Borders in the second card
+   draws a different one, and neither needed a sentence.
+
+   Nevitt leads because it is the fullest trade build on the list, a
+   construction firm with the search work included, and it is the closest thing
+   here to what the site is now selling. */
 
 export const PROJECTS = [
   {
@@ -56,6 +77,24 @@ export const PROJECTS = [
       'by service so a homeowner can find the job they have in mind, and the whole of ' +
       'west Cornwall is covered without a page per town.',
     alt: 'Screenshot of the A Nevitt Construction website',
+  },
+  {
+    slug: 'julie-miller-art',
+    name: 'Julie Miller Art',
+    url: 'https://juliemillerart.co.uk/',
+    sector: 'Artist portfolio',
+    // Scottish Borders. This was the exception on a Cornwall studio's list and
+    // it is now the proof on a national one: the same build, done at four
+    // hundred miles, with nothing about it that needed the client to be nearby.
+    // Second in the list for that reason. Do not add a Cornwall mention here.
+    location: 'Scottish Borders',
+    featured: true,
+    tags: ['Website'],
+    blurb:
+      'A portfolio for an illustrator working in mixed media in the Scottish Borders, ' +
+      'where the landscape drives the work. The design stays quiet and gives the pieces ' +
+      'space, because on an artist site the work is the interface and anything else is in the way.',
+    alt: 'Screenshot of the Julie Miller Art website',
   },
   {
     slug: 'lanora-house',
@@ -85,22 +124,6 @@ export const PROJECTS = [
       'plain-spoken about what they do, so the site is too: what they move, what they ' +
       'clear, and a quote request that takes seconds rather than a form that puts people off.',
     alt: 'Screenshot of the AJC Removals & Clearances website',
-  },
-  {
-    slug: 'julie-miller-art',
-    name: 'Julie Miller Art',
-    url: 'https://juliemillerart.co.uk/',
-    sector: 'Artist portfolio',
-    // Scottish Borders, NOT Cornwall. The SEO rules single this project out:
-    // do not add a Cornwall mention to this page. It would be untrue.
-    location: 'Scottish Borders',
-    featured: true,
-    tags: ['Website'],
-    blurb:
-      'A portfolio for an illustrator working in mixed media in the Scottish Borders, ' +
-      'where the landscape drives the work. The design stays quiet and gives the pieces ' +
-      'space, because on an artist site the work is the interface and anything else is in the way.',
-    alt: 'Screenshot of the Julie Miller Art website',
   },
   {
     slug: 'house-of-cornwall',

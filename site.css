@@ -422,6 +422,13 @@
   max-width: 46rem;
 }
 
+/* The paragraph under the statement. Reading width and full body colour: the
+   statement above it is the headline and this is the explanation, so it should
+   look like something you settle into rather than a second slogan. */
+.intro__support {
+  color: var(--ink-muted);
+}
+
 .intro__aside {
   max-width: var(--measure);
   color: var(--ink-faint);
@@ -776,6 +783,67 @@
   max-width: var(--measure);
 }
 
+/* ---- The price rail (homepage) -------------------------------------------
+   Three plans at a glance, and nothing more: the name, the monthly figure, the
+   build fee and one line. Everything else about them is on /prices, and
+   reproducing it here would make the homepage a second pricing page.
+
+   The number is the biggest thing in each column on purpose. Someone scanning
+   this band is doing one thing, which is finding out whether this is a £15
+   conversation or a £1,500 one, and the fastest possible answer to that is
+   the most useful thing the band can do. */
+.plan-rail {
+  display: grid;
+  gap: var(--space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 48rem) {
+  .plan-rail {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
+  }
+}
+
+.plan-rail__item {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+
+.plan-rail__name {
+  font-size: var(--text-sm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.plan-rail__price {
+  margin-top: var(--space-3);
+  color: var(--ink-muted);
+}
+
+/* The one accent on this band, and it marks the one thing the band exists to
+   say. Tabular figures so £15, £29 and £119 line up down the row rather than
+   drifting by the width of a 1. */
+.plan-rail__amount {
+  font-size: var(--text-2xl);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.plan-rail__build {
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
+.plan-rail__summary {
+  margin-top: var(--space-4);
+  max-width: var(--measure);
+}
+
 /* ---- Contact band --------------------------------------------------------
    The closing band on the homepage, the work index and every project page. One
    sentence, one button, and the number itself — the two ways this audience
@@ -846,9 +914,70 @@
 .site-footer__inner {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-6);
-  align-items: baseline;
+  gap: var(--space-8);
+  align-items: flex-start;
   justify-content: space-between;
+}
+
+/* Two blocks now rather than two lines: the mark and the contact details on
+   one side, the secondary links and the copyright on the other. The links are
+   here because they did not fit the top bar, and the footer is where someone
+   who has read to the bottom looks for more of the site. */
+.site-footer__brand,
+.site-footer__end {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.site-footer__end {
+  align-items: flex-start;
+}
+
+@media (min-width: 48rem) {
+  .site-footer__end {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+
+/* The one logo in the markup. Small on purpose: the wordmark already opens the
+   homepage at full size, and a large mark in the footer would be the loudest
+   thing on the quietest band of the page. */
+.site-footer__logo {
+  display: block;
+  width: 8.5rem;
+  height: auto;
+}
+
+.site-footer__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Same 44px floor as every other tap target. A row of small text links in a
+   footer is the classic place that rule gets forgotten, and it is the one
+   place on the page where a mis-tap sends someone to the wrong section. */
+.site-footer__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  transition: color var(--dur-fast) var(--ease),
+              text-decoration-color var(--dur-fast) var(--ease);
+}
+
+.site-footer__link:hover {
+  color: var(--ink);
+  text-decoration-color: var(--accent);
 }
 
 .site-footer__contact {
@@ -882,22 +1011,32 @@
 }
 
 /* ---- Small screens -------------------------------------------------------
-   The bar tightens rather than collapsing. All three items stay reachable and
+   The bar tightens rather than collapsing. All four items stay reachable and
    only the padding gives ground: the labels keep their size, and tap heights
    keep theirs too, held at 44px by min-height, which padding cannot undercut.
-   The accent loses its wider inset here so it matches the plain links, which
-   is the difference between the bar fitting 375px and crowding it. */
+   The accent loses its wider inset here so it matches the plain links.
+
+   Prices made this tighter than it was. Four items at the old 1rem inset
+   measured about 357px against the 343px the bar has to live in at 375px, so
+   the inset drops to 0.75rem, which brings it back to roughly 325px with room
+   to spare. Every item is still well past 44px wide, so nothing has become
+   harder to hit; the bar has simply stopped wasting space between words.
+
+   The alternative was a hamburger, and it was rejected: this audience is
+   overwhelmingly on a phone and the item most likely to be tapped is the one
+   that starts a conversation. Putting that behind a button someone has to find
+   first is a worse trade than a tighter bar. */
 @media (max-width: 640px) {
   .site-nav {
     padding: var(--space-1);
   }
 
   .site-nav__link {
-    padding-inline: var(--space-4);
+    padding-inline: var(--space-3);
   }
 
   .site-nav__link--accent {
-    padding-inline: var(--space-4);
+    padding-inline: var(--space-3);
   }
 
   .site-footer__inner {

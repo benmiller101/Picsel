@@ -48,6 +48,25 @@ const INDEX_SHAPE = { name: 'index', span: 3, shot: 'desktop', ratio: '16 / 10' 
    down as each screenshot loads, which is both unpleasant and a measurable
    ranking penalty. */
 
+/* What the card says under the name, and it used to be the client's town.
+   Five cards reading "Hayle, Cornwall" made the grid look like a county
+   directory, which was the honest description of the business when it was one
+   and is a misreading of it now. The town is a fact about the CLIENT, so it
+   stayed where facts about clients belong: on that client's own page, in the
+   eyebrow above their name.
+
+   What replaces it is the more useful sort under the name anyway. Someone
+   scanning this grid is looking for their own trade and for whether the job
+   included the search work, and now both are on the card.
+
+   Read from `tags`, which projects.js only fills in with work Ben has
+   confirmed. Nothing here infers. */
+function workDone(project) {
+  if (!project.tags?.length) return 'Website';
+  if (project.tags.length === 1) return project.tags[0];
+  return `${project.tags.slice(0, -1).join(', ')} and ${project.tags.at(-1)}`;
+}
+
 /**
  * @param {object} project  A record from projects.js.
  * @param {number} index    Position in the grid, which picks the shape.
@@ -87,7 +106,7 @@ export function renderWorkCard(project, index, { eager = false, first = false, v
             </span>
             <span class="work-card__meta">
               <h3 class="work-card__name">${rollLabel(project.name)}</h3>
-              <p class="work-card__sector">${escapeHtml(project.sector)} &middot; ${escapeHtml(project.location)}</p>
+              <p class="work-card__sector">${escapeHtml(project.sector)} &middot; ${escapeHtml(workDone(project))}</p>
             </span>
           </a>
         </article>`;

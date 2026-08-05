@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- The site is dark-only. color-scheme tells the browser so, which makes it
+       render scrollbars, form fields and other built-in controls dark to match
+       instead of dropping bright white boxes into the page. theme-color tints
+       the browser's own chrome on mobile, so the bar above the page is the
+       same near-black rather than a hard white edge. -->
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0a0a" />
+
+  <title>Website prices for tradespeople | Picsel</title>
+  <meta name="description" content="Three plans, from £15 a month with a £99 build fee. What each one covers, what it does not, and the add-ons. No retainer, no lock-in." />
+  <link rel="canonical" href="https://picsel.co.uk/prices/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Picsel" />
+  <meta property="og:title" content="Website prices for tradespeople | Picsel" />
+  <meta property="og:description" content="Three plans, from £15 a month with a £99 build fee. What each one covers, what it does not, and the add-ons. No retainer, no lock-in." />
+  <meta property="og:url" content="https://picsel.co.uk/prices/" />
+  <meta property="og:locale" content="en_GB" />
+  <meta name="twitter:title" content="Website prices for tradespeople | Picsel" />
+  <meta name="twitter:description" content="Three plans, from £15 a month with a £99 build fee. What each one covers, what it does not, and the add-ons. No retainer, no lock-in." />
+  <meta property="og:image" content="https://picsel.co.uk/assets/brand/open-graph-share.png" />
+  <meta name="twitter:image" content="https://picsel.co.uk/assets/brand/open-graph-share.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- The icon set, from the designer's logo suite. The site served a
+       placeholder mark until this landed, which meant the one place the brand
+       appears on every tab in a visitor's browser was the only place it was
+       missing.
+
+       SVG first: modern browsers take it and one file covers every size. The
+       two PNGs are for the ones that do not, and favicon.ico sits at the root
+       for the older still. The mask icon is Safari's pinned-tab silhouette,
+       which is single-colour by design and takes the accent. -->
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
+  <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#00e1ff" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <!-- Adobe Fonts, web project ior4aly: argent-pixel-cf (the resting wordmark)
+       plus the three faces the glitch rotates through. Served by Adobe while
+       the Creative Cloud subscription is live — never self-hosted, per licence.
+
+       These preconnects are not decoration. The wordmark is the homepage's
+       largest contentful paint, so the whole measured load time waits on this
+       stylesheet, the second sheet it imports from p.typekit.net, and then the
+       font file itself. Opening the sockets while the HTML is still parsing
+       takes the DNS lookup and TLS handshake off that critical path.
+       use.typekit.net appears twice on purpose: it serves both the stylesheet,
+       which is fetched without CORS, and the font files, which fonts always
+       fetch with it. The two use separate connections, so both are warmed. -->
+  <link rel="preconnect" href="https://use.typekit.net" />
+  <link rel="preconnect" href="https://use.typekit.net" crossorigin />
+  <link rel="preconnect" href="https://p.typekit.net" />
+  <link rel="stylesheet" href="https://use.typekit.net/ior4aly.css" />
+
+  <!-- Lexend carries every word of reading copy on the site. Pixelify Sans is
+       the licence-independent safety net for the wordmark: if Typekit is
+       unreachable the mark still renders as a pixel face instead of dropping
+       to Courier. preconnect opens the connection early so the text is not
+       waiting on a handshake. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Lexend:wght@300;400&display=swap"
+        rel="stylesheet" />
+
+  <!-- Order matters: tokens defines the vocabulary, base uses it, the page
+       sheet overrides. Swapping them silently breaks the cascade. -->
+  <link rel="stylesheet" href="/tokens.css" />
+  <link rel="stylesheet" href="/base.css" />
+  <link rel="stylesheet" href="/site.css" />
+  <link rel="stylesheet" href="/prices.css" />
+
+  <!-- The one script on the site allowed to block, and only because of what it
+       does in its first line: it marks the document before anything is painted
+       so the nav can start off screen. Deferred, it would paint the bar and
+       then take it away, and every page load would open with a flinch. A few
+       hundred bytes from this same origin. Blocked or missing, no rule that
+       hides the nav ever matches and the bar is simply always there. -->
+  <script src="/nav.js"></script>
+
+  <!-- Structured data: the machine-readable version of what this page already
+       says in words. Rendered here rather than per page so that no page can be
+       built without it. See templates/schema.js. -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://picsel.co.uk/#organization",
+      "name": "Picsel",
+      "legalName": "Picsel",
+      "url": "https://picsel.co.uk/",
+      "description": "Picsel builds websites for tradespeople anywhere in the UK, gets them found on Google and in AI search, and keeps them there.",
+      "areaServed": {
+        "@type": "Country",
+        "name": "United Kingdom"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "telephone": "+447456809049",
+        "email": "ben@picsel.co.uk",
+        "areaServed": "GB",
+        "availableLanguage": "English"
+      },
+      "sameAs": [
+        "https://www.facebook.com/picseluk",
+        "https://www.instagram.com/picseluk",
+        "https://www.tiktok.com/@picseluk"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://picsel.co.uk/#website",
+      "url": "https://picsel.co.uk/",
+      "name": "Picsel",
+      "description": "Picsel builds websites for tradespeople anywhere in the UK, gets them found on Google and in AI search, and keeps them there.",
+      "publisher": {
+        "@id": "https://picsel.co.uk/#organization"
+      },
+      "inLanguage": "en-GB"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://picsel.co.uk/prices/#webpage",
+      "url": "https://picsel.co.uk/prices/",
+      "name": "Website prices for tradespeople | Picsel",
+      "description": "Three plans, from £15 a month with a £99 build fee. What each one covers, what it does not, and the add-ons. No retainer, no lock-in.",
+      "isPartOf": {
+        "@id": "https://picsel.co.uk/#website"
+      },
+      "about": {
+        "@id": "https://picsel.co.uk/#organization"
+      },
+      "inLanguage": "en-GB"
+    },
+    {
+      "@type": "Service",
+      "@id": "https://picsel.co.uk/prices/#online",
+      "name": "Online plan",
+      "description": "A smart, professional website built for your trade, live within a week. Set and forget: it just works.",
+      "provider": {
+        "@id": "https://picsel.co.uk/#organization"
+      },
+      "serviceType": "Website design and search visibility",
+      "areaServed": {
+        "@type": "Country",
+        "name": "United Kingdom"
+      },
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Online, monthly",
+          "price": "15",
+          "priceCurrency": "GBP",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "15",
+            "priceCurrency": "GBP",
+            "unitCode": "MON",
+            "billingIncrement": 1
+          }
+        },
+        {
+          "@type": "Offer",
+          "name": "Online, build fee",
+          "price": "99",
+          "priceCurrency": "GBP"
+        }
+      ]
+    },
+    {
+      "@type": "Service",
+      "@id": "https://picsel.co.uk/prices/#managed",
+      "name": "Managed plan",
+      "description": "Everything in Online, looked after, so you never have to touch it.",
+      "provider": {
+        "@id": "https://picsel.co.uk/#organization"
+      },
+      "serviceType": "Website design and search visibility",
+      "areaServed": {
+        "@type": "Country",
+        "name": "United Kingdom"
+      },
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Managed, monthly",
+          "price": "29",
+          "priceCurrency": "GBP",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "29",
+            "priceCurrency": "GBP",
+            "unitCode": "MON",
+            "billingIncrement": 1
+          }
+        },
+        {
+          "@type": "Offer",
+          "name": "Managed, build fee",
+          "price": "149",
+          "priceCurrency": "GBP"
+        }
+      ]
+    },
+    {
+      "@type": "Service",
+      "@id": "https://picsel.co.uk/prices/#growth",
+      "name": "Growth plan",
+      "description": "Everything in Managed, plus active work every month to put you in front of people who are searching right now.",
+      "provider": {
+        "@id": "https://picsel.co.uk/#organization"
+      },
+      "serviceType": "Website design and search visibility",
+      "areaServed": {
+        "@type": "Country",
+        "name": "United Kingdom"
+      },
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Growth, monthly",
+          "price": "119",
+          "priceCurrency": "GBP",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "119",
+            "priceCurrency": "GBP",
+            "unitCode": "MON",
+            "billingIncrement": 1
+          }
+        },
+        {
+          "@type": "Offer",
+          "name": "Growth, build fee",
+          "price": "149",
+          "priceCurrency": "GBP"
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://picsel.co.uk/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Prices",
+          "item": "https://picsel.co.uk/prices/"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- The site-wide dot field: a fixed sheet behind every page, drawn by
+       backdrop.js and parallaxing at a third of the scroll speed. Decoration
+       with no meaning to convey, so it is hidden from assistive technology.
+       If the script never runs, base.css's CSS dot layer shows through
+       instead and the page still has its texture. -->
+  <canvas class="backdrop" aria-hidden="true"></canvas>
+
+  <!-- The trip wire for the nav: an empty strip down the top of the page, as
+       tall as --nav-reveal. nav.js watches whether it is still on screen and
+       brings the bar in when it is not. Nothing to see and nothing to say, so
+       it is hidden from assistive technology. -->
+  <div class="nav-sentinel" aria-hidden="true"></div>
+
+    <nav class="site-nav" aria-label="Main">
+      <ul class="site-nav__list">
+        <li><a class="site-nav__link roll-trigger" href="/"><span class="roll"><span class="roll__inner"><span class="roll__line">Home</span><span class="roll__line" aria-hidden="true">Home</span></span></span></a></li>
+        <li><a class="site-nav__link roll-trigger" href="/work/"><span class="roll"><span class="roll__inner"><span class="roll__line">Work</span><span class="roll__line" aria-hidden="true">Work</span></span></span></a></li>
+        <li><a class="site-nav__link roll-trigger" href="/prices/" aria-current="page"><span class="roll"><span class="roll__inner"><span class="roll__line">Prices</span><span class="roll__line" aria-hidden="true">Prices</span></span></span></a></li>
+        <li><a class="site-nav__link roll-trigger site-nav__link--accent" href="/contact/"><span class="roll"><span class="roll__inner"><span class="roll__line">Get in touch</span><span class="roll__line" aria-hidden="true">Get in touch</span></span></span></a></li>
+      </ul>
+    </nav>
+
+  <main id="main" tabindex="-1">
+    <section class="section prices-head">
+      <div class="wrap page-head">
+        <div class="page-head__text">
+          <p class="eyebrow">Prices</p>
+          <h1>What a website costs</h1>
+          <p class="lede measure">
+            Three plans. Each one contains the one before it, so the only question is how much
+            of the ongoing work you want us doing. Every price on this page is the price:
+            no setup fee hiding behind it, and nothing tied up for years.
+          </p>
+        </div>
+
+        <div class="page-blob" aria-hidden="true">
+          <canvas class="page-blob__canvas"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="section plans-full" aria-labelledby="plans-full-heading">
+      <div class="wrap">
+        <h2 class="visually-hidden" id="plans-full-heading">The three plans</h2>
+
+      <div class="plan-cards">
+        <article class="plan-card" id="online">
+          <h3 class="plan-card__name">Online</h3>
+          <p class="plan-card__summary">A smart, professional website built for your trade, live within a week. Set and forget: it just works.</p>
+
+          <p class="plan-card__price">
+            <span class="plan-card__amount">£15</span>
+            <span class="plan-card__period">a month</span>
+          </p>
+          <p class="plan-card__build">£99 one off to build it</p>
+
+          <ul class="plan-card__includes">
+            <li>A five page website built around your trade</li>
+            <li>Hosting, security and SSL, all handled</li>
+            <li>Your Google Business Profile set up properly at launch</li>
+          </ul>
+          <p class="plan-card__excludes">No ongoing edits. Changes are quoted when you want them.</p>
+          <p class="plan-card__best"><span>Best for</span> You have no site, or a poor one, and want a proper one for less than most hosting bills.</p>
+
+          <a class="btn btn--secondary plan-card__cta" href="/contact/#enquiry">Ask about Online</a>
+        </article>
+
+        <article class="plan-card" id="managed">
+          <h3 class="plan-card__name">Managed</h3>
+          <p class="plan-card__summary">Everything in Online, looked after, so you never have to touch it.</p>
+
+          <p class="plan-card__price">
+            <span class="plan-card__amount">£29</span>
+            <span class="plan-card__period">a month</span>
+          </p>
+          <p class="plan-card__build">£149 one off to build it</p>
+
+          <ul class="plan-card__includes">
+            <li class="plan-card__inherit">Everything in Online</li>
+            <li>We make your changes for you, up to 30 minutes a month</li>
+            <li>Your Google profile kept active with a monthly post and fresh photos</li>
+            <li>A simple monthly report showing your calls and enquiries</li>
+          </ul>
+          <p class="plan-card__best"><span>Best for</span> You want your website looked after so you never have to think about it.</p>
+
+          <a class="btn btn--secondary plan-card__cta" href="/contact/#enquiry">Ask about Managed</a>
+        </article>
+
+        <article class="plan-card plan-card--lead" id="growth">
+          <h3 class="plan-card__name">Growth</h3>
+          <p class="plan-card__summary">Everything in Managed, plus active work every month to put you in front of people who are searching right now.</p>
+
+          <p class="plan-card__price">
+            <span class="plan-card__amount">£119</span>
+            <span class="plan-card__period">a month</span>
+          </p>
+          <p class="plan-card__build">£149 one off to build it</p>
+
+          <ul class="plan-card__includes">
+            <li class="plan-card__inherit">Everything in Managed</li>
+            <li>New content every month targeting the towns and services you want to win</li>
+            <li>Active review generation, to build your reputation</li>
+            <li>Your details listed consistently across the directories that count</li>
+            <li>The technical and AI search work that gets you named when someone asks their phone for the best electrician near them</li>
+          </ul>
+          <p class="plan-card__best"><span>Best for</span> You want more of the right jobs and you are ready to grow.</p>
+          <p class="plan-card__carries">
+            <a href="#commitments">Also carries the exclusivity promise and the lead guarantee</a>
+          </p>
+
+          <a class="btn btn--secondary plan-card__cta" href="/contact/#enquiry">Ask about Growth</a>
+        </article>
+      </div>
+      </div>
+    </section>
+
+    <section class="section commitments" id="commitments" aria-labelledby="commitments-heading">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 class="section-head__title" id="commitments-heading">
+            What Growth commits us to
+          </h2>
+          <p class="section-head__note">Both of these apply on Growth only</p>
+        </div>
+
+        <div class="commitments__grid">
+          <div class="commitment">
+            <h3 class="commitment__title">Your competitor cannot hire us</h3>
+            <p class="commitment__body"><strong>One trade per patch.</strong> On our Growth plan, if we are working for a plumber in your patch, your town and roughly eight miles around it, we will not take on another plumber there while you are a client. A different trade in the same patch is fine.</p>
+          </div>
+
+          <div class="commitment">
+            <h3 class="commitment__title">The lead guarantee</h3>
+            <p class="commitment__body">If the website and Google Business Profile we build do not bring you at least five genuine customer enquiries in the first four months, we refund your build fee in full.</p>
+            <p class="commitment__terms">You keep everything either way: the site, the domain and the Google profile.</p>
+            <p class="commitment__terms">The monthly fee is not refundable. It pays for work already done.</p>
+            <p class="commitment__terms">Full terms are set out in your proposal before you sign anything.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section founding" aria-labelledby="founding-heading">
+      <div class="wrap founding__inner">
+        <div class="founding__words">
+          <h2 id="founding-heading">The first 5 clients</h2>
+          <p class="measure">
+            While the studio is new, the build fee on any plan is £49
+            instead of £99 or £149, on a
+            12 month term. The monthly price is the normal one.
+          </p>
+          <p class="measure">
+            It is a straight trade and here is our half of it. In return we ask for three things:
+          </p>
+        </div>
+
+        <div class="founding__ask">
+          <ul class="founding__list">
+            <li>A Google review once the site is live</li>
+            <li>A short case study we can put on this page</li>
+            <li>Two introductions to other tradespeople</li>
+          </ul>
+          <!-- What happens when the offer runs out, said before anyone has to
+               ask. A limited offer with no stated end is not a limited offer,
+               it is a price with urgency painted on it. -->
+          <p class="founding__after">Once the five spots are gone, standard build fees apply.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section extras" id="extras" aria-labelledby="extras-heading">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 class="section-head__title" id="extras-heading">Other things we do</h2>
+        </div>
+
+        <dl class="extras__list">
+          <div class="extras__item">
+            <dt class="extras__name">Google Profile Rescue</dt>
+            <dd class="extras__price">£89 one off</dd>
+            <dd class="extras__body">We claim, verify and fully sort your Google Business Profile: categories, services, photos, questions and answers, and a plan to get you more reviews. This is what shows up when someone searches for you on Google and Maps. If you take a website later, the £89 comes off it.</dd>
+          </div>
+
+          <div class="extras__item">
+            <dt class="extras__name">Google Ads</dt>
+            <dd class="extras__price">From £129 a month, plus your ad spend</dd>
+            <dd class="extras__body">For when you want the phone to ring this week rather than this quarter. Your ad budget goes straight to Google and we never take a cut of it.</dd>
+          </div>
+
+          <div class="extras__item">
+            <dt class="extras__name">Custom tools</dt>
+            <dd class="extras__price">From £1,200, or from £89 a month</dd>
+            <dd class="extras__body">Tools built around how your business actually works: job organisation, photo records, inventory and quote builders, automated quotes. If you spend hours on paperwork, this gives you your evenings back.</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="contact-band" aria-labelledby="contact-band-heading">
+      <div class="wrap contact-band__inner">
+        <div class="contact-band__words">
+          <h2 class="contact-band__heading" id="contact-band-heading">Not sure which one?</h2>
+          <p class="contact-band__body">Ring and describe the job. We&rsquo;ll tell you which plan fits and, if none of them do, we&rsquo;ll say that too. Full terms are set out in your proposal before you sign anything.</p>
+        </div>
+
+        <div class="contact-band__actions">
+          <a class="btn btn--primary" href="/contact/#enquiry">Get in touch</a>
+          <!-- Written out in full rather than hidden behind "call us": on a
+               phone it dials, and on a desktop it is the number itself, which
+               is what someone with a landline in their hand needs to see. -->
+          <a class="contact-band__phone" href="tel:+447456809049">
+            07456 809049
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+    <footer class="site-footer">
+      <div class="wrap site-footer__inner">
+        <div class="site-footer__brand">
+          <!-- The designer's horizontal lockup, the on-dark colour version,
+               which is the primary. SVG rather than a PNG: it is the one logo
+               in the markup and it should be sharp on every screen at a size
+               nobody has to pick in advance. Decorative here, because the
+               studio name is already in the line underneath it, so it carries
+               an empty alt instead of saying "Picsel" to a screen reader twice
+               in the same block.
+
+               The width and height are the file's own, and the file was
+               re-cropped to get them. It shipped as a 1017 square with the
+               horizontal lockup floating in the middle of a lot of nothing,
+               which meant a 136px-wide logo reserved a 136px-TALL box and left
+               a hundred pixels of gap under it in the footer. The viewBox is
+               now the artwork's real bounding box. -->
+          <img class="site-footer__logo"
+               src="/assets/brand/picsel-lockup-horizontal.svg"
+               alt=""
+               width="926"
+               height="230"
+               loading="lazy" />
+          <p class="site-footer__contact">
+            <a href="tel:+447456809049">07456 809049</a>
+            <a href="mailto:ben@picsel.co.uk">ben@picsel.co.uk</a>
+          </p>
+        </div>
+
+        <div class="site-footer__end">
+          <nav class="site-footer__nav" aria-label="Footer">
+            <ul class="site-footer__list">
+            <li><a class="site-footer__link" href="/guides/">Guides</a></li>
+            <li><a class="site-footer__link" href="/work/">Work</a></li>
+            <li><a class="site-footer__link" href="/prices/">Prices</a></li>
+            <li><a class="site-footer__link" href="/contact/">Contact</a></li>
+            </ul>
+          </nav>
+          <!-- No place name. This line named a county, and because it is the
+               footer it did so on every page of the site at once, which made it
+               the most repeated location claim in the markup and the one least
+               likely to be re-read by anybody. What it says now is true
+               wherever the studio is. -->
+          <p class="site-footer__meta">
+            Picsel. Websites for tradespeople, anywhere in the UK.
+            &copy; 2026
+          </p>
+        </div>
+      </div>
+    </footer>
+
+  <!-- type="module" so it can import the shared noise generator. Modules are
+       deferred by default, so this never blocks the page from appearing. -->
+  <script type="module" src="/backdrop.js"></script>
+  <script type="module" src="/page-blob.js"></script>
+</body>
+</html>

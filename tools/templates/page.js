@@ -109,15 +109,13 @@ function normalisePath(path = '/') {
    not read as two competing pages. */
 function renderHead({ title, description, path, ogImage, styles, extraHead, schema }) {
   const canonical = absoluteUrl(path);
-  const image = ogImage ? absoluteUrl(ogImage) : null;
 
-  const imageTags = image
-    ? `
-  <meta property="og:image" content="${escapeHtml(image)}" />
-  <meta name="twitter:image" content="${escapeHtml(image)}" />
-  <meta name="twitter:card" content="summary_large_image" />`
-    : `
-  <meta name="twitter:card" content="summary" />`;
+  /* Every page gets a share image now. It used to be per-page or nothing, and
+     "nothing" meant a link to the homepage posted anywhere rendered as a bare
+     grey card with a domain on it. The brand share image is the floor; a page
+     with something better to show, which in practice means a project page and
+     its screenshot, overrides it. */
+  const image = absoluteUrl(ogImage || SITE.ogImage);
 
   return `  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -141,13 +139,26 @@ function renderHead({ title, description, path, ogImage, styles, extraHead, sche
   <meta property="og:url" content="${escapeHtml(canonical)}" />
   <meta property="og:locale" content="en_GB" />
   <meta name="twitter:title" content="${escapeHtml(title)}" />
-  <meta name="twitter:description" content="${escapeHtml(description)}" />${imageTags}
+  <meta name="twitter:description" content="${escapeHtml(description)}" />
+  <meta property="og:image" content="${escapeHtml(image)}" />
+  <meta name="twitter:image" content="${escapeHtml(image)}" />
+  <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- The icon. Declaring it is also what stops the browser asking for
-       /favicon.ico and getting a 404 on every page, which was the only error in
-       the console anywhere on this site. SVG so one file covers every size. -->
+  <!-- The icon set, from the designer's logo suite. The site served a
+       placeholder mark until this landed, which meant the one place the brand
+       appears on every tab in a visitor's browser was the only place it was
+       missing.
+
+       SVG first: modern browsers take it and one file covers every size. The
+       two PNGs are for the ones that do not, and favicon.ico sits at the root
+       for the older still. The mask icon is Safari's pinned-tab silhouette,
+       which is single-colour by design and takes the accent. -->
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
+  <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#00e1ff" />
+  <link rel="manifest" href="/site.webmanifest" />
 
   <!-- Adobe Fonts, web project ior4aly: argent-pixel-cf (the resting wordmark)
        plus the three faces the glitch rotates through. Served by Adobe while
@@ -205,16 +216,61 @@ ${schema}`;
 function renderFooter() {
   const year = FOOTER_YEAR;
 
+  /* The routes that did not fit the top bar. Real links in the markup on every
+     page, which is what makes /guides reachable by a crawler and by anyone who
+     has scrolled to the bottom looking for more. */
+  const links = SITE.footerNav
+    .map(
+      (item) =>
+        `            <li><a class="site-footer__link" href="${escapeHtml(item.href)}">${escapeHtml(item.label)}</a></li>`,
+    )
+    .join('\n');
+
   return `    <footer class="site-footer">
       <div class="wrap site-footer__inner">
-        <p class="site-footer__contact">
-          <a href="${escapeHtml(SITE.contact.phoneHref)}">${escapeHtml(SITE.contact.phoneDisplay)}</a>
-          <a href="mailto:${escapeHtml(SITE.contact.email)}">${escapeHtml(SITE.contact.email)}</a>
-        </p>
-        <p class="site-footer__meta">
-          ${escapeHtml(SITE.name)}. Web design and automation in ${escapeHtml(SITE.areaServed)}.
-          &copy; ${year}
-        </p>
+        <div class="site-footer__brand">
+          <!-- The designer's horizontal lockup, the on-dark colour version,
+               which is the primary. SVG rather than a PNG: it is the one logo
+               in the markup and it should be sharp on every screen at a size
+               nobody has to pick in advance. Decorative here, because the
+               studio name is already in the line underneath it, so it carries
+               an empty alt instead of saying "Picsel" to a screen reader twice
+               in the same block.
+
+               The width and height are the file's own, and the file was
+               re-cropped to get them. It shipped as a 1017 square with the
+               horizontal lockup floating in the middle of a lot of nothing,
+               which meant a 136px-wide logo reserved a 136px-TALL box and left
+               a hundred pixels of gap under it in the footer. The viewBox is
+               now the artwork's real bounding box. -->
+          <img class="site-footer__logo"
+               src="/assets/brand/picsel-lockup-horizontal.svg"
+               alt=""
+               width="926"
+               height="230"
+               loading="lazy" />
+          <p class="site-footer__contact">
+            <a href="${escapeHtml(SITE.contact.phoneHref)}">${escapeHtml(SITE.contact.phoneDisplay)}</a>
+            <a href="mailto:${escapeHtml(SITE.contact.email)}">${escapeHtml(SITE.contact.email)}</a>
+          </p>
+        </div>
+
+        <div class="site-footer__end">
+          <nav class="site-footer__nav" aria-label="Footer">
+            <ul class="site-footer__list">
+${links}
+            </ul>
+          </nav>
+          <!-- No place name. This line named a county, and because it is the
+               footer it did so on every page of the site at once, which made it
+               the most repeated location claim in the markup and the one least
+               likely to be re-read by anybody. What it says now is true
+               wherever the studio is. -->
+          <p class="site-footer__meta">
+            ${escapeHtml(SITE.name)}. Websites for tradespeople, anywhere in the UK.
+            &copy; ${year}
+          </p>
+        </div>
       </div>
     </footer>`;
 }

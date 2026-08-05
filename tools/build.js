@@ -19,10 +19,13 @@ import { fileURLToPath } from 'node:url';
 
 import { SITE, absoluteUrl } from '../site.config.js';
 import { PROJECTS } from '../projects.js';
+import { PLANS, money } from '../pricing.js';
 import { renderPage } from './templates/page.js';
 import { HOME_PAGE } from './pages/home.js';
 import { WORK_PAGE } from './pages/work.js';
 import { PROJECT_PAGES } from './pages/project.js';
+import { PRICES_PAGE } from './pages/prices.js';
+import { GUIDES_INDEX_PAGE, GUIDE_PAGES } from './pages/guides.js';
 import { CONTACT_PAGE, CONTACT_SENT_PAGE } from './pages/contact.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -39,11 +42,15 @@ const DESCRIPTION_MAX = 155;
 
    Project pages are not listed individually: they are generated from
    projects.js, so adding a project adds a route, a page and a sitemap entry
-   without this file changing at all. */
+   without this file changing at all. The guides work the same way, from the
+   list in pages/guides.js. */
 const PAGES = [
   HOME_PAGE,
   WORK_PAGE,
   ...PROJECT_PAGES,
+  PRICES_PAGE,
+  GUIDES_INDEX_PAGE,
+  ...GUIDE_PAGES,
   CONTACT_PAGE,
   CONTACT_SENT_PAGE,
 ];
@@ -114,6 +121,8 @@ async function build() {
     /* Rendered now but deliberately NOT written yet — see below. */
     const html = renderPage(page);
     errors.push(...findStrayContactDetails(html, page.path));
+    errors.push(...findLooseExclusivityClaim(html, page.path));
+    errors.push(...findLocationClaims(html, page.path));
 
     rendered.push({
       page,
@@ -149,6 +158,7 @@ async function build() {
   const listed = await writeSitemap(rendered);
   await writeRobots();
   await writeLlmsTxt(rendered);
+  await writeWebManifest();
 
   console.log(
     `\nBuilt ${PAGES.length} page(s), ${listed} in sitemap.xml` +
@@ -200,6 +210,132 @@ function findStrayContactDetails(html, path) {
   }
 
   return errors;
+}
+
+/* ---- The exclusivity promise ----------------------------------------------
+   One trade per patch is a contractual promise and it applies on the Growth
+   plan only. Printed without that condition it becomes a promise the business
+   has explicitly decided not to make, to every customer including the £15 one.
+
+   That is not a hypothetical failure. The site carried "One client per trade,
+   per town" with no conditions on it for months, in two places, and it was
+   wrong in two different ways at once: the contract says a patch rather than a
+   town, and it was never offered to everyone.
+
+   The wording lives in SITE.exclusivity so there is one copy of it. This check
+   is the other half: a page may not mention the patch promise unless the word
+   Growth is on the same page. It catches the specific way this goes wrong,
+   which is somebody shortening the sentence to fit a card. */
+function findLooseExclusivityClaim(html, path) {
+  if (!/per patch/i.test(html)) return [];
+  if (/\bGrowth\b/.test(html)) return [];
+
+  return [
+    `${path} states the one-trade-per-patch promise without naming the Growth plan. That ` +
+      'promise is Growth-only. Use SITE.exclusivity.full or SITE.exclusivity.short, both of ' +
+      'which carry the condition.',
+  ];
+}
+
+/* ---- Location claims ------------------------------------------------------
+   Picsel serves the whole UK and names no place of its own. Ben moves to
+   Edinburgh within three months, so any county in the copy is a fact with an
+   expiry date on it, and the ones that hide in a schema block or a meta
+   description are the ones that will still be there in a year.
+
+   The subtlety is that client locations are TRUE and must stay: a case study
+   saying a builder works in Hayle is a fact about that builder. So everything
+   the project records contribute is removed from the page before the check
+   runs, and the terms are hunted in what is left. A place name surviving that
+   is a place name being claimed by the studio. */
+const CLIENT_TERMS = ['cornwall', 'cornish', 'devon', 'truro', 'falmouth', 'newquay', 'hayle', 'penzance', 'south west'];
+const STUDIO_TERMS = ['based in', 'local to', 'near you', 'in your area'];
+
+function findLocationClaims(html, path) {
+  /* Every string a project contributes to the page, in both the raw and the
+     HTML-escaped form, since the same blurb appears escaped in the body and
+     unescaped inside the JSON-LD.
+
+     Two of these are less obvious than they look and both were found by this
+     check firing on a page that was correct:
+
+       slug   "house-of-cornwall" is the client's own name in a URL, and it
+              appears in every link, every image path and every breadcrumb that
+              points at them.
+       blurb  Split into sentences as well as taken whole, because the project
+              page's meta description is derived from the first sentence rather
+              than copied from the blurb entire. */
+  let remaining = html;
+  for (const project of PROJECTS) {
+    /* NOTE the location is NOT in this list on its own, and that is the whole
+       subtlety of this check.
+
+       It was, once. AJC's location is the single word "Cornwall", so stripping
+       project values blind removed every "Cornwall" from every page of the
+       site — including one sitting in a footer comment that shipped on all
+       sixteen. The check passed on a page that was wrong, which is worse than
+       having no check.
+
+       So the location is only forgiven in the two places it is actually
+       rendered: the eyebrow on the client's own page, and the `about` name in
+       that page's schema. Anywhere else, a location is a location. */
+    /* The eyebrow is built from separately-escaped parts with a literal
+       &middot; between them, so the string on the page is
+       "Removals &amp; clearance &middot; Cornwall". Escaping that whole
+       sentence again would give &amp;amp; and match nothing. The schema's
+       `about` name is raw inside the JSON. Both forms, built the way each
+       template builds it. */
+    const eyebrow = `${escapeForCheck(project.sector)} &middot; ${escapeForCheck(project.location)}`;
+    const schemaAbout = `${project.sector} in ${project.location}`;
+
+    const values = [
+      project.name,
+      eyebrow,
+      schemaAbout,
+      escapeForCheck(schemaAbout),
+      project.sector,
+      project.blurb,
+      ...project.blurb.split(/(?<=\.)\s+/),
+      project.alt,
+      project.url,
+      project.slug,
+    ];
+
+    /* Longest first, and this is not tidiness. Stripping the short values
+       first mangles the long ones: removing the location "Cornwall" from the
+       page turns the blurb into "...covering , Devon and beyond", which then
+       fails to match the blurb it came from, and Devon survives into the
+       check as a false positive. Remove the biggest strings while they are
+       still intact. */
+    for (const value of values.sort((a, b) => String(b).length - String(a).length)) {
+      if (!value) continue;
+      for (const variant of new Set([value, escapeForCheck(value)])) {
+        remaining = remaining.split(variant).join(' ');
+      }
+    }
+  }
+
+  const errors = [];
+  for (const term of [...CLIENT_TERMS, ...STUDIO_TERMS]) {
+    if (new RegExp(`\\b${term}\\b`, 'i').test(remaining)) {
+      errors.push(
+        `${path} claims a location for Picsel: "${term}". The studio is UK-wide and names no ` +
+          'place of its own. Client locations belong in projects.js and are allowed there.',
+      );
+    }
+  }
+  return errors;
+}
+
+/* The same escaping page.js applies, duplicated here rather than imported
+   because importing it would tie a build check to a template's internals. */
+function escapeForCheck(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 /* ---- sitemap.xml ----------------------------------------------------------
@@ -285,6 +421,34 @@ Sitemap: ${absoluteUrl('/sitemap.xml')}
   await writeFile(join(ROOT, 'robots.txt'), robots, 'utf8');
 }
 
+/* ---- site.webmanifest -----------------------------------------------------
+   Small, and it is what makes the two android-chrome icons in the logo suite
+   mean anything: without a manifest naming them they are two files nobody ever
+   requests, and a phone saving the site to a home screen falls back to a
+   screenshot of the page.
+
+   Generated rather than hand-written so the name and the theme colour cannot
+   drift from site.config.js and the meta tag in page.js. display is "browser"
+   on purpose: this is a website, not an app pretending to be one, and standalone
+   would take away the address bar from someone who never asked for that. */
+async function writeWebManifest() {
+  const manifest = {
+    name: SITE.name,
+    short_name: SITE.name,
+    description: SITE.description,
+    start_url: '/',
+    display: 'browser',
+    background_color: '#0a0a0a',
+    theme_color: '#0a0a0a',
+    icons: [
+      { src: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
+      { src: '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
+    ],
+  };
+
+  await writeFile(join(ROOT, 'site.webmanifest'), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+}
+
 /* ---- llms.txt -------------------------------------------------------------
    A plain-text summary of the site for an assistant that has landed on it and
    wants the shape of the place without parsing nine pages of markup. The
@@ -323,11 +487,20 @@ none to make. Anything stated here can be checked against the live sites.
 
 ## What the studio does
 
-- Websites for local trades and small businesses
+- Websites for tradespeople and small businesses, anywhere in the UK
 - Search work, both Google and AI assistants
 - Google Business Profile setup and upkeep
 - Custom automation tools for repetitive office work
-- One client per trade, per town
+- ${SITE.exclusivity.short}
+
+## What it costs
+
+${PLANS.map(
+  (plan) =>
+    `- ${plan.name}: ${money(plan.build)} to build, then ${money(plan.monthly)} a month. ${plan.summary}`,
+).join('\n')}
+
+Full prices, including what each plan does not cover, are at ${absoluteUrl('/prices/')}.
 
 ## Work
 

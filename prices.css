@@ -1,0 +1,320 @@
+/* ---- prices.css — /prices -------------------------------------------------
+   Loaded only by the prices page, the same way contact.css is loaded only by
+   the contact page. Nothing else on the site has cards shaped like these, and
+   the homepage should not pay for rules it never matches.
+
+   THE PAGE HAS ONE JOB: let someone rule themselves in or out in about ten
+   seconds. So the money is the largest thing in each card, the includes list is
+   scannable rather than prose, and the two Growth-only commitments are visually
+   separated from the list of features above them, because they are a different
+   kind of statement and reading them as bullet points would be a misreading of
+   what they are. */
+
+/* ---- The three cards ------------------------------------------------------
+   One column on a phone, three across from the desktop breakpoint. Not three
+   across at tablet: the includes lists run to four and five lines, and at
+   768px three columns of that is a wall of text nobody finishes.
+
+   Equal heights, and that is now the right call rather than a default. It was
+   align-items: start, because Growth carried the exclusivity promise and the
+   refund terms and stretching the other two to match would have left Online as
+   a mostly empty box. Those two blocks live in their own band now, so the three
+   cards differ by a line or two instead of by half a card, and equal heights
+   make them a set you can read across. */
+.plan-cards {
+  display: grid;
+  gap: var(--space-8);
+}
+
+@media (min-width: 64rem) {
+  .plan-cards {
+    grid-template-columns: repeat(3, 1fr);
+    align-items: stretch;
+  }
+}
+
+/* A hairline and a background one step off the page, not a floating panel with
+   a glow on it. The cards are a table of information that happens to be laid
+   out in columns, and dressing them up as objects would be the loudest thing
+   on a site whose whole argument is plainness. */
+.plan-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+}
+
+/* Growth carries the exclusivity promise and the refund, which are the two
+   things on this page that cost Picsel something. The accent border says so.
+   One marked card, not three, and no "most popular" badge: nobody has bought
+   anything yet, so a popularity claim would be invented. */
+.plan-card--lead {
+  border-color: var(--accent);
+}
+
+.plan-card__name {
+  font-size: var(--text-xl);
+  color: var(--ink);
+}
+
+.plan-card__summary {
+  margin-top: var(--space-2);
+  color: var(--ink-muted);
+}
+
+.plan-card__price {
+  margin-top: var(--space-6);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  color: var(--ink-muted);
+}
+
+/* Tabular figures so £15, £29 and £119 sit on the same left edge across the
+   three cards instead of drifting by the width of a 1. */
+.plan-card__amount {
+  font-size: var(--text-2xl);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.plan-card__period {
+  font-size: var(--text-sm);
+}
+
+.plan-card__build {
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
+.plan-card__includes {
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.plan-card__includes li {
+  position: relative;
+  padding-left: var(--space-6);
+}
+
+/* A tick drawn in CSS rather than an icon file or an emoji. aria-hidden by
+   virtue of being a pseudo-element, so a screen reader reads the list as a
+   list and never announces "check mark" eleven times. */
+.plan-card__includes li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 0.5rem;
+  height: 0.28rem;
+  border-left: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  transform: rotate(-45deg);
+}
+
+/* "Everything in Online" is not a feature, it is the shape of the ladder, so it
+   is set apart from the features under it. */
+.plan-card__inherit {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+}
+
+/* What the plan does NOT do, stated as plainly as what it does. Faint, but
+   present and in the flow rather than in a footnote: a limit somebody has to
+   hunt for is a limit they will feel misled by later. */
+.plan-card__excludes {
+  margin-top: var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
+/* "Best for", separated from the feature list by a rule because it is a
+   different kind of sentence: everything above describes the plan, this
+   describes the person it suits. The label is set apart so the line can be
+   scanned across all three cards without reading any of them in full, which is
+   how somebody actually picks. */
+.plan-card__best {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+  font-size: var(--text-sm);
+}
+
+.plan-card__best span {
+  display: block;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: var(--space-2);
+}
+
+/* The pointer down to the commitments band. One quiet line, because it is a
+   signpost rather than a claim: the claim itself is the band, in full. */
+.plan-card__carries {
+  margin-top: var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.plan-card__carries a {
+  color: var(--accent);
+  text-decoration-color: rgba(0, 225, 255, 0.4);
+  text-underline-offset: 0.25em;
+  transition: text-decoration-color var(--dur-fast) var(--ease);
+}
+
+.plan-card__carries a:hover {
+  text-decoration-color: var(--accent);
+}
+
+/* Pushed to the bottom by the auto margin, so the three buttons line up along
+   one edge now the cards are equal height. That is the point of stretching
+   them: a row of buttons at three different heights is the thing that made the
+   old layout look assembled rather than composed. */
+.plan-card__cta {
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+/* The gap above the button. It cannot be a margin on the button itself without
+   replacing the auto margin that does the aligning, so it goes on whatever
+   element happens to sit immediately before it — which differs per card, since
+   only Online has an exclusions line and only Growth has the pointer. */
+.plan-card > :nth-last-child(2) {
+  margin-bottom: var(--space-8);
+}
+
+/* ---- What Growth commits us to --------------------------------------------
+   The two promises, out of the card and given a band of their own. Two columns
+   on a desktop, because they are two separate commitments rather than one
+   argument in two paragraphs, and a single column would run them together.
+
+   Both carry the accent rule that marks a promise everywhere else on this site,
+   so the visual language is the same as the homepage's exclusivity note. */
+.commitments__grid {
+  display: grid;
+  gap: var(--space-8);
+}
+
+@media (min-width: 64rem) {
+  .commitments__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-16);
+  }
+}
+
+.commitment {
+  padding: var(--space-1) 0 var(--space-1) var(--space-6);
+  border-left: 2px solid var(--accent);
+}
+
+.commitment__title {
+  font-size: var(--text-lg);
+  color: var(--ink);
+  margin-bottom: var(--space-3);
+}
+
+.commitment__body {
+  max-width: var(--measure);
+}
+
+.commitment__body strong {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+}
+
+/* On the page and not behind a link, which is the whole point. A refund offer
+   whose conditions live somewhere else is a headline, not an offer. */
+.commitment__terms {
+  margin-top: var(--space-3);
+  max-width: var(--measure);
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
+/* The qualifier opposite the heading, in the slot .section-head keeps for a
+   link. It is not a link here: "applies on Growth only" is a condition, and
+   making it clickable would invite somebody to treat reading it as optional. */
+.section-head__note {
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
+/* ---- The founding offer ---------------------------------------------------
+   Two columns on a desktop: the explanation and, opposite it, the three things
+   being asked for in return. Side by side because it is a trade, and a trade
+   drawn as one long column reads as a list of conditions. */
+.founding__inner {
+  display: grid;
+  gap: var(--space-8);
+}
+
+@media (min-width: 64rem) {
+  .founding__inner {
+    grid-template-columns: 1.2fr 1fr;
+    gap: var(--space-16);
+  }
+}
+
+.founding__words > * + * {
+  margin-top: var(--space-4);
+}
+
+.founding__list {
+  margin: 0;
+  padding: 0 0 0 var(--space-6);
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+  border-left: 2px solid var(--accent);
+  list-style: none;
+}
+
+/* Outside the accent rule, because it is not part of the trade. It is what
+   happens when the offer stops. */
+.founding__after {
+  margin-top: var(--space-6);
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
+/* ---- The extras -----------------------------------------------------------
+   A definition list, because that is what it is: a name, a price and a
+   description of each. Three rows across on a desktop, stacked below. */
+.extras__list {
+  margin: 0;
+  display: grid;
+  gap: var(--space-8);
+}
+
+@media (min-width: 64rem) {
+  .extras__list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.extras__item {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+
+.extras__name {
+  font-size: var(--text-lg);
+  color: var(--ink);
+}
+
+.extras__price {
+  margin: var(--space-1) 0 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+.extras__body {
+  margin: var(--space-3) 0 0;
+  max-width: var(--measure);
+}

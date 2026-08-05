@@ -12,11 +12,18 @@
    is content — it deserves to be somewhere you would think to look for it,
    next to the other pages, rather than nested inside a build script. */
 
-import { FEATURED_PROJECTS, PROJECTS } from '../../projects.js';
+import { FEATURED_PROJECTS } from '../../projects.js';
 import { SITE } from '../../site.config.js';
-import { countWord } from '../templates/words.js';
+import { PLANS, money } from '../../pricing.js';
 import { renderWorkGrid } from '../partials/work-card.js';
+import { renderPlanRail } from '../partials/plan-cards.js';
 import { renderContactBand } from '../partials/contact-band.js';
+
+/* The cheapest monthly figure on the site, read from the plan data rather than
+   typed. It appears in the opening statement, in the questions and on /prices,
+   and three hand-written copies of a price is how a site ends up quoting a
+   number the business stopped charging months ago. */
+const FROM_MONTHLY = money(PLANS[0].monthly);
 
 /* ---- The hero -------------------------------------------------------------
    Three layers over near-black: the drawn dot texture, the blobs on their pixel
@@ -56,18 +63,31 @@ const HERO = `    <section class="hero" id="hero">
     </section>`;
 
 /* ---- The opening statement ------------------------------------------------
-   Deliberately the first words after the hero, and deliberately plain. Who,
-   what, where, in one sentence that could be lifted whole and still be true and
-   useful — which is exactly what an AI assistant answering "who builds websites
-   in Cornwall" will do with it. No slogan, no promise, nothing that needs a
-   second sentence to make sense of. */
+   The first words after the hero, and the site's actual headline: the wordmark
+   above it is a mark, not a sentence. Three short lines that say what is sold,
+   what is unusual about it and what it costs, in that order, because that is
+   the order someone decides in.
+
+   Every line is meant to survive being lifted out on its own. An assistant
+   answering "who builds cheap websites for tradesmen" will quote one sentence,
+   not a paragraph, so no sentence here needs the one before it to make sense.
+
+   It used to open with "Picsel is a web design and automation studio in
+   Cornwall". That was the single most quotable location claim on the site, and
+   it is now the wrong one: the studio moves to Edinburgh inside three months
+   and the market was never the county anyway. Nothing replaces it. A business
+   that works anywhere does not need to say where it is, and saying "UK-wide"
+   twice in three lines would be protesting. */
 const INTRO = `    <section class="section intro">
       <div class="wrap intro__inner">
-        <p class="eyebrow">Cornwall</p>
+        <p class="eyebrow">Websites for trades</p>
         <p class="lede intro__statement">
-          Picsel is a web design and automation studio in Cornwall. We build websites for
-          local trades and small businesses, and do the search work that gets them found.
-          Priced for a small business, not an agency retainer.
+          Websites and Google visibility for tradespeople. ${SITE.exclusivity.short}, so we
+          never work for your competitor. From ${FROM_MONTHLY} a month, live in days.
+        </p>
+        <p class="intro__support measure">
+          We build fast, honest websites for tradespeople anywhere in the UK, get you found on
+          Google and in AI search, and keep you there. No jargon, no lock-in, no agency retainer.
         </p>
         <p class="intro__aside">
           Five sites are live. They are all below, and each one links straight out to the
@@ -143,10 +163,16 @@ const SERVICES = `    <section class="section services" aria-labelledby="service
           </div>
         </dl>
 
+        <!-- The full form of the promise, from site.config.js, which is the
+             only place it is written. The old version named the town as the
+             unit and attached no plan to it, and was wrong on both counts: the
+             contract says a patch, and the promise is made on Growth only. The
+             old wording is described rather than quoted, because a comment
+             ships to the browser and a loose promise in one is still a loose
+             promise on the page. Read SITE.exclusivity before touching a word
+             of this. -->
         <p class="services__exclusive measure">
-          <strong>One client per trade, per town.</strong> If we build for a builder in Hayle,
-          we won&rsquo;t take on another one. You&rsquo;re not paying us to help your competitor
-          catch up.
+          ${SITE.exclusivity.full} You are not paying us to help your competitor catch up.
         </p>
       </div>
     </section>`;
@@ -163,13 +189,12 @@ const SERVICES = `    <section class="section services" aria-labelledby="service
    two drift, which ends with a machine-readable answer that contradicts the
    page it sits on.
 
-   What is NOT here matters as much. There is no "how much does it cost"
-   question, and that is settled rather than pending: Ben decided prices stay
-   off the site, so they are quoted in the conversation instead. Do not add a
-   price, a range or a "from £" to this section or anywhere else. */
-const CORNWALL_COUNT = PROJECTS.filter((p) => /cornwall/i.test(p.location)).length;
-const ELSEWHERE_COUNT = PROJECTS.length - CORNWALL_COUNT;
-
+   THE PRICE QUESTION IS NOW ANSWERED, and that is a reversal. The rule here
+   used to be that prices stay off the site and get quoted in the conversation.
+   It was overturned for one reason: the social bios lead with "from £15 a
+   month", so a site that named no number was not being discreet, it was
+   disagreeing with itself in public. The number comes from pricing.js and the
+   answer links to the page that carries the rest. */
 const QUESTIONS = [
   {
     q: 'Do I need to know anything about websites?',
@@ -179,17 +204,22 @@ const QUESTIONS = [
       'decisions to make.',
   },
   {
-    q: 'Do you only work in Cornwall?',
-    /* Counted from the project list rather than typed, for the same reason the
-       /work page counts its own. The day the mix changes, a hand-written
-       "four of the five" becomes a lie on a page whose argument is that the
-       work is real and checkable. */
+    q: 'How much does a website cost?',
+    /* Leads with the number. Someone asking this wants the figure, not a
+       paragraph about how it depends, and an assistant quoting the answer will
+       take the first sentence. */
     a:
-      `Most of our work is here, but no. ${countWord(CORNWALL_COUNT, { capitalise: true })} of the ` +
-      `${countWord(PROJECTS.length)} sites on this page are for Cornish businesses and ` +
-      `${ELSEWHERE_COUNT === 1 ? 'one is' : `${countWord(ELSEWHERE_COUNT)} are`} further afield. ` +
-      'Where you are only matters for the search side, because you are competing with the ' +
-      'other firms in your own towns. The site itself is built the same wherever you are.',
+      `Builds start at ${money(PLANS[0].build)} and the site is then ${FROM_MONTHLY} a month, ` +
+      'which covers the hosting, the security and the Google listing. Two larger plans add ' +
+      'monthly edits and active search work. Every price is on the prices page, including what ' +
+      'each one does not cover.',
+  },
+  {
+    q: 'Where do you work?',
+    a:
+      'Anywhere in the UK. The site is built the same wherever you are, and the whole job is ' +
+      'done over the phone and by email either way. Where you are only matters for the search ' +
+      'side, because there you are competing with the other firms in your own towns.',
   },
   {
     q: 'Can you get me to the top of Google?',
@@ -218,6 +248,11 @@ const FAQ = `    <section class="section faq" aria-labelledby="faq-heading">
       <div class="wrap">
         <div class="section-head">
           <h2 class="section-head__title" id="faq-heading">Common questions</h2>
+          <!-- The only route to /guides from the homepage, and it sits here
+               rather than in the nav because the guides are the long answers to
+               exactly these questions. Someone who has read four short answers
+               and wants a fifth is the person they are written for. -->
+          <a class="section-head__link" href="/guides/">Longer answers in the guides</a>
         </div>
 
         <div class="faq__grid">
@@ -233,14 +268,14 @@ ${QUESTIONS.map(
 
 export const HOME_PAGE = {
   path: '/',
-  /* The same four questions, machine-readable, generated from the array above.
+  /* The same questions, machine-readable, generated from the array above.
 
      Worth being clear about what this does and does not buy: Google narrowed
      FAQ rich results in 2023 to government and health sites, so this will not
      put a row of drop-downs in the search result. It is here for the other
-     reader. An assistant asked "can a Cornwall web designer get me to the top
-     of Google" can lift the answer with the question attached, which is the
-     whole point of this section of the plan. */
+     reader. An assistant asked "how much should a tradesman pay for a website"
+     can lift the answer with the question attached, which is the whole point of
+     this section of the plan, and the reason /guides exists at all. */
   schemaExtra: [
     {
       '@type': 'FAQPage',
@@ -255,13 +290,16 @@ export const HOME_PAGE = {
       })),
     },
   ],
-  title: 'Picsel: web design and automation in Cornwall',
-  /* Kept in step with the opening line on the page itself. A description that
+  /* Written for the search someone actually types. "Websites for tradesmen" is
+     the phrase, and it is the first thing in the title rather than the studio
+     name, because nobody is searching for Picsel yet. */
+  title: 'Websites for tradesmen, from £15 a month | Picsel',
+  /* Kept in step with the opening lines on the page itself. A description that
      promises one thing and a page that says another is the sort of mismatch
      that costs a click and is never noticed, because nobody re-reads their own
      meta tags. */
   description:
-    'Picsel is a web design and automation studio in Cornwall. Websites and search work for local trades and small businesses, priced for a small business.',
+    'We build fast, honest websites for tradespeople anywhere in the UK, get you found on Google and in AI search, and keep you there. From £15 a month.',
   /* Opts the page out of the gap base.css reserves under the floating nav: the
      hero is a full-screen composition that starts at the very top and
      deliberately runs behind the nav. */
@@ -275,9 +313,12 @@ export const HOME_PAGE = {
      decoration — with the file missing, blocked or still loading, the homepage
      is a complete, readable page. */
   extraScripts: '  <script type="module" src="/hero.js"></script>',
-  /* The questions sit between what we do and the ask. Someone who has read the
-     services list and is close to ringing has exactly these four things in
-     their head, and answering them is the last thing standing between reading
-     and dialling. */
-  content: [HERO, INTRO, WORK, SERVICES, FAQ, renderContactBand()].join('\n\n'),
+  /* The order is what someone decides in. Proof, then what we do, then what it
+     costs, then the four things still in their head, then the phone number.
+
+     Price goes after the services list and before the questions on purpose. Put
+     it any earlier and it is a number with nothing attached to it; put it any
+     later and someone who was only ever going to ask "how much" has already
+     left. */
+  content: [HERO, INTRO, WORK, SERVICES, renderPlanRail(), FAQ, renderContactBand()].join('\n\n'),
 };
