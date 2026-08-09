@@ -166,6 +166,7 @@ export const SITE = {
      bar sized for a phone. Rendered as a real <nav> on every page. */
   footerNav: [
     { label: 'Guides', href: '/guides/' },
+    { label: 'Blog', href: '/blog/' },
     { label: 'Work', href: '/work/' },
     { label: 'Prices', href: '/prices/' },
     { label: 'Contact', href: '/contact/' },

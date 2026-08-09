@@ -26,6 +26,7 @@ import { WORK_PAGE } from './pages/work.js';
 import { PROJECT_PAGES } from './pages/project.js';
 import { PRICES_PAGE } from './pages/prices.js';
 import { GUIDES_INDEX_PAGE, GUIDE_PAGES } from './pages/guides.js';
+import { BLOG_INDEX_PAGE, BLOG_PAGES } from './pages/blog.js';
 import { CONTACT_PAGE, CONTACT_SENT_PAGE } from './pages/contact.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -51,6 +52,8 @@ const PAGES = [
   PRICES_PAGE,
   GUIDES_INDEX_PAGE,
   ...GUIDE_PAGES,
+  BLOG_INDEX_PAGE,
+  ...BLOG_PAGES,
   CONTACT_PAGE,
   CONTACT_SENT_PAGE,
 ];
