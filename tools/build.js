@@ -126,6 +126,7 @@ async function build() {
     errors.push(...findStrayContactDetails(html, page.path));
     errors.push(...findLooseExclusivityClaim(html, page.path));
     errors.push(...findLocationClaims(html, page.path));
+    errors.push(...findUnescapedCopy(html, page.path));
 
     rendered.push({
       page,
@@ -339,6 +340,63 @@ function escapeForCheck(value) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+/* ---- Unescaped copy inside a paragraph ------------------------------------
+   guides.js and blog.js render body paragraphs WITHOUT HTML-escaping them, on
+   purpose: a paragraph is sometimes a hand-written sentence carrying its own
+   contextual <a> link, and escaping the whole string would turn that link into
+   visible text instead of a link. Every one of those strings is studio copy
+   written in this repo, never user input, so there is no injection risk.
+
+   The hazard it trades away is narrower but real: the day somebody types
+   "Bloggs & Sons" or "a < b" into a paragraph, nothing escapes it, and the
+   browser reads the stray character as the start of an entity or a tag. An
+   ampersand becomes a broken entity reference; a less-than sign either vanishes
+   or eats the rest of the paragraph as a bogus tag. Both are silent at build
+   time and visible only in a browser, which is exactly the kind of mistake this
+   file exists to catch instead.
+
+   So this checks the one place the raw interpolation happens: inside a <p>
+   element. The rest of the document is built from escaped values and template
+   markup and cannot carry this fault, and widening the search to the whole
+   page would start flagging attribute values and JSON-LD, which are correct to
+   contain raw characters that would never land here.
+
+   An ampersand is fine only if it starts a real entity: &name;, &#123; or
+   &#x1F; forms. A less-than sign is fine only if it starts a tag, a closing
+   tag or a comment. Anything else inside a <p> is copy that needed escaping
+   and did not get it. */
+function findUnescapedCopy(html, path) {
+  const errors = [];
+
+  for (const paragraph of html.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/g)) {
+    const inner = paragraph[1];
+
+    for (const stray of inner.matchAll(/&(?!(?:[a-zA-Z][a-zA-Z0-9]*|#[0-9]+|#x[0-9a-fA-F]+);)/g)) {
+      errors.push(
+        `${path} has a stray "&" inside a <p> element, near "${excerpt(inner, stray.index)}". ` +
+          'It is not the start of a valid HTML entity, which means it was written into paragraph ' +
+          'copy that is never escaped. Write it as &amp; or reword the sentence.',
+      );
+    }
+
+    for (const stray of inner.matchAll(/<(?!\/|!--|[a-zA-Z])/g)) {
+      errors.push(
+        `${path} has a stray "<" inside a <p> element, near "${excerpt(inner, stray.index)}". ` +
+          'It does not open a tag, a closing tag or a comment, which means it was written into ' +
+          'paragraph copy that is never escaped. Write it as &lt; or reword the sentence.',
+      );
+    }
+  }
+
+  return errors;
+}
+
+/* A few characters either side of the match, so the error names the actual
+   sentence rather than just its address in a string nobody will count into. */
+function excerpt(text, index) {
+  return text.slice(Math.max(0, index - 20), index + 20).replace(/\s+/g, ' ').trim();
 }
 
 /* ---- sitemap.xml ----------------------------------------------------------
