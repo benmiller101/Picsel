@@ -29,6 +29,12 @@
      blurb     string   One to three plain sentences from Picsel's point of
                         view about the build. British English, no jargon.
      alt       string   Screenshot alt text, per the SEO rules.
+     related   string   One or two sentences, specific to this job, each
+                        carrying a contextual link: one to the guide the job
+                        actually demonstrates, one to the plan it was built on.
+                        Written raw (not escaped) so the <a> renders, per
+                        CLAUDEseo.md section 3 on body-copy internal links. May
+                        carry only a, em, strong and abbr, each one closed.
 
    TWO STANDING CAUTIONS
      `tags` is a public claim about work performed, so it says only what Ben has
@@ -77,6 +83,10 @@ export const PROJECTS = [
       'by service so a homeowner can find the job they have in mind, and the whole of ' +
       'west Cornwall is covered without a page per town.',
     alt: 'Screenshot of the A Nevitt Construction website',
+    related:
+      'The search side of this build is the same GEO work covered in ' +
+      '<a href="/guides/what-is-geo/">what GEO is and why it matters for trades</a>, and it is ' +
+      'included on the <a href="/prices/#growth">Growth plan</a>.',
   },
   {
     slug: 'julie-miller-art',
@@ -95,6 +105,10 @@ export const PROJECTS = [
       'where the landscape drives the work. The design stays quiet and gives the pieces ' +
       'space, because on an artist site the work is the interface and anything else is in the way.',
     alt: 'Screenshot of the Julie Miller Art website',
+    related:
+      'The same idea, that real work beats stock photography, is one of the points in ' +
+      '<a href="/guides/what-a-trades-website-needs/">what a tradesperson\'s website needs</a>. ' +
+      'A site this size sits on our <a href="/prices/#online">Online plan</a>.',
   },
   {
     slug: 'lanora-house',
@@ -110,6 +124,11 @@ export const PROJECTS = [
       'through to end-of-tenancy cleans. It also gives proper room to how much of what they ' +
       'clear is kept out of landfill, because that is what makes them different.',
     alt: 'Screenshot of the Lanora House website',
+    related:
+      'Getting a clearance business found means asking every customer for a review at the ' +
+      'right moment, which is exactly what <a href="/guides/how-to-get-more-google-reviews/">how ' +
+      'to get more Google reviews</a> sets out. That ongoing work is part of the ' +
+      '<a href="/prices/#growth">Growth plan</a>.',
   },
   {
     slug: 'ajc-removals',
@@ -124,6 +143,11 @@ export const PROJECTS = [
       'plain-spoken about what they do, so the site is too: what they move, what they ' +
       'clear, and a quote request that takes seconds rather than a form that puts people off.',
     alt: 'Screenshot of the AJC Removals & Clearances website',
+    related:
+      'A quote request that takes seconds only works if the site itself was priced just as ' +
+      'plainly, which is the same argument made in ' +
+      '<a href="/guides/how-much-a-trades-website-costs/">how much a tradesman\'s website ' +
+      'should cost</a>. This one was built on our <a href="/prices/#online">Online plan</a>.',
   },
   {
     slug: 'house-of-cornwall',
@@ -139,6 +163,12 @@ export const PROJECTS = [
       'the next live sale the most obvious thing on the page, and explain a format most ' +
       'visitors will not have come across before.',
     alt: 'Screenshot of the House of Cornwall website',
+    related:
+      'A weekly live sale only works if people can find the business between broadcasts, and ' +
+      'that depends on the same profile setup covered in ' +
+      '<a href="/guides/google-business-profile-not-showing/">why is my Google Business ' +
+      'Profile not showing up</a>. The site itself runs on our ' +
+      '<a href="/prices/#online">Online plan</a>.',
   },
 ];
 

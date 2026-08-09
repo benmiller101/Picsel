@@ -106,7 +106,9 @@ const GUIDES = [
         paragraphs: [
           'A handful of real reviews with the customer\'s first name and their town does more ' +
             'than a page of claims about yourself. Keep them honest and keep them short. If ' +
-            'they all read like they were written by the same person, everyone can tell.',
+            'they all read like they were written by the same person, everyone can tell. For ' +
+            'how to get more of them without hassling anyone, see <a ' +
+            'href="/guides/how-to-get-more-google-reviews/">how to get more Google reviews</a>.',
         ],
       },
       {
@@ -190,7 +192,10 @@ const GUIDES = [
             'less.',
           'A word on the name itself: adding your keywords to it, so "Smith Plumbing" becomes ' +
             '"Smith Plumbing Heating Boilers Bathrooms", is against Google\'s rules. Google ' +
-            'suspends profiles for it, and a competitor can report yours in about a minute.',
+            'suspends profiles for it, and a competitor can report yours in about a minute. ' +
+            'The same consistency matters on the website itself, covered in <a ' +
+            'href="/guides/what-a-trades-website-needs/">what a tradesperson\'s website ' +
+            'needs</a>.',
         ],
       },
       {
@@ -358,7 +363,9 @@ const GUIDES = [
           'It also has to work out whether you are one business or three with similar names. ' +
             'The same name, phone number and address on your site, your Google profile and ' +
             'every directory you appear in. That consistency is boring and it is most of the ' +
-            'job.',
+            'job. The specific things an assistant looks for on the site itself are the same ' +
+            'list in <a href="/guides/what-a-trades-website-needs/">what a tradesperson\'s ' +
+            'website needs</a>.',
         ],
       },
       {
@@ -437,7 +444,9 @@ const GUIDES = [
             'option to ask for reviews, and it opens the review box straight away, skipping the ' +
             'listing page. Save it as a QR code on your phone and put it on your invoice. Asking ' +
             'someone to "find us on Google and leave a review" loses most of them at the ' +
-            'finding.',
+            'finding. If yours has stopped showing up at all, sort that first: see <a ' +
+            'href="/guides/google-business-profile-not-showing/">why is my Google Business ' +
+            'Profile not showing up</a>.',
         ],
       },
       {
@@ -640,6 +649,7 @@ export const GUIDES_INDEX_PAGE = {
           <p class="lede measure">
             The answers we would give you on the phone, written down. Nothing here is gated,
             and none of it needs you to buy anything from ${escapeHtml(SITE.name)} to be useful.
+            The opinions, rather than the plain answers, live in <a href="/blog/">the blog</a>.
           </p>
         </div>
 

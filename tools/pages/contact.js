@@ -64,7 +64,8 @@ const DIRECT = `        <div class="contact-direct">
               <dd>
                 <p class="contact-direct__note">
                   Anywhere in the UK. The whole job is done by phone and email wherever you are,
-                  and it has been for clients four hundred miles apart.
+                  including <a href="/work/julie-miller-art/">a portfolio built four hundred
+                  miles away</a> in the Scottish Borders.
                 </p>
               </dd>
             </div>
@@ -106,7 +107,8 @@ function renderForm() {
           <h2 class="enquiry__heading" id="enquiry-heading">Or send us the details</h2>
           <p class="enquiry__lede">
             Tell us what your business does and what you want the site to do. We&rsquo;ll come back
-            with what&rsquo;s involved and what it would cost.
+            with what&rsquo;s involved and what it would cost. If you&rsquo;d rather see the numbers
+            first, they&rsquo;re on the <a href="/prices/">prices page</a>.
           </p>
 
           <form class="enquiry-form"

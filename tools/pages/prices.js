@@ -76,6 +76,9 @@ const FOUNDING = `    <section class="section founding" aria-labelledby="foundin
           <p class="measure">
             It is a straight trade and here is our half of it. In return we ask for three things:
           </p>
+          <p class="measure">
+            If you think you are one of the five, <a href="/contact/">get in touch</a> and say so.
+          </p>
         </div>
 
         <div class="founding__ask">
@@ -98,6 +101,12 @@ const EXTRAS_SECTION = `    <section class="section extras" id="extras" aria-lab
         <div class="section-head">
           <h2 class="section-head__title" id="extras-heading">Other things we do</h2>
         </div>
+
+        <p class="extras__note">
+          If your Google Business Profile has gone quiet or never showed up properly, read
+          <a href="/guides/google-business-profile-not-showing/">why is my Google Business
+          Profile not showing up</a> before you pay anyone to fix it.
+        </p>
 
         <dl class="extras__list">
 ${EXTRAS.map(

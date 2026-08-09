@@ -157,6 +157,12 @@ ${renderDesktopShot(project)}
           <div class="project__words">
             <p class="lede">${escapeHtml(project.blurb)}</p>
 
+            <!-- One or two sentences specific to this job, each carrying a
+                 contextual link: written raw (not escaped) so its <a> renders,
+                 per CLAUDEseo.md section 3. project.related may only carry a,
+                 em, strong and abbr, every one closed. -->
+            <p class="project__related">${project.related}</p>
+
 ${renderTags(project)}
 
             <!-- The point of the page. target=_blank because sending someone

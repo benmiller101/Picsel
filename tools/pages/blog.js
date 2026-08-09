@@ -120,7 +120,8 @@ const POSTS = [
             'and that one buys active work every month rather than a site sitting still.',
           'The figures matter less than where they are. They are on the website, so you can ' +
             'hold them against anyone else before you pick up the phone. Most of this trade ' +
-            'still makes you ring to find out.',
+            'still makes you ring to find out. If you want a straight price for your own job, ' +
+            '<a href="/contact/">get in touch</a> and I will give you one on the phone.',
         ],
       },
       {
