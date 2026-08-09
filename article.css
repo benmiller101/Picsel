@@ -1,4 +1,4 @@
-/* ---- guides.css — /guides and the guide pages -----------------------------
+/* ---- article.css — long-form reading, for /guides and /blog ---------------
    These pages are long-form reading, which nothing else on this site is. The
    whole sheet is therefore about one thing: making a column of text
    comfortable to read on a phone at arm's length, in a workshop, by somebody
@@ -6,7 +6,11 @@
 
    No columns, no sidebar, no pull quotes, no reading-progress bar. A single
    measure down the middle-left of the page and generous space between
-   sections. The restraint is the design. */
+   sections. The restraint is the design.
+
+   It was guides.css until the blog arrived and needed exactly the same thing.
+   Two sections, two sets of class names, one set of rules: the selectors below
+   list both, rather than the sheet being copied and left to drift. */
 
 /* ---- A guide page ---------------------------------------------------------
    Left-aligned rather than centred. A centred column of body copy makes every

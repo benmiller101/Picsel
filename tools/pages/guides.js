@@ -570,7 +570,7 @@ ${plan}
     path: `/guides/${guide.slug}/`,
     title: guide.title,
     description: guide.description,
-    styles: ['/guides.css'],
+    styles: ['/article.css'],
     schemaExtra: [
       {
         '@type': 'FAQPage',
@@ -620,7 +620,7 @@ export const GUIDES_INDEX_PAGE = {
   title: 'Guides for tradespeople | Picsel',
   description:
     'Plain answers to the questions tradespeople ask about websites, Google Business Profiles, reviews and what any of it should cost. No sales pitch.',
-  styles: ['/guides.css'],
+  styles: ['/article.css'],
   schemaType: 'CollectionPage',
   schemaExtra: [
     {
