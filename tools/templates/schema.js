@@ -148,6 +148,48 @@ export function breadcrumbs(trail) {
   };
 }
 
+/* ---- The blog -------------------------------------------------------------
+   Guides carry FAQPage, because a guide is a question and its answer and that
+   is the shape an assistant wants. A post is not that. It is dated, it has an
+   argument, and the useful thing to declare about it is when it was written and
+   who by.
+
+   Author and publisher are both the Organization rather than a Person node.
+   Inventing a Person means inventing the fields that make one worth having, and
+   the studio is one man whose name is already on the Organization. */
+export function blogPosting({ headline, description, path, datePublished }) {
+  return {
+    '@type': 'BlogPosting',
+    '@id': `${absoluteUrl(path)}#post`,
+    headline,
+    description,
+    datePublished,
+    url: absoluteUrl(path),
+    mainEntityOfPage: absoluteUrl(path),
+    author: { '@id': ORG_ID },
+    publisher: { '@id': ORG_ID },
+    isPartOf: { '@id': `${absoluteUrl('/blog/')}#blog` },
+  };
+}
+
+/* The Blog itself, on the index. Each post is referenced by @id rather than
+   restated, so a crawler reading both pages sees one post described once. */
+export function blogNode(posts) {
+  return {
+    '@type': 'Blog',
+    '@id': `${absoluteUrl('/blog/')}#blog`,
+    name: `${SITE.name} blog`,
+    url: absoluteUrl('/blog/'),
+    publisher: { '@id': ORG_ID },
+    blogPost: posts.map((post) => ({
+      '@type': 'BlogPosting',
+      '@id': `${absoluteUrl(post.path)}#post`,
+      headline: post.headline,
+      url: absoluteUrl(post.path),
+    })),
+  };
+}
+
 /**
  * The JSON-LD block for one page, as a ready-to-inject <script> tag.
  *
