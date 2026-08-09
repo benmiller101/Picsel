@@ -251,7 +251,7 @@ const HEAD = `    <section class="section contact-head">
       <div class="wrap page-head">
         <div class="page-head__text">
           <p class="eyebrow">Contact</p>
-          <h1>Get in touch</h1>
+          <h1>Get in touch with Picsel</h1>
           <p class="lede measure">
             Ring, email, or fill the form in, whichever suits. You&rsquo;ll get
             ${escapeHtml(SITE.contact.person.split(' ')[0])} either way.
@@ -284,7 +284,7 @@ export const CONTACT_PAGE = {
   ],
   title: 'Contact Picsel: websites for tradespeople',
   description:
-    `Ring Picsel on ${SITE.contact.phoneDisplay}, email ${SITE.contact.email}, or send an enquiry. Websites and Google visibility for tradespeople anywhere in the UK.`,
+    `Ring Picsel on ${SITE.contact.phoneDisplay}, email ${SITE.contact.email}, or send an enquiry. Websites and Google visibility for tradespeople anywhere in the UK, no middleman.`,
   styles: ['/contact.css'],
   /* Enhancement only. With this file missing or blocked the form is still a
      working HTML form — it just posts the ordinary way and lands on

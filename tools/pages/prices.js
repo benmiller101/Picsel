@@ -226,7 +226,7 @@ export const PRICES_PAGE = {
   path: '/prices/',
   title: 'Website prices for tradespeople | Picsel',
   description:
-    `Three plans, from ${money(PLANS[0].monthly)} a month with a ${money(PLANS[0].build)} build fee. What each one covers, what it does not, and the add-ons. No retainer, no lock-in.`,
+    `Three plans, from ${money(PLANS[0].monthly)} a month with a ${money(PLANS[0].build)} build fee. What each one covers, what it does not, and the add-ons. No retainer, no lock-in, and a Growth refund.`,
   schemaExtra: [
     ...PLAN_SCHEMA,
     {

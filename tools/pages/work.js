@@ -41,7 +41,7 @@ const INTRO = `    <section class="section work-intro">
       <div class="wrap page-head">
         <div class="page-head__text">
           <p class="eyebrow">Work</p>
-          <h1 class="work-intro__title">Every site we have built</h1>
+          <h1 class="work-intro__title">Every website we have built for trades and small firms</h1>
           <p class="lede measure">
             ${countWord(count, { capitalise: true })} live sites, from a building firm to an
             artist four hundred miles away. Each one links straight out to the real site, so

@@ -65,7 +65,7 @@ const GUIDES = [
     question: "What should a tradesperson's website have on it?",
     title: "What a tradesman's website needs | Picsel",
     description:
-      'Your phone number on every page, the jobs you do in the words customers use, the towns you cover, photos of your own work and a few reviews.',
+      'Your phone number on every page, the jobs you do in the words customers use, the towns you cover, photos of your own work and a few reviews, little else.',
     answer:
       'Your phone number at the top of every page, the jobs you do written in the words ' +
       'customers use, the towns you cover, photos of your own work, and a few reviews. That is ' +
@@ -158,7 +158,7 @@ const GUIDES = [
     question: 'Why is my Google Business Profile not showing up?',
     title: 'Why your Google Business Profile is not showing',
     description:
-      'Usually one of four things: it is not verified, the category is wrong, your details do not match, or an old duplicate is competing with it.',
+      'Usually one of four things: it is not verified, the category is wrong, your details do not match, or an old duplicate is competing with it. All fixable.',
     answer:
       'Usually one of four things. It is not verified, the main category is wrong, your name ' +
       'address and phone number do not match what is on your website, or there is an older ' +
@@ -253,7 +253,7 @@ const GUIDES = [
     question: "How much should a tradesman's website cost?",
     title: "How much a tradesman's website should cost",
     description:
-      'About £500 to £2,000 as a one off, or £15 to £120 a month on a subscription. What each price actually buys, and what to ask before you pay.',
+      'About £500 to £2,000 as a one off, or £15 to £120 a month on a subscription. What each price actually buys, what to ask before you pay, and what to avoid.',
     answer:
       'Roughly £500 to £2,000 as a one off for a small trades site, or £15 to £120 a month if ' +
       'it is built and looked after on a subscription. Below that you are usually buying a ' +
@@ -338,7 +338,7 @@ const GUIDES = [
     question: 'What is GEO and why does it matter for trades?',
     title: 'What GEO is, and why it matters for trades',
     description:
-      'GEO is getting your business quoted by AI assistants when someone asks one to recommend a tradesperson. Why it matters, and what actually helps.',
+      'GEO is getting your business quoted by AI assistants when someone asks one to recommend a tradesperson. It is what SEO is to Google, and why it matters.',
     answer:
       'GEO means getting your business quoted by AI assistants when someone asks one to ' +
       'recommend a tradesperson. It is to assistants what SEO is to Google. It matters because ' +
@@ -431,7 +431,7 @@ const GUIDES = [
     question: 'How do I get more Google reviews?',
     title: 'How to get more Google reviews | Picsel',
     description:
-      'Ask every customer in person on the day the job finishes, and hand them a short link. What stops it working, and two things that get you penalised.',
+      'Ask every customer in person on the day the job finishes, and hand them a short review link. What stops it working, and two things that get you penalised.',
     answer:
       'Ask every customer in person, on the day the job finishes, and give them a short link ' +
       'straight to your review page. There is nothing else to it. The two things that stop it ' +
@@ -619,7 +619,7 @@ export const GUIDES_INDEX_PAGE = {
   path: '/guides/',
   title: 'Guides for tradespeople | Picsel',
   description:
-    'Plain answers to the questions tradespeople ask about websites, Google Business Profiles, reviews and what any of it should cost. No sales pitch.',
+    'Plain answers to five questions tradespeople actually ask about websites, Google Business Profiles, reviews and what any of it should cost. No sales pitch.',
   styles: ['/article.css'],
   schemaType: 'CollectionPage',
   schemaExtra: [
@@ -645,7 +645,7 @@ export const GUIDES_INDEX_PAGE = {
       <div class="wrap page-head">
         <div class="page-head__text">
           <p class="eyebrow">Guides</p>
-          <h1>Questions we get asked</h1>
+          <h1>Questions tradespeople ask us</h1>
           <p class="lede measure">
             The answers we would give you on the phone, written down. Nothing here is gated,
             and none of it needs you to buy anything from ${escapeHtml(SITE.name)} to be useful.

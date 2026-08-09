@@ -78,10 +78,10 @@ export const PROJECTS = [
     featured: true,
     tags: ['Website', 'SEO'],
     blurb:
-      'A site for a family-run building contractor in Hayle, covering everything from ' +
-      'single-storey extensions to full design-and-build new homes. The work is organised ' +
-      'by service so a homeowner can find the job they have in mind, and the whole of ' +
-      'west Cornwall is covered without a page per town.',
+      'A site for a family-run building contractor in Hayle, built with SEO, covering ' +
+      'everything from single-storey extensions to full design-and-build new homes. The work ' +
+      'is organised by service so a homeowner can find the job they have in mind, and the ' +
+      'whole of west Cornwall is covered without a page per town.',
     alt: 'Screenshot of the A Nevitt Construction website',
     related:
       'The search side of this build is the same GEO work covered in ' +
@@ -101,9 +101,10 @@ export const PROJECTS = [
     featured: true,
     tags: ['Website'],
     blurb:
-      'A portfolio for an illustrator working in mixed media in the Scottish Borders, ' +
-      'where the landscape drives the work. The design stays quiet and gives the pieces ' +
-      'space, because on an artist site the work is the interface and anything else is in the way.',
+      'A portfolio for an illustrator working in mixed media in the Scottish Borders, built ' +
+      'four hundred miles from Picsel, where the landscape drives the work. The design stays ' +
+      'quiet and gives the pieces space, because on an artist site the work is the interface ' +
+      'and anything else is in the way.',
     alt: 'Screenshot of the Julie Miller Art website',
     related:
       'The same idea, that real work beats stock photography, is one of the points in ' +
@@ -119,10 +120,11 @@ export const PROJECTS = [
     featured: true,
     tags: ['Website', 'SEO'],
     blurb:
-      'A licensed house clearance and cleaning firm working across Cornwall and the ' +
-      'South West. The site sets out the full range, from probate and bereavement clearances ' +
-      'through to end-of-tenancy cleans. It also gives proper room to how much of what they ' +
-      'clear is kept out of landfill, because that is what makes them different.',
+      'A licensed house clearance and cleaning firm working across Cornwall and the South ' +
+      'West, with the SEO work included to bring enquiries in. The site sets out the full ' +
+      'range, from probate and bereavement clearances through to end-of-tenancy cleans. It ' +
+      'also gives proper room to how much of what they clear is kept out of landfill, because ' +
+      'that is what makes them different.',
     alt: 'Screenshot of the Lanora House website',
     related:
       'Getting a clearance business found means asking every customer for a review at the ' +
@@ -139,9 +141,9 @@ export const PROJECTS = [
     featured: true,
     tags: ['Website'],
     blurb:
-      'A removals and clearance company covering Cornwall, Devon and beyond. They are ' +
-      'plain-spoken about what they do, so the site is too: what they move, what they ' +
-      'clear, and a quote request that takes seconds rather than a form that puts people off.',
+      'A removals and clearance company covering Cornwall, Devon and beyond, where the quote ' +
+      'request takes seconds, not a long form to fill in. They are plain-spoken about what ' +
+      'they do, so the site lists exactly what they move and what they clear, nothing more.',
     alt: 'Screenshot of the AJC Removals & Clearances website',
     related:
       'A quote request that takes seconds only works if the site itself was priced just as ' +
@@ -159,9 +161,9 @@ export const PROJECTS = [
     tags: ['Website'],
     blurb:
       'Live clearance auctions broadcast from Hayle every week, selling antiques, retro ' +
-      'pieces and curiosities that come out of real house clearances. The site had to make ' +
-      'the next live sale the most obvious thing on the page, and explain a format most ' +
-      'visitors will not have come across before.',
+      'pieces and curiosities from house clearances, with the next sale up front. The site ' +
+      'also explains the format itself, since most visitors will not have come across a ' +
+      'live clearance auction before.',
     alt: 'Screenshot of the House of Cornwall website',
     related:
       'A weekly live sale only works if people can find the business between broadcasts, and ' +

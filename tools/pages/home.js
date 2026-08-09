@@ -49,11 +49,12 @@ const HERO = `    <section class="hero" id="hero">
         <!-- Layer 2: the wordmark, and the page's one h1. The letters are
              split into spans so the glitch can re-font them individually,
              which would make a screen reader spell the word out letter by
-             letter — so the spans are hidden from it and the real heading text
+             letter, so the spans are hidden from it and the real heading text
              is carried by the visually-hidden line above them. Seen: a pixel
-             wordmark. Heard: "Picsel — Design Studio". -->
+             wordmark. Heard: "Picsel, websites for tradesmen, from £15 a
+             month", the page's actual subject rather than just its name. -->
         <h1 class="hero-mark">
-          <span class="visually-hidden">Picsel, Design Studio</span>
+          <span class="visually-hidden">Picsel: websites for tradesmen, from £15 a month</span>
           <span class="wordmark" id="wordmark" aria-hidden="true">PICSEL</span>
           <span class="tagline" id="tagline" aria-hidden="true">Design Studio</span>
         </h1>
@@ -300,7 +301,7 @@ export const HOME_PAGE = {
      that costs a click and is never noticed, because nobody re-reads their own
      meta tags. */
   description:
-    'We build fast, honest websites for tradespeople anywhere in the UK, get you found on Google and in AI search, and keep you there. From £15 a month.',
+    'We build fast, honest websites for tradespeople anywhere in the UK, get found on Google and in AI search, and stay there. From £15 a month, live in days.',
   /* Opts the page out of the gap base.css reserves under the floating nav: the
      hero is a full-screen composition that starts at the very top and
      deliberately runs behind the nav. */
