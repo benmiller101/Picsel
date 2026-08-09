@@ -32,6 +32,7 @@ import { SITE, absoluteUrl } from '../../site.config.js';
 import { PLANS, money } from '../../pricing.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs } from '../templates/schema.js';
+import { renderArticleSections } from '../partials/article-sections.js';
 import { renderContactBand } from '../partials/contact-band.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
 
@@ -49,6 +50,11 @@ const GROWTH = PLANS[2];
      answer    The first paragraph and the schema answer. ~50 words, quotable
                standing alone.
      sections  The detail. h2 plus paragraphs; a section may carry a list.
+               Paragraph and list copy is written into the page WITHOUT
+               escaping, so it may carry a, em, strong and abbr and nothing
+               else. The build enforces that: any other tag, any stray "<", and
+               any tag left unclosed fails the build rather than reaching a
+               browser.
      also      Extra question and answer pairs that join the FAQPage node. These
                are the follow-ups an assistant asks next.
      plan      Which plan this guide points at, and the plain sentence that does
@@ -509,28 +515,7 @@ const GUIDES = [
    look like the answer, because it is: the whole page is a question and this is
    the reply. */
 function renderGuide(guide) {
-  const sections = guide.sections
-    .map((section) => {
-      /* Not escaped, matching blog.js: a paragraph is allowed to carry a
-         hand-written <a> for a contextual body link. Every paragraph here is
-         studio-written copy, never user input, so this is the same trust
-         boundary the posts already rely on. */
-      const paragraphs = (section.paragraphs || [])
-        .map((text) => `          <p>${text}</p>`)
-        .join('\n');
-
-      const list = section.list
-        ? `          <ul class="guide__list">\n${section.list
-            .map((item) => `            <li>${escapeHtml(item)}</li>`)
-            .join('\n')}\n          </ul>`
-        : '';
-
-      return `        <section class="guide__section">
-          <h2>${escapeHtml(section.h2)}</h2>
-${[paragraphs, list].filter(Boolean).join('\n')}
-        </section>`;
-    })
-    .join('\n\n');
+  const sections = renderArticleSections(guide.sections, 'guide');
 
   /* The follow-up questions, visible as well as in the schema. Same rule as the
      homepage FAQ: writing them twice is how the machine-readable answer ends up

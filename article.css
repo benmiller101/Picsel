@@ -217,3 +217,12 @@
 .post-index__item > .post-index__date + .post-index__title {
   margin-top: 0;
 }
+
+/* On the post the order is the other way round, and the same drift happens to
+   the date instead: the section rule above gives everything in the column a
+   2rem gap, which left the date floating halfway between the headline and the
+   standfirst and belonging to neither. It belongs to the headline, so it sits
+   the same short distance below it as it does above the title on the index. */
+.post__inner > .post__headline + .post__meta {
+  margin-top: var(--space-2);
+}

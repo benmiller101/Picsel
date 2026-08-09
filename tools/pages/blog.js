@@ -24,10 +24,10 @@
    three. There was no way to state it that was both flattering and true, so it
    is not stated. */
 
-import { SITE, absoluteUrl } from '../../site.config.js';
 import { PLANS, money } from '../../pricing.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs, blogPosting, blogNode } from '../templates/schema.js';
+import { renderArticleSections } from '../partials/article-sections.js';
 import { renderContactBand } from '../partials/contact-band.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
 
@@ -37,12 +37,17 @@ const ONLINE = PLANS[0];
 const MANAGED = PLANS[1];
 const GROWTH = PLANS[2];
 
-/* "9 August 2026" from "2026-08-09". Midday UTC rather than midnight, so a
-   machine an hour behind does not render the day before. */
+/* "9 August 2026" from "2026-08-09". Midday UTC rather than midnight so a
+   machine an hour behind does not render the day before, and the formatter is
+   pinned to UTC as well: without the timeZone the midday instant is printed in
+   whatever zone the build machine sits in, and a machine at UTC+13 renders the
+   day after instead. Both halves are needed; one on its own only moves which
+   direction the date is wrong in. */
 const LONG_DATE = new Intl.DateTimeFormat('en-GB', {
   day: 'numeric',
   month: 'long',
   year: 'numeric',
+  timeZone: 'UTC',
 });
 
 function longDate(iso) {
@@ -54,10 +59,16 @@ function longDate(iso) {
      date        ISO. Drives both the visible byline and datePublished.
      headline    The h1. The argument, stated.
      title       <title>. 60 characters max, enforced by the build.
-     description Meta description. Enforced by the build at 150 to 155
-                  characters inclusive.
+     description Meta description. Aim for 150 to 155 characters. The build
+                  fails over 155 and warns under 150, because going long wastes
+                  characters nobody reads while going short is sometimes the
+                  honest length for the page.
      standfirst  The opening paragraph, set larger. One sentence if possible.
-     sections    h2 plus paragraphs; a section may carry a list.
+     sections    h2 plus paragraphs; a section may carry a list. Paragraph and
+                  list copy is written into the page WITHOUT escaping, so it may
+                  carry a, em, strong and abbr and nothing else. The build
+                  enforces that: any other tag, any stray "<", and any tag left
+                  unclosed fails the build rather than reaching a browser.
      close       The single link out, at the end, phrased as a fact. */
 const POSTS = [
   {
@@ -137,22 +148,7 @@ const POSTS = [
 ];
 
 function renderPost(post) {
-  const sections = post.sections
-    .map(
-      (section) => `        <section class="post__section">
-          <h2>${escapeHtml(section.h2)}</h2>
-${(section.paragraphs || [])
-  .map((text) => `          <p>${text}</p>`)
-  .join('\n')}${
-        section.list
-          ? `\n          <ul class="post__list">
-${section.list.map((item) => `            <li>${escapeHtml(item)}</li>`).join('\n')}
-          </ul>`
-          : ''
-      }
-        </section>`,
-    )
-    .join('\n\n');
+  const sections = renderArticleSections(post.sections, 'post');
 
   const content = `    <article class="section post">
       <div class="wrap post__inner">
@@ -178,6 +174,10 @@ ${sections}
     title: post.title,
     description: post.description,
     styles: ['/article.css'],
+    /* The one page type on the site that is not a website page. Every other
+       route is a standing page of the studio's; a post is a dated piece of
+       writing, and og:type is where a share card is told which it has got. */
+    ogType: 'article',
     schemaExtra: [
       blogPosting({
         headline: post.headline,

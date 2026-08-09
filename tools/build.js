@@ -32,8 +32,24 @@ import { CONTACT_PAGE, CONTACT_SENT_PAGE } from './pages/contact.js';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 /* Search engines truncate past these, so anything longer is written but never
-   read. Treated as hard limits rather than guidance. */
+   read. Treated as hard limits rather than guidance.
+
+   The description has a floor as well as a ceiling, and the floor is the one
+   that gets broken. A short description is not truncated, it is REPLACED:
+   Google decides the tag is not worth showing and writes its own snippet out
+   of the page, which is how a page ends up in the results described by a
+   sentence nobody chose.
+
+   The floor warns where the ceiling errors, and that asymmetry is a decision
+   rather than a half-finished check. Going over the maximum wastes characters
+   that were written and will never be read, and the fix is always to cut. A
+   short description is a judgement: fifteen of the eighteen pages here are
+   under 150 today, several of them because the honest sentence about that page
+   is simply shorter than 150 characters, and padding a description to clear a
+   number produces exactly the filler the snippet is meant to avoid. So the
+   build says so on every run and leaves the writing to a person. */
 const TITLE_MAX = 60;
+const DESCRIPTION_MIN = 150;
 const DESCRIPTION_MAX = 155;
 
 /* ---- The page list --------------------------------------------------------
@@ -87,6 +103,7 @@ async function build() {
 
   const seenTitles = new Map();
   const seenDescriptions = new Map();
+  const shortDescriptions = [];
   const rendered = [];
 
   for (const page of PAGES) {
@@ -112,6 +129,9 @@ async function build() {
         `Meta description too long on ${page.path}: ${page.description.length}/${DESCRIPTION_MAX} chars`,
       );
     }
+    if (page.description.length < DESCRIPTION_MIN) {
+      shortDescriptions.push(`${page.path} (${page.description.length})`);
+    }
 
     /* One <h1> per page, no more and no fewer. It is the page's single
        statement of what it is, and search engines and screen readers both
@@ -135,6 +155,17 @@ async function build() {
          than ending in a visible .html. */
       outPath: join(ROOT, page.path.replace(/^\/+/, ''), 'index.html'),
     });
+  }
+
+  /* One warning rather than one per page. Fifteen identical lines would be
+     scrolled past; a single line with the count in it can be read. */
+  if (shortDescriptions.length) {
+    warnings.push(
+      `${shortDescriptions.length} meta description(s) under the ${DESCRIPTION_MIN} character ` +
+        'floor, which is where Google starts writing its own snippet instead of using yours: ' +
+        `${shortDescriptions.join(', ')}. Lengthen them only if there is something true left to ` +
+        'say. Padding is worse than a short description.',
+    );
   }
 
   for (const warning of warnings) console.warn(`  WARN   ${warning}`);
@@ -342,55 +373,145 @@ function escapeForCheck(value) {
     .replace(/'/g, '&#39;');
 }
 
-/* ---- Unescaped copy inside a paragraph ------------------------------------
-   guides.js and blog.js render body paragraphs WITHOUT HTML-escaping them, on
-   purpose: a paragraph is sometimes a hand-written sentence carrying its own
-   contextual <a> link, and escaping the whole string would turn that link into
-   visible text instead of a link. Every one of those strings is studio copy
-   written in this repo, never user input, so there is no injection risk.
+/* ---- Unescaped copy inside a paragraph or a list item ---------------------
+   guides.js and blog.js render body paragraphs and list items WITHOUT
+   HTML-escaping them, on purpose: a sentence is sometimes hand-written with a
+   contextual <a> link inside it, and escaping the whole string would turn that
+   link into visible text instead of a link. Every one of those strings is
+   studio copy written in this repo, never user input, so there is no injection
+   risk.
 
    The hazard it trades away is narrower but real: the day somebody types
-   "Bloggs & Sons" or "a < b" into a paragraph, nothing escapes it, and the
-   browser reads the stray character as the start of an entity or a tag. An
-   ampersand becomes a broken entity reference; a less-than sign either vanishes
-   or eats the rest of the paragraph as a bogus tag. Both are silent at build
-   time and visible only in a browser, which is exactly the kind of mistake this
-   file exists to catch instead.
+   "Bloggs & Sons" or "sites <a year old" into a paragraph, nothing escapes it,
+   and the browser reads the stray character as the start of an entity or a
+   tag. Both are silent at build time and visible only in a browser, which is
+   exactly the kind of mistake this file exists to catch instead.
 
-   So this checks the one place the raw interpolation happens: inside a <p>
-   element. The rest of the document is built from escaped values and template
-   markup and cannot carry this fault, and widening the search to the whole
-   page would start flagging attribute values and JSON-LD, which are correct to
-   contain raw characters that would never land here.
+   THE RULE THAT USED TO BE HERE DID NOT WORK. It allowed any "<" followed by a
+   letter, on the reasoning that a letter means a tag. It does not. a, b, i, p,
+   s and u are tag names AND ordinary English words, so "useful for sites <a
+   year old" and "anything <b that and you are fine" both sailed through and
+   both broke the page. The "a < b" case the old comment claimed to catch was
+   precisely the case it missed.
 
-   An ampersand is fine only if it starts a real entity: &name;, &#123; or
-   &#x1F; forms. A less-than sign is fine only if it starts a tag, a closing
-   tag or a comment. Anything else inside a <p> is copy that needed escaping
-   and did not get it. */
+   So the rule is now a whitelist rather than a shape test. Copy may carry
+   exactly four tags, all of them inline and all of them meaningful:
+
+     a       a contextual link, which is the whole reason the copy is raw
+     em      emphasis
+     strong  strong emphasis
+     abbr    an abbreviation with its expansion
+
+   Anything else is an error, whether it is a real tag name or an English word
+   with an angle bracket in front of it. Every "<" must open a complete,
+   well-formed tag from that list, and every tag must be closed inside the same
+   element, so an unclosed <a> that would otherwise swallow the rest of the
+   document fails the build instead.
+
+   TWO SCOPES, and the difference is deliberate. The ampersand rule cannot be
+   wrong in escaped output, so it costs nothing and runs over every paragraph
+   and list item on the page. The tag rule is stricter than the shell's own
+   markup, which legitimately puts a <span> in a nav item and a <time> in a
+   post's byline, so it runs only where copy is interpolated raw: inside a
+   guide or a post section. Widening either to the whole document would start
+   flagging attribute values and JSON-LD, which are correct to contain raw
+   characters that would never land here. */
+const COPY_TAGS = new Set(['a', 'em', 'strong', 'abbr']);
+
 function findUnescapedCopy(html, path) {
   const errors = [];
 
-  for (const paragraph of html.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/g)) {
-    const inner = paragraph[1];
+  /* Both element regexes look ahead for whitespace or a closing bracket after
+     the tag name. Without it "<li" matches the start of every <link> in the
+     head and "<p" matches <picture>, and the check spends its time reading
+     markup it was never pointed at. */
+  const ALL_ELEMENTS = /<(p|li)(?=[\s>])[^>]*>([\s\S]*?)<\/\1>/g;
+  const COPY_SECTIONS = /<section class="(?:guide|post)__section[^"]*">([\s\S]*?)<\/section>/g;
 
+  for (const [, tag, inner] of html.matchAll(ALL_ELEMENTS)) {
     for (const stray of inner.matchAll(/&(?!(?:[a-zA-Z][a-zA-Z0-9]*|#[0-9]+|#x[0-9a-fA-F]+);)/g)) {
       errors.push(
-        `${path} has a stray "&" inside a <p> element, near "${excerpt(inner, stray.index)}". ` +
-          'It is not the start of a valid HTML entity, which means it was written into paragraph ' +
-          'copy that is never escaped. Write it as &amp; or reword the sentence.',
-      );
-    }
-
-    for (const stray of inner.matchAll(/<(?!\/|!--|[a-zA-Z])/g)) {
-      errors.push(
-        `${path} has a stray "<" inside a <p> element, near "${excerpt(inner, stray.index)}". ` +
-          'It does not open a tag, a closing tag or a comment, which means it was written into ' +
-          'paragraph copy that is never escaped. Write it as &lt; or reword the sentence.',
+        `${path} has a stray "&" inside a <${tag}> element, near "${excerpt(inner, stray.index)}". ` +
+          'It is not the start of a valid HTML entity, which means it was written into copy ' +
+          'that is never escaped. Write it as &amp; or reword the sentence.',
       );
     }
   }
 
+  for (const [, section] of html.matchAll(COPY_SECTIONS)) {
+    for (const [, tag, inner] of section.matchAll(ALL_ELEMENTS)) {
+      for (const fault of findMarkupFaults(inner)) {
+        errors.push(
+          `${path} has broken markup inside a <${tag}> element, near ` +
+            `"${excerpt(inner, fault.index)}": ${fault.reason}. Paragraph and list copy is ` +
+            'written into the page unescaped, so it may carry only <a>, <em>, <strong> and ' +
+            '<abbr>, each one closed. Write the "<" as &lt; or reword the sentence.',
+        );
+      }
+    }
+  }
+
   return errors;
+}
+
+/* Walks one element's content and reports every "<" that is not a complete,
+   whitelisted, balanced tag. Written as a scan rather than a regex because
+   balance is the half that catches the worst case: `<a href="/prices/">the
+   prices page` is a perfectly well-formed opening tag, and left unclosed it
+   turns the rest of the document into a link. */
+function findMarkupFaults(inner) {
+  const faults = [];
+  const open = [];
+
+  let cursor = 0;
+  while (cursor < inner.length) {
+    const at = inner.indexOf('<', cursor);
+    if (at === -1) break;
+
+    const rest = inner.slice(at);
+
+    const comment = /^<!--[\s\S]*?-->/.exec(rest);
+    if (comment) {
+      cursor = at + comment[0].length;
+      continue;
+    }
+
+    const tag = /^<(\/?)([a-zA-Z][a-zA-Z0-9]*)((?:\s[^<>]*)?)(\/?)>/.exec(rest);
+    if (!tag) {
+      faults.push({ index: at, reason: 'the "<" does not open a complete tag' });
+      cursor = at + 1;
+      continue;
+    }
+
+    const [whole, closing, rawName, , selfClosing] = tag;
+    const name = rawName.toLowerCase();
+
+    if (!COPY_TAGS.has(name)) {
+      faults.push({ index: at, reason: `<${name}> is not a tag copy may carry` });
+    } else if (closing) {
+      const expected = open.pop();
+      if (!expected) {
+        faults.push({ index: at, reason: `</${name}> closes a tag that was never opened` });
+      } else if (expected.name !== name) {
+        faults.push({
+          index: at,
+          reason: `</${name}> closes nothing, the tag still open here is <${expected.name}>`,
+        });
+      }
+    } else if (!selfClosing) {
+      /* The position is kept with the name so an unclosed tag is reported
+         where it was opened rather than at the end of the element. */
+      open.push({ name, index: at });
+    }
+
+    cursor = at + whole.length;
+  }
+
+  for (const { name, index } of open) {
+    faults.push({ index, reason: `<${name}> is never closed` });
+  }
+
+  return faults;
 }
 
 /* A few characters either side of the match, so the error names the actual

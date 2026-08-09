@@ -107,7 +107,7 @@ function normalisePath(path = '/') {
    Canonical matters more than it looks: it tells search engines which address
    is the real one for this page, so the same content reachable at two URLs is
    not read as two competing pages. */
-function renderHead({ title, description, path, ogImage, styles, extraHead, schema }) {
+function renderHead({ title, description, path, ogType, ogImage, styles, extraHead, schema }) {
   const canonical = absoluteUrl(path);
 
   /* Every page gets a share image now. It used to be per-page or nothing, and
@@ -132,7 +132,7 @@ function renderHead({ title, description, path, ogImage, styles, extraHead, sche
   <meta name="description" content="${escapeHtml(description)}" />
   <link rel="canonical" href="${escapeHtml(canonical)}" />
 
-  <meta property="og:type" content="website" />
+  <meta property="og:type" content="${escapeHtml(ogType)}" />
   <meta property="og:site_name" content="${escapeHtml(SITE.name)}" />
   <meta property="og:title" content="${escapeHtml(title)}" />
   <meta property="og:description" content="${escapeHtml(description)}" />
@@ -288,6 +288,8 @@ const FOOTER_YEAR = new Date().getFullYear();
  * @param {string}  page.path         Site-relative path, e.g. '/work/'. Drives canonical and nav highlighting.
  * @param {string}  page.content      The page body markup, dropped inside <main>.
  * @param {string} [page.bodyClass]   Extra class on <body> for page-specific styling.
+ * @param {string} [page.ogType]      Open Graph type. 'website' unless the page is something
+ *                                    else, which so far means a blog post, where it is 'article'.
  * @param {string} [page.ogImage]     Site-relative image path for social previews.
  * @param {string[]} [page.styles]    Page-specific stylesheets, loaded after site.css.
  *                                    Only the pages that need a sheet load it — hero.css
@@ -306,6 +308,7 @@ export function renderPage(page) {
     path,
     content,
     bodyClass = '',
+    ogType = 'website',
     ogImage = null,
     styles = [],
     extraHead = '',
@@ -315,7 +318,7 @@ export function renderPage(page) {
   return `<!DOCTYPE html>
 <html lang="en-GB">
 <head>
-${renderHead({ title, description, path, ogImage, styles, extraHead, schema: renderSchema(page) })}
+${renderHead({ title, description, path, ogType, ogImage, styles, extraHead, schema: renderSchema(page) })}
 </head>
 <body${bodyClass ? ` class="${escapeHtml(bodyClass)}"` : ''}>
   <a class="skip-link" href="#main">Skip to content</a>
