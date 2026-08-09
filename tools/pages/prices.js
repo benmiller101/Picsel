@@ -43,7 +43,9 @@ const HEAD = `    <section class="section prices-head">
           <p class="lede measure">
             Three plans. Each one contains the one before it, so the only question is how much
             of the ongoing work you want us doing. Every price on this page is the price:
-            no setup fee hiding behind it, and nothing tied up for years.
+            no setup fee hiding behind it, and nothing tied up for years. If you have been
+            quoted more than this elsewhere, <a href="/blog/why-trades-websites-cost-so-much/">why
+            trades websites cost so much</a> sets out where that money usually goes.
           </p>
         </div>
 

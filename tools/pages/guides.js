@@ -257,7 +257,9 @@ const GUIDES = [
             'the work to get you found, which is ongoing or it is nothing.',
           'A cheap quote nearly always means the third one is missing, and sometimes the ' +
             'second. That is fine if you know it. It is not fine if you find out in a year when ' +
-            'the site has been offline for a fortnight and nobody noticed.',
+            'the site has been offline for a fortnight and nobody noticed. There is a longer ' +
+            'account of where the money in a typical agency quote actually goes in <a ' +
+            'href="/blog/why-trades-websites-cost-so-much/">why trades websites cost so much</a>.',
         ],
       },
       {
@@ -509,8 +511,12 @@ const GUIDES = [
 function renderGuide(guide) {
   const sections = guide.sections
     .map((section) => {
+      /* Not escaped, matching blog.js: a paragraph is allowed to carry a
+         hand-written <a> for a contextual body link. Every paragraph here is
+         studio-written copy, never user input, so this is the same trust
+         boundary the posts already rely on. */
       const paragraphs = (section.paragraphs || [])
-        .map((text) => `          <p>${escapeHtml(text)}</p>`)
+        .map((text) => `          <p>${text}</p>`)
         .join('\n');
 
       const list = section.list

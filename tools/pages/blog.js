@@ -63,7 +63,7 @@ const POSTS = [
   {
     slug: 'why-trades-websites-cost-so-much',
     date: '2026-08-09',
-    headline: 'Most trades websites are priced for the agency, not the trade',
+    headline: 'Why trades websites cost so much',
     title: 'Why trades websites cost so much | Picsel',
     description:
       'Where the money goes in a three thousand pound website quote, what a trades site ' +
@@ -242,7 +242,7 @@ export const BLOG_INDEX_PAGE = {
       <div class="wrap page-head">
         <div class="page-head__text">
           <p class="eyebrow">Blog</p>
-          <h1>What we think</h1>
+          <h1>Blog: websites for tradespeople</h1>
           <p class="lede measure">
             Opinions, with our name on them. The neutral answers live in
             <a href="/guides/">the guides</a>; this is the part where
