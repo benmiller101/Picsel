@@ -28,9 +28,14 @@
        rather than quietly serving the same page at two URLs. */
     "html_handling": "auto-trailing-slash",
 
-    /* An unknown path gets a 404 rather than the homepage. A catch-all would
-       mean every typo returns HTTP 200 with the homepage on it, which is how
-       a site ends up with search engines indexing junk URLs. */
-    "not_found_handling": "none"
+    /* An unknown path gets the real 404 page in tools/pages/not-found.js,
+       written to /404.html at the repo root, rather than the homepage or a
+       bare blank response. A catch-all serving the homepage would mean every
+       typo returns HTTP 200, which is how a site ends up with search engines
+       indexing junk URLs; "none" would return an empty 404 with nothing on it
+       for the real visitors CLAUDEseo section 2 says land here. "404-page"
+       makes Cloudflare look for /404.html at the top of the assets directory
+       and serve it, with a 404 status, for anything that matches no route. */
+    "not_found_handling": "404-page"
   }
 }

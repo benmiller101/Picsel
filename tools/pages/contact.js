@@ -91,6 +91,31 @@ const NEED_OPTIONS = NEEDS.map(
   ({ value, label }) => `                <option value="${escapeHtml(value)}">${escapeHtml(label)}</option>`,
 ).join('\n');
 
+/* ---- Where the enquiry came from ------------------------------------------
+   The measurement rules ask for this because an AI-driven enquiry does not
+   look like one. Someone asks an assistant for a website studio, hears the
+   name, and types it into the address bar later that evening. That arrives in
+   the analytics as direct traffic, indistinguishable from someone who already
+   knew the name, so asking is the only way to find out it happened at all.
+
+   Optional, and deliberately not `required`: a field nobody has to fill in
+   costs nothing, and a required one on an enquiry form costs enquiries. The
+   AI option is named the way someone would actually say it, not "LLM" or
+   "generative AI". */
+const SOURCES = [
+  { value: '', label: 'Prefer not to say' },
+  { value: 'Google', label: 'Google search' },
+  { value: 'AI assistant', label: 'Asked ChatGPT, Gemini or another AI assistant' },
+  { value: 'Recommendation', label: 'Someone recommended you' },
+  { value: 'Social media', label: 'Facebook, Instagram or TikTok' },
+  { value: 'Other', label: 'Something else' },
+];
+
+const SOURCE_OPTIONS = SOURCES.map(
+  ({ value, label }) =>
+    `                <option value="${escapeHtml(value)}"${value === '' ? ' selected' : ''}>${escapeHtml(label)}</option>`,
+).join('\n');
+
 /* ---- The form -------------------------------------------------------------
    Ordinary HTML, working on its own before a line of script runs: a real
    action, a real method, real <label>s and native `required` validation. The
@@ -175,6 +200,15 @@ function renderForm() {
                      rather than as an answer. -->
                 <option value="" selected disabled>Choose one</option>
 ${NEED_OPTIONS}
+              </select>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="enquiry-source">
+                How did you hear about us? <span class="field__optional">optional</span>
+              </label>
+              <select class="field__input field__select" id="enquiry-source" name="source">
+${SOURCE_OPTIONS}
               </select>
             </div>
 

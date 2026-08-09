@@ -28,6 +28,7 @@ import { PRICES_PAGE } from './pages/prices.js';
 import { GUIDES_INDEX_PAGE, GUIDE_PAGES } from './pages/guides.js';
 import { BLOG_INDEX_PAGE, BLOG_PAGES } from './pages/blog.js';
 import { CONTACT_PAGE, CONTACT_SENT_PAGE } from './pages/contact.js';
+import { NOT_FOUND_PAGE } from './pages/not-found.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -72,6 +73,7 @@ const PAGES = [
   ...BLOG_PAGES,
   CONTACT_PAGE,
   CONTACT_SENT_PAGE,
+  NOT_FOUND_PAGE,
 ];
 
 async function build() {
@@ -152,8 +154,13 @@ async function build() {
       page,
       html,
       /* '/work/' becomes 'work/index.html', so the address stays clean rather
-         than ending in a visible .html. */
-      outPath: join(ROOT, page.path.replace(/^\/+/, ''), 'index.html'),
+         than ending in a visible .html. The one exception is a page whose own
+         path already names a file — currently only /404.html, which has to
+         land at the repo root as a bare file for Cloudflare's asset handling
+         to find it, not inside a 404.html/ directory. */
+      outPath: page.path.endsWith('.html')
+        ? join(ROOT, page.path.replace(/^\/+/, ''))
+        : join(ROOT, page.path.replace(/^\/+/, ''), 'index.html'),
     });
   }
 
@@ -187,7 +194,10 @@ async function build() {
   for (const { page, html, outPath } of rendered) {
     await mkdir(dirname(outPath), { recursive: true });
     await writeFile(outPath, html, 'utf8');
-    console.log(`  built  ${page.path.padEnd(20)} -> ${page.path.replace(/^\/+/, '')}index.html`);
+    const relativeOut = page.path.endsWith('.html')
+      ? page.path.replace(/^\/+/, '')
+      : `${page.path.replace(/^\/+/, '')}index.html`;
+    console.log(`  built  ${page.path.padEnd(20)} -> ${relativeOut}`);
   }
 
   const listed = await writeSitemap(rendered);

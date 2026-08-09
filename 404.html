@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- The site is dark-only. color-scheme tells the browser so, which makes it
+       render scrollbars, form fields and other built-in controls dark to match
+       instead of dropping bright white boxes into the page. theme-color tints
+       the browser's own chrome on mobile, so the bar above the page is the
+       same near-black rather than a hard white edge. -->
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0a0a" />
+
+  <title>Page not found | Picsel</title>
+  <meta name="description" content="This page doesn&#39;t exist. See our work, check the prices, read a guide, or ring us direct. Websites and Google visibility for tradespeople across the UK." />
+  <link rel="canonical" href="https://picsel.co.uk/404.html" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Picsel" />
+  <meta property="og:title" content="Page not found | Picsel" />
+  <meta property="og:description" content="This page doesn&#39;t exist. See our work, check the prices, read a guide, or ring us direct. Websites and Google visibility for tradespeople across the UK." />
+  <meta property="og:url" content="https://picsel.co.uk/404.html" />
+  <meta property="og:locale" content="en_GB" />
+  <meta name="twitter:title" content="Page not found | Picsel" />
+  <meta name="twitter:description" content="This page doesn&#39;t exist. See our work, check the prices, read a guide, or ring us direct. Websites and Google visibility for tradespeople across the UK." />
+  <meta property="og:image" content="https://picsel.co.uk/assets/brand/open-graph-share.png" />
+  <meta name="twitter:image" content="https://picsel.co.uk/assets/brand/open-graph-share.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- The icon set, from the designer's logo suite. The site served a
+       placeholder mark until this landed, which meant the one place the brand
+       appears on every tab in a visitor's browser was the only place it was
+       missing.
+
+       SVG first: modern browsers take it and one file covers every size. The
+       two PNGs are for the ones that do not, and favicon.ico sits at the root
+       for the older still. The mask icon is Safari's pinned-tab silhouette,
+       which is single-colour by design and takes the accent. -->
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
+  <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#00e1ff" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <!-- Adobe Fonts, web project ior4aly: argent-pixel-cf (the resting wordmark)
+       plus the three faces the glitch rotates through. Served by Adobe while
+       the Creative Cloud subscription is live — never self-hosted, per licence.
+
+       These preconnects are not decoration. The wordmark is the homepage's
+       largest contentful paint, so the whole measured load time waits on this
+       stylesheet, the second sheet it imports from p.typekit.net, and then the
+       font file itself. Opening the sockets while the HTML is still parsing
+       takes the DNS lookup and TLS handshake off that critical path.
+       use.typekit.net appears twice on purpose: it serves both the stylesheet,
+       which is fetched without CORS, and the font files, which fonts always
+       fetch with it. The two use separate connections, so both are warmed. -->
+  <link rel="preconnect" href="https://use.typekit.net" />
+  <link rel="preconnect" href="https://use.typekit.net" crossorigin />
+  <link rel="preconnect" href="https://p.typekit.net" />
+  <link rel="stylesheet" href="https://use.typekit.net/ior4aly.css" />
+
+  <!-- Lexend carries every word of reading copy on the site. Pixelify Sans is
+       the licence-independent safety net for the wordmark: if Typekit is
+       unreachable the mark still renders as a pixel face instead of dropping
+       to Courier. preconnect opens the connection early so the text is not
+       waiting on a handshake. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Lexend:wght@300;400&display=swap"
+        rel="stylesheet" />
+
+  <!-- Order matters: tokens defines the vocabulary, base uses it, the page
+       sheet overrides. Swapping them silently breaks the cascade. -->
+  <link rel="stylesheet" href="/tokens.css" />
+  <link rel="stylesheet" href="/base.css" />
+  <link rel="stylesheet" href="/site.css" />
+  <meta name="robots" content="noindex, follow" />
+
+  <!-- The one script on the site allowed to block, and only because of what it
+       does in its first line: it marks the document before anything is painted
+       so the nav can start off screen. Deferred, it would paint the bar and
+       then take it away, and every page load would open with a flinch. A few
+       hundred bytes from this same origin. Blocked or missing, no rule that
+       hides the nav ever matches and the bar is simply always there. -->
+  <script src="/nav.js"></script>
+
+  <!-- Structured data: the machine-readable version of what this page already
+       says in words. Rendered here rather than per page so that no page can be
+       built without it. See templates/schema.js. -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://picsel.co.uk/#organization",
+      "name": "Picsel",
+      "legalName": "Picsel",
+      "url": "https://picsel.co.uk/",
+      "description": "Picsel builds websites for tradespeople anywhere in the UK, gets them found on Google and in AI search, and keeps them there.",
+      "areaServed": {
+        "@type": "Country",
+        "name": "United Kingdom"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "telephone": "+447456809049",
+        "email": "ben@picsel.co.uk",
+        "areaServed": "GB",
+        "availableLanguage": "English"
+      },
+      "sameAs": [
+        "https://www.facebook.com/picseluk",
+        "https://www.instagram.com/picseluk",
+        "https://www.tiktok.com/@picseluk"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://picsel.co.uk/#website",
+      "url": "https://picsel.co.uk/",
+      "name": "Picsel",
+      "description": "Picsel builds websites for tradespeople anywhere in the UK, gets them found on Google and in AI search, and keeps them there.",
+      "publisher": {
+        "@id": "https://picsel.co.uk/#organization"
+      },
+      "inLanguage": "en-GB"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://picsel.co.uk/404.html#webpage",
+      "url": "https://picsel.co.uk/404.html",
+      "name": "Page not found | Picsel",
+      "description": "This page doesn't exist. See our work, check the prices, read a guide, or ring us direct. Websites and Google visibility for tradespeople across the UK.",
+      "isPartOf": {
+        "@id": "https://picsel.co.uk/#website"
+      },
+      "about": {
+        "@id": "https://picsel.co.uk/#organization"
+      },
+      "inLanguage": "en-GB"
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- The site-wide dot field: a fixed sheet behind every page, drawn by
+       backdrop.js and parallaxing at a third of the scroll speed. Decoration
+       with no meaning to convey, so it is hidden from assistive technology.
+       If the script never runs, base.css's CSS dot layer shows through
+       instead and the page still has its texture. -->
+  <canvas class="backdrop" aria-hidden="true"></canvas>
+
+  <!-- The trip wire for the nav: an empty strip down the top of the page, as
+       tall as --nav-reveal. nav.js watches whether it is still on screen and
+       brings the bar in when it is not. Nothing to see and nothing to say, so
+       it is hidden from assistive technology. -->
+  <div class="nav-sentinel" aria-hidden="true"></div>
+
+    <nav class="site-nav" aria-label="Main">
+      <ul class="site-nav__list">
+        <li><a class="site-nav__link roll-trigger" href="/"><span class="roll"><span class="roll__inner"><span class="roll__line">Home</span><span class="roll__line" aria-hidden="true">Home</span></span></span></a></li>
+        <li><a class="site-nav__link roll-trigger" href="/work/"><span class="roll"><span class="roll__inner"><span class="roll__line">Work</span><span class="roll__line" aria-hidden="true">Work</span></span></span></a></li>
+        <li><a class="site-nav__link roll-trigger" href="/prices/"><span class="roll"><span class="roll__inner"><span class="roll__line">Prices</span><span class="roll__line" aria-hidden="true">Prices</span></span></span></a></li>
+        <li><a class="site-nav__link roll-trigger site-nav__link--accent" href="/contact/"><span class="roll"><span class="roll__inner"><span class="roll__line">Get in touch</span><span class="roll__line" aria-hidden="true">Get in touch</span></span></span></a></li>
+      </ul>
+    </nav>
+
+  <main id="main" tabindex="-1">
+    <section class="section contact-head">
+      <div class="wrap page-head__text">
+        <p class="eyebrow">Page not found</p>
+        <h1>That page isn&rsquo;t here</h1>
+        <p class="lede measure">
+          The address you followed doesn&rsquo;t match a page on this site. It may have moved,
+          or been typed wrong. Ring if that&rsquo;s quicker, or try one of these.
+        </p>
+
+        <div class="contact-band__actions">
+          <a class="btn btn--primary" href="tel:+447456809049">07456 809049</a>
+        </div>
+
+        <nav aria-label="Popular pages">
+          <ul class="site-footer__list">
+              <li><a class="site-footer__link" href="/work/">See the work</a></li>
+              <li><a class="site-footer__link" href="/prices/">Check the prices</a></li>
+              <li><a class="site-footer__link" href="/guides/">Read a guide</a></li>
+              <li><a class="site-footer__link" href="/contact/">Send an enquiry</a></li>
+          </ul>
+        </nav>
+      </div>
+    </section>
+  </main>
+
+    <footer class="site-footer">
+      <div class="wrap site-footer__inner">
+        <div class="site-footer__brand">
+          <!-- The designer's horizontal lockup, the on-dark colour version,
+               which is the primary. SVG rather than a PNG: it is the one logo
+               in the markup and it should be sharp on every screen at a size
+               nobody has to pick in advance. Decorative here, because the
+               studio name is already in the line underneath it, so it carries
+               an empty alt instead of saying "Picsel" to a screen reader twice
+               in the same block.
+
+               The width and height are the file's own, and the file was
+               re-cropped to get them. It shipped as a 1017 square with the
+               horizontal lockup floating in the middle of a lot of nothing,
+               which meant a 136px-wide logo reserved a 136px-TALL box and left
+               a hundred pixels of gap under it in the footer. The viewBox is
+               now the artwork's real bounding box. -->
+          <img class="site-footer__logo"
+               src="/assets/brand/picsel-lockup-horizontal.svg"
+               alt=""
+               width="926"
+               height="230"
+               loading="lazy" />
+          <p class="site-footer__contact">
+            <a href="tel:+447456809049">07456 809049</a>
+            <a href="mailto:ben@picsel.co.uk">ben@picsel.co.uk</a>
+          </p>
+        </div>
+
+        <div class="site-footer__end">
+          <nav class="site-footer__nav" aria-label="Footer">
+            <ul class="site-footer__list">
+            <li><a class="site-footer__link" href="/guides/">Guides</a></li>
+            <li><a class="site-footer__link" href="/blog/">Blog</a></li>
+            <li><a class="site-footer__link" href="/work/">Work</a></li>
+            <li><a class="site-footer__link" href="/prices/">Prices</a></li>
+            <li><a class="site-footer__link" href="/contact/">Contact</a></li>
+            </ul>
+          </nav>
+          <!-- No place name. This line named a county, and because it is the
+               footer it did so on every page of the site at once, which made it
+               the most repeated location claim in the markup and the one least
+               likely to be re-read by anybody. What it says now is true
+               wherever the studio is. -->
+          <p class="site-footer__meta">
+            Picsel. Websites for tradespeople, anywhere in the UK.
+            &copy; 2026
+          </p>
+        </div>
+      </div>
+    </footer>
+
+  <!-- type="module" so it can import the shared noise generator. Modules are
+       deferred by default, so this never blocks the page from appearing. -->
+  <script type="module" src="/backdrop.js"></script>
+</body>
+</html>

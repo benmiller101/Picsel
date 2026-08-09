@@ -120,6 +120,69 @@ ${EXTRAS.map(
       </div>
     </section>`;
 
+/* ---- Questions before you pay ----------------------------------------------
+   CLAUDEseo section 5 calls an FAQ on the money page the highest-value
+   structure for AI extraction on a small business site, and /prices did not
+   have one while every guide did. These are the questions a tradesperson
+   actually asks before paying, not a generic template list, and every answer
+   is a fact already established elsewhere in this file or in pricing.js: the
+   plan data, the guarantee, the exclusivity promise. Nothing here is a new
+   claim.
+
+   Two real questions were left out on purpose: what happens to the site if a
+   client stops paying, and whether someone can move between plans later.
+   Neither has an answer written down anywhere in the repo, and guessing one
+   for a money page is worse than leaving the gap visible. */
+const FAQS = [
+  {
+    q: 'Who owns the domain?',
+    a: 'You do. The domain is registered in your name, and you keep it, the site and your ' +
+      'Google Business Profile whatever happens afterwards.',
+  },
+  {
+    q: 'How long until the site is live?',
+    a: "About a week for Online, once we have your logo, your photos and the jobs you want " +
+      "listed. Managed and Growth take just as long to build, since the build itself doesn't " +
+      "change.",
+  },
+  {
+    q: "What's not included?",
+    a: "On Online, ongoing edits aren't included. Changes are quoted when you want them. " +
+      'Managed and Growth both cover minor edits and monthly work as part of the price, set out ' +
+      'above.',
+  },
+  {
+    q: "What if the site doesn't bring me any work?",
+    a: "On Growth, if the site and your Google Business Profile don't bring you five genuine " +
+      'customer enquiries in four months, we refund the build fee in full. The monthly fee ' +
+      "doesn't come back, since it pays for work already done. Either way, you keep the site, " +
+      'the domain and the profile.',
+  },
+  {
+    q: 'Will you build a site for a competitor of mine?',
+    a: "Not on Growth. If we're already working for a tradesperson in your town and about " +
+      "eight miles around it, we won't take on a direct competitor there while you're a client. " +
+      'A different trade in the same patch is fine.',
+  },
+];
+
+const FAQ_SECTION = `    <section class="section prices-faq" aria-labelledby="prices-faq-heading">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 class="section-head__title" id="prices-faq-heading">Questions before you pay</h2>
+        </div>
+
+        <div class="faq__grid">
+${FAQS.map(
+  ({ q, a }) => `          <div class="faq__item">
+            <h3 class="faq__q">${escapeHtml(q)}</h3>
+            <p class="faq__a">${escapeHtml(a)}</p>
+          </div>`,
+).join('\n\n')}
+        </div>
+      </div>
+    </section>`;
+
 /* ---- The machine-readable version -----------------------------------------
    One Service node per plan, each with the monthly Offer on it. The build fee
    is a second Offer rather than being folded into the monthly figure, because
@@ -166,6 +229,15 @@ export const PRICES_PAGE = {
     `Three plans, from ${money(PLANS[0].monthly)} a month with a ${money(PLANS[0].build)} build fee. What each one covers, what it does not, and the add-ons. No retainer, no lock-in.`,
   schemaExtra: [
     ...PLAN_SCHEMA,
+    {
+      '@type': 'FAQPage',
+      '@id': `${absoluteUrl('/prices/')}#faq`,
+      mainEntity: FAQS.map(({ q, a }) => ({
+        '@type': 'Question',
+        name: q,
+        acceptedAnswer: { '@type': 'Answer', text: a },
+      })),
+    },
     breadcrumbs([
       { name: 'Home', path: '/' },
       { name: 'Prices', path: '/prices/' },
@@ -179,6 +251,7 @@ export const PRICES_PAGE = {
     renderGrowthCommitments(),
     FOUNDING,
     EXTRAS_SECTION,
+    FAQ_SECTION,
     renderContactBand({
       heading: 'Not sure which one?',
       body: `Ring and describe the job. We&rsquo;ll tell you which plan fits and, if none of them do, we&rsquo;ll say that too. ${escapeHtml(GUARANTEE.proposal)}`,
