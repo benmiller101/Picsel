@@ -16,8 +16,9 @@ assets/work/**/*.jpeg
 assets/work/**/*.jpg
 .shots-cache/
 
-# Backdrop stills. `npm run backdrop` writes ~11MB of print-resolution PNGs for
-# use behind documents. Same reasoning as the screenshots above: large, exactly
+# Backdrop stills and clips. `npm run backdrop` writes ~11MB of print-resolution
+# PNGs for use behind documents; `npm run backdrop:video` writes ~60MB of MP4s
+# for social posts. Same reasoning as the screenshots above: large, exactly
 # regenerable from dot-field.js, and nothing on the site links to them, so
 # versioning them would only bloat the history and publish them by accident.
 assets/backdrop/

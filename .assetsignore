@@ -28,6 +28,11 @@ site.config.js
 projects.js
 pricing.js
 
+# noise-4d.js is imported only by the two exporters in tools/, which run in
+# Node. No page loads it. Its sibling noise.js is NOT on this list and must not
+# be: the hero and the backdrop both import it in the browser.
+noise-4d.js
+
 # Planning and instruction documents. plan-picsel-site.md and CLAUDE.md read as
 # internal notes because they are.
 *.md
