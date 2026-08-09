@@ -129,10 +129,10 @@ ${EXTRAS.map(
    plan data, the guarantee, the exclusivity promise. Nothing here is a new
    claim.
 
-   Two real questions were left out on purpose: what happens to the site if a
-   client stops paying, and whether someone can move between plans later.
-   Neither has an answer written down anywhere in the repo, and guessing one
-   for a money page is worse than leaving the gap visible. */
+   Two questions used to be left out here on purpose: what happens to the site
+   if a client stops paying, and whether someone can move between plans later.
+   Both are answered below now that the owner has actually stated the policy,
+   rather than have this page guess at one. */
 const FAQS = [
   {
     q: 'Who owns the domain?',
@@ -163,6 +163,18 @@ const FAQS = [
     a: "Not on Growth. If we're already working for a tradesperson in your town and about " +
       "eight miles around it, we won't take on a direct competitor there while you're a client. " +
       'A different trade in the same patch is fine.',
+  },
+  {
+    q: 'What happens if I stop paying?',
+    a: "If a payment is missed, you get a 14 day grace period to sort it out. If it's " +
+      'still unpaid after that, the site comes down.',
+  },
+  {
+    q: 'Can I move between plans later?',
+    a: "Yes, in either direction. Moving up adds what the next plan includes. Moving down " +
+      "means losing what the higher plan covered: drop from Growth to Managed and you lose " +
+      'the monthly content, the review generation and the AI search work; drop from Managed ' +
+      'to Online and you lose the monthly changes and the monthly Google profile upkeep.',
   },
 ];
 

@@ -156,6 +156,12 @@ build consensus. Build at least three of these into every site:
 - NAP in the site footer.
 - Embedded map on the contact page.
 - `LocalBusiness` schema matching the GBP details exactly.
+
+  **Deliberate exception, picsel.co.uk only:** this rule still stands for every client site, all
+  of which have real premises. Picsel's own site uses `Organization` instead. `LocalBusiness` and
+  `ProfessionalService` are physical-premises types built to carry an address and opening hours,
+  Picsel has neither, and inventing a street address to satisfy the schema type would be the exact
+  fabrication this document exists to stop. See `tools/templates/schema.js` for the full reasoning.
 - Core citations: Bing Places, Apple Business Connect, Yell, Facebook, plus the relevant trade
   directory.
 - Hand the client a review request method (link, QR code, or text template) at handover.
@@ -191,6 +197,12 @@ dropped before it's even scored, so speed matters more here than in traditional 
 - Forms tested end to end. Confirmation received, spam protection on.
 
 Skip `llms.txt`. No major provider officially supports it yet. Don't spend time on it.
+
+**Deliberate exception, picsel.co.uk only:** this site generates `llms.txt` on every build, in
+`tools/build.js`. The rule above is guarding against spending time maintaining a file no crawler
+is obliged to read, not against the file existing. Because it's generated from the same page list
+and pricing data as the rest of the site rather than hand-written, it costs nothing per build,
+which is what makes it fine to keep.
 
 ---
 
