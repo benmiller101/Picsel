@@ -66,8 +66,8 @@ const POSTS = [
     headline: 'Why trades websites cost so much',
     title: 'Why trades websites cost so much | Picsel',
     description:
-      'Where the money goes in a three thousand pound website quote, what a trades site ' +
-      'actually has to do, and what a straight-priced alternative looks like.',
+      'Where the money goes in a three thousand pound website quote, what a trades website ' +
+      'actually has to do, and what I charge instead. With one real number.',
     standfirst:
       'A five page website for a plumber does not cost three thousand pounds to make. It ' +
       'costs that to sell, to manage, and to sign off.',
@@ -82,8 +82,8 @@ const POSTS = [
             'three rounds of design on a site with five pages on it, because the process was ' +
             'written for clients who have a marketing department to satisfy. And underneath ' +
             'all of it there is an office, the people in it, and the software they run.',
-          'None of that is a swindle. It is a process built for a different kind of customer, ' +
-            'sold to you at what it costs to run.',
+          'It is a process built for a different kind of customer, sold to you at what it ' +
+            'costs to run.',
         ],
       },
       {
@@ -107,9 +107,9 @@ const POSTS = [
             `month, which adds somebody looking after it so you never touch it. ` +
             `${GROWTH.name} is ${money(GROWTH.build)} and ${money(GROWTH.monthly)} a month, ` +
             'and that one buys active work every month rather than a site sitting still.',
-          'The part I would actually defend is not the figures. It is that they are on the ' +
-            'website at all. You can compare them to anyone else before you pick up the phone, ' +
-            'which is the opposite of how this trade usually quotes.',
+          'The figures matter less than where they are. They are on the website, so you can ' +
+            'hold them against anyone else before you pick up the phone. Most of this trade ' +
+            'still makes you ring to find out.',
         ],
       },
       {
@@ -117,10 +117,10 @@ const POSTS = [
         paragraphs: [
           'One number worth reporting. Lanora House went from 18 Google reviews to 36 in two ' +
             'months. It stands at 38 today, averaging five stars.',
-          'Worth being exact about which half of the work that is. A website does not collect ' +
-            'reviews. Somebody asking, at the right moment, every time, collects reviews, and ' +
-            'that is the monthly plan rather than the build. The site is what people land on ' +
-            'once the reviews have done their job.',
+          'Be clear about which half of the work that is. A website does not collect reviews. ' +
+            'Somebody asking, at the right moment, every time, does, and that is the monthly ' +
+            'plan rather than the build. The site is where people land once the reviews have ' +
+            'done their job.',
           'You can check it, which is the point of quoting it. The reviews are on their Google ' +
             'listing with dates against them.',
         ],
@@ -225,8 +225,8 @@ export const BLOG_INDEX_PAGE = {
   path: '/blog/',
   title: 'Blog: websites for tradespeople | Picsel',
   description:
-    'What this studio thinks about websites for tradespeople, what they cost and why they ' +
-    'cost it. Opinions rather than answers. The answers are in the guides.',
+    'What I think about websites for tradespeople, what they cost and why they cost it. ' +
+    'Opinions rather than answers here. The answers are all in the guides.',
   styles: ['/article.css'],
   schemaType: 'CollectionPage',
   schemaExtra: [
@@ -244,9 +244,9 @@ export const BLOG_INDEX_PAGE = {
           <p class="eyebrow">Blog</p>
           <h1>Blog: websites for tradespeople</h1>
           <p class="lede measure">
-            Opinions, with our name on them. The neutral answers live in
-            <a href="/guides/">the guides</a>; this is the part where
-            ${escapeHtml(SITE.name)} takes a side.
+            Opinions, with my name on them. The answers that take no side live in
+            <a href="/guides/">the guides</a>. This is the part where I say what I
+            think about the way this trade sells websites.
           </p>
         </div>
 
