@@ -165,6 +165,12 @@ export const SITE = {
   /* The footer's secondary links: the routes that matter but do not fit in a
      bar sized for a phone. Rendered as a real <nav> on every page. */
   footerNav: [
+    /* Services is here rather than in the bar for the same reason Guides is:
+       the bar holds four items at 375px and no more, and the four it holds are
+       the ones a phone-first audience needs first. The service pages are the
+       money pages, so they are also linked from /prices, from every guide that
+       matches one, and from the footer on every page of the site. */
+    { label: 'Services', href: '/services/' },
     { label: 'Guides', href: '/guides/' },
     { label: 'Blog', href: '/blog/' },
     { label: 'Work', href: '/work/' },

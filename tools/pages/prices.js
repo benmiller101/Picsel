@@ -47,6 +47,13 @@ const HEAD = `    <section class="section prices-head">
             quoted more than this elsewhere, <a href="/blog/why-trades-websites-cost-so-much/">why
             trades websites cost so much</a> sets out where that money usually goes.
           </p>
+          <p class="measure">
+            What the money actually buys is set out one job at a time:
+            <a href="/services/websites-for-tradespeople/">websites for tradespeople</a>,
+            <a href="/services/google-business-profile/">Google Business Profile</a> work,
+            <a href="/services/search-and-ai-visibility/">search and AI visibility</a>, and
+            <a href="/services/custom-tools/">custom tools</a>.
+          </p>
         </div>
 
 ${PAGE_BLOB}

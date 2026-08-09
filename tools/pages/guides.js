@@ -127,6 +127,9 @@ const GUIDES = [
             'form with fourteen fields. A live chat box that nobody is behind. Each of these ' +
             'costs you customers, and the last one costs you the most, because an unanswered ' +
             'chat reads as a business that has closed.',
+          'The five pages above are what we build, written for you rather than filled into a ' +
+            'template: see <a href="/services/websites-for-tradespeople/">websites for ' +
+            'tradespeople</a>.',
         ],
       },
     ],
@@ -222,7 +225,9 @@ const GUIDES = [
         paragraphs: [
           'A profile with photos added this month, reviews being answered and a post now and ' +
             'again outranks an identical one that has not been touched since it was set up. ' +
-            'Activity is a signal in its own right.',
+            'Activity is a signal in its own right. If you would rather hand the whole thing ' +
+            'over, that is our <a href="/services/google-business-profile/">Google Business ' +
+            'Profile</a> work.',
         ],
       },
     ],
@@ -302,6 +307,8 @@ const GUIDES = [
             'once by somebody who has moved on. It sits there slowly going out of date, the ' +
             'contact form quietly stops sending, and nobody finds out for months. The money was ' +
             'not wasted so much as spent on something that needed a second half.',
+          'What the second half looks like when it is included is set out on <a ' +
+            'href="/services/websites-for-tradespeople/">websites for tradespeople</a>.',
         ],
       },
     ],
@@ -398,6 +405,8 @@ const GUIDES = [
             'a decade and a lot of money getting there. Assistant answers are not, yet. The gap ' +
             'will close. Right now a small firm with clear, well-marked-up pages can be quoted ' +
             'alongside a national one, which has not been true of Google for a long time.',
+          'The monthly version of that work, done for you, is <a ' +
+            'href="/services/search-and-ai-visibility/">search and AI visibility</a>.',
         ],
       },
     ],
@@ -490,7 +499,8 @@ const GUIDES = [
         paragraphs: [
           'Twenty reviews arriving in one week looks exactly like twenty bought reviews. Two or ' +
             'three a month, every month, is both more believable and more useful, because ' +
-            'recent reviews carry more weight than old ones.',
+            'recent reviews carry more weight than old ones. Keeping that trickle going is part ' +
+            'of <a href="/services/search-and-ai-visibility/">search and AI visibility</a>.',
         ],
       },
     ],

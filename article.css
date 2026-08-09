@@ -8,27 +8,36 @@
    measure down the middle-left of the page and generous space between
    sections. The restraint is the design.
 
-   It was guides.css until the blog arrived and needed exactly the same thing.
-   Two sections, two sets of class names, one set of rules: the selectors below
-   list both, rather than the sheet being copied and left to drift. */
+   It was guides.css until the blog arrived and needed exactly the same thing,
+   and /services needed it a third time. Three sets of class names, one set of
+   rules: the selectors below list all of them, rather than the sheet being
+   copied twice and left to drift.
+
+   The service pages are the exception to the "no sidebar, no furniture" rule
+   above, and only by one element: they carry a button under the answer, because
+   a page whose job is to convert cannot make somebody scroll to the bottom to
+   find out how to say yes. */
 
 /* ---- A guide page ---------------------------------------------------------
    Left-aligned rather than centred. A centred column of body copy makes every
    paragraph's first word land in a different place, which is exactly what the
    eye uses to find the start of the next line. */
 .guide__inner > * + *,
-.post__inner > * + * {
+.post__inner > * + *,
+.service__inner > * + * {
   margin-top: var(--space-8);
 }
 
 .guide__question,
-.post__headline {
+.post__headline,
+.service__title {
   max-width: 24ch;
 }
 
 @media (min-width: 48rem) {
   .guide__question,
-  .post__headline {
+  .post__headline,
+  .service__title {
     max-width: 30ch;
   }
 }
@@ -43,7 +52,8 @@
    the other reason it stands alone: it has to make sense with nothing else
    attached to it. */
 .guide__answer,
-.post__standfirst {
+.post__standfirst,
+.service__answer {
   max-width: 44rem;
   padding: var(--space-2) 0 var(--space-2) var(--space-6);
   border-left: 2px solid var(--accent);
@@ -53,23 +63,28 @@
 }
 
 .guide__section,
-.post__section {
+.post__section,
+.service__section {
   max-width: var(--measure);
 }
 
 .guide__section > * + *,
-.post__section > * + * {
+.post__section > * + *,
+.service__section > * + * {
   margin-top: var(--space-4);
 }
 
 .guide__section h2,
-.post__section h2 {
+.post__section h2,
+.service__section h2,
+.service__faq h2 {
   font-size: var(--text-xl);
   color: var(--ink);
 }
 
 .guide__list,
-.post__list {
+.post__list,
+.service__list {
   margin: 0;
   padding-left: var(--space-6);
   display: grid;
@@ -78,10 +93,23 @@
 
 /* The follow-up questions. Separated from the body above by a rule, because
    they answer different questions and running them on would read as more of
-   the same argument. */
-.guide__also {
+   the same argument. The FAQ block at the foot of a service page is the same
+   thing doing the same job, so it takes the same rule.
+
+   It is deliberately NOT inside .service__section, which is capped at the
+   reading measure: the questions sit in the two-column .faq__grid the prices
+   page already uses, and that wants the full width of the wrap. */
+.guide__also,
+.service__faq {
   padding-top: var(--space-8);
   border-top: 1px solid var(--line);
+}
+
+/* The plan names inside a service section. One step down from the h2 above
+   them and no smaller than the answer, because each one is carrying a price. */
+.service__section h3 {
+  font-size: var(--text-lg);
+  color: var(--ink);
 }
 
 .guide__qa + .guide__qa {
@@ -136,7 +164,8 @@
    minimum height gives it a real target without moving the text, since the
    eyebrow is a line of its own anyway. */
 .guide__back,
-.post__back {
+.post__back,
+.service__back {
   display: inline-flex;
   align-items: center;
   min-height: var(--tap-min);
@@ -147,7 +176,8 @@
 }
 
 .guide__back:hover,
-.post__back:hover {
+.post__back:hover,
+.service__back:hover {
   color: var(--ink);
   text-decoration-color: var(--accent);
 }
@@ -158,7 +188,8 @@
    an assistant nothing to quote, and a visitor whose question is answered here
    and who leaves satisfied is a better outcome than one made to click for it. */
 .guide-index,
-.post-index {
+.post-index,
+.service-index {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -167,19 +198,22 @@
 }
 
 .guide-index__item,
-.post-index__item {
+.post-index__item,
+.service-index__item {
   padding-top: var(--space-4);
   border-top: 1px solid var(--line);
 }
 
 .guide-index__q,
-.post-index__title {
+.post-index__title,
+.service-index__name {
   font-size: var(--text-xl);
   max-width: 34ch;
 }
 
 .guide-index__q a,
-.post-index__title a {
+.post-index__title a,
+.service-index__name a {
   color: var(--ink);
   text-decoration-color: var(--line-strong);
   text-underline-offset: 0.25em;
@@ -187,12 +221,14 @@
 }
 
 .guide-index__q a:hover,
-.post-index__title a:hover {
+.post-index__title a:hover,
+.service-index__name a:hover {
   text-decoration-color: var(--accent);
 }
 
 .guide-index__a,
-.post-index__standfirst {
+.post-index__standfirst,
+.service-index__line {
   margin-top: var(--space-4);
   max-width: var(--measure);
 }

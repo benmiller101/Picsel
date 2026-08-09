@@ -25,6 +25,7 @@ import { HOME_PAGE } from './pages/home.js';
 import { WORK_PAGE } from './pages/work.js';
 import { PROJECT_PAGES } from './pages/project.js';
 import { PRICES_PAGE } from './pages/prices.js';
+import { SERVICES_INDEX_PAGE, SERVICE_PAGES } from './pages/services.js';
 import { GUIDES_INDEX_PAGE, GUIDE_PAGES } from './pages/guides.js';
 import { BLOG_INDEX_PAGE, BLOG_PAGES } from './pages/blog.js';
 import { CONTACT_PAGE, CONTACT_SENT_PAGE } from './pages/contact.js';
@@ -66,6 +67,10 @@ const PAGES = [
   HOME_PAGE,
   WORK_PAGE,
   ...PROJECT_PAGES,
+  /* The money pages, before the content pages, which is the order CLAUDEseo
+     section 2 asks for and the order this list should read in. */
+  SERVICES_INDEX_PAGE,
+  ...SERVICE_PAGES,
   PRICES_PAGE,
   GUIDES_INDEX_PAGE,
   ...GUIDE_PAGES,
@@ -384,7 +389,7 @@ function escapeForCheck(value) {
 }
 
 /* ---- Unescaped copy inside a paragraph or a list item ---------------------
-   guides.js and blog.js render body paragraphs and list items WITHOUT
+   guides.js, blog.js and services.js render body paragraphs and list items WITHOUT
    HTML-escaping them, on purpose: a sentence is sometimes hand-written with a
    contextual <a> link inside it, and escaping the whole string would turn that
    link into visible text instead of a link. Every one of those strings is
@@ -436,7 +441,7 @@ function findUnescapedCopy(html, path) {
      head and "<p" matches <picture>, and the check spends its time reading
      markup it was never pointed at. */
   const ALL_ELEMENTS = /<(p|li)(?=[\s>])[^>]*>([\s\S]*?)<\/\1>/g;
-  const COPY_SECTIONS = /<section class="(?:guide|post)__section[^"]*">([\s\S]*?)<\/section>/g;
+  const COPY_SECTIONS = /<section class="(?:guide|post|service)__section[^"]*">([\s\S]*?)<\/section>/g;
 
   for (const [, tag, inner] of html.matchAll(ALL_ELEMENTS)) {
     for (const stray of inner.matchAll(/&(?!(?:[a-zA-Z][a-zA-Z0-9]*|#[0-9]+|#x[0-9a-fA-F]+);)/g)) {
