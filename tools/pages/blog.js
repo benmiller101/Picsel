@@ -1,0 +1,265 @@
+/* ---- blog.js — /blog and the posts ----------------------------------------
+   The studio's own voice, which is the one thing the guides are built not to
+   be.
+
+   THE LINE BETWEEN THIS FILE AND guides.js. A guide answers the question a
+   customer asks, neutrally, in about fifty words an assistant can lift. It
+   takes no side, because nobody quotes a sales pitch. A post is dated, it is
+   first person, and it has an argument in it.
+
+   The test, when you are deciding where something goes: if a post would be
+   quoted by an assistant as a neutral answer to a question, it should have
+   been a guide. Write it there instead and link to it from here.
+
+   WHAT A POST MAY CLAIM. llms.txt tells every reader and every assistant that
+   this studio "makes no claims about client numbers, years in business or
+   awards" and that anything stated "can be checked against the live sites".
+   That applies here more than anywhere, because this is the one section
+   written to persuade. A number goes in a post only if a stranger could check
+   it: a review count on a public listing, a price on /prices, a site on /work.
+
+   Search figures were considered for the first post and left out. The one
+   client with Search Console has no data before June 2026, so there is no
+   before and after to show, and the average position over that window is page
+   three. There was no way to state it that was both flattering and true, so it
+   is not stated. */
+
+import { SITE, absoluteUrl } from '../../site.config.js';
+import { PLANS, money } from '../../pricing.js';
+import { escapeHtml } from '../templates/page.js';
+import { breadcrumbs, blogPosting, blogNode } from '../templates/schema.js';
+import { renderContactBand } from '../partials/contact-band.js';
+import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
+
+/* Read rather than retyped, so a post can never quote a price the prices page
+   does not. Same reason guides.js does it. */
+const ONLINE = PLANS[0];
+const MANAGED = PLANS[1];
+const GROWTH = PLANS[2];
+
+/* "9 August 2026" from "2026-08-09". Midday UTC rather than midnight, so a
+   machine an hour behind does not render the day before. */
+const LONG_DATE = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+
+function longDate(iso) {
+  return LONG_DATE.format(new Date(`${iso}T12:00:00Z`));
+}
+
+/* FIELD REFERENCE
+     slug        URL segment under /blog/. Permanent.
+     date        ISO. Drives both the visible byline and datePublished.
+     headline    The h1. The argument, stated.
+     title       <title>. 60 characters max, enforced by the build.
+     description Meta description. Enforced by the build at 150 to 155
+                  characters inclusive.
+     standfirst  The opening paragraph, set larger. One sentence if possible.
+     sections    h2 plus paragraphs; a section may carry a list.
+     close       The single link out, at the end, phrased as a fact. */
+const POSTS = [
+  {
+    slug: 'why-trades-websites-cost-so-much',
+    date: '2026-08-09',
+    headline: 'Most trades websites are priced for the agency, not the trade',
+    title: 'Why trades websites cost so much | Picsel',
+    description:
+      'Where the money goes in a three thousand pound website quote, what a trades site ' +
+      'actually has to do, and what a straight-priced alternative looks like.',
+    standfirst:
+      'A five page website for a plumber does not cost three thousand pounds to make. It ' +
+      'costs that to sell, to manage, and to sign off.',
+    sections: [
+      {
+        h2: 'Where three thousand pounds goes',
+        paragraphs: [
+          'The quote is usually honest and the work behind it is real. It is just that most ' +
+            'of it is not work on your website.',
+          'There is an account manager whose job is to be the person you ring. There is a ' +
+            'discovery workshop, which is a meeting about what you do for a living. There are ' +
+            'three rounds of design on a site with five pages on it, because the process was ' +
+            'written for clients who have a marketing department to satisfy. And underneath ' +
+            'all of it there is an office, the people in it, and the software they run.',
+          'None of that is a swindle. It is a process built for a different kind of customer, ' +
+            'sold to you at what it costs to run.',
+        ],
+      },
+      {
+        h2: 'What a trades website has to do',
+        paragraphs: [
+          'Not much, and it has to do it properly. Your phone number where a thumb can reach ' +
+            'it. The jobs you do, in the words customers actually type. The places you cover. ' +
+            'Photographs of your own work rather than a stock photo of somebody else\'s. A few ' +
+            'reviews.',
+          'That is about a week of work. It is not a quarter of one, and the gap between those ' +
+            'two numbers is most of what you are being charged for. There is a longer version ' +
+            'of this list in <a href="/guides/what-a-trades-website-needs/">what a trades ' +
+            'website needs</a>, written without me trying to sell you anything.',
+        ],
+      },
+      {
+        h2: 'What I charge, and what is in it',
+        paragraphs: [
+          `The smallest plan is ${money(ONLINE.build)} to build and ${money(ONLINE.monthly)} a ` +
+            `month. ${MANAGED.name} is ${money(MANAGED.build)} and ${money(MANAGED.monthly)} a ` +
+            `month, which adds somebody looking after it so you never touch it. ` +
+            `${GROWTH.name} is ${money(GROWTH.build)} and ${money(GROWTH.monthly)} a month, ` +
+            'and that one buys active work every month rather than a site sitting still.',
+          'The part I would actually defend is not the figures. It is that they are on the ' +
+            'website at all. You can compare them to anyone else before you pick up the phone, ' +
+            'which is the opposite of how this trade usually quotes.',
+        ],
+      },
+      {
+        h2: 'What that has produced so far',
+        paragraphs: [
+          'One number worth reporting. Lanora House went from 18 Google reviews to 36 in two ' +
+            'months. It stands at 38 today, averaging five stars.',
+          'Worth being exact about which half of the work that is. A website does not collect ' +
+            'reviews. Somebody asking, at the right moment, every time, collects reviews, and ' +
+            'that is the monthly plan rather than the build. The site is what people land on ' +
+            'once the reviews have done their job.',
+          'You can check it, which is the point of quoting it. The reviews are on their Google ' +
+            'listing with dates against them.',
+        ],
+      },
+    ],
+    close: {
+      href: '/prices/',
+      line:
+        'Every plan is written down, including what it does not cover: ' +
+        `${money(ONLINE.build)} to build and ${money(ONLINE.monthly)} a month at the smallest.`,
+      cta: 'See the prices',
+    },
+  },
+];
+
+function renderPost(post) {
+  const sections = post.sections
+    .map(
+      (section) => `        <section class="post__section">
+          <h2>${escapeHtml(section.h2)}</h2>
+${(section.paragraphs || [])
+  .map((text) => `          <p>${text}</p>`)
+  .join('\n')}${
+        section.list
+          ? `\n          <ul class="post__list">
+${section.list.map((item) => `            <li>${escapeHtml(item)}</li>`).join('\n')}
+          </ul>`
+          : ''
+      }
+        </section>`,
+    )
+    .join('\n\n');
+
+  const content = `    <article class="section post">
+      <div class="wrap post__inner">
+        <p class="eyebrow"><a class="post__back" href="/blog/">Blog</a></p>
+        <h1 class="post__headline">${escapeHtml(post.headline)}</h1>
+        <p class="post__meta">
+          <time datetime="${escapeHtml(post.date)}">${escapeHtml(longDate(post.date))}</time>
+        </p>
+
+        <p class="post__standfirst">${escapeHtml(post.standfirst)}</p>
+
+${sections}
+
+        <aside class="post__close">
+          <p>${escapeHtml(post.close.line)}</p>
+          <a class="post__close-link" href="${escapeHtml(post.close.href)}">${escapeHtml(post.close.cta)}</a>
+        </aside>
+      </div>
+    </article>`;
+
+  return {
+    path: `/blog/${post.slug}/`,
+    title: post.title,
+    description: post.description,
+    styles: ['/article.css'],
+    schemaExtra: [
+      blogPosting({
+        headline: post.headline,
+        description: post.description,
+        path: `/blog/${post.slug}/`,
+        datePublished: post.date,
+      }),
+      breadcrumbs([
+        { name: 'Home', path: '/' },
+        { name: 'Blog', path: '/blog/' },
+        { name: post.headline, path: `/blog/${post.slug}/` },
+      ]),
+    ],
+    content: [
+      content,
+      renderContactBand({
+        heading: 'Want a straight price?',
+        body: 'Ring and describe the job. We&rsquo;ll tell you what&rsquo;s involved and what it would cost, in plain English, with no obligation.',
+      }),
+    ].join('\n\n'),
+  };
+}
+
+export const BLOG_PAGES = POSTS.map(renderPost);
+
+/* ---- The index ------------------------------------------------------------
+   Newest first, with the date visible. A blog that hides its dates is usually
+   hiding how long it has been since the last one, and the fix for that is to
+   post rather than to hide the evidence. */
+const INDEX_LIST = `      <ul class="post-index">
+${POSTS.map(
+  (post) => `        <li class="post-index__item">
+          <p class="post-index__date">
+            <time datetime="${escapeHtml(post.date)}">${escapeHtml(longDate(post.date))}</time>
+          </p>
+          <h2 class="post-index__title">
+            <a href="/blog/${escapeHtml(post.slug)}/">${escapeHtml(post.headline)}</a>
+          </h2>
+          <p class="post-index__standfirst">${escapeHtml(post.standfirst)}</p>
+        </li>`,
+).join('\n\n')}
+      </ul>`;
+
+export const BLOG_INDEX_PAGE = {
+  path: '/blog/',
+  title: 'Blog: websites for tradespeople | Picsel',
+  description:
+    'What this studio thinks about websites for tradespeople, what they cost and why they ' +
+    'cost it. Opinions rather than answers. The answers are in the guides.',
+  styles: ['/article.css'],
+  schemaType: 'CollectionPage',
+  schemaExtra: [
+    blogNode(POSTS.map((post) => ({ headline: post.headline, path: `/blog/${post.slug}/` }))),
+    breadcrumbs([
+      { name: 'Home', path: '/' },
+      { name: 'Blog', path: '/blog/' },
+    ]),
+  ],
+  extraScripts: PAGE_BLOB_SCRIPT,
+  content: [
+    `    <section class="section blog-head">
+      <div class="wrap page-head">
+        <div class="page-head__text">
+          <p class="eyebrow">Blog</p>
+          <h1>What we think</h1>
+          <p class="lede measure">
+            Opinions, with our name on them. The neutral answers live in
+            <a href="/guides/">the guides</a>; this is the part where
+            ${escapeHtml(SITE.name)} takes a side.
+          </p>
+        </div>
+
+${PAGE_BLOB}
+      </div>
+    </section>`,
+    `    <section class="section blog-list" aria-labelledby="blog-list-heading">
+      <div class="wrap">
+        <h2 class="visually-hidden" id="blog-list-heading">All posts</h2>
+
+${INDEX_LIST}
+      </div>
+    </section>`,
+    renderContactBand(),
+  ].join('\n\n'),
+};
