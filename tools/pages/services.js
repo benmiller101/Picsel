@@ -46,6 +46,15 @@ const RESCUE = EXTRAS.find((extra) => extra.name === 'Google Profile Rescue');
 const ADS = EXTRAS.find((extra) => extra.name === 'Google Ads');
 const TOOLS = EXTRAS.find((extra) => extra.name === 'Custom tools');
 
+/* Every service page carries this as its last FAQ, word for word. It lives
+   here once so the four pages cannot drift into four different phrasings of
+   the same promise, and so the promise itself only ever needs editing in
+   site.config.js. */
+const RESPONSE_PROMISE_FAQ = {
+  q: 'How quickly will you get back to me?',
+  a: SITE.responsePromise,
+};
+
 /* FIELD REFERENCE
      slug       URL segment under /services/. Permanent.
      title      <title> and the h1, which mirror each other. 60 chars max.
@@ -188,6 +197,7 @@ const SERVICES = [
           'means losing what the higher plan covered, so dropping from Growth loses the monthly ' +
           'content, the review generation and the AI search work.',
       },
+      RESPONSE_PROMISE_FAQ,
     ],
     offers: PLANS.flatMap((plan) => [
       {
@@ -294,6 +304,7 @@ const SERVICES = [
           'month, which keeps the profile active with a monthly post and fresh photos alongside ' +
           'looking after the website.',
       },
+      RESPONSE_PROMISE_FAQ,
     ],
     offers: [
       {
@@ -399,6 +410,7 @@ const SERVICES = [
           'No. Your ad spend goes straight to Google. The Google Ads fee starts at ' +
           `${money(129)} a month and covers the work, nothing else.`,
       },
+      RESPONSE_PROMISE_FAQ,
     ],
     offers: [
       {
@@ -489,6 +501,21 @@ const SERVICES = [
           'No. Online, Managed and Growth cover the website and the search work. A tool is ' +
           'priced on its own, and you can have one without a website from us.',
       },
+      {
+        q: 'Does the lead guarantee cover a custom tool?',
+        a:
+          'No. The refund guarantee is a Growth term, and it covers the website and Google ' +
+          'Business Profile, not a tool bought on its own. A custom tool is priced and ' +
+          `delivered separately, from ${money(1200)}, or from ${money(89)} a month.`,
+      },
+      {
+        q: 'Would you build the same tool for a competitor of mine?',
+        a:
+          'The one trade per patch promise is a Growth plan term, and it protects the website ' +
+          'and search work, not a tool. Tools sit off the website ladder entirely, so that ' +
+          'protection never extends to one.',
+      },
+      RESPONSE_PROMISE_FAQ,
     ],
     offers: [
       {

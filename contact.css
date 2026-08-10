@@ -117,6 +117,17 @@
   color: var(--ink-faint);
 }
 
+/* The response promise, printed a second time next to the H1 rather than only
+   by the form below. See the comment in contact.js: the phone number and
+   address block between the two is tall enough on a phone that a promise
+   placed only near the form risks sitting under the fold. */
+.page-head__promise {
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--accent);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
 /* ---- The enquiry section --------------------------------------------------
    The nav is fixed and takes up no space in the layout, so a jump to #enquiry
    from the "Get in touch" nav item would land with the heading tucked behind
@@ -132,6 +143,18 @@
 .enquiry__lede {
   margin-top: var(--space-3);
   max-width: var(--measure);
+}
+
+/* The one line on this page that answers "will anyone actually reply", asked
+   right where someone is deciding whether to bother typing the rest of the
+   form. Set apart from the lede below it rather than folded into that
+   sentence, so it reads as a promise rather than as part of the instructions. */
+.enquiry__promise {
+  margin-top: var(--space-3);
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--accent);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
 }
 
 .enquiry-form {
