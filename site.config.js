@@ -225,6 +225,7 @@ export const SITE = {
     { label: 'Work', href: '/work/' },
     { label: 'Prices', href: '/prices/' },
     { label: 'Contact', href: '/contact/' },
+    { label: 'About', href: '/about/' },
     { label: 'Privacy', href: '/privacy/' },
   ],
 

@@ -322,6 +322,13 @@ export const CONTACT_SENT_PAGE = {
   description:
     'Your enquiry has reached Picsel. We will come back to you, or ring us if that is quicker.',
   excludeFromSitemap: true,
+  /* The 150 character floor is waived here, and the two lines above are the
+     argument for it. The floor protects the search snippet, this page is
+     noindex and out of the sitemap, and the only way to reach it is to send
+     the form. There is no snippet to lose control of, so the warning could
+     never be acted on and padding this sentence would only add words nobody
+     reads to a page nobody searches for. */
+  descriptionFloorWaived: true,
   extraHead: '  <meta name="robots" content="noindex, follow" />',
   styles: ['/contact.css'],
   /* The same text column as the head above, without the two-column grid around

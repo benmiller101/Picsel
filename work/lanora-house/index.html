@@ -76,6 +76,7 @@
   <link rel="stylesheet" href="/tokens.css" />
   <link rel="stylesheet" href="/base.css" />
   <link rel="stylesheet" href="/site.css" />
+  <link rel="stylesheet" href="/reviews.css" />
 
   <!-- The one script on the site allowed to block, and only because of what it
        does in its first line: it marks the document before anything is painted
@@ -99,6 +100,11 @@
       "legalName": "Picsel",
       "url": "https://picsel.co.uk/",
       "description": "Picsel builds websites for tradespeople anywhere in the UK, gets them found on Google and in AI search, and keeps them there.",
+      "founder": {
+        "@type": "Person",
+        "name": "Ben Miller"
+      },
+      "image": "https://picsel.co.uk/assets/brand/ben-laptop-1440.webp",
       "areaServed": {
         "@type": "Country",
         "name": "United Kingdom"
@@ -319,6 +325,26 @@
       </div>
     </nav>
 
+    <section class="reviews" aria-labelledby="lanora-house-reviews-heading">
+      <div class="wrap">
+        <h2 class="reviews__heading" id="lanora-house-reviews-heading">In their own words</h2>
+        <div class="reviews__list">
+          <figure class="review">
+            <blockquote class="review__quote">
+              <p>Ben made our website from ok to unbeliveable , we saw increases in work very soon after. I am able to update it when I need to. Ben is very quick to make any changes. Really good value for money..</p>
+            </blockquote>
+            <figcaption class="review__who">
+              Matthew Pinch
+              <time class="review__date" datetime="2026-08-04">4 August 2026</time>
+            </figcaption>
+          </figure>
+        </div>
+        <p class="reviews__source">
+          Every one of these is on <a href="https://g.page/r/CYTJdsdHkyi_EBM">Picsel's Google profile</a>, word for word.
+        </p>
+      </div>
+    </section>
+
     <section class="contact-band" aria-labelledby="contact-band-heading">
       <div class="wrap contact-band__inner">
         <div class="contact-band__words">
@@ -377,6 +403,7 @@
             <li><a class="site-footer__link" href="/work/">Work</a></li>
             <li><a class="site-footer__link" href="/prices/">Prices</a></li>
             <li><a class="site-footer__link" href="/contact/">Contact</a></li>
+            <li><a class="site-footer__link" href="/about/">About</a></li>
             <li><a class="site-footer__link" href="/privacy/">Privacy</a></li>
             </ul>
           </nav>

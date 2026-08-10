@@ -30,6 +30,7 @@ import { SERVICES_INDEX_PAGE, SERVICE_PAGES } from './pages/services.js';
 import { GUIDES_INDEX_PAGE, GUIDE_PAGES } from './pages/guides.js';
 import { BLOG_INDEX_PAGE, BLOG_PAGES } from './pages/blog.js';
 import { CONTACT_PAGE, CONTACT_SENT_PAGE } from './pages/contact.js';
+import { ABOUT_PAGE } from './pages/about.js';
 import { PRIVACY_PAGE } from './pages/privacy.js';
 import { NOT_FOUND_PAGE } from './pages/not-found.js';
 
@@ -51,7 +52,18 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
    under 150 today, several of them because the honest sentence about that page
    is simply shorter than 150 characters, and padding a description to clear a
    number produces exactly the filler the snippet is meant to avoid. So the
-   build says so on every run and leaves the writing to a person. */
+   build says so on every run and leaves the writing to a person.
+
+   A page can waive the floor with `descriptionFloorWaived`, and exactly one
+   does. The floor exists because Google replaces a short description with its
+   own snippet in the search results, so the cost of being under it is losing
+   control of how the page is described to someone deciding whether to click.
+   /contact/sent/ is a thank-you page that nobody should ever reach from a
+   search result: it is noindex, it is only arrived at by submitting a form,
+   and there is no click to lose. A warning that can never be acted on is a
+   warning that teaches people to ignore the warnings, which is the real cost
+   of leaving it in. Waiving is a claim about the page, not a way to skip the
+   writing, so it needs a reason each time. */
 const TITLE_MAX = 60;
 const DESCRIPTION_MIN = 150;
 const DESCRIPTION_MAX = 155;
@@ -80,6 +92,7 @@ const PAGES = [
   ...BLOG_PAGES,
   CONTACT_PAGE,
   CONTACT_SENT_PAGE,
+  ABOUT_PAGE,
   PRIVACY_PAGE,
   NOT_FOUND_PAGE,
 ];
@@ -175,7 +188,7 @@ async function build() {
         `Meta description too long on ${page.path}: ${page.description.length}/${DESCRIPTION_MAX} chars`,
       );
     }
-    if (page.description.length < DESCRIPTION_MIN) {
+    if (page.description.length < DESCRIPTION_MIN && !page.descriptionFloorWaived) {
       shortDescriptions.push(`${page.path} (${page.description.length})`);
     }
 
