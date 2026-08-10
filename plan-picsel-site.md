@@ -145,6 +145,7 @@ Picsel is a brand-new studio. Credibility comes from the work shown, not from in
 | Blog index | /blog | The posts, listed, kept separate from the guides |
 | Post (one per article) | /blog/<slug> | An opinion piece, which a guide is not |
 | Not found | /404.html | A real page with the nav and a route back, not the host's default |
+| Privacy | /privacy | What the form does, what the analytics count, what is kept, how to ask for it back |
 
 > The table above stopped matching reality in August 2026 and was rewritten in Section 16. The
 > "About / Services (optional)" row is gone: services became four real pages, which is what
@@ -1243,6 +1244,100 @@ so the checks live in the code rather than in somebody remembering.
 
 ---
 
+## Section 17: The pre-launch checklist, August 2026
+**Priority: HIGH | Effort: done, with thirteen items open behind three kinds of block**
+
+Ben brought a twenty item pre-launch checklist to run against the live site. Six items were
+already done before this work started, one was dropped by Ben himself (maps and directions,
+since Picsel has no premises), and the remaining thirteen are this section. The full audit of
+all twenty and the reasoning behind each decision is in
+`docs/superpowers/specs/2026-08-10-pre-launch-checklist-design.md`.
+
+- [x] Reviews on the homepage: four real Google reviews, quoted verbatim, linking out to the
+      profile so a sceptic can check them
+- [x] The structural place-name exemption in `tools/build.js`, so a review can quote a place a
+      client or a reviewer named without failing the build, while Picsel's own copy still cannot
+- [x] Visible breadcrumbs, built from the same function that already fed the `BreadcrumbList`
+      schema, so what a reader sees and what Google reads cannot disagree
+- [x] A sticky mobile action bar with Call and Enquire, which hides itself once the contact band
+      or the enquiry form is on screen
+- [x] `/privacy`
+- [x] Cloudflare Web Analytics wired in
+- [x] The response promise: send an enquiry on a weekday and hear back the same day
+- [x] FAQ top-ups on Google Business Profile and custom tools, so every service page carries five
+- [x] Calls to action added above the fold on guides and blog posts, which previously opened with
+      prose and nowhere to go
+- [x] The photo conversion pipeline: `ben-laptop.jpg` down to webp at three widths, ready for
+      the about page whenever it exists
+- [x] The test runner, which was silently discovering nothing before this work and now actually
+      runs the suite
+
+- [ ] **`/about`.** Waits on Ben: how long he has been building sites, what he did before, why he
+      started Picsel, and how he works with a client from first message to live site. The photo
+      is ready; the page has nothing to hang it on yet
+- [ ] **The case study reshape.** Waits on the reviewer to client mapping below. Two reviews
+      carry a real result in the client's own words, and until it is known which client said
+      which, no project page can be reshaped around one
+- [ ] **Attaching reviews to their service and project pages.** Same block. Zoe is not in
+      `projects.js` at all, Brenna Nevitt's name suggests Nevitt Construction but her review
+      describes a different kind of job, and Matthew Pinch cannot be placed anywhere
+- [ ] **Three inputs only Ben can supply:** the reviewer to client mapping above, the Cloudflare
+      Web Analytics site token (the wiring is in place and waiting for it), and the Google
+      Business Profile link the reviews point to
+- [ ] **Two policy calls on `/privacy`.** It states a 12 month retention period for enquiries
+      that do not turn into a job, and it gives no named lawful basis for holding them. Both were
+      the implementer's judgement call, not a fact Ben supplied, and both need his sign-off before
+      the page can be called finished
+
+**What we built:** the site can now be trusted the way a person is trusted: it shows real
+reviews instead of asking to be believed, it tells a mobile visitor how to act without them
+scrolling to find the contact band, and it has a privacy page that says what actually happens
+rather than what would look tidy. Guides and blog posts stopped being dead ends by getting
+something to click. None of it needed a new tool: reviews follow the same pattern `pricing.js`
+already set, and breadcrumbs reuse the function that was already writing the schema.
+
+**Decisions made:**
+
+- **Reviews are quoted verbatim, misspelling and all.** Matthew Pinch's review contains
+  "unbeliveable" and a doubled full stop. Both ship as written, because a quote a reader can
+  check against the source in one click is worth more than one that has been tidied.
+- **The place-name exemption is derived from the review data, not from a wrapper element.**
+  `findLocationClaims()` strips the exact strings stored in `reviews.js` before it scans a page,
+  so only byte-identical quoted text is forgiven. Edit a quote inside a page template instead of
+  in the data file and the strings stop matching, the place name gets scanned, and the build
+  fails. That is intentional: a check that instead exempted a `<blockquote class="review">` would
+  forgive whatever a template put inside it, which is the exact hole the check exists to close.
+- **No `Review` or `AggregateRating` schema anywhere.** Google's guidelines exclude reviews about
+  your own business that you collected and display yourself. Marking them up would earn no rich
+  result and risks a manual action, so they ship as plain visible quotes with a link to the
+  profile instead.
+- **`Organization` schema stays; no `LocalBusiness` node is added.** Picsel has no premises, and a
+  `LocalBusiness` entry without one is a claim the studio cannot support.
+- **Cloudflare Web Analytics over GA4.** It counts visits without cookies, which is what removes
+  the need for a consent banner and keeps the privacy page short because it is true. The cost is
+  no conversion goals and no audience segments; revisit if that tracking is ever actually needed.
+- **Case studies only where a client's own words carry a real outcome.** Two of the four reviews
+  do; the rest of the project pages are left as they are rather than given a hollow "result"
+  section that would teach a reader to distrust the two genuine ones.
+
+Three things from this run are worth naming plainly, because each is a trap that could return
+if the same shortcut gets taken again:
+
+- The build's place-name check did not contain "Edinburgh" or "Scotland" until this branch added
+  them. Ben relocates within three months of this work, and until that line was added the check
+  would have let the destination through in a heading, a title or a schema block without a
+  murmur, in exactly the spot the check exists to guard.
+- The sticky mobile bar shipped visible to a visitor with JavaScript off. The bar's CSS set
+  `display: flex` on the element that also carried the `hidden` attribute, and an author-origin
+  rule beats the browser's own `[hidden] { display: none }` regardless of source order. The
+  presence of the `hidden` attribute in the markup was checked; whether it actually hid anything
+  was not, until a review caught it live in a browser.
+- The privacy page named two third parties while the site loads from four. Every page pulls its
+  typefaces from Adobe and Google, but that happens in the shared page shell, which the privacy
+  work never touched because nobody thought to check what the shell itself was doing.
+
+---
+
 ## Build order summary
 
 | # | Section | Phase | Priority | Depends on |
@@ -1263,6 +1358,7 @@ so the checks live in the code rather than in somebody remembering.
 | 14 | Add work as it ships | 2 | High | 13 |
 | 15 | Picsel's own SEO / GBP | 2 | Medium | 13 |
 | 16 | The search build-out | 2 | High | 13 |
+| 17 | The pre-launch checklist | 2 | High | 13, 16 |
 
 ---
 
@@ -1308,6 +1404,10 @@ so the checks live in the code rather than in somebody remembering.
 - [ ] Section 15: Picsel's own SEO, GBP and reach
 - [ ] Section 16: The search build-out (built; a custom-tools guide and one meta-description
       decision are the two things left)
+- [ ] Section 17: The pre-launch checklist (eleven items done; `/about`, the case study reshape
+      and attaching reviews to their pages wait on Ben's reviewer-to-client mapping and
+      biographical facts, the Cloudflare token and Google profile link are still needed, and two
+      privacy-page judgement calls need his sign-off)
 
 ---
 
