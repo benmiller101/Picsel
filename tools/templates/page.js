@@ -15,6 +15,7 @@
 
 import { SITE, absoluteUrl } from '../../site.config.js';
 import { renderSchema } from './schema.js';
+import { renderStickyCta } from '../partials/sticky-cta.js';
 
 /* Page copy is written by hand, but it still passes through here on its way
    into an HTML attribute. An unescaped apostrophe or ampersand in a meta
@@ -357,9 +358,15 @@ ${content}
 
 ${renderFooter()}
 
+${renderStickyCta()}
+
   <!-- type="module" so it can import the shared noise generator. Modules are
        deferred by default, so this never blocks the page from appearing. -->
   <script type="module" src="/backdrop.js"></script>
+  <!-- Enhancement only: the bar above ships with the hidden attribute set,
+       and this is what takes it off. type="module" purely for consistency
+       with the other body scripts here; it imports nothing itself. -->
+  <script type="module" src="/sticky-cta.js"></script>
 ${renderAnalytics()}${extraScripts ? `${extraScripts}\n` : ''}</body>
 </html>
 `;

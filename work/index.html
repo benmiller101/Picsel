@@ -435,9 +435,18 @@
       </div>
     </footer>
 
+  <div class="sticky-cta" data-sticky-cta hidden>
+    <a class="sticky-cta__call" href="tel:+447456809049">Call 07456 809049</a>
+    <a class="sticky-cta__enquire" href="/contact/#enquiry">Enquire</a>
+  </div>
+
   <!-- type="module" so it can import the shared noise generator. Modules are
        deferred by default, so this never blocks the page from appearing. -->
   <script type="module" src="/backdrop.js"></script>
+  <!-- Enhancement only: the bar above ships with the hidden attribute set,
+       and this is what takes it off. type="module" purely for consistency
+       with the other body scripts here; it imports nothing itself. -->
+  <script type="module" src="/sticky-cta.js"></script>
   <script type="module" src="/page-blob.js"></script>
 </body>
 </html>

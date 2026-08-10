@@ -158,6 +158,15 @@
      a target to design down to. */
   --tap-min: 44px;
 
+  /* The mobile action bar's own height, computed rather than measured by eye
+     so it can never drift out of step with the footer padding that exists
+     purely to stay out from under it. A tap target plus the padding either
+     side of it plus the hairline border on top: --tap-min, --space-2 top and
+     bottom, and 1px. site.css reads this for the footer's bottom padding on
+     mobile, so the two numbers are structurally the same number rather than
+     two typed constants that happen to agree today. */
+  --sticky-cta-height: calc(var(--tap-min) + (var(--space-2) * 2) + 1px);
+
   /* =====================================================================
      SHAPE
      ===================================================================== */

@@ -901,6 +901,22 @@
   margin-top: var(--section-y);
   padding-block: var(--space-12);
   border-top: 1px solid var(--line);
+
+  /* Room for the fixed action bar below 768px, on top of the footer's own
+     bottom padding rather than replacing it — otherwise the copyright line
+     would sit flush against the top edge of the bar rather than clear of it.
+     --sticky-cta-height is the same custom property the bar's own height is
+     built from (see tokens.css), so a change to the bar's padding or tap
+     target moves this in step automatically instead of needing a second edit
+     here that is easy to forget. Reset below 48rem up, where the bar does not
+     render at all. */
+  padding-bottom: calc(var(--space-12) + var(--sticky-cta-height));
+}
+
+@media (min-width: 48rem) {
+  .site-footer {
+    padding-bottom: var(--space-12);
+  }
 }
 
 .site-footer__inner {
@@ -1034,6 +1050,92 @@
   .site-footer__inner {
     flex-direction: column;
     gap: var(--space-4);
+  }
+}
+
+/* ---- The mobile action bar ------------------------------------------------
+   Pinned to the bottom of the screen below 768px, so the two ways to reach
+   Picsel are within thumb's reach on a long guide instead of a scroll away.
+   Ships `hidden` in the markup; sticky-cta.js is what removes that, so a
+   visitor without JavaScript simply never sees it, which is correct here —
+   both links duplicate a route that already exists in the footer and the
+   contact band, so nothing is lost, only a shortcut.
+
+   Solid rather than frosted, for the same reason as the nav: legible over
+   whatever is scrolling underneath it, and no per-frame blur cost for a bar
+   that is on screen through most of a long page. */
+.sticky-cta {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  /* Below the nav's 100 on purpose, though the two never actually overlap —
+     the nav lives at the top of the screen and this bar at the bottom. Kept
+     lower anyway so any future element that intentionally floats above both
+     only has to clear the nav's value. */
+  z-index: 90;
+
+  display: flex;
+  border-top: 1px solid var(--line);
+  background: var(--bg-raised);
+  box-shadow: 0 -12px 28px rgba(0, 0, 0, 0.45);
+
+  /* The slide sticky-cta.js drives via the --away class below. Transform, not
+     a change to `bottom`, so the browser can composite the move on its own
+     layer instead of running layout on every frame of it. */
+  transition: transform var(--dur-base) var(--ease);
+}
+
+/* Slid fully out of view rather than removed, so the transition below has
+   something to animate between; sticky-cta.js adds this class while the
+   contact band or the enquiry form is on screen, which is what stops the bar
+   ever sitting on top of either. */
+.sticky-cta--away {
+  transform: translateY(100%);
+}
+
+.sticky-cta__call,
+.sticky-cta__enquire {
+  flex: 1 1 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Both links are primary tap targets here, not incidental text, so they
+     take the full 44px floor rather than the smaller inline treatment the
+     footer's phone link uses. */
+  min-height: var(--tap-min);
+  padding-block: var(--space-3);
+
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+}
+
+.sticky-cta__call {
+  color: var(--ink);
+}
+
+.sticky-cta__enquire {
+  /* The one accent surface this bar is allowed: it is the single action the
+     bar exists to prompt, and --accent already means "the one thing to do"
+     everywhere else on the site. */
+  color: var(--accent-ink);
+  background: var(--accent);
+}
+
+/* Absent above 768px, full stop. sticky-cta.js also checks the same
+   breakpoint before ever unhiding the bar, but the rule is repeated here so a
+   desktop visitor is never shown it even in the gap between the stylesheet
+   and the script loading, and so a script failure cannot leave it on screen
+   over a layout it was not designed for. */
+@media (min-width: 48rem) {
+  .sticky-cta {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sticky-cta {
+    transition: none;
   }
 }
 
