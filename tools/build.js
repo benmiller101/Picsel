@@ -19,6 +19,7 @@ import { fileURLToPath } from 'node:url';
 
 import { SITE, absoluteUrl } from '../site.config.js';
 import { PROJECTS } from '../projects.js';
+import { REVIEWS } from '../reviews.js';
 import { PLANS, money } from '../pricing.js';
 import { renderPage } from './templates/page.js';
 import { HOME_PAGE } from './pages/home.js';
@@ -330,6 +331,28 @@ export function findLocationClaims(html, path) {
               page's meta description is derived from the first sentence rather
               than copied from the blurb entire. */
   let remaining = html;
+
+  /* Reviews first, because they are the longest strings on the page and the
+     loop below depends on removing big strings while they are intact.
+
+     THIS IS THE ONLY EXEMPTION TO THE NO-PLACE-NAME RULE, and it is derived
+     from the data rather than from the markup. A reviewer said what they said:
+     Zoe named Edinburgh, Brenna named Hayle, and neither is a claim Picsel
+     makes about itself. Quoting them is honest; paraphrasing them to dodge a
+     build check would not be.
+
+     Why the exact text and not a wrapper element. A rule that skipped anything
+     inside <blockquote class="review"> would exempt whatever a template put
+     there, which is a hole shaped exactly like the mistake this check exists
+     to catch. Matching the strings in reviews.js means the exemption covers
+     those words and nothing else: a rewritten sentence stops matching, and a
+     quote edited in a template instead of in the data file fails the build. */
+  for (const review of [...REVIEWS].sort((a, b) => b.text.length - a.text.length)) {
+    for (const variant of new Set([review.text, escapeForCheck(review.text)])) {
+      remaining = remaining.split(variant).join(' ');
+    }
+  }
+
   for (const project of PROJECTS) {
     /* NOTE the location is NOT in this list on its own, and that is the whole
        subtlety of this check.
