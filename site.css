@@ -923,12 +923,6 @@
   }
 }
 
-@media (min-width: 48rem) {
-  .site-footer {
-    padding-bottom: var(--space-12);
-  }
-}
-
 .site-footer__inner {
   display: flex;
   flex-wrap: wrap;
