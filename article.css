@@ -62,6 +62,32 @@
   color: var(--ink);
 }
 
+/* ---- The action, above the fold -------------------------------------------
+   A guide or a post used to open with a heading and prose and give the
+   reader nothing to do until the very bottom. This is the fix: one sentence
+   under the answer, with a link in it, pointing at the same service page the
+   body copy already links to further down. Not a band and not a card, so it
+   carries no border and no background of its own; the answer above it is
+   already the one bordered element on this part of the page. */
+.guide__action,
+.post__action {
+  max-width: var(--measure);
+  color: var(--ink-muted);
+}
+
+.guide__action-link,
+.post__action-link {
+  color: var(--ink);
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  transition: text-decoration-color var(--dur-fast) var(--ease);
+}
+
+.guide__action-link:hover,
+.post__action-link:hover {
+  text-decoration-color: var(--accent);
+}
+
 .guide__section,
 .post__section,
 .service__section {

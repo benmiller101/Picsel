@@ -70,7 +70,11 @@ function longDate(iso) {
                   carry a, em, strong and abbr and nothing else. The build
                   enforces that: any other tag, any stray "<", and any tag left
                   unclosed fails the build rather than reaching a browser.
-     close       The single link out, at the end, phrased as a fact. */
+     close       The single link out, at the end, phrased as a fact.
+     action      The one thing to do before the reader has scrolled, under the
+                 standfirst. Always points at /contact/#enquiry: a post has no
+                 service page of its own to reinforce, so it goes straight at
+                 the enquiry form instead. */
 const POSTS = [
   {
     slug: 'why-trades-websites-cost-so-much',
@@ -146,11 +150,21 @@ const POSTS = [
         `${money(ONLINE.build)} to build and ${money(ONLINE.monthly)} a month at the smallest.`,
       cta: 'See the prices',
     },
+    action: {
+      href: '/contact/#enquiry',
+      line: 'The number that matters is the one for your own job, not a range.',
+      cta: 'Send an enquiry',
+    },
   },
 ];
 
 function renderPost(post) {
   const sections = renderArticleSections(post.sections, 'post');
+
+  /* Same reasoning as the guides: one link, under the standfirst, so a reader
+     has something to act on before the first scroll. See renderGuide in
+     guides.js for the fuller version of this comment. */
+  const action = `        <p class="post__action">${escapeHtml(post.action.line)} <a class="post__action-link" href="${escapeHtml(post.action.href)}">${escapeHtml(post.action.cta)}</a>.</p>`;
 
   /* One array, fed to the visible nav below and to the JSON-LD in
      schemaExtra, so the two accounts of this page's place in the site
@@ -172,6 +186,8 @@ function renderPost(post) {
         </p>
 
         <p class="post__standfirst">${escapeHtml(post.standfirst)}</p>
+
+${action}
 
 ${sections}
 

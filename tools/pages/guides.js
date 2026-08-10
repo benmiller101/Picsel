@@ -59,7 +59,11 @@ const GROWTH = PLANS[2];
      also      Extra question and answer pairs that join the FAQPage node. These
                are the follow-ups an assistant asks next.
      plan      Which plan this guide points at, and the plain sentence that does
-               it. One link, at the end, never mid-paragraph. */
+               it. One link, at the end, never mid-paragraph.
+     action    The one thing to do before the reader has scrolled. Points at
+               the same service page this guide already links to from its
+               body copy, so the two reinforce one destination rather than
+               offering a second. See renderGuide for where it lands. */
 const GUIDES = [
   {
     slug: 'what-a-trades-website-needs',
@@ -154,6 +158,11 @@ const GUIDES = [
       line:
         'We build exactly this as a five page site, written for you, from ' +
         `${money(ONLINE.build)} to build and ${money(ONLINE.monthly)} a month to run.`,
+    },
+    action: {
+      href: '/services/websites-for-tradespeople/',
+      line: 'We build sites to exactly this list, not a template with your name dropped in.',
+      cta: 'See websites for tradespeople',
     },
   },
 
@@ -252,6 +261,11 @@ const GUIDES = [
         'If yours is wrong, unverified or has stopped showing, we do a one off Google Profile ' +
         'Rescue for £89, and it comes off the build fee if you have a site from us afterwards.',
     },
+    action: {
+      href: '/services/google-business-profile/',
+      line: 'None of this is hard, but it is fiddly to get exactly right.',
+      cta: 'See our Google Business Profile work',
+    },
   },
 
   {
@@ -338,6 +352,11 @@ const GUIDES = [
         `Ours are on the page instead of in a quote: ${money(ONLINE.build)} to build and ` +
         `${money(ONLINE.monthly)} a month at the smallest, with everything each plan covers ` +
         'written down.',
+    },
+    action: {
+      href: '/services/websites-for-tradespeople/',
+      line: 'The version that includes hosting, the certificate and getting found is one plan.',
+      cta: 'See websites for tradespeople',
     },
   },
 
@@ -434,6 +453,11 @@ const GUIDES = [
         `The schema, the listings and the monthly content this needs are the Growth plan, at ` +
         `${money(GROWTH.monthly)} a month.`,
     },
+    action: {
+      href: '/services/search-and-ai-visibility/',
+      line: 'Keeping every detail consistent everywhere is ongoing work, done every month rather than once.',
+      cta: 'See search and AI visibility',
+    },
   },
 
   {
@@ -527,6 +551,11 @@ const GUIDES = [
         'Asking for reviews and replying to them is part of the Growth plan, at ' +
         `${money(GROWTH.monthly)} a month, if you would rather it was somebody else\'s job.`,
     },
+    action: {
+      href: '/services/search-and-ai-visibility/',
+      line: 'Asking at the right moment, every time, is the part most businesses drop.',
+      cta: 'See search and AI visibility',
+    },
   },
 ];
 
@@ -536,6 +565,13 @@ const GUIDES = [
    the reply. */
 function renderGuide(guide) {
   const sections = renderArticleSections(guide.sections, 'guide');
+
+  /* The one thing to do before the reader has scrolled. It sits under the
+     answer rather than above the h1, because Task 6's breadcrumb already owns
+     the top of the page, and it carries a single link rather than a card:
+     the sticky mobile bar from Task 7 already carries Call, so a second
+     button here would be the third phone route on the same small screen. */
+  const action = `        <p class="guide__action">${escapeHtml(guide.action.line)} <a class="guide__action-link" href="${escapeHtml(guide.action.href)}">${escapeHtml(guide.action.cta)}</a>.</p>`;
 
   /* One array, fed to the visible nav below and to the JSON-LD in
      schemaExtra, so the two accounts of this page's place in the site
@@ -579,6 +615,8 @@ ${guide.also
         <h1 class="guide__question">${escapeHtml(guide.question)}</h1>
 
         <p class="guide__answer">${escapeHtml(guide.answer)}</p>
+
+${action}
 
 ${sections}
 
