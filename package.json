@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "node tools/build.js",
-    "test": "node --test tools/",
+    "test": "node --test tools/**/*.test.js",
     "dev": "npm run build && npx --yes serve . --listen 3000",
     "shots": "node tools/capture-shots.js",
     "backdrop": "node tools/export-backdrop.js",
