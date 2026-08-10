@@ -298,10 +298,24 @@ function findLooseExclusivityClaim(html, path) {
    the project records contribute is removed from the page before the check
    runs, and the terms are hunted in what is left. A place name surviving that
    is a place name being claimed by the studio. */
-const CLIENT_TERMS = ['cornwall', 'cornish', 'devon', 'truro', 'falmouth', 'newquay', 'hayle', 'penzance', 'south west'];
+/* Cornwall and its neighbours, because that is where the clients are and
+   where the studio used to claim to be.
+
+   Edinburgh and Scotland were added in August 2026 and they are the more
+   important half of this list now. Ben relocates to Edinburgh, which makes it
+   the place name most likely to be typed into a sentence by somebody who
+   forgets the rule, and until this line existed the check would have let it
+   through in a heading, a title or a schema block without a word. The Scottish
+   Borders is Julie Miller's location and is forgiven the same way every other
+   client location is: by being stripped as a project value, not by being
+   absent from this list. */
+const CLIENT_TERMS = [
+  'cornwall', 'cornish', 'devon', 'truro', 'falmouth', 'newquay', 'hayle',
+  'penzance', 'south west', 'edinburgh', 'scotland', 'scottish',
+];
 const STUDIO_TERMS = ['based in', 'local to', 'near you', 'in your area'];
 
-function findLocationClaims(html, path) {
+export function findLocationClaims(html, path) {
   /* Every string a project contributes to the page, in both the raw and the
      HTML-escaped form, since the same blurb appears escaped in the body and
      unescaped inside the JSON-LD.
@@ -326,9 +340,11 @@ function findLocationClaims(html, path) {
        sixteen. The check passed on a page that was wrong, which is worse than
        having no check.
 
-       So the location is only forgiven in the two places it is actually
-       rendered: the eyebrow on the client's own page, and the `about` name in
-       that page's schema. Anywhere else, a location is a location. */
+       So the location is only forgiven in the places it is actually
+       rendered: the eyebrow on the client's own page, the `about` name in
+       that page's schema, and (since August 2026) the sentence on the
+       contact page that names Julie Miller by way of answering "where do
+       you work". Anywhere else, a location is a location. */
     /* The eyebrow is built from separately-escaped parts with a literal
        &middot; between them, so the string on the page is
        "Removals &amp; clearance &middot; Cornwall". Escaping that whole
@@ -338,11 +354,26 @@ function findLocationClaims(html, path) {
     const eyebrow = `${escapeForCheck(project.sector)} &middot; ${escapeForCheck(project.location)}`;
     const schemaAbout = `${project.sector} in ${project.location}`;
 
+    /* tools/pages/contact.js answers "where do you work" partly by pointing
+       at Julie Miller: proof that four hundred miles is not a problem,
+       rather than a sentence asserting it. That paragraph is bespoke prose,
+       not a template stamped out per project like the eyebrow is, so there
+       is no way to reconstruct its exact wording here. What can be
+       reconstructed, scoped through this project's own location the same
+       way schemaAbout is, is the fragment that names the place: "in the
+       Scottish Borders" for Julie Miller, "in the Hayle, Cornwall" (which
+       matches nothing) for everyone else. Adding the term "scottish" to
+       CLIENT_TERMS in August 2026 made this page fail the build the moment
+       the term list did its job; this is the fix, not a reason to weaken
+       the list. */
+    const contactMention = `in the ${project.location}`;
+
     const values = [
       project.name,
       eyebrow,
       schemaAbout,
       escapeForCheck(schemaAbout),
+      contactMention,
       project.sector,
       project.blurb,
       ...project.blurb.split(/(?<=\.)\s+/),
