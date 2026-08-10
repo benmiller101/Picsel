@@ -136,10 +136,22 @@ Picsel is a brand-new studio. Credibility comes from the work shown, not from in
 | Work | /work | Every project as a card (screenshot, name, sector) linking to its page |
 | Project page (one per project) | /work/<slug> | Explore one build: screenshots, a bit written about it, a big "Visit the live site" button, prev/next, contact band |
 | Contact | /contact | Big click-to-call, email, and the Web3Forms form |
-| About / Services (optional) | section on / or /about | Plain-English what Picsel offers and how the local/exclusive model works |
+| Contact sent | /contact/sent | Where the form lands after a successful send |
+| Services index | /services | The four things Picsel sells, each linking to its own page |
+| Service page (one per service) | /services/<slug> | One service, its price, what is in and out, its FAQs, one way to enquire |
+| Prices | /prices | The three plans and the add-ons, every figure read from `pricing.js`, plus the pricing FAQs |
+| Guides index | /guides | The question-first pages, listed |
+| Guide (one per question) | /guides/<slug> | Answer one question a tradesperson actually types, plainly and first |
+| Blog index | /blog | The posts, listed, kept separate from the guides |
+| Post (one per article) | /blog/<slug> | An opinion piece, which a guide is not |
+| Not found | /404.html | A real page with the nav and a route back, not the host's default |
+
+> The table above stopped matching reality in August 2026 and was rewritten in Section 16. The
+> "About / Services (optional)" row is gone: services became four real pages, which is what
+> `CLAUDEseo.md` asks for.
 
 > **THE SITEMAP LAW** (from `CLAUDE.md`): every route that exists is in `sitemap.xml` in the same
-> commit that creates it. Re-verified at Sections 8 and 11.
+> commit that creates it. Re-verified at Sections 8, 11 and 16.
 
 ---
 
@@ -1174,6 +1186,63 @@ Lighter than a client engagement — this is Picsel's shop window, kept fresh.
 
 ---
 
+## Section 16: The search build-out, August 2026
+**Priority: HIGH | Effort: done, with two items left open**
+
+Sections 1 to 13 built a portfolio site. This section turned it into a site that can be found.
+It was driven by `CLAUDEseo.md`, the standards document added at the start of it, and it ran
+across twenty commits before this plan caught up with it. That lag is the thing to avoid repeating.
+
+- [x] Write `CLAUDEseo.md`: the search and AI-visibility standards this site and every client site
+      is held to. It is the reason for every item below
+- [x] `/blog` and its first post, with its own module (`tools/pages/blog.js`), `Blog` and
+      `BlogPosting` schema, and a footer link. `guides.css` became `article.css` so the blog and
+      the guides share one sheet instead of growing two
+- [x] A real `/404.html` with the nav and a way back, instead of the host's bare default
+- [x] An FAQ section on `/prices`, then two more answers added to it once Ben had stated a policy
+      on the two questions it was ducking
+- [x] "How did you hear about us?" on the enquiry form, which is how AI referrals get counted at all
+- [x] Contextual links in the body copy on every page, to clear the two-in and two-out floor.
+      Not nav links and not a related-posts strip: links inside sentences, where a reader is
+      already reading
+- [x] Thirteen meta descriptions lengthened past the 150-character floor, and four H1s brought into
+      line with their title tags
+- [x] Two new build checks: unescaped ampersands and angle brackets in paragraph copy, taught to
+      tell an HTML tag from an English word so it stops flagging "<" in a sentence
+- [x] `/services` and one page per service, generated from `tools/pages/services.js` the way the
+      guides are generated. Every price, include, exclude and term is read from `pricing.js` and
+      `site.config.js`, so no page states a figure of its own
+- [x] Every guide now carries a contextual link to the service page it matches, and `/prices`
+      links to all four services from its head
+- [ ] **Custom tools has no guide.** The other three services each have a guide feeding them a
+      reader. Custom tools has only the services index and `/prices`. Writing that guide is the
+      obvious next piece of work
+- [ ] `/contact/sent` has an 89-character meta description and the build warns about it every run.
+      It is a thank-you page that nobody should reach from a search result, so the honest options
+      are to accept the warning permanently or exclude the page from the check. Pick one
+
+**What we built:** The site went from twelve pages to twenty-four, and the new ones all have a job.
+Four service pages give a reader who has finished a guide somewhere to go that sells them
+something, which is the step the site was missing: guides answered questions and then left people
+at a dead end. A blog sits alongside the guides for opinion pieces, because a guide that starts
+arguing stops being a guide. And the build now refuses to ship a few classes of mistake on its own,
+so the checks live in the code rather than in somebody remembering.
+
+**Decisions made:**
+
+- **Services live in the footer nav, not the top bar.** Five items still do not fit at 375px and
+  the bar holds four. Services is reachable from the footer of every page, from `/prices`, and
+  from inside every guide, which is more entry points than a fifth nav item would have given it.
+- **Service pages state no prices of their own.** They read `pricing.js`. A figure typed into a
+  page is a figure that goes stale in a month and nobody notices.
+- **Guides and the blog are different things and stay separate.** A guide answers a question a
+  tradesperson typed. A post argues a position. Mixing them makes the guides less useful as
+  answers, so they get separate indexes and separate schema, sharing only the stylesheet.
+- **New page types get a generator, not a hand-built file.** Guides, services and the blog each
+  have one module under `tools/pages/`. Adding a fifth service is one entry in one file.
+
+---
+
 ## Build order summary
 
 | # | Section | Phase | Priority | Depends on |
@@ -1193,6 +1262,7 @@ Lighter than a client engagement — this is Picsel's shop window, kept fresh.
 | 13 | Launch QA | 1 | Critical | 12 |
 | 14 | Add work as it ships | 2 | High | 13 |
 | 15 | Picsel's own SEO / GBP | 2 | Medium | 13 |
+| 16 | The search build-out | 2 | High | 13 |
 
 ---
 
@@ -1236,6 +1306,8 @@ Lighter than a client engagement — this is Picsel's shop window, kept fresh.
       fix, a phone tap and Ben's sign-off)
 - [ ] Section 14: Add work as it ships
 - [ ] Section 15: Picsel's own SEO, GBP and reach
+- [ ] Section 16: The search build-out (built; a custom-tools guide and one meta-description
+      decision are the two things left)
 
 ---
 
