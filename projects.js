@@ -35,6 +35,21 @@
                         Written raw (not escaped) so the <a> renders, per
                         CLAUDEseo.md section 3 on body-copy internal links. May
                         carry only a, em, strong and abbr, each one closed.
+     mockup    object   OPTIONAL. Present only on the three projects Ben has a
+                        hand-made device mockup for. { alt, width, height } —
+                        width and height are the real pixel size of that
+                        project's assets/work/<slug>/mockup.webp, which
+                        tools/convert-photo.js prints when it writes the file
+                        and which the <img> tag needs so the browser reserves
+                        the right space before the file itself arrives. When
+                        present, the project page shows this mockup as its
+                        opening image INSTEAD OF the flat desktop screenshot
+                        (the mockup already contains that view), and both
+                        ogImage and the schema's image point at the baked
+                        assets/work/<slug>/mockup-og.webp rather than the
+                        transparent mockup.webp — see tools/pages/project.js.
+                        A project with no `mockup` field renders exactly as it
+                        did before this field existed.
 
    TWO STANDING CAUTIONS
      `tags` is a public claim about work performed, so it says only what Ben has
@@ -87,6 +102,16 @@ export const PROJECTS = [
       'The search side of this build is the same GEO work covered in ' +
       '<a href="/guides/what-is-geo/">what GEO is and why it matters for trades</a>, and it is ' +
       'included on the <a href="/prices/#growth">Growth plan</a>.',
+    // Chosen over the two unused variants on disk (see mockups/brief.md)
+    // because it shows the desktop, tablet and phone together, which is the
+    // one thing this portfolio actually needs to demonstrate: the same build
+    // working on a phone. Dimensions are mockup.webp's own, as
+    // tools/convert-photo.js printed them.
+    mockup: {
+      alt: 'The A Nevitt Construction website shown together on a laptop, a tablet and a phone',
+      width: 1440,
+      height: 960,
+    },
   },
   {
     slug: 'julie-miller-art',
@@ -110,6 +135,15 @@ export const PROJECTS = [
       'The same idea, that real work beats stock photography, is one of the points in ' +
       '<a href="/guides/what-a-trades-website-needs/">what a tradesperson\'s website needs</a>. ' +
       'A site this size sits on our <a href="/prices/#online">Online plan</a>.',
+    // A single monitor rather than a multi-device spread: the gallery grid is
+    // the whole point of this site and a wide desktop screen is where it
+    // reads best, so that is the one device shown. Dimensions are
+    // mockup.webp's own, as tools/convert-photo.js printed them.
+    mockup: {
+      alt: 'The Julie Miller Art gallery grid shown on a desktop monitor',
+      width: 1440,
+      height: 1080,
+    },
   },
   {
     slug: 'lanora-house',
@@ -150,6 +184,15 @@ export const PROJECTS = [
       'plainly, which is the same argument made in ' +
       '<a href="/guides/how-much-a-trades-website-costs/">how much a tradesman\'s website ' +
       'should cost</a>. This one was built on our <a href="/prices/#online">Online plan</a>.',
+    // Chosen over the unused second variant on disk (see mockups/brief.md)
+    // because it shows the desktop, tablet, laptop and phone together.
+    // Dimensions are mockup.webp's own, as tools/convert-photo.js printed
+    // them.
+    mockup: {
+      alt: 'The AJC Removals & Clearances website shown together on a laptop, a tablet and two phones',
+      width: 1440,
+      height: 960,
+    },
   },
   {
     slug: 'house-of-cornwall',
