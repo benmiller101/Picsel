@@ -34,6 +34,7 @@ import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs } from '../templates/schema.js';
 import { renderArticleSections } from '../partials/article-sections.js';
 import { renderContactBand } from '../partials/contact-band.js';
+import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
 
 /* Referenced by the price guide so the figure it quotes is the figure on
@@ -536,6 +537,15 @@ const GUIDES = [
 function renderGuide(guide) {
   const sections = renderArticleSections(guide.sections, 'guide');
 
+  /* One array, fed to the visible nav below and to the JSON-LD in
+     schemaExtra, so the two accounts of this page's place in the site
+     cannot disagree. */
+  const trail = [
+    { name: 'Home', path: '/' },
+    { name: 'Guides', path: '/guides/' },
+    { name: guide.question, path: `/guides/${guide.slug}/` },
+  ];
+
   /* The follow-up questions, visible as well as in the schema. Same rule as the
      homepage FAQ: writing them twice is how the machine-readable answer ends up
      contradicting the page it sits on. */
@@ -561,7 +571,9 @@ ${guide.also
           <a class="guide__plan-link" href="${escapeHtml(guide.plan.href || `/prices/#${guide.plan.id}`)}">See what that includes</a>
         </aside>`;
 
-  const content = `    <article class="section guide">
+  const content = `${renderBreadcrumbs(trail)}
+
+    <article class="section guide">
       <div class="wrap guide__inner">
         <p class="eyebrow"><a class="guide__back" href="/guides/">Guides</a></p>
         <h1 class="guide__question">${escapeHtml(guide.question)}</h1>
@@ -594,11 +606,7 @@ ${plan}
           acceptedAnswer: { '@type': 'Answer', text: a },
         })),
       },
-      breadcrumbs([
-        { name: 'Home', path: '/' },
-        { name: 'Guides', path: '/guides/' },
-        { name: guide.question, path: `/guides/${guide.slug}/` },
-      ]),
+      breadcrumbs(trail),
     ],
     content: [content, renderContactBand({
       heading: 'Want this done for you?',
@@ -625,6 +633,13 @@ ${GUIDES.map(
 ).join('\n\n')}
       </ul>`;
 
+/* Declared once, ahead of the page object, so the visible trail prepended to
+   content below and the JSON-LD in schemaExtra read from the same array. */
+const GUIDES_INDEX_TRAIL = [
+  { name: 'Home', path: '/' },
+  { name: 'Guides', path: '/guides/' },
+];
+
 export const GUIDES_INDEX_PAGE = {
   path: '/guides/',
   title: 'Guides for tradespeople | Picsel',
@@ -644,13 +659,11 @@ export const GUIDES_INDEX_PAGE = {
         url: absoluteUrl(`/guides/${guide.slug}/`),
       })),
     },
-    breadcrumbs([
-      { name: 'Home', path: '/' },
-      { name: 'Guides', path: '/guides/' },
-    ]),
+    breadcrumbs(GUIDES_INDEX_TRAIL),
   ],
   extraScripts: PAGE_BLOB_SCRIPT,
   content: [
+    renderBreadcrumbs(GUIDES_INDEX_TRAIL),
     `    <section class="section guides-head">
       <div class="wrap page-head">
         <div class="page-head__text">

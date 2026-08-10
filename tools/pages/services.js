@@ -34,6 +34,7 @@ import { PLANS, EXTRAS, GUARANTEE, money } from '../../pricing.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs, ORG_ID } from '../templates/schema.js';
 import { renderContactBand } from '../partials/contact-band.js';
+import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
 
 const [ONLINE, MANAGED, GROWTH] = PLANS;
@@ -564,6 +565,14 @@ ${parts.join('\n')}
 function renderService(service) {
   const path = `/services/${service.slug}/`;
 
+  /* One array, handed to the visible nav and to the JSON-LD below, so a
+     reader and a crawler always see the same three-step hierarchy. */
+  const trail = [
+    { name: 'Home', path: '/' },
+    { name: 'Services', path: '/services/' },
+    { name: service.title, path },
+  ];
+
   const faqs = `        <section class="service__faq" aria-labelledby="${escapeHtml(service.slug)}-faq">
           <h2 id="${escapeHtml(service.slug)}-faq">Questions people ask first</h2>
 
@@ -579,7 +588,9 @@ ${service.faqs
           </div>
         </section>`;
 
-  const content = `    <article class="section service">
+  const content = `${renderBreadcrumbs(trail)}
+
+    <article class="section service">
       <div class="wrap service__inner">
         <p class="eyebrow"><a class="service__back" href="/services/">Services</a></p>
         <h1 class="service__title">${escapeHtml(service.title)}</h1>
@@ -625,11 +636,7 @@ ${faqs}
           acceptedAnswer: { '@type': 'Answer', text: a },
         })),
       },
-      breadcrumbs([
-        { name: 'Home', path: '/' },
-        { name: 'Services', path: '/services/' },
-        { name: service.title, path },
-      ]),
+      breadcrumbs(trail),
     ],
     content: [
       content,
@@ -659,6 +666,13 @@ ${SERVICES.map(
 ).join('\n\n')}
       </ul>`;
 
+/* Declared once, ahead of the page object, so the visible trail prepended to
+   content below and the JSON-LD in schemaExtra read from the same array. */
+const SERVICES_INDEX_TRAIL = [
+  { name: 'Home', path: '/' },
+  { name: 'Services', path: '/services/' },
+];
+
 export const SERVICES_INDEX_PAGE = {
   path: '/services/',
   title: 'Website and search services for tradespeople',
@@ -678,13 +692,11 @@ export const SERVICES_INDEX_PAGE = {
         url: absoluteUrl(`/services/${service.slug}/`),
       })),
     },
-    breadcrumbs([
-      { name: 'Home', path: '/' },
-      { name: 'Services', path: '/services/' },
-    ]),
+    breadcrumbs(SERVICES_INDEX_TRAIL),
   ],
   extraScripts: PAGE_BLOB_SCRIPT,
   content: [
+    renderBreadcrumbs(SERVICES_INDEX_TRAIL),
     `    <section class="section services-head">
       <div class="wrap page-head">
         <div class="page-head__text">

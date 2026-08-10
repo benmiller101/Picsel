@@ -29,6 +29,7 @@ import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs, blogPosting, blogNode } from '../templates/schema.js';
 import { renderArticleSections } from '../partials/article-sections.js';
 import { renderContactBand } from '../partials/contact-band.js';
+import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
 
 /* Read rather than retyped, so a post can never quote a price the prices page
@@ -151,7 +152,18 @@ const POSTS = [
 function renderPost(post) {
   const sections = renderArticleSections(post.sections, 'post');
 
-  const content = `    <article class="section post">
+  /* One array, fed to the visible nav below and to the JSON-LD in
+     schemaExtra, so the two accounts of this page's place in the site
+     cannot disagree. */
+  const trail = [
+    { name: 'Home', path: '/' },
+    { name: 'Blog', path: '/blog/' },
+    { name: post.headline, path: `/blog/${post.slug}/` },
+  ];
+
+  const content = `${renderBreadcrumbs(trail)}
+
+    <article class="section post">
       <div class="wrap post__inner">
         <p class="eyebrow"><a class="post__back" href="/blog/">Blog</a></p>
         <h1 class="post__headline">${escapeHtml(post.headline)}</h1>
@@ -186,11 +198,7 @@ ${sections}
         path: `/blog/${post.slug}/`,
         datePublished: post.date,
       }),
-      breadcrumbs([
-        { name: 'Home', path: '/' },
-        { name: 'Blog', path: '/blog/' },
-        { name: post.headline, path: `/blog/${post.slug}/` },
-      ]),
+      breadcrumbs(trail),
     ],
     content: [
       content,
@@ -222,6 +230,13 @@ ${POSTS.map(
 ).join('\n\n')}
       </ul>`;
 
+/* Declared once, ahead of the page object, so the visible trail prepended to
+   content below and the JSON-LD in schemaExtra read from the same array. */
+const BLOG_INDEX_TRAIL = [
+  { name: 'Home', path: '/' },
+  { name: 'Blog', path: '/blog/' },
+];
+
 export const BLOG_INDEX_PAGE = {
   path: '/blog/',
   title: 'Blog: websites for tradespeople | Picsel',
@@ -232,13 +247,11 @@ export const BLOG_INDEX_PAGE = {
   schemaType: 'CollectionPage',
   schemaExtra: [
     blogNode(POSTS.map((post) => ({ headline: post.headline, path: `/blog/${post.slug}/` }))),
-    breadcrumbs([
-      { name: 'Home', path: '/' },
-      { name: 'Blog', path: '/blog/' },
-    ]),
+    breadcrumbs(BLOG_INDEX_TRAIL),
   ],
   extraScripts: PAGE_BLOB_SCRIPT,
   content: [
+    renderBreadcrumbs(BLOG_INDEX_TRAIL),
     `    <section class="section blog-head">
       <div class="wrap page-head">
         <div class="page-head__text">
