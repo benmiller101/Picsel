@@ -42,14 +42,22 @@
                         tools/convert-photo.js prints when it writes the file
                         and which the <img> tag needs so the browser reserves
                         the right space before the file itself arrives. When
-                        present, the project page shows this mockup as its
-                        opening image INSTEAD OF the flat desktop screenshot
-                        (the mockup already contains that view), and both
-                        ogImage and the schema's image point at the baked
-                        assets/work/<slug>/mockup-og.webp rather than the
-                        transparent mockup.webp — see tools/pages/project.js.
-                        A project with no `mockup` field renders exactly as it
-                        did before this field existed.
+                        present, the project page shows the flat desktop
+                        screenshot as its opening image exactly as every other
+                        project does, and shows this mockup a second time,
+                        lower down, as a supporting image that breaks up the
+                        body copy rather than repeating the opening shot (an
+                        earlier version of this page dropped the opening
+                        screenshot on these three projects on the reasoning
+                        that the mockup already contained that view; Ben's own
+                        reason for commissioning the mockups was to support
+                        the text, not replace the screenshot, so both now
+                        appear). ogImage and the schema's image still point at
+                        the baked assets/work/<slug>/mockup-og.webp rather
+                        than the transparent mockup.webp — see
+                        tools/pages/project.js. A project with no `mockup`
+                        field renders exactly as it did before this field
+                        existed.
 
    TWO STANDING CAUTIONS
      `tags` is a public claim about work performed, so it says only what Ben has

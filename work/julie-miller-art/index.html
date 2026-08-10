@@ -240,15 +240,22 @@
 
       <div class="section project__shot">
         <div class="wrap">
-        <figure class="project__mockup">
+        <figure class="browser">
+          <div class="browser__bar" aria-hidden="true">
+            <span class="browser__dots"><i></i><i></i><i></i></span>
+            <span class="browser__host">juliemillerart.co.uk</span>
+          </div>
+          <!-- The shot runs the full width of the 72rem wrap, less its gutters,
+               so on a wide screen the slot really is about 68rem. Below that it
+               is very nearly the whole viewport. -->
           <img
-            class="project__mockup-shot"
-            src="/assets/work/julie-miller-art/mockup.webp"
-            srcset="/assets/work/julie-miller-art/mockup-640.webp 640w, /assets/work/julie-miller-art/mockup-1024.webp 1024w, /assets/work/julie-miller-art/mockup.webp 1440w"
+            class="browser__shot"
+            src="/assets/work/julie-miller-art/desktop.webp"
+            srcset="/assets/work/julie-miller-art/desktop-640.webp 640w, /assets/work/julie-miller-art/desktop-1024.webp 1024w, /assets/work/julie-miller-art/desktop.webp 1440w"
             sizes="(min-width: 76rem) 68rem, 92vw"
-            alt="The Julie Miller Art gallery grid shown on a desktop monitor"
+            alt="Screenshot of the Julie Miller Art website"
             width="1440"
-            height="1080"
+            height="900"
             fetchpriority="high"
             decoding="async"
           />
@@ -296,6 +303,24 @@
               alt="Screenshot of the Julie Miller Art website, shown on a phone"
               width="780"
               height="1688"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+        </div>
+      </div>
+
+      <div class="section project__gallery">
+        <div class="wrap">
+          <figure class="project__mockup">
+            <img
+              class="project__mockup-shot"
+              src="/assets/work/julie-miller-art/mockup.webp"
+              srcset="/assets/work/julie-miller-art/mockup-640.webp 640w, /assets/work/julie-miller-art/mockup-1024.webp 1024w, /assets/work/julie-miller-art/mockup.webp 1440w"
+              sizes="(min-width: 76rem) 68rem, 92vw"
+              alt="The Julie Miller Art gallery grid shown on a desktop monitor"
+              width="1440"
+              height="1080"
               loading="lazy"
               decoding="async"
             />

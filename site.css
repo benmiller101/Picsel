@@ -1222,9 +1222,22 @@
    both, because it is the page's opening statement and belongs to the title
    above it rather than to the copy below; the previous/next nav surrenders
    both, because it is a footnote to the article and the contact band already
-   brings its own margin. */
+   brings its own margin.
+
+   The three projects with a device mockup add a fifth band, .project__gallery,
+   between the body copy and that footnote nav. It surrenders only its TOP
+   padding: the mockup is a continuation of the words above it (the whole
+   point of putting it there is that it supports that copy, per Ben), so it
+   sits close to the paragraph that just made the case, then keeps its own
+   bottom padding to put a full section's worth of air between itself and the
+   prev/next footnote below, exactly the gap .project__body would have made
+   on the two projects with no mockup. */
 .project__shot {
   padding-block: 0;
+}
+
+.project__gallery {
+  padding-top: 0;
 }
 
 .project-nav {
@@ -1277,9 +1290,11 @@
 }
 
 /* ---- The device mockup ----------------------------------------------------
-   Three projects show a hand-made mockup here instead of the browser frame
-   above (see renderMockupShot in tools/pages/project.js). It carries its own
-   browser chrome and drop shadows already, drawn by a person rather than
+   Three projects show a hand-made mockup here, further down the page than
+   the browser frame at the top rather than in place of it (see
+   renderMockupGallery in tools/pages/project.js) — it exists to support the
+   body copy above it, not to repeat the opening screenshot. It carries its
+   own browser chrome and drop shadows already, drawn by a person rather than
    assembled from a screenshot and a CSS border, so it gets no frame, no
    border and no --bg-raised panel of its own — any of those would be a
    second frame around a picture of a frame. It is a bare, transparent image
