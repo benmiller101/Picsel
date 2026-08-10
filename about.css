@@ -1,0 +1,22 @@
+/* ---- about.css — the photo on /about ---------------------------------------
+   Loaded only by /about. The two-column frame itself is .page-head in
+   site.css, shared with /work/ and /contact/; this file styles only the photo
+   sitting in its second column.
+
+   Unlike .page-blob, which is aria-hidden and only drawn above the 64rem
+   breakpoint, this is a real photograph of the person running the studio, so
+   it stays in source order and visible at every width instead of vanishing on
+   a phone. Below 64rem .page-head has no grid rule, so the photo simply
+   follows the heading down the page rather than sitting beside it. */
+
+.about-head__photo {
+  margin: 0;
+}
+
+.about-head__photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+}

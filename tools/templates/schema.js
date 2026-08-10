@@ -49,6 +49,12 @@ function organization() {
     url: absoluteUrl('/'),
     description: SITE.description,
 
+    /* Both facts are already true elsewhere on the site: /about names Ben as
+       the person who runs Picsel, and the same photo is the one on that page.
+       Nothing invented here, per the rule at the top of this file. */
+    founder: { '@type': 'Person', name: SITE.contact.person },
+    image: absoluteUrl('/assets/brand/ben-laptop-1440.webp'),
+
     /* Country, not AdministrativeArea. This used to name a county, which told a
        crawler the business was a Cornwall business and was the machine-readable
        half of a claim now removed from every page. The whole country is both

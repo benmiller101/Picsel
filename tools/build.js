@@ -30,6 +30,7 @@ import { SERVICES_INDEX_PAGE, SERVICE_PAGES } from './pages/services.js';
 import { GUIDES_INDEX_PAGE, GUIDE_PAGES } from './pages/guides.js';
 import { BLOG_INDEX_PAGE, BLOG_PAGES } from './pages/blog.js';
 import { CONTACT_PAGE, CONTACT_SENT_PAGE } from './pages/contact.js';
+import { ABOUT_PAGE } from './pages/about.js';
 import { PRIVACY_PAGE } from './pages/privacy.js';
 import { NOT_FOUND_PAGE } from './pages/not-found.js';
 
@@ -91,6 +92,7 @@ const PAGES = [
   ...BLOG_PAGES,
   CONTACT_PAGE,
   CONTACT_SENT_PAGE,
+  ABOUT_PAGE,
   PRIVACY_PAGE,
   NOT_FOUND_PAGE,
 ];
