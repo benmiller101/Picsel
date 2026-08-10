@@ -160,12 +160,16 @@
 
   /* The mobile action bar's own height, computed rather than measured by eye
      so it can never drift out of step with the footer padding that exists
-     purely to stay out from under it. A tap target plus the padding either
-     side of it plus the hairline border on top: --tap-min, --space-2 top and
-     bottom, and 1px. site.css reads this for the footer's bottom padding on
-     mobile, so the two numbers are structurally the same number rather than
-     two typed constants that happen to agree today. */
-  --sticky-cta-height: calc(var(--tap-min) + (var(--space-2) * 2) + 1px);
+     purely to stay out from under it. This has to equal exactly what site.css
+     actually renders, not what looks like a reasonable guess at it: the bar
+     itself carries no padding, its two links set their height from
+     --tap-min alone (deliberately no padding-block on them — see the comment
+     on .sticky-cta__call in site.css for why that combination is banned), and
+     the bar adds one hairline border on top. --tap-min plus 1px is the whole
+     answer. If a future change gives the bar or its links any vertical
+     padding, this line and that change both have to move together or this
+     comment stops being true. */
+  --sticky-cta-height: calc(var(--tap-min) + 1px);
 
   /* =====================================================================
      SHAPE

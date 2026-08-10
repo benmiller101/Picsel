@@ -18,6 +18,15 @@ const DESKTOP_QUERY = matchMedia('(min-width: 768px)');
    the way the `hidden` attribute would. */
 const AWAY_CLASS = 'sticky-cta--away';
 
+/* Set on <html> only once this script has confirmed the bar is actually
+   going to exist on this page view — never unconditionally. site.css reads
+   this, the same way it reads nav.js's nav-armed, to gate the footer's extra
+   bottom padding: that padding exists purely to keep the footer's last line
+   clear of the bar, and reserving it when there is no bar to clear (script
+   blocked, script broken, viewport decided desktop at load) would leave an
+   empty gap under the footer with nothing on the page to explain it. */
+const ARMED_CLASS = 'sticky-cta-armed';
+
 function ready(fn) {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', fn);
@@ -34,6 +43,7 @@ ready(function () {
   if (!bar || DESKTOP_QUERY.matches) return;
 
   bar.hidden = false;
+  document.documentElement.classList.add(ARMED_CLASS);
 
   /* The bar must never sit on top of the thing it is offering a shortcut to.
      .contact-band is the closing section most pages end on; #enquiry is the
@@ -89,6 +99,10 @@ ready(function () {
      resume, matching how the rest of the site treats its viewport as decided
      once per load rather than watched continuously. */
   DESKTOP_QUERY.addEventListener('change', (event) => {
-    if (event.matches) bar.hidden = true;
+    if (event.matches) {
+      bar.hidden = true;
+      // No bar, no reason to keep telling the footer to clear one.
+      document.documentElement.classList.remove(ARMED_CLASS);
+    }
   });
 });

@@ -901,16 +901,26 @@
   margin-top: var(--section-y);
   padding-block: var(--space-12);
   border-top: 1px solid var(--line);
+}
 
-  /* Room for the fixed action bar below 768px, on top of the footer's own
-     bottom padding rather than replacing it — otherwise the copyright line
-     would sit flush against the top edge of the bar rather than clear of it.
-     --sticky-cta-height is the same custom property the bar's own height is
-     built from (see tokens.css), so a change to the bar's padding or tap
-     target moves this in step automatically instead of needing a second edit
-     here that is easy to forget. Reset below 48rem up, where the bar does not
-     render at all. */
-  padding-bottom: calc(var(--space-12) + var(--sticky-cta-height));
+/* Room for the fixed action bar, on top of the footer's own bottom padding
+   rather than replacing it — otherwise the copyright line would sit flush
+   against the top edge of the bar rather than clear of it. --sticky-cta-height
+   is the same custom property the bar's own height is built from (see
+   tokens.css), so a change to the bar's padding or tap target moves this in
+   step automatically instead of needing a second edit here that is easy to
+   forget.
+
+   Gated behind .sticky-cta-armed, which sticky-cta.js sets only once it has
+   confirmed the bar is going to exist on this page view — the same reasoning
+   as nav.js's nav-armed class for the nav. Without the gate this is unconditional
+   CSS: a visitor with JavaScript blocked or broken would still get the extra
+   space reserved under the footer, which is a visible empty gap explained by
+   nothing, for a bar that never appears to fill it. */
+@media (max-width: 47.9375rem) {
+  .sticky-cta-armed .site-footer {
+    padding-bottom: calc(var(--space-12) + var(--sticky-cta-height));
+  }
 }
 
 @media (min-width: 48rem) {
@@ -1085,6 +1095,18 @@
   transition: transform var(--dur-base) var(--ease);
 }
 
+/* The user-agent stylesheet's `[hidden] { display: none }` is a UA-origin
+   rule, and CSS resolves origin before specificity: an author-origin
+   `display: flex` above beats it regardless of source order, which is
+   normally invisible because nothing else in this file sets `display` on an
+   element that also ships `hidden`. It matters here, because the bar's whole
+   no-JavaScript story depends on `hidden` actually hiding it. This rule wins
+   on specificity instead of relying on origin, so the bar stays gone until
+   sticky-cta.js explicitly removes the attribute. */
+.sticky-cta[hidden] {
+  display: none;
+}
+
 /* Slid fully out of view rather than removed, so the transition below has
    something to animate between; sticky-cta.js adds this class while the
    contact band or the enquiry form is on screen, which is what stops the bar
@@ -1101,9 +1123,17 @@
   justify-content: center;
   /* Both links are primary tap targets here, not incidental text, so they
      take the full 44px floor rather than the smaller inline treatment the
-     footer's phone link uses. */
+     footer's phone link uses.
+
+     min-height is the ONLY thing allowed to set this box's height. There is
+     deliberately no padding-block: added on top of min-height it would have
+     made the rendered height depend on both, which is exactly what silently
+     drifted out of step with --sticky-cta-height once (a padding-block here
+     was quietly adding to a height the token did not know about). Horizontal
+     padding is free to do whatever it likes; it never affects the number the
+     footer has to plan around. */
   min-height: var(--tap-min);
-  padding-block: var(--space-3);
+  padding-inline: var(--space-4);
 
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
