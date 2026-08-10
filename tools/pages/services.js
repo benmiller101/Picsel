@@ -31,10 +31,12 @@
 
 import { SITE, absoluteUrl } from '../../site.config.js';
 import { PLANS, EXTRAS, GUARANTEE, money } from '../../pricing.js';
+import { reviewsForService } from '../../reviews.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs, ORG_ID } from '../templates/schema.js';
 import { renderContactBand } from '../partials/contact-band.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
+import { renderReviews } from '../partials/reviews.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
 
 const [ONLINE, MANAGED, GROWTH] = PLANS;
@@ -608,6 +610,26 @@ function renderService(service) {
     { name: service.title, path },
   ];
 
+  /* Two of these four pages have no review yet — google-business-profile and
+     search-and-ai-visibility carry none of the four so far. renderReviews
+     already returns '' for an empty array, which is why this is not gated by
+     an if: the section simply does not exist on those pages rather than
+     rendering as an empty band.
+
+     The heading is deliberately the same words on every service page rather
+     than one bespoke phrase per service. That is a decision, not laziness:
+     "a review of this service" is the same kind of claim whichever service it
+     is, and six near-identical headings differing only in which noun they
+     name would be worse than one honest, reused sentence. The homepage's "What
+     people say" stays there — this page is narrower than that, about the one
+     thing being sold here, so it gets its own words. */
+  const reviews = reviewsForService(service.slug);
+  const reviewsSection = renderReviews({
+    reviews,
+    heading: 'What clients say about this service',
+    headingId: `${service.slug}-reviews-heading`,
+  });
+
   const faqs = `        <section class="service__faq" aria-labelledby="${escapeHtml(service.slug)}-faq">
           <h2 id="${escapeHtml(service.slug)}-faq">Questions people ask first</h2>
 
@@ -645,7 +667,10 @@ ${faqs}
     path,
     title: service.title,
     description: service.description,
-    styles: ['/article.css'],
+    /* reviews.css only loads on the two pages that actually carry a quote,
+       same reasoning as home.js only loading hero.css on the homepage: a
+       stylesheet with nothing to style on a page is dead weight on it. */
+    styles: reviews.length ? ['/article.css', '/reviews.css'] : ['/article.css'],
     schemaExtra: [
       /* One Service node, and every value on it is something the page says in
          words a few lines above. No aggregateRating and no review count:
@@ -672,13 +697,22 @@ ${faqs}
       },
       breadcrumbs(trail),
     ],
+    /* Same ordering rule as the homepage's REVIEWS_SECTION: the last thing
+       before the call to action is somebody else vouching for the work, not
+       the studio. filter(Boolean) rather than always splicing reviewsSection
+       in, because on the two services with no review yet it is '', and
+       joining an empty string in still leaves two blank lines sitting in the
+       rendered HTML for no reason. */
     content: [
       content,
+      reviewsSection,
       renderContactBand({
         heading: 'Ready to get on with it?',
         body: 'Ring and describe what you do and what you want it to bring you. We&rsquo;ll tell you which of these fits and what it would cost, in plain English.',
       }),
-    ].join('\n\n'),
+    ]
+      .filter(Boolean)
+      .join('\n\n'),
   };
 }
 

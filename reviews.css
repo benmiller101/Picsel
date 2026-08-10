@@ -37,6 +37,22 @@
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-12) var(--space-16);
   }
+
+  /* Task 13 put this partial on pages carrying one review (custom-tools,
+     lanora-house) or three (websites-for-tradespeople), and the homepage's
+     four-up grid was never built for either count: an odd total leaves the
+     last card alone in the final row with the other column empty beside it,
+     which reads as a broken layout rather than a deliberate one. :last-child
+     combined with :nth-child(odd) catches exactly that trailing orphan —
+     true for review 1 of 1 and review 3 of 3, false throughout the
+     homepage's four — so it fires only where an empty half-row would
+     otherwise appear. Capped to --measure, the same width every paragraph on
+     the site reads at, so that lone card spanning the full grid at 1440px
+     does not turn into a line too long to track back to the start of. */
+  .review:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    max-width: var(--measure);
+  }
 }
 
 .review {

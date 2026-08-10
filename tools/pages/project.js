@@ -12,12 +12,14 @@
    and a button that opens the real thing. */
 
 import { PROJECTS, getAdjacentProjects } from '../../projects.js';
+import { reviewsForProject } from '../../reviews.js';
 import { escapeHtml, rollLabel } from '../templates/page.js';
 import { SHOT_SIZES, shotSrcset, mockupSrcset } from '../templates/images.js';
 import { ORG_ID, breadcrumbs } from '../templates/schema.js';
 import { absoluteUrl } from '../../site.config.js';
 import { renderContactBand } from '../partials/contact-band.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
+import { renderReviews } from '../partials/reviews.js';
 
 /* Sizes and srcset both come from templates/images.js, shared with the work
    card so this page and the grid cannot disagree about which files exist.
@@ -191,6 +193,23 @@ function renderProject(project) {
     { name: project.name, path: `/work/${project.slug}/` },
   ];
 
+  /* Only lanora-house has a review attached today (see reviews.js), so this
+     is '' on the other four projects and renderReviews's own empty-array
+     return is what keeps those four pages free of a dangling section rather
+     than any conditional written here.
+
+     The heading is not "What people say" again: the homepage band is proof
+     that Picsel is trusted in general, gathered from clients who are not this
+     one. Here the whole point is narrower and stronger — this is the person
+     whose site you are looking at, talking about this exact build — so the
+     heading says that rather than reusing the homepage's more general claim. */
+  const reviews = reviewsForProject(project.slug);
+  const reviewsSection = renderReviews({
+    reviews,
+    heading: 'In their own words',
+    headingId: `${project.slug}-reviews-heading`,
+  });
+
   const content = `${renderBreadcrumbs(trail)}
 
     <article class="project">
@@ -275,10 +294,21 @@ ${renderAdjacent(project.slug)}`;
        show the site it is about, not a generic card — see socialImage above
        for why this is not always the same file as the page's own image. */
     ogImage: socialImage,
-    content: [content, renderContactBand({
+    /* reviews.css only loads on the one project page that has something to
+       style with it, same reasoning as the equivalent line in services.js. */
+    ...(reviews.length ? { styles: ['/reviews.css'] } : {}),
+    /* filter(Boolean) drops reviewsSection's '' on the four projects with no
+       review, so the join does not leave a pair of blank lines sitting in
+       the rendered HTML where the section would have been. Where there is a
+       review, it sits directly above the contact band, same placement as the
+       homepage: the last thing before the call to action is somebody else's
+       word for it, not the studio's. */
+    content: [content, reviewsSection, renderContactBand({
       heading: 'Want something like this?',
       body: 'Tell us what your business does and what you want the site to do, and we&rsquo;ll tell you what&rsquo;s involved. Plain English, and no obligation.',
-    })].join('\n\n'),
+    })]
+      .filter(Boolean)
+      .join('\n\n'),
   };
 }
 
