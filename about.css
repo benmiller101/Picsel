@@ -7,10 +7,34 @@
    breakpoint, this is a real photograph of the person running the studio, so
    it stays in source order and visible at every width instead of vanishing on
    a phone. Below 64rem .page-head has no grid rule, so the photo simply
-   follows the heading down the page rather than sitting beside it. */
+   follows the heading down the page rather than sitting beside it.
+
+   THE MOBILE GAP IS EARNED HERE, NOT IN site.css. `.page-head__text > * + *`
+   spaces the eyebrow, h1 and lede from each other, and the 64rem grid's own
+   `gap` spaces the two columns apart once they sit side by side — but nothing
+   in that shared frame spaces .page-head__text from whatever sibling follows
+   it below 64rem, because until this page the only sibling was .page-blob,
+   which is aria-hidden and doesn't render down there at all. /about is the
+   first page to put real, visible content in that slot on a phone, so it is
+   the first page to need the gap .page-head was never given. Fixing it here
+   keeps the shared grid untouched for every other page built against it.
+
+   --space-8 rather than the reviewer's suggested --space-6: the photo is a
+   whole separate block of content, not another line of the same paragraph,
+   so it gets the same breathing room article.css already gives a full section
+   break (.guide__inner > * + *), not the tighter --space-4 that only spaces
+   the eyebrow from the h1 within .page-head__text itself. Reset to 0 at
+   64rem so it never stacks with the grid's own --space-16 gap once the photo
+   moves beside the text instead of under it. */
 
 .about-head__photo {
-  margin: 0;
+  margin: var(--space-8) 0 0;
+}
+
+@media (min-width: 64rem) {
+  .about-head__photo {
+    margin-top: 0;
+  }
 }
 
 .about-head__photo img {
