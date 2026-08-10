@@ -143,8 +143,8 @@ export const SITE = {
      page source of every site that uses it, and it grants no access to
      anything. Paste it from Cloudflare, Analytics and Logs, Web Analytics. */
   analytics: {
-    cloudflareToken: 'REPLACE_WITH_CLOUDFLARE_TOKEN',
-    tokenIsPlaceholder: true,
+    cloudflareToken: 'c188a5b33e2f48fe83bab3a27266377d',
+    tokenIsPlaceholder: false,
   },
 
   /* ---- Picsel HQ call and enquiry counting --------------------------------
@@ -165,8 +165,8 @@ export const SITE = {
      wrong key looks different from a beacon that never fired. Suppressing the
      script would throw away the diagnostic. The build still warns. */
   hq: {
-    siteKey: 'PASTE_THE_KEY_FROM_HQ',
-    keyIsPlaceholder: true,
+    siteKey: '3c83b56ef65096f927cf8bb5fdf0e8b9',
+    keyIsPlaceholder: false,
   },
 
   /* The nav, in order. Rendered as real HTML in every page — never injected by
