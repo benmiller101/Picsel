@@ -118,6 +118,16 @@ async function build() {
     );
   }
 
+  /* Same shape of quiet failure again: the reviews section renders, the quotes
+     are real, and the one link meant to let a reader check them against the
+     source goes nowhere. */
+  if (SITE.reviewsUrl.includes('REPLACE_WITH_PLACE_ID')) {
+    warnings.push(
+      'The Google profile link under every reviews section is still a placeholder. Paste the ' +
+        "share link from Picsel's Google Business Profile into site.config.js.",
+    );
+  }
+
   const seenTitles = new Map();
   const seenDescriptions = new Map();
   const shortDescriptions = [];

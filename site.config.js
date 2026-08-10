@@ -101,6 +101,11 @@ export const SITE = {
     'https://www.tiktok.com/@picseluk',
   ],
 
+  /* The public Google Business Profile, which is where the reviews in
+     reviews.js are published. Linked from every reviews section so a reader
+     can check the quotes against the source. */
+  reviewsUrl: 'https://www.google.com/maps/place/?q=place_id:REPLACE_WITH_PLACE_ID',
+
   /* ---- The enquiry form ---------------------------------------------------
      There is no server here — the site is static files on a CDN — so the form
      posts to Web3Forms, which receives the submission and emails it on.

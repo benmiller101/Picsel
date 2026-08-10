@@ -13,10 +13,12 @@
    next to the other pages, rather than nested inside a build script. */
 
 import { FEATURED_PROJECTS } from '../../projects.js';
+import { REVIEWS } from '../../reviews.js';
 import { SITE } from '../../site.config.js';
 import { PLANS, money } from '../../pricing.js';
 import { renderWorkGrid } from '../partials/work-card.js';
 import { renderPlanRail } from '../partials/plan-cards.js';
+import { renderReviews } from '../partials/reviews.js';
 import { renderContactBand } from '../partials/contact-band.js';
 
 /* The cheapest monthly figure on the site, read from the plan data rather than
@@ -268,6 +270,21 @@ ${QUESTIONS.map(
       </div>
     </section>`;
 
+/* ---- What people say -------------------------------------------------------
+   Immediately above the contact band on purpose: the last thing a reader sees
+   before the call to action is someone else vouching for the work, not the
+   studio describing itself. All four reviews appear here rather than a
+   curated subset — with only four, choosing three would look like the fourth
+   was hidden for a reason, and four is not enough to need trimming for length.
+
+   The heading names no place, in keeping with the rest of the page: what is
+   true of these clients is not a claim about where Picsel is based. */
+const REVIEWS_SECTION = renderReviews({
+  reviews: REVIEWS,
+  heading: 'What people say',
+  headingId: 'reviews-heading',
+});
+
 export const HOME_PAGE = {
   path: '/',
   /* The same questions, machine-readable, generated from the array above.
@@ -308,7 +325,7 @@ export const HOME_PAGE = {
   bodyClass: 'page-hero',
   /* Only this page loads the hero's styling and its animation. The contact page
      has no blobs to draw and should not pay for the code that draws them. */
-  styles: ['/hero.css'],
+  styles: ['/hero.css', '/reviews.css'],
   /* A module, so it can import the noise generator it shares with the site-wide
      backdrop. Modules are deferred by default: the script waits for the page to
      be parsed and never blocks it from appearing. Everything it does is
@@ -316,11 +333,23 @@ export const HOME_PAGE = {
      is a complete, readable page. */
   extraScripts: '  <script type="module" src="/hero.js"></script>',
   /* The order is what someone decides in. Proof, then what we do, then what it
-     costs, then the four things still in their head, then the phone number.
+     costs, then the four things still in their head, then other people saying
+     the same thing, then the phone number.
 
      Price goes after the services list and before the questions on purpose. Put
      it any earlier and it is a number with nothing attached to it; put it any
      later and someone who was only ever going to ask "how much" has already
-     left. */
-  content: [HERO, INTRO, WORK, SERVICES, renderPlanRail(), FAQ, renderContactBand()].join('\n\n'),
+     left. The reviews go last of the content sections, immediately before the
+     contact band, so the final impression before the call to action is proof
+     rather than another claim from the studio itself. */
+  content: [
+    HERO,
+    INTRO,
+    WORK,
+    SERVICES,
+    renderPlanRail(),
+    FAQ,
+    REVIEWS_SECTION,
+    renderContactBand(),
+  ].join('\n\n'),
 };
