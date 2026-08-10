@@ -35,6 +35,17 @@
                         Written raw (not escaped) so the <a> renders, per
                         CLAUDEseo.md section 3 on body-copy internal links. May
                         carry only a, em, strong and abbr, each one closed.
+     plan      string   The `id` of the plan in pricing.js this build runs on,
+                        or null where it is not one of the three. It is not a
+                        new claim: every one of these was already stated in
+                        that project's own `related` sentence, which links to
+                        /prices/#online or /prices/#growth in words a reader
+                        can see. This field is the same fact in a form a page
+                        can read, added so /prices can show what its own prices
+                        have actually bought without a template parsing an
+                        anchor out of a sentence. If the two ever disagree, the
+                        `related` copy is the one a client has read and this is
+                        the one to correct.
      mockup    object   OPTIONAL. Present only on the three projects Ben has a
                         hand-made device mockup for. { alt, width, height } —
                         width and height are the real pixel size of that
@@ -100,6 +111,7 @@ export const PROJECTS = [
     location: 'Hayle, Cornwall',
     featured: true,
     tags: ['Website', 'SEO'],
+    plan: 'growth',
     blurb:
       'A site for a family-run building contractor in Hayle, built with SEO, covering ' +
       'everything from single-storey extensions to full design-and-build new homes. The work ' +
@@ -133,6 +145,7 @@ export const PROJECTS = [
     location: 'Scottish Borders',
     featured: true,
     tags: ['Website'],
+    plan: 'online',
     blurb:
       'A portfolio for an illustrator working in mixed media in the Scottish Borders, built ' +
       'four hundred miles from Picsel, where the landscape drives the work. The design stays ' +
@@ -161,6 +174,7 @@ export const PROJECTS = [
     location: 'Hayle, Cornwall',
     featured: true,
     tags: ['Website', 'SEO'],
+    plan: 'growth',
     blurb:
       'A licensed house clearance and cleaning firm working across Cornwall and the South ' +
       'West, with the SEO work included to bring enquiries in. The site sets out the full ' +
@@ -182,6 +196,7 @@ export const PROJECTS = [
     location: 'Cornwall',
     featured: true,
     tags: ['Website'],
+    plan: 'online',
     blurb:
       'A removals and clearance company covering Cornwall, Devon and beyond, where the quote ' +
       'request takes seconds, not a long form to fill in. They are plain-spoken about what ' +
@@ -210,6 +225,7 @@ export const PROJECTS = [
     location: 'Hayle, Cornwall',
     featured: true,
     tags: ['Website'],
+    plan: 'online',
     blurb:
       'Live clearance auctions broadcast from Hayle every week, selling antiques, retro ' +
       'pieces and curiosities from house clearances, with the next sale up front. The site ' +

@@ -28,8 +28,10 @@
    promise without naming Growth. */
 
 import { PLANS, EXTRAS, FOUNDING_OFFER, GUARANTEE, money } from '../../pricing.js';
+import { PROJECTS } from '../../projects.js';
 import { absoluteUrl } from '../../site.config.js';
 import { escapeHtml } from '../templates/page.js';
+import { SHOT_SIZES, shotSrcset } from '../templates/images.js';
 import { breadcrumbs, ORG_ID } from '../templates/schema.js';
 import { renderPlanCards, renderGrowthCommitments } from '../partials/plan-cards.js';
 import { renderContactBand } from '../partials/contact-band.js';
@@ -74,6 +76,65 @@ const PLAN_SECTION = `    <section class="section plans-full" aria-labelledby="p
         <h2 class="visually-hidden" id="plans-full-heading">The three plans</h2>
 
 ${renderPlanCards()}
+      </div>
+    </section>`;
+
+/* ---- What the prices above have actually bought ---------------------------
+   The only band on this page with pictures in it, and the reason it earns them
+   is that this is the page where a reader is deciding whether to believe the
+   numbers. A tradesperson who has been quoted four figures by an agency reads
+   "£99 to build" as either a bargain or a warning, and no amount of copy
+   settles which. Three sites that exist, at addresses they can open in another
+   tab, with the plan each one runs on named underneath, settles it in about
+   four seconds.
+
+   NOTHING HERE IS A NEW CLAIM. The screenshot, the name and the alt text come
+   from projects.js, and the plan comes from the `plan` field, which is the same
+   fact each project page already states in the sentence linking back to this
+   one. There is no outcome, no traffic figure and no rating attached to any of
+   them, because none of those are facts this repo holds.
+
+   THREE, AND THE FIRST THREE IN LIST ORDER. Five is the whole portfolio and
+   that page already exists a click away; three is a sample, and it fits a row.
+   Taken in PROJECTS order rather than hand-picked, because that order is
+   already a deliberate one (see the note at the foot of projects.js) and a
+   hand-picked trio here would be a second, invisible editorial decision that
+   nobody maintaining this file would know to keep in step. */
+const BUILT_ON = PROJECTS.filter((project) => project.plan).slice(0, 3);
+
+const BUILT_SECTION = `    <section class="section built-on" aria-labelledby="built-on-heading">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 class="section-head__title" id="built-on-heading">What these plans have built</h2>
+          <a class="section-head__link" href="/work/">See all the work</a>
+        </div>
+
+        <ul class="built-on__list">
+${BUILT_ON.map((project) => {
+  const plan = PLANS.find((candidate) => candidate.id === project.plan);
+  const size = SHOT_SIZES.desktop;
+
+  return `          <li class="built-on__item">
+            <a class="built-on__link" href="/work/${escapeHtml(project.slug)}/">
+              <span class="built-on__frame">
+                <img
+                  class="built-on__shot"
+                  src="/assets/work/${escapeHtml(project.slug)}/desktop.webp"
+                  srcset="${escapeHtml(shotSrcset(project.slug, 'desktop'))}"
+                  sizes="(min-width: 64rem) 21rem, 92vw"
+                  alt="${escapeHtml(project.alt)}"
+                  width="${size.width}"
+                  height="${size.height}"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+              <span class="built-on__name">${escapeHtml(project.name)}</span>
+            </a>
+            <p class="built-on__plan">Built on ${escapeHtml(plan.name)}</p>
+          </li>`;
+}).join('\n\n')}
+        </ul>
       </div>
     </section>`;
 
@@ -274,6 +335,11 @@ export const PRICES_PAGE = {
     renderBreadcrumbs(PRICES_TRAIL),
     HEAD,
     PLAN_SECTION,
+    /* Directly under the cards, which is where the question it answers gets
+       asked. Someone who has just read "£99 to build" is at their most
+       sceptical on this page, and the next thing they meet is three sites those
+       figures paid for. */
+    BUILT_SECTION,
     renderGrowthCommitments(),
     FOUNDING,
     EXTRAS_SECTION,
