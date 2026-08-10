@@ -1276,6 +1276,25 @@
   height: auto;
 }
 
+/* ---- The device mockup ----------------------------------------------------
+   Three projects show a hand-made mockup here instead of the browser frame
+   above (see renderMockupShot in tools/pages/project.js). It carries its own
+   browser chrome and drop shadows already, drawn by a person rather than
+   assembled from a screenshot and a CSS border, so it gets no frame, no
+   border and no --bg-raised panel of its own — any of those would be a
+   second frame around a picture of a frame. It is a bare, transparent image
+   sitting directly on the page background, which is exactly where its own
+   shadows were designed to fall. */
+.project__mockup {
+  margin: 0;
+}
+
+.project__mockup-shot {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 /* ---- Body: words beside the phone --------------------------------------- */
 
 .project__body-inner {

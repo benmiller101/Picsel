@@ -40,6 +40,34 @@ export function shotSrcset(slug, shot) {
     .join(', ');
 }
 
+/* Must match MOCKUP_VARIANT_WIDTHS in tools/convert-photo.js. A hand-made
+   device mockup does not share one fixed size the way a screenshot capture
+   does — each project's mockup is a different composition of devices at a
+   different aspect ratio — so unlike SHOT_SIZES above, the full width is
+   passed in per project rather than looked up from a shared constant. */
+const MOCKUP_VARIANT_WIDTHS = [640, 1024];
+
+/**
+ * The `srcset` for a project's device mockup: every variant narrower than the
+ * full file, plus the full file itself at its own real width.
+ *
+ * @param {string} slug
+ * @param {number} fullWidth  The width `mockup.webp` was actually written at
+ *                            (tools/convert-photo.js never upscales, so this
+ *                            is the project's own `mockup.width` from
+ *                            projects.js, not necessarily the 1440 cap).
+ */
+export function mockupSrcset(slug, fullWidth) {
+  const widths = [...MOCKUP_VARIANT_WIDTHS.filter((w) => w < fullWidth), fullWidth];
+
+  return widths
+    .map((width) => {
+      const file = width === fullWidth ? 'mockup.webp' : `mockup-${width}.webp`;
+      return `/assets/work/${slug}/${file} ${width}w`;
+    })
+    .join(', ');
+}
+
 /**
  * The `sizes` for a card in the work grid: how wide this card will actually be.
  *
