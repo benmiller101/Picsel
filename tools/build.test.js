@@ -48,3 +48,28 @@ test('an altered quote loses its exemption', () => {
   const errors = findLocationClaims(`<blockquote><p>${altered}</p></blockquote>`, '/test/');
   assert.equal(errors.length > 0, true, 'an edited quote must not be exempt');
 });
+
+test('a blank review.text does not disable the check for the whole page', () => {
+  /* A blank string is an empty needle. split('') does not no-op, it splits the
+     haystack between every character, which would turn "Edinburgh" into
+     "E d i n b u r g h" across the entire page and hide it from every
+     \b-anchored term in CLIENT_TERMS. Pushed onto the real REVIEWS array
+     (findLocationClaims reads that import directly, there is no way to hand
+     it a substitute) and always removed in `finally`, so a failure here
+     cannot leave a blank review behind for another test to trip over. */
+  REVIEWS.push({
+    id: 'blank-test-fixture',
+    author: 'Fixture',
+    text: '',
+    date: '2026-08-10',
+    source: 'google',
+    service: null,
+    project: null,
+  });
+  try {
+    const errors = findLocationClaims('<p>Picsel is based in Edinburgh.</p>', '/test/');
+    assert.equal(errors.length > 0, true, 'a blank review must not forgive a real location claim');
+  } finally {
+    REVIEWS.pop();
+  }
+});

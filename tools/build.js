@@ -348,6 +348,14 @@ export function findLocationClaims(html, path) {
      those words and nothing else: a rewritten sentence stops matching, and a
      quote edited in a template instead of in the data file fails the build. */
   for (const review of [...REVIEWS].sort((a, b) => b.text.length - a.text.length)) {
+    /* A blank or whitespace-only review.text is not a review to forgive, it is
+       an empty needle. String.split('') does not no-op on an empty string, it
+       splits the haystack between every character, so remaining would turn
+       "Edinburgh" into "E d i n b u r g h" across the WHOLE page and every
+       \b-anchored term below would silently stop matching, on every page, not
+       just the one with the blank review. Skipping it here is the same
+       decision the project loop below makes for the same reason. */
+    if (!review.text || !review.text.trim()) continue;
     for (const variant of new Set([review.text, escapeForCheck(review.text)])) {
       remaining = remaining.split(variant).join(' ');
     }
