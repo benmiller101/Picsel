@@ -511,9 +511,17 @@ const SERVICES = [
       {
         q: 'Would you build the same tool for a competitor of mine?',
         a:
-          'The one trade per patch promise is a Growth plan term, and it protects the website ' +
-          'and search work, not a tool. Tools sit off the website ladder entirely, so that ' +
-          'protection never extends to one.',
+          'Only if you are not already a Growth client. While you are on Growth, the one trade ' +
+          'per patch promise means we will not take on another business in your trade in your ' +
+          'patch at all, whatever they buy from us, a tool included. Bought on its own without ' +
+          'Growth, a tool does not carry that protection.',
+      },
+      {
+        q: 'Why is the price a range rather than one figure?',
+        a:
+          'Because the jobs are not the same size. A quote builder for one trade and a photo ' +
+          'record for a team of six take different amounts of work, and quoting one figure for ' +
+          'both would mean one of them is wrong.',
       },
       RESPONSE_PROMISE_FAQ,
     ],
