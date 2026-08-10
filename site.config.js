@@ -197,6 +197,7 @@ export const SITE = {
     { label: 'Work', href: '/work/' },
     { label: 'Prices', href: '/prices/' },
     { label: 'Contact', href: '/contact/' },
+    { label: 'Privacy', href: '/privacy/' },
   ],
 
   /* The default social preview, used by any page that does not set its own.
