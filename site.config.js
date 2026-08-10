@@ -217,3 +217,18 @@ export function absoluteUrl(path = '/') {
   const suffix = path.startsWith('/') ? path : `/${path}`;
   return `${base}${suffix}`;
 }
+
+/**
+ * Whether reviewsUrl above is still the unfilled placeholder.
+ *
+ * Derived from the string rather than kept as a hand-maintained boolean beside
+ * it, the way form.accessKeyIsPlaceholder and analytics.tokenIsPlaceholder are.
+ * Those two are flags because the real key and the real token are opaque
+ * strings with nothing in them to test; a Google Maps place link is not, and
+ * the placeholder announces itself. Two consumers now read this — the build
+ * warning and the reviews partial, which drops the anchor entirely while it is
+ * true — and a flag anyone could forget to flip when pasting the real URL would
+ * put those two out of step with each other and with reality. Derived, they
+ * cannot disagree.
+ */
+export const REVIEWS_URL_IS_PLACEHOLDER = SITE.reviewsUrl.includes('REPLACE_WITH_PLACE_ID');

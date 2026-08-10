@@ -17,7 +17,7 @@ import { writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { SITE, absoluteUrl } from '../site.config.js';
+import { SITE, absoluteUrl, REVIEWS_URL_IS_PLACEHOLDER } from '../site.config.js';
 import { PROJECTS } from '../projects.js';
 import { REVIEWS } from '../reviews.js';
 import { PLANS, money } from '../pricing.js';
@@ -120,13 +120,16 @@ async function build() {
     );
   }
 
-  /* Same shape of quiet failure again: the reviews section renders, the quotes
-     are real, and the one link meant to let a reader check them against the
-     source goes nowhere. */
-  if (SITE.reviewsUrl.includes('REPLACE_WITH_PLACE_ID')) {
+  /* Not the quiet failure the two above are, and the wording says so: the
+     reviews partial reads the same constant and renders the sentence without
+     an anchor while this is true, so nobody lands on a Google Maps error. What
+     is missing is the proof, which is the whole point of the section, so this
+     stays a warning on every build until the real link is pasted in. */
+  if (REVIEWS_URL_IS_PLACEHOLDER) {
     warnings.push(
-      'The Google profile link under every reviews section is still a placeholder. Paste the ' +
-        "share link from Picsel's Google Business Profile into site.config.js.",
+      'The Google profile link is still a placeholder, so every reviews section names the ' +
+        'source in words but cannot link to it. Paste the share link from Picsel\'s Google ' +
+        'Business Profile into site.config.js.',
     );
   }
 

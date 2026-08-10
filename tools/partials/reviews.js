@@ -5,9 +5,19 @@
    The link to the Google profile is the point of the section rather than a
    courtesy. Picsel sells trust to people who have been burned by a previous
    web person, and a quote on a website proves nothing on its own. A quote that
-   can be checked in one click proves something. */
+   can be checked in one click proves something.
 
-import { SITE } from '../../site.config.js';
+   Which is exactly why the anchor disappears while SITE.reviewsUrl is still
+   the placeholder, rather than shipping and landing on a Google Maps error.
+   The audience for that link is the sceptic, and the sceptic is the one reader
+   guaranteed to click it: sending them to an error page reads as a fabricated
+   quote covered by a broken link, which is worse for trust than offering no
+   link at all. Same reasoning, and the same behaviour, as renderAnalytics() in
+   templates/page.js suppressing the beacon while its token is a placeholder.
+   The sentence stays either way, so the section never stops saying where the
+   quotes came from, and the build still warns until the real URL is pasted in. */
+
+import { SITE, REVIEWS_URL_IS_PLACEHOLDER } from '../../site.config.js';
 import { escapeHtml } from '../templates/page.js';
 
 /**
@@ -33,6 +43,13 @@ export function renderReviews({ reviews, heading, headingId }) {
     )
     .join('\n');
 
+  /* Same sentence, same claim, with or without the link. Only the anchor is
+     conditional, so nothing a reader needs to know about the source of these
+     quotes depends on the URL having been filled in. */
+  const profile = REVIEWS_URL_IS_PLACEHOLDER
+    ? "Picsel's Google profile"
+    : `<a href="${escapeHtml(SITE.reviewsUrl)}">Picsel's Google profile</a>`;
+
   return `    <section class="reviews" aria-labelledby="${escapeHtml(headingId)}">
       <div class="wrap">
         <h2 class="reviews__heading" id="${escapeHtml(headingId)}">${escapeHtml(heading)}</h2>
@@ -40,8 +57,7 @@ export function renderReviews({ reviews, heading, headingId }) {
 ${items}
         </div>
         <p class="reviews__source">
-          Every one of these is on
-          <a href="${escapeHtml(SITE.reviewsUrl)}">Picsel's Google profile</a>, word for word.
+          Every one of these is on ${profile}, word for word.
         </p>
       </div>
     </section>`;
