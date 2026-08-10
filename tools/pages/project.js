@@ -13,7 +13,7 @@
 
 import { PROJECTS, getAdjacentProjects } from '../../projects.js';
 import { escapeHtml, rollLabel } from '../templates/page.js';
-import { SHOT_SIZES, shotSrcset } from '../templates/images.js';
+import { SHOT_SIZES, shotSrcset, mockupSrcset } from '../templates/images.js';
 import { ORG_ID, breadcrumbs } from '../templates/schema.js';
 import { absoluteUrl } from '../../site.config.js';
 import { renderContactBand } from '../partials/contact-band.js';
@@ -66,6 +66,37 @@ function renderDesktopShot(project) {
             alt="${escapeHtml(project.alt)}"
             width="${size.width}"
             height="${size.height}"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </figure>`;
+}
+
+/* The three projects with a hand-made device mockup show it here instead of
+   the plain browser-frame screenshot above: renderDesktopShot and this are
+   mutually exclusive per project, chosen in renderProject below.
+
+   No .browser wrapper around it, on purpose. The mockup is already a
+   composed photo of a browser chrome, shadows and (for two of the three) a
+   phone and tablet alongside it — wrapping that in a second frame would be
+   framing a frame. It is rendered as a bare, transparent image instead, so
+   the site's own near-black shows through around the devices and the
+   mockup's own drop shadows land where they were drawn to land. That is also
+   why this image is never lazy: it is the first thing on the page, exactly
+   where the flat screenshot used to be, so the browser must be told to fetch
+   it immediately rather than waiting for it to scroll into view. */
+function renderMockupShot(project) {
+  const { alt, width, height } = project.mockup;
+
+  return `        <figure class="project__mockup">
+          <img
+            class="project__mockup-shot"
+            src="/assets/work/${escapeHtml(project.slug)}/mockup.webp"
+            srcset="${escapeHtml(mockupSrcset(project.slug, width))}"
+            sizes="(min-width: 76rem) 68rem, 92vw"
+            alt="${escapeHtml(alt)}"
+            width="${width}"
+            height="${height}"
             fetchpriority="high"
             decoding="async"
           />
@@ -139,6 +170,19 @@ ${link(next, 'next', 'Next project')}
 function renderProject(project) {
   const host = displayHost(project.url);
 
+  /* Two different files for two different jobs (see mockups/brief.md). The
+     transparent mockup.webp is right for the page: the site's own background
+     shows through it. It is wrong for a social preview, because several
+     clients composite a transparent PNG onto WHITE before showing it, which
+     would put this dark brand's drop shadows on a white card. mockup-og.webp
+     is the same mockup with the background already baked in at 1200x630, so
+     nothing sharing this link has to guess a background for it. Projects
+     with no mockup keep using the flat desktop screenshot for both jobs,
+     exactly as before this field existed. */
+  const socialImage = project.mockup
+    ? `/assets/work/${project.slug}/mockup-og.webp`
+    : `/assets/work/${project.slug}/desktop.webp`;
+
   /* Declared once and handed to both the visible nav and the JSON-LD below,
      so the two cannot end up describing different hierarchies. */
   const trail = [
@@ -159,7 +203,7 @@ function renderProject(project) {
 
       <div class="section project__shot">
         <div class="wrap">
-${renderDesktopShot(project)}
+${project.mockup ? renderMockupShot(project) : renderDesktopShot(project)}
         </div>
       </div>
 
@@ -215,7 +259,7 @@ ${renderAdjacent(project.slug)}`;
         name: project.name,
         description: project.blurb,
         creator: { '@id': ORG_ID },
-        image: absoluteUrl(`/assets/work/${project.slug}/desktop.webp`),
+        image: absoluteUrl(socialImage),
         /* The client's own sector and place, from projects.js. Note this is
            the CLIENT's location, which is not always Cornwall — Julie Miller
            Art is in the Scottish Borders, and saying otherwise here would be
@@ -227,9 +271,10 @@ ${renderAdjacent(project.slug)}`;
       },
       breadcrumbs(trail),
     ],
-    /* The desktop screenshot is the social preview. A link to a project page
-       shared anywhere should show the site it is about, not a generic card. */
-    ogImage: `/assets/work/${project.slug}/desktop.webp`,
+    /* The social preview. A link to a project page shared anywhere should
+       show the site it is about, not a generic card — see socialImage above
+       for why this is not always the same file as the page's own image. */
+    ogImage: socialImage,
     content: [content, renderContactBand({
       heading: 'Want something like this?',
       body: 'Tell us what your business does and what you want the site to do, and we&rsquo;ll tell you what&rsquo;s involved. Plain English, and no obligation.',
