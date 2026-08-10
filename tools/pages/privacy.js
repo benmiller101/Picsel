@@ -43,8 +43,10 @@ const SECTIONS = [
       'The form on our <a href="/contact/">contact page</a> asks for your name, your email ' +
         'address, your phone number if you want to give it, what you need help with, how you ' +
         'heard about us if you say, and your message. It goes through Web3Forms, a company we ' +
-        'use to relay it, and lands as an email in Ben&rsquo;s inbox. Nobody else sees it, and ' +
-        'we only use it to reply to you.',
+        'use to relay it, and Web3Forms may process it outside the UK. Either way it lands as ' +
+        'an email in Ben&rsquo;s inbox, nobody else sees it, and we only use it to reply to ' +
+        'you. Want to know exactly where Web3Forms processes it? Ask, and we&rsquo;ll find ' +
+        'out for you.',
     ],
   },
   {
