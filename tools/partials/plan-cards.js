@@ -58,8 +58,17 @@ ${items}
 /* One plan, in full. The includes list opens with the inherited plan where
    there is one, written as a list item rather than as a sentence above the
    list, so "everything in Online" is read as the first thing you get rather
-   than as a caption. */
-function renderPlanCard(plan) {
+   than as a caption.
+
+   `commitmentsHref` is where the Growth card's pointer goes. It defaults to the
+   in-page anchor because /prices renders the commitments band itself, a couple
+   of screens below these cards. The websites service page now renders the same
+   three cards and does NOT carry that band, so it passes the absolute address
+   of the one on /prices instead. Without this the card would ship a link to
+   #commitments on a page with no such id, which is the quietest kind of broken:
+   nothing errors, the anchor simply does nothing when a reader clicks the one
+   line on the card that promises them the terms in full. */
+function renderPlanCard(plan, commitmentsHref) {
   const inherited = plan.inherits
     ? `            <li class="plan-card__inherit">Everything in ${escapeHtml(plan.inherits)}</li>\n`
     : '';
@@ -86,7 +95,7 @@ function renderPlanCard(plan) {
   const carries =
     plan.exclusive || plan.guarantee
       ? `\n          <p class="plan-card__carries">
-            <a href="#commitments">Also carries the exclusivity promise and the lead guarantee</a>
+            <a href="${escapeHtml(commitmentsHref)}">Also carries the exclusivity promise and the lead guarantee</a>
           </p>`
       : '';
 
@@ -108,10 +117,17 @@ ${inherited}${includes}
         </article>`;
 }
 
-/** The full set of plan cards for /prices. */
-export function renderPlanCards() {
+/**
+ * The full set of plan cards. Used by /prices and by the websites service page.
+ *
+ * @param {object} [options]
+ * @param {string} [options.commitmentsHref]  Where the Growth card's pointer to
+ *   the exclusivity promise and the lead guarantee goes. Defaults to the
+ *   in-page anchor, which is correct on /prices and wrong anywhere else.
+ */
+export function renderPlanCards({ commitmentsHref = '#commitments' } = {}) {
   return `      <div class="plan-cards">
-${PLANS.map(renderPlanCard).join('\n\n')}
+${PLANS.map((plan) => renderPlanCard(plan, commitmentsHref)).join('\n\n')}
       </div>`;
 }
 
