@@ -60,12 +60,7 @@ export const REVIEWS = [
     date: '2026-08-04',
     source: 'google',
     service: 'websites-for-tradespeople',
-    /* Null on Ben's instruction, and it is the one mapping here worth a note
-       because it looks wrong at a glance: there IS a julie-miller-art project
-       on the site. Ben's answer was that only Matthew's review belongs to a
-       featured project, so this stays null until he says otherwise. Setting it
-       is a one word change if that turns out to be the same client. */
-    project: null,
+    project: 'julie-miller-art',
   },
   {
     id: 'zoe',

@@ -89,9 +89,18 @@ const SECTIONS = [
   {
     h2: 'How long we keep it',
     paragraphs: [
-      'If an enquiry doesn&rsquo;t turn into a job, we delete it within 12 months. If it does, ' +
-        'we keep what we need for as long as we&rsquo;re working together, then delete it once ' +
-        'the job&rsquo;s finished.',
+      /* This used to promise deletion within 12 months, a number nobody had
+         decided. Ben's answer was that enquiries stay in the inbox while there
+         is a reason to keep them and go when somebody asks, so that is what it
+         says now.
+
+         Less tidy than a number and considerably more useful, because it stays
+         true without anybody doing yearly housekeeping. A published deletion
+         deadline that nobody keeps is a broken promise sitting on the one page
+         whose entire job is being true. */
+      'Your enquiry stays in Ben&rsquo;s inbox while there&rsquo;s a reason to keep it: while ' +
+        'we&rsquo;re talking, while the job is on, and after it in case you come back. Ask us to ' +
+        'delete it and we will.',
     ],
   },
   {
