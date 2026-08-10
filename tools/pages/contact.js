@@ -138,7 +138,6 @@ const SOURCE_OPTIONS = SOURCES.map(
 function renderForm() {
   return `        <section class="enquiry" id="enquiry" aria-labelledby="enquiry-heading">
           <h2 class="enquiry__heading" id="enquiry-heading">Or send us the details</h2>
-          <p class="enquiry__promise">${escapeHtml(SITE.responsePromise)}</p>
           <p class="enquiry__lede">
             Tell us what your business does and what you want the site to do. We&rsquo;ll come back
             with what&rsquo;s involved and what it would cost. If you&rsquo;d rather see the numbers
@@ -266,6 +265,7 @@ const HEAD = `${renderBreadcrumbs(CONTACT_TRAIL)}
           <p class="lede measure">
             Ring, email, or fill the form in, whichever suits. You&rsquo;ll get
             ${escapeHtml(SITE.contact.person.split(' ')[0])} either way.
+            ${escapeHtml(SITE.responsePromise)}
           </p>
         </div>
 
