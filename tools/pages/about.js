@@ -8,11 +8,17 @@
    exists because Ben built one company's site as their creative director and
    saw what a website could actually do.
 
-   THAT COMPANY IS LANORA HOUSE, and it is not an arm's-length case study the
-   way the other four projects in /work/ are. Ben is still a director there,
-   and it is also one of the sites Picsel has built. Both things are true at
-   once, so both are said here, with a link to the project page rather than a
-   retelling of it, so the two pages describe one relationship instead of two.
+   THAT COMPANY IS LANORA HOUSE, which is also one of the five projects in
+   /work/. This page used to carry a second sentence spelling out that Ben is
+   still a director there. Ben removed it, and that is his call to make about
+   his own company.
+
+   Worth knowing if it comes up again: the sentence existed because the plan
+   file flags Lanora House as the project needing the most care, since the
+   relationship is not arm's length the way the other four are. The founding
+   story here still names Lanora House as the company whose site Ben built as
+   its creative director, so the connection is on the page; what is gone is the
+   present-tense directorship.
 
    Follows the shape of privacy.js and contact.js: breadcrumbs declared once,
    a plain page-head, then the guide__ classes from article.css for the body,
@@ -73,8 +79,7 @@ const SECTIONS = [
       'Ben was creative director at Lanora House when he built the company&rsquo;s own website. ' +
         'Seeing what it could do, actually getting the business found online, is what convinced ' +
         'him to start Picsel and do the same for other tradespeople.',
-      'Lanora House is also one of Picsel&rsquo;s clients. You can see the site in ' +
-        '<a href="/work/lanora-house/">our work</a>, and Ben is still a director there.',
+      'You can see that site in <a href="/work/lanora-house/">our work</a>.',
     ],
   },
   {
