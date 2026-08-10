@@ -22,6 +22,17 @@ assets/work/**/*.jpg
 # originals above already follow.
 ben-laptop.jpg
 
+# Ben's hand-made device mockups (a-nevitt-mockup-nobg.png, ajc-mockup-nobg.png,
+# julie-miller-mockup-nobg.png, and the unused variants alongside them). UNLIKE
+# the screenshot originals and the backdrop stills above, these are NOT
+# regenerable by any script: they are one-off design-tool exports, several
+# megabytes each, and if one is deleted from the repo it is gone for good.
+# Ben keeps the source files himself; tools/convert-photo.js --mockup reads
+# them once and writes the committed webp copies under assets/work/<slug>/.
+*-mockup-nobg.png
+*-mockup2-nobg.png
+*-mockup-2-nobg*.png
+
 # Backdrop stills and clips. `npm run backdrop` writes ~11MB of print-resolution
 # PNGs for use behind documents; `npm run backdrop:video` writes ~60MB of MP4s
 # for social posts. Same reasoning as the screenshots above: large, exactly
