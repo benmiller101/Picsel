@@ -48,7 +48,14 @@ function describe(project) {
    A bar, three dots and the domain. Deliberately the plainest thing that reads
    as "this is a website": no gloss, no reflection, no frosted panel. Five
    client sites in five palettes are the colour on these pages, and a decorated
-   frame competes with the very thing it is framing. */
+   frame competes with the very thing it is framing.
+
+   This is now the opening image on every project page, mockup or not: it was
+   dropped from the three mockup pages on the reasoning that the mockup already
+   contained this view, but Ben's mockups were commissioned to support the
+   copy further down, not to replace this one. So renderProject below always
+   calls this first, and calls renderMockupGallery separately, lower on the
+   page, where a mockup exists. */
 function renderDesktopShot(project) {
   const size = SHOT_SIZES.desktop;
 
@@ -74,35 +81,45 @@ function renderDesktopShot(project) {
         </figure>`;
 }
 
-/* The three projects with a hand-made device mockup show it here instead of
-   the plain browser-frame screenshot above: renderDesktopShot and this are
-   mutually exclusive per project, chosen in renderProject below.
+/* The three projects with a hand-made device mockup show it as a SECOND
+   image, well below the opening browser frame, not instead of it. Ben's own
+   words after seeing the first version of this page: the mockups "were more
+   to break up the text and to support the text" than to duplicate the
+   screenshot's job. So every project opens on the same plain browser frame
+   (renderDesktopShot), and where a mockup exists it reappears here, right
+   after the body copy has made its case and just before the page hands off
+   to prev/next: a second, calmer image at the point a reader's eye is ready
+   to move on, rather than three images stacked before a word of copy.
 
    No .browser wrapper around it, on purpose. The mockup is already a
    composed photo of a browser chrome, shadows and (for two of the three) a
    phone and tablet alongside it — wrapping that in a second frame would be
    framing a frame. It is rendered as a bare, transparent image instead, so
    the site's own near-black shows through around the devices and the
-   mockup's own drop shadows land where they were drawn to land. That is also
-   why this image is never lazy: it is the first thing on the page, exactly
-   where the flat screenshot used to be, so the browser must be told to fetch
-   it immediately rather than waiting for it to scroll into view. */
-function renderMockupShot(project) {
+   mockup's own drop shadows land where they were drawn to land. It IS lazy
+   here, unlike the opening shot: by the time a reader has scrolled past the
+   body copy to reach it, it is no longer above the fold, so there is nothing
+   to gain and bytes to lose by forcing an eager fetch. */
+function renderMockupGallery(project) {
   const { alt, width, height } = project.mockup;
 
-  return `        <figure class="project__mockup">
-          <img
-            class="project__mockup-shot"
-            src="/assets/work/${escapeHtml(project.slug)}/mockup.webp"
-            srcset="${escapeHtml(mockupSrcset(project.slug, width))}"
-            sizes="(min-width: 76rem) 68rem, 92vw"
-            alt="${escapeHtml(alt)}"
-            width="${width}"
-            height="${height}"
-            fetchpriority="high"
-            decoding="async"
-          />
-        </figure>`;
+  return `      <div class="section project__gallery">
+        <div class="wrap">
+          <figure class="project__mockup">
+            <img
+              class="project__mockup-shot"
+              src="/assets/work/${escapeHtml(project.slug)}/mockup.webp"
+              srcset="${escapeHtml(mockupSrcset(project.slug, width))}"
+              sizes="(min-width: 76rem) 68rem, 92vw"
+              alt="${escapeHtml(alt)}"
+              width="${width}"
+              height="${height}"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+        </div>
+      </div>`;
 }
 
 /* The phone shot is not decoration. Most of these clients' customers are on a
@@ -222,7 +239,7 @@ function renderProject(project) {
 
       <div class="section project__shot">
         <div class="wrap">
-${project.mockup ? renderMockupShot(project) : renderDesktopShot(project)}
+${renderDesktopShot(project)}
         </div>
       </div>
 
@@ -255,6 +272,8 @@ ${renderTags(project)}
 ${renderMobileShot(project)}
         </div>
       </div>
+
+${project.mockup ? renderMockupGallery(project) : ''}
     </article>
 
 ${renderAdjacent(project.slug)}`;

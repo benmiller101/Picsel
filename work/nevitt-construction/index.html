@@ -239,15 +239,22 @@
 
       <div class="section project__shot">
         <div class="wrap">
-        <figure class="project__mockup">
+        <figure class="browser">
+          <div class="browser__bar" aria-hidden="true">
+            <span class="browser__dots"><i></i><i></i><i></i></span>
+            <span class="browser__host">haylebuilders.com</span>
+          </div>
+          <!-- The shot runs the full width of the 72rem wrap, less its gutters,
+               so on a wide screen the slot really is about 68rem. Below that it
+               is very nearly the whole viewport. -->
           <img
-            class="project__mockup-shot"
-            src="/assets/work/nevitt-construction/mockup.webp"
-            srcset="/assets/work/nevitt-construction/mockup-640.webp 640w, /assets/work/nevitt-construction/mockup-1024.webp 1024w, /assets/work/nevitt-construction/mockup.webp 1440w"
+            class="browser__shot"
+            src="/assets/work/nevitt-construction/desktop.webp"
+            srcset="/assets/work/nevitt-construction/desktop-640.webp 640w, /assets/work/nevitt-construction/desktop-1024.webp 1024w, /assets/work/nevitt-construction/desktop.webp 1440w"
             sizes="(min-width: 76rem) 68rem, 92vw"
-            alt="The A Nevitt Construction website shown together on a laptop, a tablet and a phone"
+            alt="Screenshot of the A Nevitt Construction website"
             width="1440"
-            height="960"
+            height="900"
             fetchpriority="high"
             decoding="async"
           />
@@ -296,6 +303,24 @@
               alt="Screenshot of the A Nevitt Construction website, shown on a phone"
               width="780"
               height="1688"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+        </div>
+      </div>
+
+      <div class="section project__gallery">
+        <div class="wrap">
+          <figure class="project__mockup">
+            <img
+              class="project__mockup-shot"
+              src="/assets/work/nevitt-construction/mockup.webp"
+              srcset="/assets/work/nevitt-construction/mockup-640.webp 640w, /assets/work/nevitt-construction/mockup-1024.webp 1024w, /assets/work/nevitt-construction/mockup.webp 1440w"
+              sizes="(min-width: 76rem) 68rem, 92vw"
+              alt="The A Nevitt Construction website shown together on a laptop, a tablet and a phone"
+              width="1440"
+              height="655"
               loading="lazy"
               decoding="async"
             />

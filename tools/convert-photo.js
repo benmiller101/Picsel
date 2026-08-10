@@ -91,6 +91,38 @@ const DEFAULT_QUALITY = 0.82;
 const MOCKUP_FULL_WIDTH = 1440;
 const MOCKUP_VARIANT_WIDTHS = [640, 1024];
 
+/* Ben's design tool exports the mockup on a canvas much bigger than the
+   devices drawn on it — measured across the three sources on disk, the real
+   content (the laptop/tablet/phone composition, including its drop shadow)
+   fills as little as 44% of the frame's height. Every downstream size in
+   MOCKUP_FULL_WIDTH/MOCKUP_VARIANT_WIDTHS is a WIDTH, so that empty margin
+   survives resizing untouched: the page reserves a box sized for the whole
+   transparent canvas, and the devices sit small and adrift inside it. The
+   fix has to happen before any resize, on the untouched source, or every
+   later step just inherits the same wasted alpha.
+
+   Threshold 12 (out of 255) rather than "alpha greater than zero": these
+   compositions carry a soft drop shadow that fades to almost nothing at its
+   outer edge, and a few of those outermost pixels round to 1 or 2 rather
+   than a true 0. Trimming at any-non-zero-alpha catches the first row where
+   the fade is still imperceptible and turns it into a hard-edged cutoff,
+   which reads as a clipped shadow rather than a soft one. 12 sits below
+   anything a viewer would call "shadow" and above the sub-1% noise a PNG
+   export can leave along a transparent edge, which is what gave the sane,
+   reported numbers (a box roughly half to two-thirds of the frame,
+   depending on the composition) rather than either extreme. */
+const MOCKUP_TRIM_ALPHA_THRESHOLD = 12;
+
+/* Padding kept around the trimmed box, in the SOURCE image's own pixels
+   (these sources run 4000-5000px wide, three to four times the 1440px this
+   job ultimately downsamples to). 48px of source padding lands as roughly
+   14-16px once the image is scaled down to its delivered width, which is
+   enough room for the soft tail of the drop shadow below the 12-alpha cutoff
+   to keep fading into the page's own background rather than stopping dead
+   at the crop line, without dragging back in the hundreds of pixels of true
+   empty margin this trim exists to remove. */
+const MOCKUP_TRIM_PADDING = 48;
+
 /* Open Graph's own stated size. Several crawlers will accept other
    dimensions, but 1200x630 is the one guaranteed to render full-size and
    uncropped everywhere that matters, which is the whole point of building a
@@ -181,6 +213,95 @@ async function renderTransparentVariant(page, dataUrl, width, quality) {
     dataUrl,
     width,
     quality,
+  );
+}
+
+/**
+ * Crops `dataUrl` down to the bounding box of its non-transparent content
+ * (alpha > `threshold`), expanded by `padding` source pixels on every side
+ * and clamped to the image's own edges. Returns a lossless PNG data URL —
+ * this is an intermediate step feeding every later render in the mockup job,
+ * so it must not spend any of the job's one real quality/lossy-compression
+ * budget before the final webp encode does. Runs via page.evaluate for the
+ * same reason as the other two render functions: Image, canvas and
+ * ImageData all live in the page, not in Node.
+ */
+async function trimTransparentMargins(page, dataUrl, threshold, padding) {
+  return page.evaluate(
+    (src, alphaThreshold, pad) =>
+      new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          const sourceWidth = img.naturalWidth;
+          const sourceHeight = img.naturalHeight;
+          const canvas = document.createElement('canvas');
+          canvas.width = sourceWidth;
+          canvas.height = sourceHeight;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+
+          const { data } = ctx.getImageData(0, 0, sourceWidth, sourceHeight);
+          let minX = sourceWidth;
+          let minY = sourceHeight;
+          let maxX = -1;
+          let maxY = -1;
+
+          for (let y = 0; y < sourceHeight; y++) {
+            const rowOffset = y * sourceWidth * 4;
+            for (let x = 0; x < sourceWidth; x++) {
+              const alpha = data[rowOffset + x * 4 + 3];
+              if (alpha <= alphaThreshold) continue;
+              if (x < minX) minX = x;
+              if (x > maxX) maxX = x;
+              if (y < minY) minY = y;
+              if (y > maxY) maxY = y;
+            }
+          }
+
+          /* A source with nothing above the threshold (a blank export, or a
+             threshold set wrong) has no box to trim to. Returning the
+             source untouched here is safer than cropping to a 0x0 canvas,
+             which would just fail the job for a reason unrelated to the
+             mockup itself. */
+          if (maxX < 0) {
+            resolve({
+              data: src.split(',')[1],
+              width: sourceWidth,
+              height: sourceHeight,
+              sourceWidth,
+              sourceHeight,
+            });
+            return;
+          }
+
+          const cropX = Math.max(0, minX - pad);
+          const cropY = Math.max(0, minY - pad);
+          const cropRight = Math.min(sourceWidth, maxX + 1 + pad);
+          const cropBottom = Math.min(sourceHeight, maxY + 1 + pad);
+          const cropWidth = cropRight - cropX;
+          const cropHeight = cropBottom - cropY;
+
+          const trimmed = document.createElement('canvas');
+          trimmed.width = cropWidth;
+          trimmed.height = cropHeight;
+          trimmed
+            .getContext('2d')
+            .drawImage(canvas, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+
+          resolve({
+            data: trimmed.toDataURL('image/png').split(',')[1],
+            width: cropWidth,
+            height: cropHeight,
+            sourceWidth,
+            sourceHeight,
+          });
+        };
+        img.onerror = () => reject(new Error('Image failed to decode'));
+        img.src = src;
+      }),
+    dataUrl,
+    threshold,
+    padding,
   );
 }
 
@@ -331,6 +452,18 @@ async function runMockupJob(page, dataUrl, outDir, name, flags, quality) {
   const variantWidths = flags['variant-widths']
     ? flags['variant-widths'].split(',').map(Number)
     : MOCKUP_VARIANT_WIDTHS;
+
+  /* Trim first, on the untouched source, and feed every render below off the
+     result. Doing this once here rather than inside each render function
+     means the "full" page variant, the smaller page variants and the social
+     bake all agree on exactly the same content box — there is one crop, not
+     three attempts at the same measurement that could disagree at the edges. */
+  const trimmed = await trimTransparentMargins(page, dataUrl, MOCKUP_TRIM_ALPHA_THRESHOLD, MOCKUP_TRIM_PADDING);
+  console.log(
+    `  trim   ${trimmed.width}x${trimmed.height} content box, from a ${trimmed.sourceWidth}x${trimmed.sourceHeight} source ` +
+      `(threshold ${MOCKUP_TRIM_ALPHA_THRESHOLD}, ${MOCKUP_TRIM_PADDING}px padding)`,
+  );
+  dataUrl = `data:image/png;base64,${trimmed.data}`;
 
   /* The "full" file has no width suffix, exactly like desktop.webp and
      mobile.webp already in this directory — a browser reading this folder
