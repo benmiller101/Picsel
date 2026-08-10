@@ -32,11 +32,14 @@
 import { SITE, absoluteUrl } from '../../site.config.js';
 import { PLANS, EXTRAS, GUARANTEE, money } from '../../pricing.js';
 import { reviewsForService } from '../../reviews.js';
+import { getProjectBySlug } from '../../projects.js';
 import { escapeHtml } from '../templates/page.js';
+import { SHOT_SIZES, shotSrcset, mockupSrcset } from '../templates/images.js';
 import { breadcrumbs, ORG_ID } from '../templates/schema.js';
 import { renderContactBand } from '../partials/contact-band.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { renderReviews } from '../partials/reviews.js';
+import { renderPlanCards } from '../partials/plan-cards.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
 
 const [ONLINE, MANAGED, GROWTH] = PLANS;
@@ -68,6 +71,17 @@ const RESPONSE_PROMISE_FAQ = {
                 under it. Paragraph and list copy is written into the page
                 unescaped, so it may carry a, em, strong and abbr and nothing
                 else. tools/build.js fails the build on anything else.
+
+                A section also picks its own shape, and renderSection below is
+                where the four shapes and the rule for choosing between them
+                are written down:
+                  layout      'column' (the default), 'split', 'full', 'beside'
+                  listAcross  render `list` as a grid of peers, not bullets
+                  planCards   render the three plan cards from pricing.js here
+                  band        { slug, caption } a full width client image after
+                              this section
+                  aside       { slug, caption } a client phone shot beside the
+                              copy. Needs layout: 'beside'.
      faqs       Real questions, each answered only from what this repo can
                 support. These become the FAQPage node as well as the visible
                 section.
@@ -99,45 +113,39 @@ const SERVICES = [
             'href="/guides/what-a-trades-website-needs/">what a tradesperson\'s website needs</a> ' +
             'is the same argument written for someone who has not decided who to buy from yet.',
         ],
+        /* The claim directly above is that these are five pages built around a
+           trade rather than filled into a template, and that the same build
+           goes out on every plan. Nevitt is that build: the fullest trade site
+           on the list, shown on the three screens the copy is talking about. */
+        band: {
+          slug: 'nevitt-construction',
+          caption:
+            '<a href="/work/nevitt-construction/">A Nevitt Construction</a>. The same build every ' +
+            'plan starts with, on a laptop, a tablet and a phone.',
+        },
       },
       {
+        /* The three plans were three h3 blocks of running prose here, each
+           re-stating in a sentence what pricing.js already holds as a list, and
+           the reader had to keep two of them in their head to compare the
+           third. These are the same cards /prices renders, from the same data,
+           so every fact that was in the prose is still on the page and the
+           comparison is now something you can read across. The two sentences
+           the cards cannot carry, the shape of the ladder and the pointer at
+           the search work, stay in words above and below them. */
         h2: 'The three plans',
         paragraphs: [
           'Online is the site. Managed is the site with someone looking after it. Growth is the ' +
             'site, looked after, with monthly work behind it to get you found. Each one contains ' +
             'the one before it, so nothing is lost by starting at the bottom.',
+          'Growth is the only plan carrying the lead guarantee. What that work is week to week is ' +
+            'set out on <a href="/services/search-and-ai-visibility/">search and AI visibility</a>.',
         ],
-        subs: [
-          {
-            h3: `Online, ${money(ONLINE.monthly)} a month`,
-            paragraphs: [
-              `${escapeHtml(ONLINE.summary)} ${money(ONLINE.build)} to build. Best for: ` +
-                escapeHtml(ONLINE.bestFor.charAt(0).toLowerCase() + ONLINE.bestFor.slice(1)),
-            ],
-          },
-          {
-            h3: `Managed, ${money(MANAGED.monthly)} a month`,
-            paragraphs: [
-              'Everything in Online, plus we make your changes for you up to 30 minutes a month, ' +
-                'keep your Google profile active with a monthly post and fresh photos, and send ' +
-                `a simple monthly report of your calls and enquiries. ${money(MANAGED.build)} to build.`,
-            ],
-          },
-          {
-            h3: `Growth, ${money(GROWTH.monthly)} a month`,
-            paragraphs: [
-              'Everything in Managed, plus the monthly work that puts you in front of people ' +
-                'searching right now: new content targeting the towns and services you want, ' +
-                'review generation, consistent directory listings, and the technical and AI ' +
-                `search work. ${money(GROWTH.build)} to build, and it is the only plan carrying ` +
-                'the lead guarantee. What that work is week to week is set out on <a ' +
-                'href="/services/search-and-ai-visibility/">search and AI visibility</a>.',
-            ],
-          },
-        ],
+        planCards: true,
       },
       {
         h2: 'How long it takes',
+        layout: 'split',
         paragraphs: [
           'About a week, once we have your logo, your photos and the list of jobs you want on ' +
             'the site. Managed and Growth take the same time to build, because the build itself ' +
@@ -159,6 +167,7 @@ const SERVICES = [
       },
       {
         h2: 'The Google side comes with it',
+        layout: 'split',
         paragraphs: [
           'Your Google Business Profile is set up at launch on every plan, because for most ' +
             'trades it brings more calls than the website does. If yours already exists and has ' +
@@ -247,7 +256,15 @@ const SERVICES = [
         ],
       },
       {
+        /* NO IMAGE ANYWHERE ON THIS PAGE, and that is the decision rather than
+           an omission. The subject is a Google Business Profile and this repo
+           holds no picture of one: not a screenshot, not a before and after,
+           nothing. The alternative would be a photograph of somebody holding a
+           phone, which is the exact stock-imagery reflex this site does not
+           have. So the page gets its variety from the shape of its four
+           sections and from nothing else. */
         h2: 'What comes with a website instead',
+        layout: 'split',
         paragraphs: [
           `On Online, ${money(ONLINE.build)} to build and ${money(ONLINE.monthly)} a month, the ` +
             'profile is set up properly at launch as part of the job. On Managed, ' +
@@ -270,6 +287,7 @@ const SERVICES = [
       },
       {
         h2: 'Reviews are the part you cannot shortcut',
+        layout: 'split',
         paragraphs: [
           'Ask every customer in person on the day the job finishes, and hand them a short link ' +
             'straight to your review page. That is the whole method, and <a ' +
@@ -334,6 +352,11 @@ const SERVICES = [
     sections: [
       {
         h2: 'What happens every month',
+        /* The copy says four things and the data holds exactly four, so they
+           are laid out as four rather than as a bulleted column. Read across,
+           they are the whole of what the monthly fee buys, on one screen. */
+        layout: 'full',
+        listAcross: true,
         paragraphs: [
           'Four things, and they run every month rather than once at launch. Search work stopped ' +
             'being a job you finish some years ago.',
@@ -346,6 +369,7 @@ const SERVICES = [
       },
       {
         h2: 'One trade per patch',
+        layout: 'split',
         paragraphs: [SITE.exclusivity.full],
       },
       {
@@ -361,12 +385,24 @@ const SERVICES = [
       },
       {
         h2: 'When you cannot wait a quarter',
+        layout: 'split',
         paragraphs: [
           `Google Ads, ${ADS.price.toLowerCase()}. ` + ADS.body,
         ],
       },
       {
         h2: 'What it sits on top of',
+        /* The section says the monthly work is worth nothing without a site
+           worth sending people to. Lanora is a Growth client with the search
+           work included, so this is that sentence with a name and a live site
+           attached to it, and a reader can go and check. */
+        layout: 'beside',
+        aside: {
+          slug: 'lanora-house',
+          caption:
+            '<a href="/work/lanora-house/">Lanora House</a>, on Growth. The site the monthly work ' +
+            'sits on top of.',
+        },
         paragraphs: [
           'None of this works without a site worth sending people to and a Google listing that ' +
             'is filled in. Both are in the plan already: Growth contains Managed, which contains ' +
@@ -452,7 +488,16 @@ const SERVICES = [
       'back.',
     sections: [
       {
+        /* NO IMAGE ON THIS PAGE EITHER, for the same reason as the Google
+           Business Profile page. The tools are private: an eBay listing tool
+           for one client's stock room is not something we can screenshot and
+           publish, and there is no mockup of one. What this page does have as
+           evidence is Brenna Nevitt's review, which is about the eBay tool by
+           name and already renders at the foot of the page. A photograph would
+           be filling the space that review is already earning. */
         h2: 'What we build',
+        layout: 'full',
+        listAcross: true,
         paragraphs: [
           'Whatever you are currently doing twice. Most of these start as a spreadsheet somebody ' +
             'keeps forgetting to fill in, or a folder of photos nobody can find anything in.',
@@ -466,6 +511,7 @@ const SERVICES = [
       },
       {
         h2: 'What it costs',
+        layout: 'split',
         paragraphs: [
           `${TOOLS.price}. The range is wide ` +
             'because a quote builder for one trade and a photo record for a team of six are not ' +
@@ -483,6 +529,7 @@ const SERVICES = [
       },
       {
         h2: 'Where to start',
+        layout: 'split',
         paragraphs: [
           'Ring and describe the job you keep doing on a Sunday evening. If it can be built, we ' +
             'will say what it would take and what it would cost. If a spreadsheet would do it ' +
@@ -552,6 +599,84 @@ const SERVICES = [
   },
 ];
 
+/* ---- The two images on these pages ----------------------------------------
+   Both are real client work, both are read out of projects.js rather than
+   written here, and both are placed against the sentence they are evidence
+   for. There is no stock photography on this site and there is not going to
+   be: an image whose job is to fill the right-hand half of the page is worse
+   than leaving it empty, because it teaches a reader that the pictures here do
+   not mean anything.
+
+   WHAT EACH ONE IS DOING, since that is the test each had to pass:
+
+     The Nevitt mockup, on the websites page, sits under "What the site is",
+     which is the section claiming five pages built around a trade rather than
+     filled into a template. It is the fullest trade build on the list and the
+     mockup shows it on a laptop, a tablet and a phone at once, which is the
+     one claim in that section a screenshot of a desktop could not carry.
+
+     The Lanora phone shot, on the search and AI page, sits beside "What it
+     sits on top of", which is the section saying the monthly work is worthless
+     without a site worth sending people to. Lanora is a Growth client with the
+     search work included, so it is that sentence with a name on it. Phone
+     rather than desktop because most of these clients' customers are on one,
+     and because the page needed a shape that was not another wide band.
+
+   Neither is above the fold at any width, so both are lazy. Both carry their
+   real pixel dimensions, so nothing below them moves when they land. */
+
+/* Full width of the wrap, under the section it belongs to. The mockup is a
+   composed photo that already contains browser chrome and its own drop
+   shadows, so it gets no frame of its own: the site's near-black shows through
+   it, which is exactly what it was drawn for. Same reasoning, same markup, as
+   renderMockupGallery in tools/pages/project.js. */
+function renderSectionBand({ slug, caption }) {
+  const project = getProjectBySlug(slug);
+  const { alt, width, height } = project.mockup;
+
+  return `        <figure class="service__band">
+          <img
+            class="service__band-shot"
+            src="/assets/work/${escapeHtml(slug)}/mockup.webp"
+            srcset="${escapeHtml(mockupSrcset(slug, width))}"
+            sizes="(min-width: 76rem) 68rem, 92vw"
+            alt="${escapeHtml(alt)}"
+            width="${width}"
+            height="${height}"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption class="service__band-caption">${caption}</figcaption>
+        </figure>`;
+}
+
+/* The phone shot, in the column beside the copy. Reuses .phone from site.css
+   rather than growing a second frame that looks almost like it: the project
+   pages have shown a client's site at phone size in that exact frame since the
+   portfolio existed, and a near-identical one here would read as two
+   components to anyone comparing the pages. */
+function renderSectionPhone({ slug, caption }) {
+  const project = getProjectBySlug(slug);
+  const size = SHOT_SIZES.mobile;
+
+  return `          <figure class="service__aside">
+            <span class="phone">
+              <img
+                class="phone__shot"
+                src="/assets/work/${escapeHtml(slug)}/mobile.webp"
+                srcset="${escapeHtml(shotSrcset(slug, 'mobile'))}"
+                sizes="(min-width: 64rem) 18rem, 92vw"
+                alt="${escapeHtml(project.alt)}, shown on a phone"
+                width="${size.width}"
+                height="${size.height}"
+                loading="lazy"
+                decoding="async"
+              />
+            </span>
+            <figcaption class="service__aside-caption">${caption}</figcaption>
+          </figure>`;
+}
+
 /* ---- One section --------------------------------------------------------
    h2, then paragraphs, then a list, then any h3 blocks under it, then the
    paragraphs that belong after the list. Headings never skip a level: an h3
@@ -560,37 +685,124 @@ const SERVICES = [
    The class prefix is `service` rather than `guide`, and tools/build.js knows
    about it: the unescaped-copy whitelist runs on any section whose class ends
    __section in the guide, post or service families, so paragraphs here are
-   held to the same four tags as a guide's. */
+   held to the same four tags as a guide's.
+
+   FOUR SHAPES, AND WHY A SECTION GETS TO CHOOSE. Every section on these pages
+   used to be the same object: an h2 and a paragraph or two, capped at the 38rem
+   reading measure, hard against the left edge. Ten of those in a row on a
+   1440px screen is a 608px column of text with 58% of the window empty beside
+   it for five thousand pixels of scrolling, and the honest problem with it is
+   not that it is ugly. It is that nothing on the page tells a reader which
+   part matters, because every part is drawn identically.
+
+     column   The default and still the most common. Measure-capped prose,
+              heading above it. Right for anything that is simply an argument.
+     split    The heading moves into a narrow rail on the left and the prose
+              sits beside it. Used on the short sections, where a heading
+              stacked above two lines wastes the vertical space it costs. It
+              also puts the headings on their own vertical line down the page,
+              which is what lets someone scanning find the section they want
+              without reading any of them.
+     full     Heading above, body across the whole wrap. Only for content that
+              genuinely needs the width: the plan cards, and a list whose items
+              are peers worth reading across rather than down.
+     beside   Measure-capped prose with an image in the space to its right. Only
+              where there is a real picture of the thing being described.
+
+   The rule that keeps this from becoming decoration: a shape has to be chosen
+   because of what the section contains, never to break up a run of three. If
+   two neighbouring sections are both plain arguments, they are both `column`,
+   and the page is better for the repetition. */
 function renderSection(section) {
   const parts = [];
 
   for (const text of section.paragraphs || []) {
-    parts.push(`          <p>${text}</p>`);
+    parts.push(`            <p>${text}</p>`);
   }
 
   if (section.list) {
+    /* --across turns the bullets into a grid of peers. Reserved for lists whose
+       items really are a set read across rather than steps read down, which on
+       these pages means the four things the Growth plan does every month and
+       the four kinds of tool we build. The copy above each one already says
+       "four", so the shape is repeating something true rather than asserting a
+       structure the words do not have. */
+    const across = section.listAcross ? ' service__list--across' : '';
     parts.push(
-      `          <ul class="service__list">\n${section.list
-        .map((item) => `            <li>${item}</li>`)
-        .join('\n')}\n          </ul>`,
+      `            <ul class="service__list${across}">\n${section.list
+        .map((item) => `              <li>${item}</li>`)
+        .join('\n')}\n            </ul>`,
     );
   }
 
   for (const text of section.after || []) {
-    parts.push(`          <p>${text}</p>`);
+    parts.push(`            <p>${text}</p>`);
   }
 
   for (const sub of section.subs || []) {
-    parts.push(`          <h3>${escapeHtml(sub.h3)}</h3>`);
+    parts.push(`            <h3>${escapeHtml(sub.h3)}</h3>`);
     for (const text of sub.paragraphs) {
-      parts.push(`          <p>${text}</p>`);
+      parts.push(`            <p>${text}</p>`);
     }
   }
 
-  return `        <section class="service__section">
-          <h2>${escapeHtml(section.h2)}</h2>
+  const layout = section.layout || 'column';
+
+  /* The body is wrapped rather than left as loose children, and that wrapper is
+     what makes `split` and `beside` possible at all: in a two-column grid every
+     loose paragraph would become a grid item and place itself in whichever cell
+     came next, so a section would lay itself out as a heading, a paragraph
+     beside it, then a paragraph under the heading. One element per column
+     instead. */
+  const body = `          <div class="service__body">
 ${parts.join('\n')}
+          </div>`;
+
+  const aside = section.aside ? `\n${renderSectionPhone(section.aside)}` : '';
+
+  const section_ = `        <section class="service__section service__section--${layout}">
+          <h2>${escapeHtml(section.h2)}</h2>
+${body}${aside}
         </section>`;
+
+  /* Both of these are siblings of the section rather than children of it, and
+     there are two separate reasons that happen to point the same way.
+
+     The layout reason: both run the full width of the wrap, and the section
+     they belong to is capped at the reading measure. Nesting either would mean
+     fighting that cap from inside.
+
+     The build-check reason, which is the load-bearing one. findUnescapedCopy in
+     tools/build.js scans everything inside a `service__section` for tags that
+     copy is not allowed to carry, because paragraph copy on these pages is
+     interpolated raw and a stray "<" in a sentence is invisible until it is
+     live. The plan cards are template markup, not copy: they are full of
+     <span>, and putting them inside the section fails that check with eighteen
+     errors, correctly. The answer is to keep template markup out of the element
+     the check is pointed at, not to widen what the check will forgive. */
+  const trailing = [
+    section.planCards ? renderSectionPlans() : '',
+    section.band ? renderSectionBand(section.band) : '',
+  ].filter(Boolean);
+
+  return [section_, ...trailing].join('\n\n');
+}
+
+/* The plan comparison, on the one section that is a comparison. Three plans
+   described as three paragraphs of running prose is the hardest possible way
+   to answer "which of these is me": a reader has to hold two of them in their
+   head to check the third against them. Same cards as /prices, rendered from
+   the same pricing.js data by the same function, so the two pages cannot end
+   up describing different plans.
+
+   The Growth card's pointer at the exclusivity promise and the lead guarantee
+   goes to /prices, because that is where the band setting out both in full
+   actually lives. This page states the guarantee in a sentence and does not
+   reproduce the terms. */
+function renderSectionPlans() {
+  return `        <div class="service__plans">
+${renderPlanCards({ commitmentsHref: '/prices/#commitments' })}
+        </div>`;
 }
 
 /* ---- One service page -----------------------------------------------------
@@ -669,8 +881,17 @@ ${faqs}
     description: service.description,
     /* reviews.css only loads on the two pages that actually carry a quote,
        same reasoning as home.js only loading hero.css on the homepage: a
-       stylesheet with nothing to style on a page is dead weight on it. */
-    styles: reviews.length ? ['/article.css', '/reviews.css'] : ['/article.css'],
+       stylesheet with nothing to style on a page is dead weight on it.
+       prices.css follows the same rule and is why the plan cards are asked for
+       by the section data rather than hardcoded here: the one page rendering
+       them is the one page that pays for the sheet, and if a second page ever
+       wants them it gets the stylesheet automatically instead of rendering
+       three unstyled columns nobody notices until it is live. */
+    styles: [
+      '/article.css',
+      ...(service.sections.some((section) => section.planCards) ? ['/prices.css'] : []),
+      ...(reviews.length ? ['/reviews.css'] : []),
+    ],
     schemaExtra: [
       /* One Service node, and every value on it is something the page says in
          words a few lines above. No aggregateRating and no review count:

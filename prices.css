@@ -189,6 +189,82 @@
   margin-bottom: var(--space-8);
 }
 
+/* ---- What these plans have built ------------------------------------------
+   Three real client sites under the three prices. Deliberately smaller and
+   quieter than the work grid on /work: this is evidence for the numbers above
+   it, not a portfolio, and three screenshots at showcase size directly under
+   the cards would take the page over and make the prices the caption.
+
+   A hairline and a small radius, no glow and no shadow, the same treatment
+   .work-card__frame gives a screenshot in site.css and for the same reason:
+   five client sites in five palettes are the only colour on this page and a
+   decorated frame competes with the thing inside it. */
+.built-on__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-8);
+}
+
+@media (min-width: 48rem) {
+  .built-on__list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.built-on__link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.built-on__frame {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--bg-raised);
+}
+
+/* 16/10 is the ratio the captures are taken at, so the crop only ever trims a
+   pixel or two of rounding rather than the top of somebody's site. */
+.built-on__shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top;
+}
+
+.built-on__name {
+  display: block;
+  margin-top: var(--space-3);
+  /* The whole card is the link, so the tap target is the screenshot as well as
+     the name and comfortably past the 44px floor on any screen. The underline
+     lives on the name because that is the part that reads as a link. */
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  transition: text-decoration-color var(--dur-fast) var(--ease);
+}
+
+.built-on__link:hover .built-on__name,
+.built-on__link:focus-visible .built-on__name {
+  text-decoration-color: var(--accent);
+}
+
+/* The point of the band. Tabular figures are not needed here, but the plan name
+   is set apart from the client name above it because it is a fact about the
+   price rather than about the client. */
+.built-on__plan {
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
 /* ---- What Growth commits us to --------------------------------------------
    The two promises, out of the card and given a band of their own. Two columns
    on a desktop, because they are two separate commitments rather than one
