@@ -147,6 +147,28 @@ export const SITE = {
     tokenIsPlaceholder: true,
   },
 
+  /* ---- Picsel HQ call and enquiry counting --------------------------------
+     hq-beacon.js reports two numbers to HQ: a tap on the phone number, and an
+     enquiry that actually arrived. Nothing that identifies anybody, which is
+     why it needs no consent banner. See that file for the full list of what is
+     deliberately not sent.
+
+     The key is an identifier, not a secret. It travels in a query string from
+     the visitor's browser and is readable in the page source of every site
+     that reports to HQ, so keeping it out of the repo would buy nothing and
+     cost the single-source-of-truth rule everything else here follows.
+
+     UNLIKE the Cloudflare token above, a placeholder here does NOT suppress
+     the script, and that difference is deliberate rather than an inconsistency.
+     A wrong key still produces a beacon, and HQ collects those in its
+     "reporting a key nobody holds" panel, which exists precisely so that a
+     wrong key looks different from a beacon that never fired. Suppressing the
+     script would throw away the diagnostic. The build still warns. */
+  hq: {
+    siteKey: 'PASTE_THE_KEY_FROM_HQ',
+    keyIsPlaceholder: true,
+  },
+
   /* The nav, in order. Rendered as real HTML in every page — never injected by
      JavaScript, because a visitor with JS blocked (or a crawler that does not
      execute it) must still get a working way around the site.

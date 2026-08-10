@@ -9,6 +9,12 @@
    swapped for a different one — they should see a line appear under the button
    saying it went. That is the whole feature. */
 
+/* The beacon module is already loaded on every page by the shell, so this
+   import resolves to the same instance rather than fetching it twice. Importing
+   it is how the one event this file knows about, an enquiry that genuinely
+   arrived, reaches the counter. */
+import { reportEnquiry } from './hq-beacon.js';
+
 const form = document.getElementById('enquiry-form');
 const status = document.getElementById('enquiry-status');
 
@@ -65,6 +71,12 @@ if (form && status) {
       const result = await response.json().catch(() => ({}));
 
       if (response.ok && result.success) {
+        /* Counted here and nowhere else. Not on submit, not when validation
+           passes, not when the button is pressed: only once Web3Forms has said
+           the enquiry arrived. A counted enquiry that reached nobody is worse
+           than an uncounted one, because it makes a broken form look like a
+           working one. */
+        reportEnquiry();
         form.reset();
         setStatus('Thanks, that’s arrived. We’ll come back to you.', 'ok');
       } else {

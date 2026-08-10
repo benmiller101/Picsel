@@ -120,6 +120,20 @@ async function build() {
     );
   }
 
+  /* Deliberately worded differently from the warning above, because the
+     behaviour is deliberately different. The analytics beacon is suppressed
+     while its token is fake; this one still fires. A wrong key produces a hit
+     that HQ files under "reporting a key nobody holds", which is how a wrong
+     key is told apart from a beacon that never fired at all. Suppressing it
+     would remove the only signal that says which of those two happened. */
+  if (SITE.hq.keyIsPlaceholder) {
+    warnings.push(
+      'Picsel HQ site key is still a placeholder, so calls and enquiries are being counted ' +
+        "against a key nobody holds. The beacon still fires, on purpose: that is what HQ's " +
+        'unmatched-key panel is for. Paste the real key from HQ, Settings, Data, into site.config.js.',
+    );
+  }
+
   /* Not the quiet failure the two above are, and the wording says so: the
      reviews partial reads the same constant and renders the sentence without
      an anchor while this is true, so nobody lands on a Google Maps error. What

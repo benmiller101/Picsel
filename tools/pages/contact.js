@@ -297,7 +297,11 @@ export const CONTACT_PAGE = {
   /* Enhancement only. With this file missing or blocked the form is still a
      working HTML form — it just posts the ordinary way and lands on
      /contact/sent/ instead of answering in place. */
-  extraScripts: `  <script src="/contact.js" defer></script>\n${PAGE_BLOB_SCRIPT}`,
+  /* type="module" rather than a plain deferred script, because contact.js now
+     imports reportEnquiry from hq-beacon.js and an import in a classic script
+     is a syntax error rather than a quiet no-op. Modules are deferred by
+     default, so this still never blocks the page appearing. */
+  extraScripts: `  <script type="module" src="/contact.js"></script>\n${PAGE_BLOB_SCRIPT}`,
   content: [HEAD, MAIN].join('\n\n'),
 };
 

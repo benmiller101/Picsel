@@ -367,6 +367,17 @@ ${renderStickyCta()}
        and this is what takes it off. type="module" purely for consistency
        with the other body scripts here; it imports nothing itself. -->
   <script type="module" src="/sticky-cta.js"></script>
+  <!-- Counts phone taps and arrived enquiries for Picsel HQ, and nothing else:
+       no cookie, no id, no page, no referrer. The key and the live hostname are
+       attributes rather than constants in the file so that site.config.js stays
+       the one place either fact is written.
+
+       The hostname is what stops local dev and preview deploys inflating the
+       count, and it is passed rather than hardcoded so it cannot disagree with
+       SITE.origin. -->
+  <script type="module" src="/hq-beacon.js"
+          data-hq-key="${escapeHtml(SITE.hq.siteKey)}"
+          data-hq-host="${escapeHtml(new URL(SITE.origin).hostname)}"></script>
 ${renderAnalytics()}${extraScripts ? `${extraScripts}\n` : ''}</body>
 </html>
 `;
