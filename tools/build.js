@@ -109,6 +109,15 @@ async function build() {
     );
   }
 
+  /* Same shape of quiet failure as the form key: the script tag renders, the
+     pages look right, and no visit is ever counted. */
+  if (SITE.analytics.tokenIsPlaceholder) {
+    warnings.push(
+      'Cloudflare Web Analytics token is still a placeholder, so no visits are being counted. ' +
+        'Paste the real token into site.config.js. The script is not rendered until you do.',
+    );
+  }
+
   const seenTitles = new Map();
   const seenDescriptions = new Map();
   const shortDescriptions = [];

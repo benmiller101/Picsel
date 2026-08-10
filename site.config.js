@@ -126,6 +126,22 @@ export const SITE = {
     subject: 'New enquiry from the Picsel website',
   },
 
+  /* The promise, written once. It appears on the contact page and in each
+     service page's FAQ, and it is a promise Ben keeps rather than a line that
+     converts, which is the only reason it is safe to print. Change it here and
+     it changes everywhere; do not soften it in one place. */
+  responsePromise: 'Send an enquiry on a weekday and you will hear back the same day.',
+
+  /* Cloudflare Web Analytics. Cookie free, so there is nothing to consent to
+     and no banner: that is why it was chosen over GA4, not a happy accident.
+     The token is not a secret. It identifies the site, it is visible in the
+     page source of every site that uses it, and it grants no access to
+     anything. Paste it from Cloudflare, Analytics and Logs, Web Analytics. */
+  analytics: {
+    cloudflareToken: 'REPLACE_WITH_CLOUDFLARE_TOKEN',
+    tokenIsPlaceholder: true,
+  },
+
   /* The nav, in order. Rendered as real HTML in every page — never injected by
      JavaScript, because a visitor with JS blocked (or a crawler that does not
      execute it) must still get a working way around the site.

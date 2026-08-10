@@ -279,6 +279,19 @@ ${links}
    running across midnight cannot produce two different years in one output. */
 const FOOTER_YEAR = new Date().getFullYear();
 
+/* Cloudflare Web Analytics. `defer` so it never competes with the page
+   appearing, and nothing on the page depends on it loading at all.
+
+   Not rendered while the token is a placeholder. A beacon pointing at no
+   property is a request every visitor pays for and nobody reads. */
+function renderAnalytics() {
+  if (SITE.analytics.tokenIsPlaceholder) return '';
+  return (
+    '  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" ' +
+    `data-cf-beacon='{"token": "${escapeHtml(SITE.analytics.cloudflareToken)}"}'></script>\n`
+  );
+}
+
 /**
  * Render a complete HTML document.
  *
@@ -347,7 +360,7 @@ ${renderFooter()}
   <!-- type="module" so it can import the shared noise generator. Modules are
        deferred by default, so this never blocks the page from appearing. -->
   <script type="module" src="/backdrop.js"></script>
-${extraScripts ? `${extraScripts}\n` : ''}</body>
+${renderAnalytics()}${extraScripts ? `${extraScripts}\n` : ''}</body>
 </html>
 `;
 }
