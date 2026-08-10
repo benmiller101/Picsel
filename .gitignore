@@ -16,6 +16,12 @@ assets/work/**/*.jpeg
 assets/work/**/*.jpg
 .shots-cache/
 
+# Ben's about-page photo, straight off the phone. Ben's own copy is 11.7MB and
+# lives outside the repo; convert-photo.js turns it into the webp variants
+# actually committed under assets/brand/, the same rule the screenshot
+# originals above already follow.
+ben-laptop.jpg
+
 # Backdrop stills and clips. `npm run backdrop` writes ~11MB of print-resolution
 # PNGs for use behind documents; `npm run backdrop:video` writes ~60MB of MP4s
 # for social posts. Same reasoning as the screenshots above: large, exactly

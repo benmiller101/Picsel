@@ -9,6 +9,7 @@
     "test": "node --test tools/**/*.test.js",
     "dev": "npm run build && npx --yes serve . --listen 3000",
     "shots": "node tools/capture-shots.js",
+    "photo": "node tools/convert-photo.js",
     "backdrop": "node tools/export-backdrop.js",
     "backdrop:video": "node tools/export-backdrop-video.js"
   },
