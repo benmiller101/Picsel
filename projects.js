@@ -118,7 +118,7 @@ export const PROJECTS = [
     mockup: {
       alt: 'The A Nevitt Construction website shown together on a laptop, a tablet and a phone',
       width: 1440,
-      height: 960,
+      height: 655,
     },
   },
   {
@@ -150,7 +150,7 @@ export const PROJECTS = [
     mockup: {
       alt: 'The Julie Miller Art gallery grid shown on a desktop monitor',
       width: 1440,
-      height: 1080,
+      height: 1181,
     },
   },
   {
@@ -199,7 +199,7 @@ export const PROJECTS = [
     mockup: {
       alt: 'The AJC Removals & Clearances website shown together on a laptop, a tablet and two phones',
       width: 1440,
-      height: 960,
+      height: 583,
     },
   },
   {
