@@ -198,6 +198,38 @@
             "@type": "Answer",
             "text": "No. Online, Managed and Growth cover the website and the search work. A tool is priced on its own, and you can have one without a website from us."
           }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the lead guarantee cover a custom tool?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The refund guarantee is a Growth term, and it covers the website and Google Business Profile, not a tool bought on its own. A custom tool is priced and delivered separately, from £1,200, or from £89 a month."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Would you build the same tool for a competitor of mine?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only if you are not already a Growth client. While you are on Growth, the one trade per patch promise means we will not take on another business in your trade in your patch at all, whatever they buy from us, a tool included. Bought on its own without Growth, a tool does not carry that protection."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is the price a range rather than one figure?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because the jobs are not the same size. A quote builder for one trade and a photo record for a team of six take different amounts of work, and quoting one figure for both would mean one of them is wrong."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How quickly will you get back to me?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Send an enquiry on a weekday and you will hear back the same day."
+          }
         }
       ]
     },
@@ -254,9 +286,18 @@
     </nav>
 
   <main id="main" tabindex="-1">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <div class="wrap">
+        <ol class="breadcrumbs__list">
+          <li class="breadcrumbs__item"><a href="/">Home</a></li>
+          <li class="breadcrumbs__item"><a href="/services/">Services</a></li>
+          <li class="breadcrumbs__item"><span aria-current="page">Custom tools for trades: quotes, jobs and photos</span></li>
+        </ol>
+      </div>
+    </nav>
+
     <article class="section service">
       <div class="wrap service__inner">
-        <p class="eyebrow"><a class="service__back" href="/services/">Services</a></p>
         <h1 class="service__title">Custom tools for trades: quotes, jobs and photos</h1>
 
         <p class="service__answer">Custom tools built around how your business already works: the quoting, the job records, the photos, the stock. From £1,200 as a one off, or from £89 a month. If you spend hours on paperwork, this is the part that gives you your evenings back.</p>
@@ -303,6 +344,26 @@
             <div class="faq__item">
               <h3 class="faq__q">Is a custom tool part of the website plans?</h3>
               <p class="faq__a">No. Online, Managed and Growth cover the website and the search work. A tool is priced on its own, and you can have one without a website from us.</p>
+            </div>
+
+            <div class="faq__item">
+              <h3 class="faq__q">Does the lead guarantee cover a custom tool?</h3>
+              <p class="faq__a">No. The refund guarantee is a Growth term, and it covers the website and Google Business Profile, not a tool bought on its own. A custom tool is priced and delivered separately, from £1,200, or from £89 a month.</p>
+            </div>
+
+            <div class="faq__item">
+              <h3 class="faq__q">Would you build the same tool for a competitor of mine?</h3>
+              <p class="faq__a">Only if you are not already a Growth client. While you are on Growth, the one trade per patch promise means we will not take on another business in your trade in your patch at all, whatever they buy from us, a tool included. Bought on its own without Growth, a tool does not carry that protection.</p>
+            </div>
+
+            <div class="faq__item">
+              <h3 class="faq__q">Why is the price a range rather than one figure?</h3>
+              <p class="faq__a">Because the jobs are not the same size. A quote builder for one trade and a photo record for a team of six take different amounts of work, and quoting one figure for both would mean one of them is wrong.</p>
+            </div>
+
+            <div class="faq__item">
+              <h3 class="faq__q">How quickly will you get back to me?</h3>
+              <p class="faq__a">Send an enquiry on a weekday and you will hear back the same day.</p>
             </div>
           </div>
         </section>
@@ -367,6 +428,7 @@
             <li><a class="site-footer__link" href="/work/">Work</a></li>
             <li><a class="site-footer__link" href="/prices/">Prices</a></li>
             <li><a class="site-footer__link" href="/contact/">Contact</a></li>
+            <li><a class="site-footer__link" href="/privacy/">Privacy</a></li>
             </ul>
           </nav>
           <!-- No place name. This line named a county, and because it is the
@@ -382,8 +444,17 @@
       </div>
     </footer>
 
+  <div class="sticky-cta" data-sticky-cta hidden>
+    <a class="sticky-cta__call" href="tel:+447456809049">Call 07456 809049</a>
+    <a class="sticky-cta__enquire" href="/contact/#enquiry">Enquire</a>
+  </div>
+
   <!-- type="module" so it can import the shared noise generator. Modules are
        deferred by default, so this never blocks the page from appearing. -->
   <script type="module" src="/backdrop.js"></script>
+  <!-- Enhancement only: the bar above ships with the hidden attribute set,
+       and this is what takes it off. type="module" purely for consistency
+       with the other body scripts here; it imports nothing itself. -->
+  <script type="module" src="/sticky-cta.js"></script>
 </body>
 </html>

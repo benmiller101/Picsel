@@ -33,7 +33,16 @@ import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs, ORG_ID } from '../templates/schema.js';
 import { renderPlanCards, renderGrowthCommitments } from '../partials/plan-cards.js';
 import { renderContactBand } from '../partials/contact-band.js';
+import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
+
+/* Declared once, ahead of everything below that reads it, so the visible nav
+   and the JSON-LD in PRICES_PAGE.schemaExtra cannot end up naming a different
+   trail for the one page on the site that most needs the two to agree. */
+const PRICES_TRAIL = [
+  { name: 'Home', path: '/' },
+  { name: 'Prices', path: '/prices/' },
+];
 
 const HEAD = `    <section class="section prices-head">
       <div class="wrap page-head">
@@ -257,14 +266,12 @@ export const PRICES_PAGE = {
         acceptedAnswer: { '@type': 'Answer', text: a },
       })),
     },
-    breadcrumbs([
-      { name: 'Home', path: '/' },
-      { name: 'Prices', path: '/prices/' },
-    ]),
+    breadcrumbs(PRICES_TRAIL),
   ],
   styles: ['/prices.css'],
   extraScripts: PAGE_BLOB_SCRIPT,
   content: [
+    renderBreadcrumbs(PRICES_TRAIL),
     HEAD,
     PLAN_SECTION,
     renderGrowthCommitments(),

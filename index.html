@@ -77,6 +77,7 @@
   <link rel="stylesheet" href="/base.css" />
   <link rel="stylesheet" href="/site.css" />
   <link rel="stylesheet" href="/hero.css" />
+  <link rel="stylesheet" href="/reviews.css" />
 
   <!-- The one script on the site allowed to block, and only because of what it
        does in its first line: it marks the document before anything is painted
@@ -520,6 +521,53 @@
       </div>
     </section>
 
+    <section class="reviews" aria-labelledby="reviews-heading">
+      <div class="wrap">
+        <h2 class="reviews__heading" id="reviews-heading">What people say</h2>
+        <div class="reviews__list">
+          <figure class="review">
+            <blockquote class="review__quote">
+              <p>Ben at Picsel built us a custom eBay listing tool for our clearance business in Hayle. Listing stock used to eat a full afternoon, photographing everything then writing up items one at a time. Now it&#39;s done in minutes and nothing sits around unlisted. We&#39;re getting three times as many items live each week and sales have followed. He understood exactly how our business runs and built the tool around it. If your company sells on eBay, get him to build you one.</p>
+            </blockquote>
+            <figcaption class="review__who">
+              Brenna Nevitt
+              <time class="review__date" datetime="2026-08-04">4 August 2026</time>
+            </figcaption>
+          </figure>
+          <figure class="review">
+            <blockquote class="review__quote">
+              <p>Ben made our website from ok to unbeliveable , we saw increases in work very soon after. I am able to update it when I need to. Ben is very quick to make any changes. Really good value for money..</p>
+            </blockquote>
+            <figcaption class="review__who">
+              Matthew Pinch
+              <time class="review__date" datetime="2026-08-04">4 August 2026</time>
+            </figcaption>
+          </figure>
+          <figure class="review">
+            <blockquote class="review__quote">
+              <p>I had my website designed by Picsel Design Studio, and the process was very straightforward from start to finish. Everything was handled very professionally, done quickly and very competitively priced.</p>
+            </blockquote>
+            <figcaption class="review__who">
+              Julie Miller
+              <time class="review__date" datetime="2026-08-04">4 August 2026</time>
+            </figcaption>
+          </figure>
+          <figure class="review">
+            <blockquote class="review__quote">
+              <p>Can&#39;t recommend Ben enough! Really happy with how my website turned out. I&#39;d definitely recommend him to anyone looking for a website in Edinburgh or surrounding areas!</p>
+            </blockquote>
+            <figcaption class="review__who">
+              Zoe
+              <time class="review__date" datetime="2026-08-09">9 August 2026</time>
+            </figcaption>
+          </figure>
+        </div>
+        <p class="reviews__source">
+          Every one of these is on Picsel's Google profile, word for word.
+        </p>
+      </div>
+    </section>
+
     <section class="contact-band" aria-labelledby="contact-band-heading">
       <div class="wrap contact-band__inner">
         <div class="contact-band__words">
@@ -578,6 +626,7 @@
             <li><a class="site-footer__link" href="/work/">Work</a></li>
             <li><a class="site-footer__link" href="/prices/">Prices</a></li>
             <li><a class="site-footer__link" href="/contact/">Contact</a></li>
+            <li><a class="site-footer__link" href="/privacy/">Privacy</a></li>
             </ul>
           </nav>
           <!-- No place name. This line named a county, and because it is the
@@ -593,9 +642,18 @@
       </div>
     </footer>
 
+  <div class="sticky-cta" data-sticky-cta hidden>
+    <a class="sticky-cta__call" href="tel:+447456809049">Call 07456 809049</a>
+    <a class="sticky-cta__enquire" href="/contact/#enquiry">Enquire</a>
+  </div>
+
   <!-- type="module" so it can import the shared noise generator. Modules are
        deferred by default, so this never blocks the page from appearing. -->
   <script type="module" src="/backdrop.js"></script>
+  <!-- Enhancement only: the bar above ships with the hidden attribute set,
+       and this is what takes it off. type="module" purely for consistency
+       with the other body scripts here; it imports nothing itself. -->
+  <script type="module" src="/sticky-cta.js"></script>
   <script type="module" src="/hero.js"></script>
 </body>
 </html>

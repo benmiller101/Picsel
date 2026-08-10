@@ -903,6 +903,26 @@
   border-top: 1px solid var(--line);
 }
 
+/* Room for the fixed action bar, on top of the footer's own bottom padding
+   rather than replacing it — otherwise the copyright line would sit flush
+   against the top edge of the bar rather than clear of it. --sticky-cta-height
+   is the same custom property the bar's own height is built from (see
+   tokens.css), so a change to the bar's padding or tap target moves this in
+   step automatically instead of needing a second edit here that is easy to
+   forget.
+
+   Gated behind .sticky-cta-armed, which sticky-cta.js sets only once it has
+   confirmed the bar is going to exist on this page view — the same reasoning
+   as nav.js's nav-armed class for the nav. Without the gate this is unconditional
+   CSS: a visitor with JavaScript blocked or broken would still get the extra
+   space reserved under the footer, which is a visible empty gap explained by
+   nothing, for a bar that never appears to fill it. */
+@media (max-width: 47.9375rem) {
+  .sticky-cta-armed .site-footer {
+    padding-bottom: calc(var(--space-12) + var(--sticky-cta-height));
+  }
+}
+
 .site-footer__inner {
   display: flex;
   flex-wrap: wrap;
@@ -1034,6 +1054,133 @@
   .site-footer__inner {
     flex-direction: column;
     gap: var(--space-4);
+  }
+}
+
+/* ---- The mobile action bar ------------------------------------------------
+   Pinned to the bottom of the screen below 768px, so the two ways to reach
+   Picsel are within thumb's reach on a long guide instead of a scroll away.
+   Ships `hidden` in the markup; sticky-cta.js is what removes that, so a
+   visitor without JavaScript simply never sees it, which is correct here —
+   both links duplicate a route that already exists in the footer and the
+   contact band, so nothing is lost, only a shortcut.
+
+   Solid rather than frosted, for the same reason as the nav: legible over
+   whatever is scrolling underneath it, and no per-frame blur cost for a bar
+   that is on screen through most of a long page. */
+.sticky-cta {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  /* Below the nav's 100 on purpose, though the two never actually overlap —
+     the nav lives at the top of the screen and this bar at the bottom. Kept
+     lower anyway so any future element that intentionally floats above both
+     only has to clear the nav's value. */
+  z-index: 90;
+
+  display: flex;
+  border-top: 1px solid var(--line);
+  background: var(--bg-raised);
+  box-shadow: 0 -12px 28px rgba(0, 0, 0, 0.45);
+
+  /* The slide sticky-cta.js drives via the --away class below. Transform, not
+     a change to `bottom`, so the browser can composite the move on its own
+     layer instead of running layout on every frame of it. */
+  transition: transform var(--dur-base) var(--ease);
+}
+
+/* The user-agent stylesheet's `[hidden] { display: none }` is a UA-origin
+   rule, and CSS resolves origin before specificity: an author-origin
+   `display: flex` above beats it regardless of source order, which is
+   normally invisible because nothing else in this file sets `display` on an
+   element that also ships `hidden`. It matters here, because the bar's whole
+   no-JavaScript story depends on `hidden` actually hiding it. This rule wins
+   on specificity instead of relying on origin, so the bar stays gone until
+   sticky-cta.js explicitly removes the attribute. */
+.sticky-cta[hidden] {
+  display: none;
+}
+
+/* Slid fully out of view rather than removed, so the transition below has
+   something to animate between; sticky-cta.js adds this class while the
+   contact band or the enquiry form is on screen, which is what stops the bar
+   ever sitting on top of either. */
+.sticky-cta--away {
+  transform: translateY(100%);
+}
+
+.sticky-cta__call,
+.sticky-cta__enquire {
+  flex: 1 1 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Both links are primary tap targets here, not incidental text, so they
+     take the full 44px floor rather than the smaller inline treatment the
+     footer's phone link uses.
+
+     min-height is the ONLY thing allowed to set this box's height. There is
+     deliberately no padding-block: added on top of min-height it would have
+     made the rendered height depend on both, which is exactly what silently
+     drifted out of step with --sticky-cta-height once (a padding-block here
+     was quietly adding to a height the token did not know about). Horizontal
+     padding is free to do whatever it likes; it never affects the number the
+     footer has to plan around. */
+  min-height: var(--tap-min);
+  padding-inline: var(--space-4);
+
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+}
+
+.sticky-cta__call {
+  color: var(--ink);
+}
+
+.sticky-cta__enquire {
+  /* The one accent surface this bar is allowed: it is the single action the
+     bar exists to prompt, and --accent already means "the one thing to do"
+     everywhere else on the site. */
+  color: var(--accent-ink);
+  background: var(--accent);
+}
+
+/* Both links sit hard against the edges of the screen, so the global ring's
+   3px OUTSET offset gets cropped by the viewport on two sides of each of
+   them: the bottom edge for both, the left for Call and the right for
+   Enquire. Pulled inside the button instead, where nothing can crop it. Same
+   width, same colour rules, just drawn on the other side of the boundary. */
+.sticky-cta__call:focus-visible,
+.sticky-cta__enquire:focus-visible {
+  outline-offset: -3px;
+}
+
+/* The colour has to change on this one as well, and that is the actual bug the
+   offset only made worse. The global ring is --accent, which is this button's
+   own background, so at 375px what survived the cropping was a cyan line drawn
+   on cyan: a keyboard user tabbing from Call to Enquire got no signal that
+   anything had moved. --accent-ink is the near-black already carrying the label
+   on this surface, so the ring is the same pairing as the text sitting inside
+   it and is legible for exactly the same reason. */
+.sticky-cta__enquire:focus-visible {
+  outline-color: var(--accent-ink);
+}
+
+/* Absent above 768px, full stop. sticky-cta.js also checks the same
+   breakpoint before ever unhiding the bar, but the rule is repeated here so a
+   desktop visitor is never shown it even in the gap between the stylesheet
+   and the script loading, and so a script failure cannot leave it on screen
+   over a layout it was not designed for. */
+@media (min-width: 48rem) {
+  .sticky-cta {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sticky-cta {
+    transition: none;
   }
 }
 
@@ -1253,4 +1400,106 @@
 
 .project-nav__link:hover .project-nav__name {
   color: var(--accent);
+}
+
+/* ---- Breadcrumbs -----------------------------------------------------------
+   The visible half of tools/templates/schema.js's BreadcrumbList, rendered by
+   tools/partials/breadcrumbs.js from the same trail array the JSON-LD reads.
+   Deliberately quiet: this is orientation, not a heading, and it sits above
+   every page's <h1> without competing with it for attention.
+
+   The trail takes over the page's opening gap rather than adding to it: every
+   page this sits on top of already opens with a .section whose own top padding
+   put its heading clear of the top of the screen. Giving the trail that gap and
+   then zeroing the section immediately after it moves the heading down by one
+   breadcrumb block, not by a second full section's worth of air. The rule
+   below the trail is what does the zeroing, and it is load-bearing: change the
+   padding here and the heading on every page with a trail moves with it.
+
+   The gap it takes over is HALF a section, not a whole one, and that is the
+   difference from how this shipped. At 375px the block measured 201px tall,
+   because a full --section-y sat on top of a trail whose last crumb is a whole
+   guide question and wraps to two lines. That is 201px of a 667px screen spent
+   on orientation, above an article whose call to action was already below the
+   fold, and the nav is not even on screen at rest for it to be clearing. Half
+   the gap takes 32px back on a phone and 60px at 1440, and the trail still
+   reads as a line set apart from the heading under it rather than crowding it.
+
+   The bottom pad is NOT part of the saving and was deliberately left alone.
+   On a guide, a post or a service page the <h1> is now the first thing in the
+   article, because the eyebrow link that used to sit between the two went with
+   the duplicate back link (see article.css). So these 16px are the entire
+   separation between a 13px trail and a large heading, and there is nothing
+   else left to absorb it if they are cut. */
+.breadcrumbs {
+  padding-top: var(--breadcrumb-y);
+  padding-bottom: var(--space-4);
+}
+
+/* Two shapes to zero out. Most pages put the trail directly before a
+   `.section` sibling (a guide, a service, a post, every index page). A
+   project page nests one level deeper — `.project` wrapping a `.section
+   project__head` header as its first child — because the browser frame and
+   the mobile shot below it are not part of that opening band. Both need the
+   same treatment or the project pages alone would keep the doubled gap. */
+.breadcrumbs + .section,
+.breadcrumbs + * > .section:first-child {
+  padding-top: 0;
+}
+
+.breadcrumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  /* No visible gap: the separator glyph on each item (bar the first) already
+     supplies the air either side of it. A flex gap here would double it up
+     and read as two spaces. */
+  gap: 0;
+}
+
+.breadcrumbs__item {
+  display: flex;
+  align-items: center;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--ink-faint);
+}
+
+/* The separator. A CSS pseudo-element rather than a character in the markup,
+   so a screen reader announces "Home, Work, Julie Miller Art" and never
+   "Home slash Work slash Julie Miller Art" — the mark is decoration for
+   sighted readers only. Skipped on the first item, which has nothing to
+   separate itself from. */
+.breadcrumbs__item:not(:first-child)::before {
+  content: '/';
+  margin-inline: var(--space-2);
+  color: var(--line-strong);
+}
+
+.breadcrumbs__item a {
+  /* Small type, but the tap target still clears --tap-min: the padding does
+     the reaching, not the font size, so the trail reads as quiet text on a
+     desktop and still lands as a real button under a thumb. */
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+  padding-block: var(--space-2);
+  color: var(--ink-faint);
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.2em;
+  transition: color var(--dur-fast) var(--ease),
+              text-decoration-color var(--dur-fast) var(--ease);
+}
+
+.breadcrumbs__item a:hover {
+  color: var(--ink);
+  text-decoration-color: var(--accent);
+}
+
+/* The current page: plain text, not a link. Matches the surrounding trail's
+   faint colour rather than the brighter --ink used elsewhere for emphasis,
+   because it is not the important thing on the page — the <h1> a few lines
+   below it is. */
+.breadcrumbs__item [aria-current='page'] {
+  color: var(--ink-faint);
 }

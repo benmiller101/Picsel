@@ -101,6 +101,11 @@ export const SITE = {
     'https://www.tiktok.com/@picseluk',
   ],
 
+  /* The public Google Business Profile, which is where the reviews in
+     reviews.js are published. Linked from every reviews section so a reader
+     can check the quotes against the source. */
+  reviewsUrl: 'https://www.google.com/maps/place/?q=place_id:REPLACE_WITH_PLACE_ID',
+
   /* ---- The enquiry form ---------------------------------------------------
      There is no server here — the site is static files on a CDN — so the form
      posts to Web3Forms, which receives the submission and emails it on.
@@ -124,6 +129,22 @@ export const SITE = {
     /* The subject line of the email that lands in Ben's inbox. Named for the
        site rather than for the sender, so enquiries are filterable. */
     subject: 'New enquiry from the Picsel website',
+  },
+
+  /* The promise, written once. It appears on the contact page and in each
+     service page's FAQ, and it is a promise Ben keeps rather than a line that
+     converts, which is the only reason it is safe to print. Change it here and
+     it changes everywhere; do not soften it in one place. */
+  responsePromise: 'Send an enquiry on a weekday and you will hear back the same day.',
+
+  /* Cloudflare Web Analytics. Cookie free, so there is nothing to consent to
+     and no banner: that is why it was chosen over GA4, not a happy accident.
+     The token is not a secret. It identifies the site, it is visible in the
+     page source of every site that uses it, and it grants no access to
+     anything. Paste it from Cloudflare, Analytics and Logs, Web Analytics. */
+  analytics: {
+    cloudflareToken: 'REPLACE_WITH_CLOUDFLARE_TOKEN',
+    tokenIsPlaceholder: true,
   },
 
   /* The nav, in order. Rendered as real HTML in every page — never injected by
@@ -176,6 +197,7 @@ export const SITE = {
     { label: 'Work', href: '/work/' },
     { label: 'Prices', href: '/prices/' },
     { label: 'Contact', href: '/contact/' },
+    { label: 'Privacy', href: '/privacy/' },
   ],
 
   /* The default social preview, used by any page that does not set its own.
@@ -195,3 +217,18 @@ export function absoluteUrl(path = '/') {
   const suffix = path.startsWith('/') ? path : `/${path}`;
   return `${base}${suffix}`;
 }
+
+/**
+ * Whether reviewsUrl above is still the unfilled placeholder.
+ *
+ * Derived from the string rather than kept as a hand-maintained boolean beside
+ * it, the way form.accessKeyIsPlaceholder and analytics.tokenIsPlaceholder are.
+ * Those two are flags because the real key and the real token are opaque
+ * strings with nothing in them to test; a Google Maps place link is not, and
+ * the placeholder announces itself. Two consumers now read this — the build
+ * warning and the reviews partial, which drops the anchor entirely while it is
+ * true — and a flag anyone could forget to flip when pasting the real URL would
+ * put those two out of step with each other and with reality. Derived, they
+ * cannot disagree.
+ */
+export const REVIEWS_URL_IS_PLACEHOLDER = SITE.reviewsUrl.includes('REPLACE_WITH_PLACE_ID');

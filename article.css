@@ -62,6 +62,32 @@
   color: var(--ink);
 }
 
+/* ---- The action, above the fold -------------------------------------------
+   A guide or a post used to open with a heading and prose and give the
+   reader nothing to do until the very bottom. This is the fix: one sentence
+   under the answer, with a link in it, pointing at the same service page the
+   body copy already links to further down. Not a band and not a card, so it
+   carries no border and no background of its own; the answer above it is
+   already the one bordered element on this part of the page. */
+.guide__action,
+.post__action {
+  max-width: var(--measure);
+  color: var(--ink-muted);
+}
+
+.guide__action-link,
+.post__action-link {
+  color: var(--ink);
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  transition: text-decoration-color var(--dur-fast) var(--ease);
+}
+
+.guide__action-link:hover,
+.post__action-link:hover {
+  text-decoration-color: var(--accent);
+}
+
 .guide__section,
 .post__section,
 .service__section {
@@ -158,29 +184,15 @@
   text-decoration-color: var(--accent);
 }
 
-/* The way back to the index, sitting in the eyebrow above the question. Set
-   inline it measured 58x16, which is a long way under the 44px tap minimum on
-   a page whose readers are holding a phone in one hand. inline-flex with the
-   minimum height gives it a real target without moving the text, since the
-   eyebrow is a line of its own anyway. */
-.guide__back,
-.post__back,
-.service__back {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--tap-min);
-
-  color: inherit;
-  text-decoration-color: var(--line-strong);
-  text-underline-offset: 0.25em;
-}
-
-.guide__back:hover,
-.post__back:hover,
-.service__back:hover {
-  color: var(--ink);
-  text-decoration-color: var(--accent);
-}
+/* There was a .guide__back / .post__back / .service__back rule here: an eyebrow
+   link back to the index, sitting above the question. It went when breadcrumbs
+   landed on these pages, because the trail's middle crumb points at the same
+   index from about 100px higher up the same screen. Two controls to one
+   destination, and the lower one cost around 60px of vertical space in the
+   place where space is worth the most: everything above the article's call to
+   action is height the reader has to scroll past before they are offered
+   anything to do. Removing it is what got the action to clear the fold on a
+   1024x768 desktop by a margin worth having. */
 
 /* ---- The index ------------------------------------------------------------
    Question and full answer for every guide, rather than a list of titles with

@@ -226,12 +226,23 @@
     </nav>
 
   <main id="main" tabindex="-1">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <div class="wrap">
+        <ol class="breadcrumbs__list">
+          <li class="breadcrumbs__item"><a href="/">Home</a></li>
+          <li class="breadcrumbs__item"><a href="/guides/">Guides</a></li>
+          <li class="breadcrumbs__item"><span aria-current="page">Why is my Google Business Profile not showing up?</span></li>
+        </ol>
+      </div>
+    </nav>
+
     <article class="section guide">
       <div class="wrap guide__inner">
-        <p class="eyebrow"><a class="guide__back" href="/guides/">Guides</a></p>
         <h1 class="guide__question">Why is my Google Business Profile not showing up?</h1>
 
         <p class="guide__answer">Usually one of four things. It is not verified, the main category is wrong, your name address and phone number do not match what is on your website, or there is an older duplicate listing competing with it. All four are fixable, and most of them take a day.</p>
+
+        <p class="guide__action">None of this is hard, but it is fiddly to get exactly right. <a class="guide__action-link" href="/services/google-business-profile/">See our Google Business Profile work</a>.</p>
 
         <section class="guide__section">
           <h2>Check it is actually verified</h2>
@@ -342,6 +353,7 @@
             <li><a class="site-footer__link" href="/work/">Work</a></li>
             <li><a class="site-footer__link" href="/prices/">Prices</a></li>
             <li><a class="site-footer__link" href="/contact/">Contact</a></li>
+            <li><a class="site-footer__link" href="/privacy/">Privacy</a></li>
             </ul>
           </nav>
           <!-- No place name. This line named a county, and because it is the
@@ -357,8 +369,17 @@
       </div>
     </footer>
 
+  <div class="sticky-cta" data-sticky-cta hidden>
+    <a class="sticky-cta__call" href="tel:+447456809049">Call 07456 809049</a>
+    <a class="sticky-cta__enquire" href="/contact/#enquiry">Enquire</a>
+  </div>
+
   <!-- type="module" so it can import the shared noise generator. Modules are
        deferred by default, so this never blocks the page from appearing. -->
   <script type="module" src="/backdrop.js"></script>
+  <!-- Enhancement only: the bar above ships with the hidden attribute set,
+       and this is what takes it off. type="module" purely for consistency
+       with the other body scripts here; it imports nothing itself. -->
+  <script type="module" src="/sticky-cta.js"></script>
 </body>
 </html>

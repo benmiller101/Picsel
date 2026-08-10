@@ -126,6 +126,18 @@
      vertical rhythm instead of arbitrary gaps. */
   --section-y: clamp(4rem, 9vw, 7.5rem);
 
+  /* The opening gap on a page that leads with a breadcrumb trail instead of
+     straight into its first section. Exactly half --section-y at every width,
+     tracking the same clamp, so the two stay related as the viewport changes
+     rather than crossing over somewhere in the middle of the range.
+
+     Half, and not the full gap, because the trail is not a section. It is one
+     line of 13px text whose job is orientation, and giving it a full section's
+     worth of air above bought nothing and cost every reader on a phone around
+     40px of the screen they had before being offered anything to do. See the
+     .breadcrumbs rule in site.css for what that height was competing with. */
+  --breadcrumb-y: clamp(2rem, 4.5vw, 3.75rem);
+
   /* Page gutter and the maximum measure. Long lines are hard to track back
      from on a dark background, so text is capped well before the viewport
      width; --measure is the tighter cap for paragraphs specifically. */
@@ -157,6 +169,19 @@
   /* The minimum size of anything you tap. 44px is the accessibility floor, not
      a target to design down to. */
   --tap-min: 44px;
+
+  /* The mobile action bar's own height, computed rather than measured by eye
+     so it can never drift out of step with the footer padding that exists
+     purely to stay out from under it. This has to equal exactly what site.css
+     actually renders, not what looks like a reasonable guess at it: the bar
+     itself carries no padding, its two links set their height from
+     --tap-min alone (deliberately no padding-block on them — see the comment
+     on .sticky-cta__call in site.css for why that combination is banned), and
+     the bar adds one hairline border on top. --tap-min plus 1px is the whole
+     answer. If a future change gives the bar or its links any vertical
+     padding, this line and that change both have to move together or this
+     comment stops being true. */
+  --sticky-cta-height: calc(var(--tap-min) + 1px);
 
   /* =====================================================================
      SHAPE

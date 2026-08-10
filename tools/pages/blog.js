@@ -29,6 +29,7 @@ import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs, blogPosting, blogNode } from '../templates/schema.js';
 import { renderArticleSections } from '../partials/article-sections.js';
 import { renderContactBand } from '../partials/contact-band.js';
+import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
 
 /* Read rather than retyped, so a post can never quote a price the prices page
@@ -69,7 +70,11 @@ function longDate(iso) {
                   carry a, em, strong and abbr and nothing else. The build
                   enforces that: any other tag, any stray "<", and any tag left
                   unclosed fails the build rather than reaching a browser.
-     close       The single link out, at the end, phrased as a fact. */
+     close       The single link out, at the end, phrased as a fact.
+     action      The one thing to do before the reader has scrolled, under the
+                 standfirst. Always points at /contact/#enquiry: a post has no
+                 service page of its own to reinforce, so it goes straight at
+                 the enquiry form instead. */
 const POSTS = [
   {
     slug: 'why-trades-websites-cost-so-much',
@@ -145,21 +150,43 @@ const POSTS = [
         `${money(ONLINE.build)} to build and ${money(ONLINE.monthly)} a month at the smallest.`,
       cta: 'See the prices',
     },
+    action: {
+      href: '/contact/#enquiry',
+      line: 'The number that matters is the one for your own job, not a range.',
+      cta: 'Send an enquiry',
+    },
   },
 ];
 
 function renderPost(post) {
   const sections = renderArticleSections(post.sections, 'post');
 
-  const content = `    <article class="section post">
+  /* Same reasoning as the guides: one link, under the standfirst, so a reader
+     has something to act on before the first scroll. See renderGuide in
+     guides.js for the fuller version of this comment. */
+  const action = `        <p class="post__action">${escapeHtml(post.action.line)} <a class="post__action-link" href="${escapeHtml(post.action.href)}">${escapeHtml(post.action.cta)}</a>.</p>`;
+
+  /* One array, fed to the visible nav below and to the JSON-LD in
+     schemaExtra, so the two accounts of this page's place in the site
+     cannot disagree. */
+  const trail = [
+    { name: 'Home', path: '/' },
+    { name: 'Blog', path: '/blog/' },
+    { name: post.headline, path: `/blog/${post.slug}/` },
+  ];
+
+  const content = `${renderBreadcrumbs(trail)}
+
+    <article class="section post">
       <div class="wrap post__inner">
-        <p class="eyebrow"><a class="post__back" href="/blog/">Blog</a></p>
         <h1 class="post__headline">${escapeHtml(post.headline)}</h1>
         <p class="post__meta">
           <time datetime="${escapeHtml(post.date)}">${escapeHtml(longDate(post.date))}</time>
         </p>
 
         <p class="post__standfirst">${escapeHtml(post.standfirst)}</p>
+
+${action}
 
 ${sections}
 
@@ -186,11 +213,7 @@ ${sections}
         path: `/blog/${post.slug}/`,
         datePublished: post.date,
       }),
-      breadcrumbs([
-        { name: 'Home', path: '/' },
-        { name: 'Blog', path: '/blog/' },
-        { name: post.headline, path: `/blog/${post.slug}/` },
-      ]),
+      breadcrumbs(trail),
     ],
     content: [
       content,
@@ -222,6 +245,13 @@ ${POSTS.map(
 ).join('\n\n')}
       </ul>`;
 
+/* Declared once, ahead of the page object, so the visible trail prepended to
+   content below and the JSON-LD in schemaExtra read from the same array. */
+const BLOG_INDEX_TRAIL = [
+  { name: 'Home', path: '/' },
+  { name: 'Blog', path: '/blog/' },
+];
+
 export const BLOG_INDEX_PAGE = {
   path: '/blog/',
   title: 'Blog: websites for tradespeople | Picsel',
@@ -232,13 +262,11 @@ export const BLOG_INDEX_PAGE = {
   schemaType: 'CollectionPage',
   schemaExtra: [
     blogNode(POSTS.map((post) => ({ headline: post.headline, path: `/blog/${post.slug}/` }))),
-    breadcrumbs([
-      { name: 'Home', path: '/' },
-      { name: 'Blog', path: '/blog/' },
-    ]),
+    breadcrumbs(BLOG_INDEX_TRAIL),
   ],
   extraScripts: PAGE_BLOB_SCRIPT,
   content: [
+    renderBreadcrumbs(BLOG_INDEX_TRAIL),
     `    <section class="section blog-head">
       <div class="wrap page-head">
         <div class="page-head__text">

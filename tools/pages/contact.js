@@ -16,7 +16,15 @@
 import { SITE, absoluteUrl } from '../../site.config.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs } from '../templates/schema.js';
+import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
+
+/* Declared once, ahead of HEAD below and CONTACT_PAGE.schemaExtra, so the
+   visible trail and the JSON-LD cannot describe two different pages. */
+const CONTACT_TRAIL = [
+  { name: 'Home', path: '/' },
+  { name: 'Contact', path: '/contact/' },
+];
 
 /* ---- The direct details ---------------------------------------------------
    A real definition list: each of these is a label and its value, which is
@@ -247,7 +255,9 @@ ${SOURCE_OPTIONS}
    beside it makes the inner a two-column grid on a desktop — without the
    wrapper the eyebrow, the heading and the lede would each become a grid item
    and lay themselves out in a row. */
-const HEAD = `    <section class="section contact-head">
+const HEAD = `${renderBreadcrumbs(CONTACT_TRAIL)}
+
+    <section class="section contact-head">
       <div class="wrap page-head">
         <div class="page-head__text">
           <p class="eyebrow">Contact</p>
@@ -255,6 +265,7 @@ const HEAD = `    <section class="section contact-head">
           <p class="lede measure">
             Ring, email, or fill the form in, whichever suits. You&rsquo;ll get
             ${escapeHtml(SITE.contact.person.split(' ')[0])} either way.
+            ${escapeHtml(SITE.responsePromise)}
           </p>
         </div>
 
@@ -277,10 +288,7 @@ export const CONTACT_PAGE = {
      read as another number in a paragraph. */
   schemaType: 'ContactPage',
   schemaExtra: [
-    breadcrumbs([
-      { name: 'Home', path: '/' },
-      { name: 'Contact', path: '/contact/' },
-    ]),
+    breadcrumbs(CONTACT_TRAIL),
   ],
   title: 'Contact Picsel: websites for tradespeople',
   description:

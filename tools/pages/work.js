@@ -14,7 +14,16 @@ import { breadcrumbs } from '../templates/schema.js';
 import { countWord } from '../templates/words.js';
 import { renderWorkGrid } from '../partials/work-card.js';
 import { renderContactBand } from '../partials/contact-band.js';
+import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
+
+/* Declared once, ahead of INTRO below and WORK_PAGE.schemaExtra, so the
+   visible trail and the JSON-LD cannot end up describing two different
+   hierarchies for the same page. */
+const WORK_TRAIL = [
+  { name: 'Home', path: '/' },
+  { name: 'Work', path: '/work/' },
+];
 
 /* Written from the data, not typed out. "Five" is a fact that will stop being
    true the day a sixth project is added, and a number hand-written into copy
@@ -37,7 +46,9 @@ const count = PROJECTS.length;
    beside it makes the inner a two-column grid on a desktop — without the
    wrapper the eyebrow, the heading and the lede would each become a grid item
    and lay themselves out in a row. */
-const INTRO = `    <section class="section work-intro">
+const INTRO = `${renderBreadcrumbs(WORK_TRAIL)}
+
+    <section class="section work-intro">
       <div class="wrap page-head">
         <div class="page-head__text">
           <p class="eyebrow">Work</p>
@@ -80,10 +91,7 @@ export const WORK_PAGE = {
         url: absoluteUrl(`/work/${project.slug}/`),
       })),
     },
-    breadcrumbs([
-      { name: 'Home', path: '/' },
-      { name: 'Work', path: '/work/' },
-    ]),
+    breadcrumbs(WORK_TRAIL),
   ],
   title: 'Work: websites built for trades and small firms',
   description:

@@ -17,8 +17,9 @@ import { writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { SITE, absoluteUrl } from '../site.config.js';
+import { SITE, absoluteUrl, REVIEWS_URL_IS_PLACEHOLDER } from '../site.config.js';
 import { PROJECTS } from '../projects.js';
+import { REVIEWS } from '../reviews.js';
 import { PLANS, money } from '../pricing.js';
 import { renderPage } from './templates/page.js';
 import { HOME_PAGE } from './pages/home.js';
@@ -29,6 +30,7 @@ import { SERVICES_INDEX_PAGE, SERVICE_PAGES } from './pages/services.js';
 import { GUIDES_INDEX_PAGE, GUIDE_PAGES } from './pages/guides.js';
 import { BLOG_INDEX_PAGE, BLOG_PAGES } from './pages/blog.js';
 import { CONTACT_PAGE, CONTACT_SENT_PAGE } from './pages/contact.js';
+import { PRIVACY_PAGE } from './pages/privacy.js';
 import { NOT_FOUND_PAGE } from './pages/not-found.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -78,6 +80,7 @@ const PAGES = [
   ...BLOG_PAGES,
   CONTACT_PAGE,
   CONTACT_SENT_PAGE,
+  PRIVACY_PAGE,
   NOT_FOUND_PAGE,
 ];
 
@@ -105,6 +108,28 @@ async function build() {
     warnings.push(
       'Web3Forms access key is still a placeholder. The enquiry form on /contact/ will render ' +
         'and validate, but no submission will reach anyone. Paste the real key into site.config.js.',
+    );
+  }
+
+  /* Same shape of quiet failure as the form key: the script tag renders, the
+     pages look right, and no visit is ever counted. */
+  if (SITE.analytics.tokenIsPlaceholder) {
+    warnings.push(
+      'Cloudflare Web Analytics token is still a placeholder, so no visits are being counted. ' +
+        'Paste the real token into site.config.js. The script is not rendered until you do.',
+    );
+  }
+
+  /* Not the quiet failure the two above are, and the wording says so: the
+     reviews partial reads the same constant and renders the sentence without
+     an anchor while this is true, so nobody lands on a Google Maps error. What
+     is missing is the proof, which is the whole point of the section, so this
+     stays a warning on every build until the real link is pasted in. */
+  if (REVIEWS_URL_IS_PLACEHOLDER) {
+    warnings.push(
+      'The Google profile link is still a placeholder, so every reviews section names the ' +
+        'source in words but cannot link to it. Paste the share link from Picsel\'s Google ' +
+        'Business Profile into site.config.js.',
     );
   }
 
@@ -298,10 +323,24 @@ function findLooseExclusivityClaim(html, path) {
    the project records contribute is removed from the page before the check
    runs, and the terms are hunted in what is left. A place name surviving that
    is a place name being claimed by the studio. */
-const CLIENT_TERMS = ['cornwall', 'cornish', 'devon', 'truro', 'falmouth', 'newquay', 'hayle', 'penzance', 'south west'];
+/* Cornwall and its neighbours, because that is where the clients are and
+   where the studio used to claim to be.
+
+   Edinburgh and Scotland were added in August 2026 and they are the more
+   important half of this list now. Ben relocates to Edinburgh, which makes it
+   the place name most likely to be typed into a sentence by somebody who
+   forgets the rule, and until this line existed the check would have let it
+   through in a heading, a title or a schema block without a word. The Scottish
+   Borders is Julie Miller's location and is forgiven the same way every other
+   client location is: by being stripped as a project value, not by being
+   absent from this list. */
+const CLIENT_TERMS = [
+  'cornwall', 'cornish', 'devon', 'truro', 'falmouth', 'newquay', 'hayle',
+  'penzance', 'south west', 'edinburgh', 'scotland', 'scottish',
+];
 const STUDIO_TERMS = ['based in', 'local to', 'near you', 'in your area'];
 
-function findLocationClaims(html, path) {
+export function findLocationClaims(html, path) {
   /* Every string a project contributes to the page, in both the raw and the
      HTML-escaped form, since the same blurb appears escaped in the body and
      unescaped inside the JSON-LD.
@@ -316,6 +355,36 @@ function findLocationClaims(html, path) {
               page's meta description is derived from the first sentence rather
               than copied from the blurb entire. */
   let remaining = html;
+
+  /* Reviews first, because they are the longest strings on the page and the
+     loop below depends on removing big strings while they are intact.
+
+     THIS IS THE ONLY EXEMPTION TO THE NO-PLACE-NAME RULE, and it is derived
+     from the data rather than from the markup. A reviewer said what they said:
+     Zoe named Edinburgh, Brenna named Hayle, and neither is a claim Picsel
+     makes about itself. Quoting them is honest; paraphrasing them to dodge a
+     build check would not be.
+
+     Why the exact text and not a wrapper element. A rule that skipped anything
+     inside <blockquote class="review"> would exempt whatever a template put
+     there, which is a hole shaped exactly like the mistake this check exists
+     to catch. Matching the strings in reviews.js means the exemption covers
+     those words and nothing else: a rewritten sentence stops matching, and a
+     quote edited in a template instead of in the data file fails the build. */
+  for (const review of [...REVIEWS].sort((a, b) => b.text.length - a.text.length)) {
+    /* A blank or whitespace-only review.text is not a review to forgive, it is
+       an empty needle. String.split('') does not no-op on an empty string, it
+       splits the haystack between every character, so remaining would turn
+       "Edinburgh" into "E d i n b u r g h" across the WHOLE page and every
+       \b-anchored term below would silently stop matching, on every page, not
+       just the one with the blank review. Skipping it here is the same
+       decision the project loop below makes for the same reason. */
+    if (!review.text || !review.text.trim()) continue;
+    for (const variant of new Set([review.text, escapeForCheck(review.text)])) {
+      remaining = remaining.split(variant).join(' ');
+    }
+  }
+
   for (const project of PROJECTS) {
     /* NOTE the location is NOT in this list on its own, and that is the whole
        subtlety of this check.
@@ -326,9 +395,11 @@ function findLocationClaims(html, path) {
        sixteen. The check passed on a page that was wrong, which is worse than
        having no check.
 
-       So the location is only forgiven in the two places it is actually
-       rendered: the eyebrow on the client's own page, and the `about` name in
-       that page's schema. Anywhere else, a location is a location. */
+       So the location is only forgiven in the places it is actually
+       rendered: the eyebrow on the client's own page, the `about` name in
+       that page's schema, and (since August 2026) the sentence on the
+       contact page that names Julie Miller by way of answering "where do
+       you work". Anywhere else, a location is a location. */
     /* The eyebrow is built from separately-escaped parts with a literal
        &middot; between them, so the string on the page is
        "Removals &amp; clearance &middot; Cornwall". Escaping that whole
@@ -338,11 +409,26 @@ function findLocationClaims(html, path) {
     const eyebrow = `${escapeForCheck(project.sector)} &middot; ${escapeForCheck(project.location)}`;
     const schemaAbout = `${project.sector} in ${project.location}`;
 
+    /* tools/pages/contact.js answers "where do you work" partly by pointing
+       at Julie Miller: proof that four hundred miles is not a problem,
+       rather than a sentence asserting it. That paragraph is bespoke prose,
+       not a template stamped out per project like the eyebrow is, so there
+       is no way to reconstruct its exact wording here. What can be
+       reconstructed, scoped through this project's own location the same
+       way schemaAbout is, is the fragment that names the place: "in the
+       Scottish Borders" for Julie Miller, "in the Hayle, Cornwall" (which
+       matches nothing) for everyone else. Adding the term "scottish" to
+       CLIENT_TERMS in August 2026 made this page fail the build the moment
+       the term list did its job; this is the fix, not a reason to weaken
+       the list. */
+    const contactMention = `in the ${project.location}`;
+
     const values = [
       project.name,
       eyebrow,
       schemaAbout,
       escapeForCheck(schemaAbout),
+      contactMention,
       project.sector,
       project.blurb,
       ...project.blurb.split(/(?<=\.)\s+/),

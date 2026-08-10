@@ -17,6 +17,7 @@ import { SHOT_SIZES, shotSrcset } from '../templates/images.js';
 import { ORG_ID, breadcrumbs } from '../templates/schema.js';
 import { absoluteUrl } from '../../site.config.js';
 import { renderContactBand } from '../partials/contact-band.js';
+import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 
 /* Sizes and srcset both come from templates/images.js, shared with the work
    card so this page and the grid cannot disagree about which files exist.
@@ -138,7 +139,17 @@ ${link(next, 'next', 'Next project')}
 function renderProject(project) {
   const host = displayHost(project.url);
 
-  const content = `    <article class="project">
+  /* Declared once and handed to both the visible nav and the JSON-LD below,
+     so the two cannot end up describing different hierarchies. */
+  const trail = [
+    { name: 'Home', path: '/' },
+    { name: 'Work', path: '/work/' },
+    { name: project.name, path: `/work/${project.slug}/` },
+  ];
+
+  const content = `${renderBreadcrumbs(trail)}
+
+    <article class="project">
       <header class="section project__head">
         <div class="wrap">
           <p class="eyebrow">${escapeHtml(project.sector)} &middot; ${escapeHtml(project.location)}</p>
@@ -214,11 +225,7 @@ ${renderAdjacent(project.slug)}`;
           name: `${project.sector} in ${project.location}`,
         },
       },
-      breadcrumbs([
-        { name: 'Home', path: '/' },
-        { name: 'Work', path: '/work/' },
-        { name: project.name, path: `/work/${project.slug}/` },
-      ]),
+      breadcrumbs(trail),
     ],
     /* The desktop screenshot is the social preview. A link to a project page
        shared anywhere should show the site it is about, not a generic card. */

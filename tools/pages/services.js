@@ -34,6 +34,7 @@ import { PLANS, EXTRAS, GUARANTEE, money } from '../../pricing.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs, ORG_ID } from '../templates/schema.js';
 import { renderContactBand } from '../partials/contact-band.js';
+import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
 
 const [ONLINE, MANAGED, GROWTH] = PLANS;
@@ -44,6 +45,15 @@ const [ONLINE, MANAGED, GROWTH] = PLANS;
 const RESCUE = EXTRAS.find((extra) => extra.name === 'Google Profile Rescue');
 const ADS = EXTRAS.find((extra) => extra.name === 'Google Ads');
 const TOOLS = EXTRAS.find((extra) => extra.name === 'Custom tools');
+
+/* Every service page carries this as its last FAQ, word for word. It lives
+   here once so the four pages cannot drift into four different phrasings of
+   the same promise, and so the promise itself only ever needs editing in
+   site.config.js. */
+const RESPONSE_PROMISE_FAQ = {
+  q: 'How quickly will you get back to me?',
+  a: SITE.responsePromise,
+};
 
 /* FIELD REFERENCE
      slug       URL segment under /services/. Permanent.
@@ -187,6 +197,7 @@ const SERVICES = [
           'means losing what the higher plan covered, so dropping from Growth loses the monthly ' +
           'content, the review generation and the AI search work.',
       },
+      RESPONSE_PROMISE_FAQ,
     ],
     offers: PLANS.flatMap((plan) => [
       {
@@ -293,6 +304,7 @@ const SERVICES = [
           'month, which keeps the profile active with a monthly post and fresh photos alongside ' +
           'looking after the website.',
       },
+      RESPONSE_PROMISE_FAQ,
     ],
     offers: [
       {
@@ -398,6 +410,7 @@ const SERVICES = [
           'No. Your ad spend goes straight to Google. The Google Ads fee starts at ' +
           `${money(129)} a month and covers the work, nothing else.`,
       },
+      RESPONSE_PROMISE_FAQ,
     ],
     offers: [
       {
@@ -488,6 +501,29 @@ const SERVICES = [
           'No. Online, Managed and Growth cover the website and the search work. A tool is ' +
           'priced on its own, and you can have one without a website from us.',
       },
+      {
+        q: 'Does the lead guarantee cover a custom tool?',
+        a:
+          'No. The refund guarantee is a Growth term, and it covers the website and Google ' +
+          'Business Profile, not a tool bought on its own. A custom tool is priced and ' +
+          `delivered separately, from ${money(1200)}, or from ${money(89)} a month.`,
+      },
+      {
+        q: 'Would you build the same tool for a competitor of mine?',
+        a:
+          'Only if you are not already a Growth client. While you are on Growth, the one trade ' +
+          'per patch promise means we will not take on another business in your trade in your ' +
+          'patch at all, whatever they buy from us, a tool included. Bought on its own without ' +
+          'Growth, a tool does not carry that protection.',
+      },
+      {
+        q: 'Why is the price a range rather than one figure?',
+        a:
+          'Because the jobs are not the same size. A quote builder for one trade and a photo ' +
+          'record for a team of six take different amounts of work, and quoting one figure for ' +
+          'both would mean one of them is wrong.',
+      },
+      RESPONSE_PROMISE_FAQ,
     ],
     offers: [
       {
@@ -564,6 +600,14 @@ ${parts.join('\n')}
 function renderService(service) {
   const path = `/services/${service.slug}/`;
 
+  /* One array, handed to the visible nav and to the JSON-LD below, so a
+     reader and a crawler always see the same three-step hierarchy. */
+  const trail = [
+    { name: 'Home', path: '/' },
+    { name: 'Services', path: '/services/' },
+    { name: service.title, path },
+  ];
+
   const faqs = `        <section class="service__faq" aria-labelledby="${escapeHtml(service.slug)}-faq">
           <h2 id="${escapeHtml(service.slug)}-faq">Questions people ask first</h2>
 
@@ -579,9 +623,10 @@ ${service.faqs
           </div>
         </section>`;
 
-  const content = `    <article class="section service">
+  const content = `${renderBreadcrumbs(trail)}
+
+    <article class="section service">
       <div class="wrap service__inner">
-        <p class="eyebrow"><a class="service__back" href="/services/">Services</a></p>
         <h1 class="service__title">${escapeHtml(service.title)}</h1>
 
         <p class="service__answer">${escapeHtml(service.lead)}</p>
@@ -625,11 +670,7 @@ ${faqs}
           acceptedAnswer: { '@type': 'Answer', text: a },
         })),
       },
-      breadcrumbs([
-        { name: 'Home', path: '/' },
-        { name: 'Services', path: '/services/' },
-        { name: service.title, path },
-      ]),
+      breadcrumbs(trail),
     ],
     content: [
       content,
@@ -659,6 +700,13 @@ ${SERVICES.map(
 ).join('\n\n')}
       </ul>`;
 
+/* Declared once, ahead of the page object, so the visible trail prepended to
+   content below and the JSON-LD in schemaExtra read from the same array. */
+const SERVICES_INDEX_TRAIL = [
+  { name: 'Home', path: '/' },
+  { name: 'Services', path: '/services/' },
+];
+
 export const SERVICES_INDEX_PAGE = {
   path: '/services/',
   title: 'Website and search services for tradespeople',
@@ -678,13 +726,11 @@ export const SERVICES_INDEX_PAGE = {
         url: absoluteUrl(`/services/${service.slug}/`),
       })),
     },
-    breadcrumbs([
-      { name: 'Home', path: '/' },
-      { name: 'Services', path: '/services/' },
-    ]),
+    breadcrumbs(SERVICES_INDEX_TRAIL),
   ],
   extraScripts: PAGE_BLOB_SCRIPT,
   content: [
+    renderBreadcrumbs(SERVICES_INDEX_TRAIL),
     `    <section class="section services-head">
       <div class="wrap page-head">
         <div class="page-head__text">

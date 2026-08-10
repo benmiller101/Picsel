@@ -221,6 +221,14 @@
             "@type": "Answer",
             "text": "No. Your ad spend goes straight to Google. The Google Ads fee starts at £129 a month and covers the work, nothing else."
           }
+        },
+        {
+          "@type": "Question",
+          "name": "How quickly will you get back to me?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Send an enquiry on a weekday and you will hear back the same day."
+          }
         }
       ]
     },
@@ -277,9 +285,18 @@
     </nav>
 
   <main id="main" tabindex="-1">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <div class="wrap">
+        <ol class="breadcrumbs__list">
+          <li class="breadcrumbs__item"><a href="/">Home</a></li>
+          <li class="breadcrumbs__item"><a href="/services/">Services</a></li>
+          <li class="breadcrumbs__item"><span aria-current="page">Search and AI visibility for tradespeople</span></li>
+        </ol>
+      </div>
+    </nav>
+
     <article class="section service">
       <div class="wrap service__inner">
-        <p class="eyebrow"><a class="service__back" href="/services/">Services</a></p>
         <h1 class="service__title">Search and AI visibility for tradespeople</h1>
 
         <p class="service__answer">Monthly work to get you found on Google and named when somebody asks an assistant for a tradesperson. It is the Growth plan, £149 to build and £119 a month. It is also the only plan that carries the lead guarantee, which is set out in full below.</p>
@@ -355,6 +372,11 @@
               <h3 class="faq__q">Do you take a cut of my ad budget?</h3>
               <p class="faq__a">No. Your ad spend goes straight to Google. The Google Ads fee starts at £129 a month and covers the work, nothing else.</p>
             </div>
+
+            <div class="faq__item">
+              <h3 class="faq__q">How quickly will you get back to me?</h3>
+              <p class="faq__a">Send an enquiry on a weekday and you will hear back the same day.</p>
+            </div>
           </div>
         </section>
       </div>
@@ -418,6 +440,7 @@
             <li><a class="site-footer__link" href="/work/">Work</a></li>
             <li><a class="site-footer__link" href="/prices/">Prices</a></li>
             <li><a class="site-footer__link" href="/contact/">Contact</a></li>
+            <li><a class="site-footer__link" href="/privacy/">Privacy</a></li>
             </ul>
           </nav>
           <!-- No place name. This line named a county, and because it is the
@@ -433,8 +456,17 @@
       </div>
     </footer>
 
+  <div class="sticky-cta" data-sticky-cta hidden>
+    <a class="sticky-cta__call" href="tel:+447456809049">Call 07456 809049</a>
+    <a class="sticky-cta__enquire" href="/contact/#enquiry">Enquire</a>
+  </div>
+
   <!-- type="module" so it can import the shared noise generator. Modules are
        deferred by default, so this never blocks the page from appearing. -->
   <script type="module" src="/backdrop.js"></script>
+  <!-- Enhancement only: the bar above ships with the hidden attribute set,
+       and this is what takes it off. type="module" purely for consistency
+       with the other body scripts here; it imports nothing itself. -->
+  <script type="module" src="/sticky-cta.js"></script>
 </body>
 </html>
