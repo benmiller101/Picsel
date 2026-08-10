@@ -627,7 +627,6 @@ ${service.faqs
 
     <article class="section service">
       <div class="wrap service__inner">
-        <p class="eyebrow"><a class="service__back" href="/services/">Services</a></p>
         <h1 class="service__title">${escapeHtml(service.title)}</h1>
 
         <p class="service__answer">${escapeHtml(service.lead)}</p>

@@ -611,7 +611,6 @@ ${guide.also
 
     <article class="section guide">
       <div class="wrap guide__inner">
-        <p class="eyebrow"><a class="guide__back" href="/guides/">Guides</a></p>
         <h1 class="guide__question">${escapeHtml(guide.question)}</h1>
 
         <p class="guide__answer">${escapeHtml(guide.answer)}</p>

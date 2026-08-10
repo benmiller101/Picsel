@@ -1408,14 +1408,31 @@
    Deliberately quiet: this is orientation, not a heading, and it sits above
    every page's <h1> without competing with it for attention.
 
-   The trail takes over the page's opening --section-y gap rather than adding
-   to it: every page this sits on top of already opens with a .section whose
-   own top padding put its heading this far from the fixed nav. Giving the
-   trail that same padding and then zeroing the section immediately after it
-   moves the heading down by one short breadcrumb line, not by a second full
-   section's worth of air. */
+   The trail takes over the page's opening gap rather than adding to it: every
+   page this sits on top of already opens with a .section whose own top padding
+   put its heading clear of the top of the screen. Giving the trail that gap and
+   then zeroing the section immediately after it moves the heading down by one
+   breadcrumb block, not by a second full section's worth of air. The rule
+   below the trail is what does the zeroing, and it is load-bearing: change the
+   padding here and the heading on every page with a trail moves with it.
+
+   The gap it takes over is HALF a section, not a whole one, and that is the
+   difference from how this shipped. At 375px the block measured 201px tall,
+   because a full --section-y sat on top of a trail whose last crumb is a whole
+   guide question and wraps to two lines. That is 201px of a 667px screen spent
+   on orientation, above an article whose call to action was already below the
+   fold, and the nav is not even on screen at rest for it to be clearing. Half
+   the gap takes 32px back on a phone and 60px at 1440, and the trail still
+   reads as a line set apart from the heading under it rather than crowding it.
+
+   The bottom pad is NOT part of the saving and was deliberately left alone.
+   On a guide, a post or a service page the <h1> is now the first thing in the
+   article, because the eyebrow link that used to sit between the two went with
+   the duplicate back link (see article.css). So these 16px are the entire
+   separation between a 13px trail and a large heading, and there is nothing
+   else left to absorb it if they are cut. */
 .breadcrumbs {
-  padding-top: var(--section-y);
+  padding-top: var(--breadcrumb-y);
   padding-bottom: var(--space-4);
 }
 

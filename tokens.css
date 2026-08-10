@@ -126,6 +126,18 @@
      vertical rhythm instead of arbitrary gaps. */
   --section-y: clamp(4rem, 9vw, 7.5rem);
 
+  /* The opening gap on a page that leads with a breadcrumb trail instead of
+     straight into its first section. Exactly half --section-y at every width,
+     tracking the same clamp, so the two stay related as the viewport changes
+     rather than crossing over somewhere in the middle of the range.
+
+     Half, and not the full gap, because the trail is not a section. It is one
+     line of 13px text whose job is orientation, and giving it a full section's
+     worth of air above bought nothing and cost every reader on a phone around
+     40px of the screen they had before being offered anything to do. See the
+     .breadcrumbs rule in site.css for what that height was competing with. */
+  --breadcrumb-y: clamp(2rem, 4.5vw, 3.75rem);
+
   /* Page gutter and the maximum measure. Long lines are hard to track back
      from on a dark background, so text is capped well before the viewport
      width; --measure is the tighter cap for paragraphs specifically. */

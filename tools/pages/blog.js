@@ -179,7 +179,6 @@ function renderPost(post) {
 
     <article class="section post">
       <div class="wrap post__inner">
-        <p class="eyebrow"><a class="post__back" href="/blog/">Blog</a></p>
         <h1 class="post__headline">${escapeHtml(post.headline)}</h1>
         <p class="post__meta">
           <time datetime="${escapeHtml(post.date)}">${escapeHtml(longDate(post.date))}</time>
