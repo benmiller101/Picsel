@@ -117,6 +117,194 @@
   gap: var(--space-2);
 }
 
+/* ---- The four shapes a service section can take ---------------------------
+   A guide is one argument read top to bottom and one column is right for it.
+   A service page is a different document doing a different job: it is a set of
+   separate answers, one of which is the one the reader came for, and ten
+   identically-drawn blocks give them no way to find it. So a section on these
+   pages picks a shape, and tools/pages/services.js holds the rule for choosing.
+
+   Everything below is inside the 64rem media query on purpose. Under it there
+   is no second column to move anything into, so every shape collapses to the
+   same measure-capped column, which is the correct layout on a phone and is
+   what these pages already did at every width.
+
+   Note the wrapper: renderSection puts the body in .service__body, so a
+   section is exactly two or three grid items (heading, body, and sometimes a
+   figure) rather than a loose run of paragraphs that would each place
+   themselves into the next free cell. */
+
+.service__body > * + * {
+  margin-top: var(--space-4);
+}
+
+@media (min-width: 64rem) {
+  /* SPLIT: the heading moves out of the reading column into a rail beside it.
+     Used on the short sections. A heading stacked above two lines of prose
+     costs about 60px of vertical space to say one thing; in the rail it costs
+     none, and the headings end up on a single vertical line down the page that
+     someone scanning can run their eye along.
+
+     The rail is 14rem because that is where the longest heading on these four
+     pages, "Reviews are the part you cannot shortcut", breaks onto three lines
+     rather than four. Narrower and it towers over the two lines of prose it is
+     supposed to be labelling. */
+  .service__section--split {
+    max-width: none;
+    display: grid;
+    grid-template-columns: 14rem minmax(0, var(--measure));
+    column-gap: var(--space-12);
+    align-items: start;
+  }
+
+  /* The grid's own column-gap does the spacing now, so the margin the shared
+     `> * + *` rule puts between heading and body would only push the body down
+     out of line with its own heading. */
+  .service__section--split > .service__body {
+    margin-top: 0;
+  }
+
+  /* FULL: heading above, body across the whole wrap. Only for content that
+     genuinely needs the width, which on these pages means a list whose items
+     are peers read across rather than steps read down. */
+  .service__section--full {
+    max-width: none;
+  }
+
+  /* BESIDE: prose at the reading measure with a real client image in the space
+     to its right. The image column is fixed at 18rem, the same width the
+     project pages give a phone shot, rather than a fraction of the row: a
+     phone that grows with the window ends up wider than the paragraph it is
+     supporting, which inverts which of the two the reader takes as the point. */
+  .service__section--beside {
+    max-width: none;
+    display: grid;
+    grid-template-columns: minmax(0, var(--measure)) 18rem;
+    /* The 1fr on the second row is load-bearing and was found by looking at the
+       built page twice. The figure spans both rows and is around 620px tall,
+       far more than the heading and the paragraph beside it need. A spanning
+       item's surplus height is shared out between every track under it that is
+       intrinsically sized, so with `auto auto` (and with `min-content auto`,
+       which was the first attempt) the browser gave half of that surplus to the
+       heading's row: the heading sat at the top of the section and the
+       paragraph began nearly 300px below it with nothing in between. A
+       flexible track takes no share of an intrinsic contribution, so all of the
+       surplus lands in row two, the body sits at the top of it, and the empty
+       space falls underneath the paragraph where empty space belongs. */
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      'heading figure'
+      'body    figure';
+    column-gap: var(--space-16);
+    align-items: start;
+  }
+
+  .service__section--beside > h2 {
+    grid-area: heading;
+  }
+
+  .service__section--beside > .service__body {
+    grid-area: body;
+  }
+
+  .service__section--beside > .service__aside {
+    grid-area: figure;
+    /* Cancels the shared `> * + *` margin, which would drop the image half a
+       line below the heading it is meant to line up with. */
+    margin-top: 0;
+  }
+}
+
+/* A list of peers, read across rather than down. Auto-fit rather than a fixed
+   count so the four monthly Growth items and the four kinds of custom tool
+   both land tidily without either page stating a column count that would be
+   wrong the moment somebody adds a fifth item to pricing.js.
+
+   No bullets and no left padding: a marker in front of an item in a grid cell
+   reads as an indent that failed rather than as a list. The items keep their
+   own hairline instead, which is the same device the extras list on /prices
+   uses for the same reason. */
+.service__list--across {
+  padding-left: 0;
+  list-style: none;
+  gap: var(--space-6);
+}
+
+@media (min-width: 48rem) {
+  .service__list--across {
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  }
+}
+
+.service__list--across li {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+  color: var(--ink);
+}
+
+/* ---- The client images ----------------------------------------------------
+   Two on these four pages, both real client work. See the comment above
+   renderSectionBand in tools/pages/services.js for what each one is doing and
+   why the other two pages have none.
+
+   The band is a bare transparent mockup on the page background, with no frame
+   of its own: it is a composed photo that already contains browser chrome and
+   its own drop shadows, and a border round it would be a frame around a
+   picture of a frame. Same treatment, and the same reasoning, as
+   .project__mockup in site.css. */
+/* The plan cards, out of the reading column and across the whole wrap. The
+   cards themselves come from prices.css, which the websites service page loads
+   for exactly this: see the styles list in tools/pages/services.js. */
+.service__plans {
+  max-width: none;
+}
+
+.service__band {
+  margin: 0;
+  max-width: none;
+}
+
+.service__band-shot {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.service__band-caption,
+.service__aside-caption {
+  margin-top: var(--space-3);
+  max-width: var(--measure);
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
+.service__band-caption a,
+.service__aside-caption a {
+  color: var(--ink);
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  transition: text-decoration-color var(--dur-fast) var(--ease);
+}
+
+.service__band-caption a:hover,
+.service__aside-caption a:hover {
+  text-decoration-color: var(--accent);
+}
+
+.service__aside {
+  margin: 0;
+}
+
+/* Under the two-column breakpoint the phone shot would otherwise run the full
+   width of the page, which at 375px means a portrait screenshot about 900px
+   tall between two paragraphs. Capped at a size that reads as an illustration
+   of the point rather than an interruption to it, and left-aligned with the
+   copy it belongs to rather than centred. */
+.service__aside .phone {
+  display: block;
+  max-width: 15rem;
+}
+
 /* The follow-up questions. Separated from the body above by a rule, because
    they answer different questions and running them on would read as more of
    the same argument. The FAQ block at the foot of a service page is the same
@@ -214,6 +402,21 @@
 .service-index__item {
   padding-top: var(--space-4);
   border-top: 1px solid var(--line);
+}
+
+/* The services index is four items, not a reading list, and one column of four
+   on a 1440px screen was 182 words hard against the left edge with more than
+   half the window empty beside them. Two across, because four things you are
+   choosing between want to be seen at once rather than scrolled through.
+
+   The guides and blog indexes stay in one column deliberately. Those carry a
+   question and its full answer per item, so an item there is a paragraph to
+   read; these are one line each, and a line does not need 38rem. */
+@media (min-width: 64rem) {
+  .service-index {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: var(--space-16);
+  }
 }
 
 .guide-index__q,
