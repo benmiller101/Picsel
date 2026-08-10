@@ -104,7 +104,13 @@ export const SITE = {
   /* The public Google Business Profile, which is where the reviews in
      reviews.js are published. Linked from every reviews section so a reader
      can check the quotes against the source. */
-  reviewsUrl: 'https://www.google.com/maps/place/?q=place_id:REPLACE_WITH_PLACE_ID',
+  /* The profile itself, NOT the /review variant of the same short link. Both
+     exist and they do opposite jobs. This link is under the testimonials for a
+     reader checking the quotes are real, and .../review sends them to a Google
+     sign-in page and then a write-a-review box, which is a worse answer to
+     "prove it" than offering no link at all. The /review form is the one to
+     send a happy client, and it does not belong on the site. */
+  reviewsUrl: 'https://g.page/r/CYTJdsdHkyi_EBM',
 
   /* ---- The enquiry form ---------------------------------------------------
      There is no server here — the site is static files on a CDN — so the form
