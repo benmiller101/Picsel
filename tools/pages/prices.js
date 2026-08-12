@@ -31,9 +31,11 @@
    with "from £15 a month" while the site named no number, which is a
    contradiction anyone can find in one tab switch.
 
-   VOICE. This page speaks as "I", not "we". It is one person quoting a
-   tradesperson, and every commitment on it is a commitment Ben makes
-   personally. The rest of the site still says "we". */
+   VOICE. "We", like every other page. It was drafted in the first person
+   singular and changed back, because the studio voice is the one the other ten
+   pages use and a money page that suddenly speaks as one man reads as a
+   different business from the one the reader has just been through. The blog
+   is the deliberate exception: a signed column is allowed to say "I". */
 
 import { SITE, absoluteUrl } from '../../site.config.js';
 import {
@@ -42,6 +44,7 @@ import {
   GUARANTEE,
   BUILD_FEE,
   BUILD_LINE,
+  BUILD_WHAT,
   RESCUE,
   ANNUAL,
   PAUSE,
@@ -67,32 +70,60 @@ const PRICES_TRAIL = [
 ];
 
 /* ---- A. The build fee -----------------------------------------------------
-   The first thing on the page and the only thing in this section. BUILD_LINE
-   lives in pricing.js beside the number it names, because the sentence and the
-   figure have to change together. */
+   The first thing on the page, and it has to land in about two seconds.
+
+   IT WAS THREE PARAGRAPHS AND IT IS NOW A NUMBER AND FOUR LINES. The old
+   version buried £299 in a sentence set at body size and then explained it
+   twice underneath, which is the wrong shape for a page most of this audience
+   opens on a phone with a job on. The figure is now display size and the one
+   accent-coloured thing above the fold, and everything that was prose is four
+   points a reader can take in without reading them in order.
+
+   THE FOUR SERVICE LINKS THAT USED TO BE HERE moved to the foot of the page,
+   as DETAIL_LINE. They are worth keeping, because a page that names four
+   services and links none of them is a dead end, but they were a fourth
+   paragraph in a header that already had too many. Somebody who wants to know
+   what the money buys in detail wants it after the prices, not instead of
+   them. */
 const HEAD = `    <section class="section prices-head">
       <div class="wrap page-head">
         <div class="page-head__text">
           <p class="eyebrow">Prices</p>
           <h1>What a website costs</h1>
-          <p class="prices-head__fee">${escapeHtml(BUILD_LINE)}</p>
-          <p class="lede measure">
-            One build fee, three plans, and every price on this page is the price. No setup fee
-            hiding behind it. Two of the three you can cancel any time, and the one you cannot
-            says why on the card. If you have been quoted more than this elsewhere,
-            <a href="/blog/why-trades-websites-cost-so-much/">why trades websites cost so
-            much</a> sets out where that money usually goes.
+
+          <p class="prices-head__fee">
+            <span class="prices-head__amount">${money(BUILD_FEE)}</span>
+            <span class="prices-head__what">${escapeHtml(BUILD_WHAT)}</span>
           </p>
-          <p class="measure">
-            What the money actually buys is set out one job at a time:
-            <a href="/services/websites-for-tradespeople/">websites for tradespeople</a>,
-            <a href="/services/google-business-profile/">Google Business Profile</a> work,
-            <a href="/services/search-and-ai-visibility/">search and AI visibility</a>, and
-            <a href="/services/custom-tools/">custom tools</a>.
+
+          <ul class="prices-head__points">
+            <li>One build fee, the same on all three plans</li>
+            <li>Then from ${money(PLANS[0].monthly)} a month, and you pick how much we do</li>
+            <li>Every price here is the price, with no setup fee behind it</li>
+            <li>Two of the three you can cancel any time</li>
+          </ul>
+
+          <p class="prices-head__note">
+            Been quoted more than this elsewhere?
+            <a href="/blog/why-trades-websites-cost-so-much/">Where that money usually goes</a>.
           </p>
         </div>
 
 ${PAGE_BLOB}
+      </div>
+    </section>`;
+
+/* The four service pages, at the foot of the page rather than the head. See the
+   note above HEAD for why they moved. */
+const DETAIL_LINE = `    <section class="section prices-detail">
+      <div class="wrap">
+        <p class="prices-detail__line">
+          What the money actually buys is set out one job at a time:
+          <a href="/services/websites-for-tradespeople/">websites for tradespeople</a>,
+          <a href="/services/google-business-profile/">Google Business Profile</a> work,
+          <a href="/services/search-and-ai-visibility/">search and AI visibility</a>, and
+          <a href="/services/custom-tools/">custom tools</a>.
+        </p>
       </div>
     </section>`;
 
@@ -109,7 +140,7 @@ const RESCUE_SECTION = `    <section class="section rescue" id="rescue" aria-lab
           <p class="measure">
             If yours has gone quiet or never showed up properly, read
             <a href="/guides/google-business-profile-not-showing/">why is my Google Business
-            Profile not showing up</a> before you pay anybody to fix it, me included.
+            Profile not showing up</a> before you pay anybody to fix it, us included.
           </p>
         </div>
 
@@ -270,7 +301,7 @@ ${FAQS.map(
 const EXTRAS_SECTION = `    <section class="section extras" id="extras" aria-labelledby="extras-heading">
       <div class="wrap">
         <div class="section-head">
-          <h2 class="section-head__title" id="extras-heading">Other things I do</h2>
+          <h2 class="section-head__title" id="extras-heading">Other things we do</h2>
         </div>
 
         <dl class="extras__list">
@@ -398,9 +429,10 @@ export const PRICES_PAGE = {
     renderGrowthCommitments(),
     FAQ_SECTION,
     EXTRAS_SECTION,
+    DETAIL_LINE,
     renderContactBand({
       heading: 'Not sure which one?',
-      body: `Ring and describe the job. I&rsquo;ll tell you which plan fits and, if none of them do, I&rsquo;ll say that too. ${escapeHtml(GUARANTEE.proposal)}`,
+      body: `Ring and describe the job. We&rsquo;ll tell you which plan fits and, if none of them do, we&rsquo;ll say that too. ${escapeHtml(GUARANTEE.proposal)}`,
     }),
   ].join('\n\n'),
 };

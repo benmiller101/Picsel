@@ -328,13 +328,81 @@
 }
 
 /* ---- The build fee, at the top --------------------------------------------
-   The first thing on the page and the only thing in its own paragraph. Larger
-   than the lede under it, because the lede explains and this one states. */
+   The figure at display size with the words beside it, then four points. The
+   whole block has to be readable at a glance on a phone, which is what the old
+   three paragraphs were not.
+
+   THIS IS THE ONE ACCENT ABOVE THE FOLD. The accent marks one thing per screen
+   (see the note in tokens.css), and on a page called "what a website costs"
+   the thing it should mark is the cost. Nothing else in this header is
+   coloured, which is what makes the number work rather than the size alone. */
 .prices-head__fee {
   margin-top: var(--space-6);
-  max-width: var(--measure);
-  font-size: var(--text-xl);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-4);
+}
+
+.prices-head__amount {
+  font-size: var(--text-3xl);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+.prices-head__what {
+  font-size: var(--text-lg);
+  max-width: 20ch;
   color: var(--ink);
+}
+
+/* Four facts, not a paragraph. Ticked in the accent the same way the plan card
+   includes are, so the two lists read as the same kind of statement: this is
+   what you get, stated once. */
+.prices-head__points {
+  margin: var(--space-8) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-3);
+  max-width: var(--measure);
+}
+
+.prices-head__points li {
+  position: relative;
+  padding-left: var(--space-6);
+  color: var(--ink);
+}
+
+.prices-head__points li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 0.5rem;
+  height: 0.28rem;
+  border-left: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  transform: rotate(-45deg);
+}
+
+/* The one link out of the header, and it is for the reader who has already
+   been quoted four figures by somebody else. Quiet, because it is an aside. */
+.prices-head__note {
+  margin-top: var(--space-8);
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
+/* ---- The service links, at the foot ---------------------------------------
+   Set small and faint. They are here so the four service pages are reachable
+   from the money page, which matters, and they are at the bottom because
+   somebody still deciding does not need them. */
+.prices-detail__line {
+  max-width: var(--measure);
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
 }
 
 /* ---- The Google Profile Rescue --------------------------------------------

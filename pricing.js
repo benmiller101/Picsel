@@ -56,12 +56,18 @@ export function money(pounds) {
    it onto a plan: it is deliberately not a per-plan field. */
 export const BUILD_FEE = 299;
 
-/* The sentence the prices page opens on, before a single plan is named. It is
-   the whole reason the page is ordered the way it is, so it lives with the
-   number rather than in the template. */
-export const BUILD_LINE =
-  `${money(BUILD_FEE)} to build your website, whichever plan you pick. ` +
-  'Then choose how much I do afterwards.';
+/* What the prices page opens on, before a single plan is named. Split in two
+   because the page sets the figure at display size and the words beside it,
+   while llms.txt and the JSON-LD want one sentence. Composing the sentence
+   from the parts is what stops the two drifting.
+
+   THE FOUR POINTS are the whole of what somebody needs before they look at a
+   plan, and they are four rather than a paragraph because this page is read on
+   a phone on a job. Each one is a fact the page proves further down: the fee,
+   the floor, what is not hidden, and which plans you can walk away from. */
+export const BUILD_WHAT = 'to build your website, whichever plan you pick';
+
+export const BUILD_LINE = `${money(BUILD_FEE)} ${BUILD_WHAT}. Then choose how much we do afterwards.`;
 
 export const PLANS = [
   {
@@ -102,7 +108,7 @@ export const PLANS = [
       /* The non-rollover is inside the same sentence as the allowance, not a
          footnote under it. A reader who takes only the first half of this line
          has still been told the truth. */
-      'Thirty minutes of changes a month, made by me. Use it or lose it, it does not roll over',
+      'Thirty minutes of changes a month, made for you. Use it or lose it, it does not roll over',
       'Your Google profile kept active with a monthly post and fresh photos',
       'A simple monthly report showing your calls and enquiries',
     ],
@@ -125,7 +131,7 @@ export const PLANS = [
     openingMonths: 3,
     term: '12 months',
     /* The term never ships without this. See the note at the top of the file. */
-    termReason: 'because I am turning down every other trade in your patch to do it',
+    termReason: 'because we turn down every other trade in your patch to do it',
     inherits: 'Managed',
     includes: [
       'New content every month targeting the towns and services you want to win',
@@ -155,7 +161,7 @@ export const PLANS = [
    and leaves the trial. */
 export const UPGRADE_OFFER =
   'Already on Online or Managed? Try Growth for a month at your current price. If you do not ' +
-  'like it I put you straight back, no argument.';
+  'like it we put you straight back, no argument.';
 
 /* ---- Paying for the year up front -----------------------------------------
    Twelve months for the price of ten, on any plan. The three figures are
@@ -177,7 +183,7 @@ export const ANNUAL = {
 export const PAUSE = {
   price: 5,
   body:
-    'One month a year at £5 to hold everything in place. Trades go quiet in winter and I would ' +
+    'One month a year at £5 to hold everything in place. Trades go quiet in winter and we would ' +
     'rather hold your site than lose you.',
 };
 
@@ -186,13 +192,13 @@ export const PAUSE = {
    burned before, and neither of them is a question they will raise on a call.
    They will just not ring. */
 export const LEAVING =
-  'You own your domain, your content, your photos and your reviews. The site comes down and I ' +
+  'You own your domain, your content, your photos and your reviews. The site comes down and we ' +
   'send you everything in a format anyone can use, free, within seven days. No exit fee, ' +
   'nothing held hostage.';
 
 export const OWNERSHIP =
-  `You own the domain, the content and your Google profile. I own the template system the site ` +
-  `is built on, which is how the build is ${money(BUILD_FEE)} rather than ${money(1500)}.`;
+  `You own the domain, the content and your Google profile. We own the template system the ` +
+  `site is built on, which is how the build is ${money(BUILD_FEE)} rather than ${money(1500)}.`;
 
 /* ---- Google Profile Rescue ------------------------------------------------
    Its own export rather than an item in EXTRAS, because it is not an extra on
@@ -206,9 +212,9 @@ export const RESCUE = {
   price: 89,
   heading: 'Not ready for a website? Start here',
   body:
-    'I claim, verify and fully sort your Google Business Profile: categories, services, photos, ' +
-    'questions and answers, and a plan to get you more reviews. This is what shows up when ' +
-    'someone searches for you on Google and Maps.',
+    'We claim, verify and fully sort your Google Business Profile: categories, services, ' +
+    'photos, questions and answers, and a plan to get you more reviews. This is what shows up ' +
+    'when someone searches for you on Google and Maps.',
   credit: `If you take a plan later, the ${money(89)} comes off your build fee.`,
 };
 
@@ -233,8 +239,8 @@ export const EXTRAS = [
        a product price is an invitation to price Managed by the hour. */
     quiet: true,
     body:
-      'On Online, and on Managed once the included thirty minutes is used. I always tell you ' +
-      'how long a job will take before I start it, so nothing arrives as a surprise. Most ' +
+      'On Online, and on Managed once the included thirty minutes is used. We always tell you ' +
+      'how long a job will take before we start it, so nothing arrives as a surprise. Most ' +
       'people who pay it twice move up to Managed, because it works out cheaper.',
   },
   {
@@ -243,9 +249,10 @@ export const EXTRAS = [
     body:
       'For when you need the phone ringing this week and cannot wait a quarter for the search ' +
       'work to take. You pay Google directly, from your own card on your own account, so the ' +
-      `budget is yours and you can see every penny of it. I only ever charge the ${money(129)}. ` +
+      `budget is yours and you can see every penny of it. We only ever charge the ${money(129)}. ` +
       `The ${money(400)} minimum is not a sales floor: below it the ads do not run often enough ` +
-      'to work, and I would rather turn the job down than take money for something that will not.',
+      'to work, and we would rather turn the job down than take money for something that will ' +
+      'not.',
   },
   {
     name: 'Custom apps',
@@ -295,8 +302,8 @@ export const GUARANTEE = {
      by number. */
   annualPayers: `If you paid for the year up front, the ${money(149)} comes in cash, since there is nothing left to credit.`,
   termRelease:
-    'A guarantee payout ends your twelve month term on thirty days notice. I am not going to ' +
-    'hold you to a year if I have not delivered.',
+    'A guarantee payout ends your twelve month term on thirty days notice. We are not going to ' +
+    'hold you to a year if we have not delivered.',
   keepEverything: 'You keep everything either way: the site, the domain and the Google profile.',
   monthlyNotRefundable:
     'The monthly fee is not refundable. It only ever covers months already worked.',

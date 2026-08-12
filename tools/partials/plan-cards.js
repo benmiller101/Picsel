@@ -32,7 +32,7 @@
    been loosened by moving it. The band also gives the refund terms enough room
    to be read, which they were not getting at a third of the width. */
 
-import { PLANS, GUARANTEE, BUILD_FEE, UPGRADE_OFFER, money } from '../../pricing.js';
+import { PLANS, GUARANTEE, BUILD_FEE, BUILD_WHAT, UPGRADE_OFFER, money } from '../../pricing.js';
 import { SITE } from '../../site.config.js';
 import { escapeHtml } from '../templates/page.js';
 
@@ -81,8 +81,8 @@ ${renderPrice(plan, 'plan-rail__amount', 'plan-rail__period')}
              them is the version where somebody works out the build fee must be
              the difference between them. -->
         <p class="plan-rail__build">
-          <strong>${money(BUILD_FEE)} to build your website, whichever plan you pick.</strong>
-          Then choose how much I do afterwards.
+          <strong>${money(BUILD_FEE)} ${escapeHtml(BUILD_WHAT)}.</strong>
+          Then choose how much we do afterwards.
         </p>
 
         <ul class="plan-rail">
