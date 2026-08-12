@@ -24,6 +24,7 @@
    a plain page-head, then the guide__ classes from article.css for the body,
    because this is long-form reading in the same sense a guide is. */
 
+import { SHOW_PRICING } from '../../site.config.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { renderArticleSections } from '../partials/article-sections.js';
 import { renderContactBand } from '../partials/contact-band.js';
@@ -92,7 +93,10 @@ const SECTIONS = [
         'first draft and show it to you.',
       'You ask for changes until you&rsquo;re happy, then the site goes live. In most cases the ' +
         'build fee is paid before work starts, and the monthly cost only starts once the site is ' +
-        'live. Full pricing is on the <a href="/prices/">prices page</a>.',
+        'live.' +
+        (SHOW_PRICING
+          ? ' Full pricing is on the <a href="/prices/">prices page</a>.'
+          : ' You get the figures in writing on that first call, before anything is booked in.'),
     ],
   },
 ];

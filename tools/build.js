@@ -17,7 +17,7 @@ import { writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { SITE, absoluteUrl, REVIEWS_URL_IS_PLACEHOLDER } from '../site.config.js';
+import { SITE, SHOW_PRICING, absoluteUrl, REVIEWS_URL_IS_PLACEHOLDER } from '../site.config.js';
 import { PROJECTS } from '../projects.js';
 import { REVIEWS } from '../reviews.js';
 import { PLANS, money } from '../pricing.js';
@@ -85,7 +85,10 @@ const PAGES = [
      section 2 asks for and the order this list should read in. */
   SERVICES_INDEX_PAGE,
   ...SERVICE_PAGES,
-  PRICES_PAGE,
+  /* /prices exists in source and is not built while SHOW_PRICING is off, so it
+     leaves the sitemap and llms.txt in the same run rather than lingering as a
+     listed route that 404s. _redirects sends the old address to /contact. */
+  ...(SHOW_PRICING ? [PRICES_PAGE] : []),
   GUIDES_INDEX_PAGE,
   ...GUIDE_PAGES,
   BLOG_INDEX_PAGE,
@@ -784,6 +787,23 @@ async function writeLlmsTxt(rendered) {
     .map(({ page }) => `- [${page.title}](${absoluteUrl(page.path)}): ${page.description}`)
     .join('\n');
 
+  /* The price list, or nothing at all while SHOW_PRICING is off. An assistant
+     asked "how much is Picsel" should get no answer rather than a stale one,
+     and a heading with an apology under it is still a number-shaped thing for
+     a model to quote back at somebody. */
+  const COST_SECTION = SHOW_PRICING
+    ? `## What it costs
+
+${PLANS.map(
+  (plan) =>
+    `- ${plan.name}: ${money(plan.build)} to build, then ${money(plan.monthly)} a month. ${plan.summary}`,
+).join('\n')}
+
+Full prices, including what each plan does not cover, are at ${absoluteUrl('/prices/')}.
+
+`
+    : '';
+
   const llms = `# ${SITE.name}
 
 > ${SITE.description}
@@ -803,16 +823,7 @@ none to make. Anything stated here can be checked against the live sites.
 - Custom automation tools for repetitive office work
 - ${SITE.exclusivity.short}
 
-## What it costs
-
-${PLANS.map(
-  (plan) =>
-    `- ${plan.name}: ${money(plan.build)} to build, then ${money(plan.monthly)} a month. ${plan.summary}`,
-).join('\n')}
-
-Full prices, including what each plan does not cover, are at ${absoluteUrl('/prices/')}.
-
-## Work
+${COST_SECTION}## Work
 
 ${projectLines}
 

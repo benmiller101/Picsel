@@ -14,7 +14,7 @@
    excludeFromSitemap flag, and a noindex tag so a search engine that reaches
    this file some other way does not list it either. */
 
-import { SITE } from '../../site.config.js';
+import { SITE, SHOW_PRICING } from '../../site.config.js';
 import { escapeHtml } from '../templates/page.js';
 
 /* The four routes worth sending a lost visitor to, in the order this
@@ -23,7 +23,12 @@ import { escapeHtml } from '../templates/page.js';
    so this page needs no stylesheet of its own. */
 const LINKS = [
   { href: '/work/', label: 'See the work' },
-  { href: '/prices/', label: 'Check the prices' },
+  /* Prices drops out with SHOW_PRICING, and services takes the slot rather
+     than the list shrinking to three. A lost visitor still needs four ways
+     back in, and "what we do" is the nearest thing to what they lost. */
+  SHOW_PRICING
+    ? { href: '/prices/', label: 'Check the prices' }
+    : { href: '/services/', label: 'See what we do' },
   { href: '/guides/', label: 'Read a guide' },
   { href: '/contact/', label: 'Send an enquiry' },
 ];
@@ -57,8 +62,9 @@ ${LINK_ITEMS}
 export const NOT_FOUND_PAGE = {
   path: '/404.html',
   title: 'Page not found | Picsel',
-  description:
-    "This page doesn't exist. See our work, check the prices, read a guide, or ring us direct. Websites and Google visibility for tradespeople across the UK.",
+  description: SHOW_PRICING
+    ? "This page doesn't exist. See our work, check the prices, read a guide, or ring us direct. Websites and Google visibility for tradespeople across the UK."
+    : "This page doesn't exist. See our work, read a guide, find out what we do, or ring us direct. Websites and Google visibility for tradespeople across the UK.",
   excludeFromSitemap: true,
   extraHead: '  <meta name="robots" content="noindex, follow" />',
   content: CONTENT,

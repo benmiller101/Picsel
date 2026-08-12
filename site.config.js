@@ -9,6 +9,25 @@
    signal that two different businesses might be involved. One constant, read
    everywhere, makes that class of mistake impossible. */
 
+/* ---- SHOW_PRICING — the temporary price blackout --------------------------
+   Set to false while the pricing model is being reworked. Nothing is deleted
+   when this is off: /prices stops being built and stops being linked, the plan
+   cards and every figure the site quotes about itself are swapped for the copy
+   that was there before prices went on the site, and the whole thing comes
+   back by setting this to true and running the build.
+
+   WHAT IT DOES NOT COVER, deliberately. The guides discuss what a trades site
+   costs on the open market, "roughly £500 to £2,000 as a one off", and those
+   numbers are a fact about the industry rather than a Picsel price list. They
+   stay. What goes is every number Picsel is quoting for its own work.
+
+   THE CONTRADICTION TO WATCH while this is off. The social bios lead with
+   "from £15 a month", and the reason prices went on the site in the first
+   place was that a site naming no number disagreed with them in public. That
+   disagreement is back for as long as this flag is false, so the bios need
+   changing too, or changing back when the new model lands. */
+export const SHOW_PRICING = false;
+
 export const SITE = {
   name: 'Picsel',
   tagline: 'Design Studio',
@@ -207,7 +226,12 @@ export const SITE = {
   nav: [
     { label: 'Home', href: '/' },
     { label: 'Work', href: '/work/' },
-    { label: 'Prices', href: '/prices/' },
+    /* Dropped from the bar while SHOW_PRICING is off, which leaves three
+       items. That is a bar with room in it rather than a bar with a hole:
+       Services is not promoted into the gap, because the reason it sits in the
+       footer is that a phone-first audience needs the phone number first, and
+       that reason does not change just because a price page went away. */
+    ...(SHOW_PRICING ? [{ label: 'Prices', href: '/prices/' }] : []),
     { label: 'Get in touch', href: '/contact/', accent: true },
   ],
 
@@ -223,7 +247,7 @@ export const SITE = {
     { label: 'Guides', href: '/guides/' },
     { label: 'Blog', href: '/blog/' },
     { label: 'Work', href: '/work/' },
-    { label: 'Prices', href: '/prices/' },
+    ...(SHOW_PRICING ? [{ label: 'Prices', href: '/prices/' }] : []),
     { label: 'Contact', href: '/contact/' },
     { label: 'About', href: '/about/' },
     { label: 'Privacy', href: '/privacy/' },

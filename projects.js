@@ -1,3 +1,5 @@
+import { SHOW_PRICING } from './site.config.js';
+
 /* ---- projects.js — the single source of truth for Picsel's work -----------
    Every project fact on this site comes from here. The Work grid, the five
    project pages, the sitemap entries and the screenshot pipeline all read this
@@ -99,6 +101,14 @@
    construction firm with the search work included, and it is the closest thing
    here to what the site is now selling. */
 
+/* The half of each `related` note that names the plan a build runs on. It
+   disappears with SHOW_PRICING and the guide sentence beside it does not,
+   because "this job is the thing that guide describes" is still true when
+   there is no price list to point the reader at. Written as a helper so the
+   sentences stay in the data where a reader will find them, rather than being
+   deleted now and reconstructed from memory later. */
+const planNote = (sentence) => (SHOW_PRICING ? ` ${sentence}` : '');
+
 export const PROJECTS = [
   {
     slug: 'nevitt-construction',
@@ -120,8 +130,10 @@ export const PROJECTS = [
     alt: 'Screenshot of the A Nevitt Construction website',
     related:
       'The search side of this build is the same GEO work covered in ' +
-      '<a href="/guides/what-is-geo/">what GEO is and why it matters for trades</a>, and it is ' +
-      'included on the <a href="/prices/#growth">Growth plan</a>.',
+      '<a href="/guides/what-is-geo/">what GEO is and why it matters for trades</a>' +
+      (SHOW_PRICING
+        ? ', and it is included on the <a href="/prices/#growth">Growth plan</a>.'
+        : '.'),
     // Chosen over the two unused variants on disk (see mockups/brief.md)
     // because it shows the desktop, tablet and phone together, which is the
     // one thing this portfolio actually needs to demonstrate: the same build
@@ -154,8 +166,8 @@ export const PROJECTS = [
     alt: 'Screenshot of the Julie Miller Art website',
     related:
       'The same idea, that real work beats stock photography, is one of the points in ' +
-      '<a href="/guides/what-a-trades-website-needs/">what a tradesperson\'s website needs</a>. ' +
-      'A site this size sits on our <a href="/prices/#online">Online plan</a>.',
+      '<a href="/guides/what-a-trades-website-needs/">what a tradesperson\'s website needs</a>.' +
+      planNote('A site this size sits on our <a href="/prices/#online">Online plan</a>.'),
     // A single monitor rather than a multi-device spread: the gallery grid is
     // the whole point of this site and a wide desktop screen is where it
     // reads best, so that is the one device shown. Dimensions are
@@ -185,8 +197,10 @@ export const PROJECTS = [
     related:
       'Getting a clearance business found means asking every customer for a review at the ' +
       'right moment, which is exactly what <a href="/guides/how-to-get-more-google-reviews/">how ' +
-      'to get more Google reviews</a> sets out. That ongoing work is part of the ' +
-      '<a href="/prices/#growth">Growth plan</a>.',
+      'to get more Google reviews</a> sets out.' +
+      planNote(
+        'That ongoing work is part of the <a href="/prices/#growth">Growth plan</a>.',
+      ),
   },
   {
     slug: 'ajc-removals',
@@ -206,7 +220,8 @@ export const PROJECTS = [
       'A quote request that takes seconds only works if the site itself was priced just as ' +
       'plainly, which is the same argument made in ' +
       '<a href="/guides/how-much-a-trades-website-costs/">how much a tradesman\'s website ' +
-      'should cost</a>. This one was built on our <a href="/prices/#online">Online plan</a>.',
+      'should cost</a>.' +
+      planNote('This one was built on our <a href="/prices/#online">Online plan</a>.'),
     // Chosen over the unused second variant on disk (see mockups/brief.md)
     // because it shows the desktop, tablet, laptop and phone together.
     // Dimensions are mockup.webp's own, as tools/convert-photo.js printed
@@ -236,8 +251,8 @@ export const PROJECTS = [
       'A weekly live sale only works if people can find the business between broadcasts, and ' +
       'that depends on the same profile setup covered in ' +
       '<a href="/guides/google-business-profile-not-showing/">why is my Google Business ' +
-      'Profile not showing up</a>. The site itself runs on our ' +
-      '<a href="/prices/#online">Online plan</a>.',
+      'Profile not showing up</a>.' +
+      planNote('The site itself runs on our <a href="/prices/#online">Online plan</a>.'),
   },
 ];
 

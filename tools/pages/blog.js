@@ -24,6 +24,7 @@
    three. There was no way to state it that was both flattering and true, so it
    is not stated. */
 
+import { SHOW_PRICING } from '../../site.config.js';
 import { PLANS, money } from '../../pricing.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs, blogPosting, blogNode } from '../templates/schema.js';
@@ -81,9 +82,11 @@ const POSTS = [
     date: '2026-08-09',
     headline: 'Why trades websites cost so much',
     title: 'Why trades websites cost so much | Picsel',
-    description:
-      'Where the money goes in a three thousand pound website quote, what a trades website ' +
-      'actually has to do, and what I charge instead. With one real number.',
+    description: SHOW_PRICING
+      ? 'Where the money goes in a three thousand pound website quote, what a trades website ' +
+        'actually has to do, and what I charge instead. With one real number.'
+      : 'Where the money goes in a three thousand pound website quote, what a trades website ' +
+        'actually has to do, and how to tell the two apart. One real number.',
     standfirst:
       'A five page website for a plumber does not cost three thousand pounds to make. It ' +
       'costs that to sell, to manage, and to sign off.',
@@ -115,20 +118,40 @@ const POSTS = [
             'website needs</a>, written without me trying to sell you anything.',
         ],
       },
-      {
-        h2: 'What I charge, and what is in it',
-        paragraphs: [
-          `The smallest plan is ${money(ONLINE.build)} to build and ${money(ONLINE.monthly)} a ` +
-            `month. ${MANAGED.name} is ${money(MANAGED.build)} and ${money(MANAGED.monthly)} a ` +
-            `month, which adds somebody looking after it so you never touch it. ` +
-            `${GROWTH.name} is ${money(GROWTH.build)} and ${money(GROWTH.monthly)} a month, ` +
-            'and that one buys active work every month rather than a site sitting still.',
-          'The figures matter less than where they are. They are on the website, so you can ' +
-            'hold them against anyone else before you pick up the phone. Most of this trade ' +
-            'still makes you ring to find out. If you want a straight price for your own job, ' +
-            '<a href="/contact/">get in touch</a> and I will give you one on the phone.',
-        ],
-      },
+      /* The section that names my own three plans, and the version that runs
+         while SHOW_PRICING is off. Both make the same argument, which is that
+         the number matters less than whether anyone will say it out loud. The
+         second one has to make it without a price list behind it, so it says
+         where the plans have gone rather than pretending there were never
+         any. */
+      SHOW_PRICING
+        ? {
+            h2: 'What I charge, and what is in it',
+            paragraphs: [
+              `The smallest plan is ${money(ONLINE.build)} to build and ${money(ONLINE.monthly)} a ` +
+                `month. ${MANAGED.name} is ${money(MANAGED.build)} and ${money(MANAGED.monthly)} a ` +
+                `month, which adds somebody looking after it so you never touch it. ` +
+                `${GROWTH.name} is ${money(GROWTH.build)} and ${money(GROWTH.monthly)} a month, ` +
+                'and that one buys active work every month rather than a site sitting still.',
+              'The figures matter less than where they are. They are on the website, so you can ' +
+                'hold them against anyone else before you pick up the phone. Most of this trade ' +
+                'still makes you ring to find out. If you want a straight price for your own job, ' +
+                '<a href="/contact/">get in touch</a> and I will give you one on the phone.',
+            ],
+          }
+        : {
+            h2: 'What to ask before you sign anything',
+            paragraphs: [
+              'Ask what the build costs and what the running costs, separately. Ask what ' +
+                'happens in month two. Ask who owns the domain and who owns the site if you ' +
+                'leave. A quote that will not break into those parts is hiding at least one ' +
+                'of them.',
+              'I am rebuilding my own plans, so there is no price list here to hold anyone ' +
+                'against. Ring, or <a href="/contact/">send me the details</a>, and I will give ' +
+                'you a figure for your own job broken into those same parts, before you have ' +
+                'committed to anything.',
+            ],
+          },
       {
         h2: 'What that has produced so far',
         paragraphs: [
@@ -143,13 +166,21 @@ const POSTS = [
         ],
       },
     ],
-    close: {
-      href: '/prices/',
-      line:
-        'Every plan is written down, including what it does not cover: ' +
-        `${money(ONLINE.build)} to build and ${money(ONLINE.monthly)} a month at the smallest.`,
-      cta: 'See the prices',
-    },
+    close: SHOW_PRICING
+      ? {
+          href: '/prices/',
+          line:
+            'Every plan is written down, including what it does not cover: ' +
+            `${money(ONLINE.build)} to build and ${money(ONLINE.monthly)} a month at the smallest.`,
+          cta: 'See the prices',
+        }
+      : {
+          href: '/work/',
+          line:
+            'That argument is only worth what the work behind it is worth. Five live sites, ' +
+            'each with a note on what it had to do.',
+          cta: 'See the sites',
+        },
     action: {
       href: '/contact/#enquiry',
       line: 'The number that matters is the one for your own job, not a range.',

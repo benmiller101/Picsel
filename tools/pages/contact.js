@@ -13,7 +13,7 @@
    inline send so nobody is thrown off the page. With JavaScript off the same
    form still submits as an ordinary HTML post and lands on /contact/sent/. */
 
-import { SITE, absoluteUrl } from '../../site.config.js';
+import { SITE, SHOW_PRICING, absoluteUrl } from '../../site.config.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs } from '../templates/schema.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
@@ -140,8 +140,11 @@ function renderForm() {
           <h2 class="enquiry__heading" id="enquiry-heading">Or send us the details</h2>
           <p class="enquiry__lede">
             Tell us what your business does and what you want the site to do. We&rsquo;ll come back
-            with what&rsquo;s involved and what it would cost. If you&rsquo;d rather see the numbers
-            first, they&rsquo;re on the <a href="/prices/">prices page</a>.
+            with what&rsquo;s involved and what it would cost.${
+              SHOW_PRICING
+                ? ' If you&rsquo;d rather see the numbers first, they&rsquo;re on the <a href="/prices/">prices page</a>.'
+                : ''
+            }
           </p>
 
           <form class="enquiry-form"

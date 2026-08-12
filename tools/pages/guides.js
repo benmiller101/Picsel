@@ -28,7 +28,7 @@
    heading to make sense. If an edit makes it longer than about fifty words,
    the edit is wrong. */
 
-import { SITE, absoluteUrl } from '../../site.config.js';
+import { SITE, SHOW_PRICING, absoluteUrl } from '../../site.config.js';
 import { PLANS, money } from '../../pricing.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs } from '../templates/schema.js';
@@ -602,10 +602,20 @@ ${guide.also
   /* One link, at the end, stated as a fact rather than sold. A guide that turns
      into a pitch halfway down gets closed by the human and skipped by the
      assistant, which loses both readers to save one sentence. */
-  const plan = `        <aside class="guide__plan">
+  /* Every one of these asides names a Picsel figure, so the whole block goes
+     while SHOW_PRICING is off rather than being reworded into a price-free
+     version of itself. The guide loses nothing it needed: the action line
+     further up already points at the service page that does the work, and an
+     aside whose only job was "and here is what that costs" has no job left.
+
+     The `plan` data stays in the guide records above so this comes back
+     whole. */
+  const plan = SHOW_PRICING
+    ? `        <aside class="guide__plan">
           <p>${escapeHtml(guide.plan.line)}</p>
           <a class="guide__plan-link" href="${escapeHtml(guide.plan.href || `/prices/#${guide.plan.id}`)}">See what that includes</a>
-        </aside>`;
+        </aside>`
+    : '';
 
   const content = `${renderBreadcrumbs(trail)}
 

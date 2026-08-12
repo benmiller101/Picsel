@@ -14,7 +14,7 @@
 
 import { FEATURED_PROJECTS } from '../../projects.js';
 import { REVIEWS } from '../../reviews.js';
-import { SITE } from '../../site.config.js';
+import { SITE, SHOW_PRICING } from '../../site.config.js';
 import { PLANS, money } from '../../pricing.js';
 import { renderWorkGrid } from '../partials/work-card.js';
 import { renderPlanRail } from '../partials/plan-cards.js';
@@ -26,6 +26,12 @@ import { renderContactBand } from '../partials/contact-band.js';
    and three hand-written copies of a price is how a site ends up quoting a
    number the business stopped charging months ago. */
 const FROM_MONTHLY = money(PLANS[0].monthly);
+
+/* The half-sentence that names a price, and what stands in its place while
+   SHOW_PRICING is off. "Live in days" was always the second half of the line;
+   with the number gone it carries the whole thing, which is fine, because
+   speed is the other thing this audience is actually choosing on. */
+const PRICE_LINE = SHOW_PRICING ? `From ${FROM_MONTHLY} a month, live in days.` : 'Live in days.';
 
 /* ---- The hero -------------------------------------------------------------
    Three layers over near-black: the drawn dot texture, the blobs on their pixel
@@ -53,10 +59,12 @@ const HERO = `    <section class="hero" id="hero">
              which would make a screen reader spell the word out letter by
              letter, so the spans are hidden from it and the real heading text
              is carried by the visually-hidden line above them. Seen: a pixel
-             wordmark. Heard: "Picsel, websites for tradesmen, from £15 a
-             month", the page's actual subject rather than just its name. -->
+             wordmark. Heard: "Picsel, websites for tradesmen anywhere in the
+             UK", the page's actual subject rather than just its name. The line
+             named a price until the pricing model went back on the bench; see
+             SHOW_PRICING in site.config.js. -->
         <h1 class="hero-mark">
-          <span class="visually-hidden">Picsel: websites for tradesmen, from £15 a month</span>
+          <span class="visually-hidden">Picsel: websites for tradesmen anywhere in the UK</span>
           <span class="wordmark" id="wordmark" aria-hidden="true">PICSEL</span>
           <span class="tagline" id="tagline" aria-hidden="true">Design Studio</span>
         </h1>
@@ -86,7 +94,7 @@ const INTRO = `    <section class="section intro">
         <p class="eyebrow">Websites for trades</p>
         <p class="lede intro__statement">
           Websites and Google visibility for tradespeople. ${SITE.exclusivity.short}, so we
-          never work for your competitor. From ${FROM_MONTHLY} a month, live in days.
+          never work for your competitor. ${PRICE_LINE}
         </p>
         <!-- "No jargon, no lock-in, no agency retainer" was one sentence with
              three beats in it. Three is the length a machine reaches for when
@@ -209,14 +217,22 @@ const QUESTIONS = [
   },
   {
     q: 'How much does a website cost?',
-    /* Leads with the number. Someone asking this wants the figure, not a
-       paragraph about how it depends, and an assistant quoting the answer will
-       take the first sentence. */
-    a:
-      `Builds start at ${money(PLANS[0].build)} and the site is then ${FROM_MONTHLY} a month, ` +
-      'which covers the hosting, the security and the Google listing. Two larger plans add ' +
-      'monthly edits and active search work. Every price is on the prices page, including what ' +
-      'each one does not cover.',
+    /* Leads with the number when there is one to lead with. Someone asking this
+       wants the figure, not a paragraph about how it depends, and an assistant
+       quoting the answer will take the first sentence.
+
+       The question stays on the page while SHOW_PRICING is off. Deleting it
+       would not stop anyone asking, it would only mean the answer they find is
+       whatever they guess, and "ring and ask" is a worse answer than a number
+       but a much better one than silence. */
+    a: SHOW_PRICING
+      ? `Builds start at ${money(PLANS[0].build)} and the site is then ${FROM_MONTHLY} a month, ` +
+        'which covers the hosting, the security and the Google listing. Two larger plans add ' +
+        'monthly edits and active search work. Every price is on the prices page, including ' +
+        'what each one does not cover.'
+      : 'We are rebuilding the plans, so there is no price list on the site at the moment. ' +
+        'Ring or send a message with what you need and you will get a figure the same day, ' +
+        'and what it covers in writing.',
   },
   {
     q: 'Where do you work?',
@@ -312,13 +328,16 @@ export const HOME_PAGE = {
   /* Written for the search someone actually types. "Websites for tradesmen" is
      the phrase, and it is the first thing in the title rather than the studio
      name, because nobody is searching for Picsel yet. */
-  title: 'Websites for tradesmen, from £15 a month | Picsel',
+  title: SHOW_PRICING
+    ? 'Websites for tradesmen, from £15 a month | Picsel'
+    : 'Websites for tradesmen across the UK | Picsel',
   /* Kept in step with the opening lines on the page itself. A description that
      promises one thing and a page that says another is the sort of mismatch
      that costs a click and is never noticed, because nobody re-reads their own
      meta tags. */
-  description:
-    'We build fast, honest websites for tradespeople anywhere in the UK, get found on Google and in AI search, and stay there. From £15 a month, live in days.',
+  description: SHOW_PRICING
+    ? 'We build fast, honest websites for tradespeople anywhere in the UK, get found on Google and in AI search, and stay there. From £15 a month, live in days.'
+    : 'We build fast, honest websites for tradespeople anywhere in the UK, get you found on Google and in AI search, and keep you there. Live in days, not months.',
   /* Opts the page out of the gap base.css reserves under the floating nav: the
      hero is a full-screen composition that starts at the very top and
      deliberately runs behind the nav. */
@@ -347,7 +366,7 @@ export const HOME_PAGE = {
     INTRO,
     WORK,
     SERVICES,
-    renderPlanRail(),
+    ...(SHOW_PRICING ? [renderPlanRail()] : []),
     FAQ,
     REVIEWS_SECTION,
     renderContactBand(),
