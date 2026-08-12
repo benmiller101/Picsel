@@ -17,6 +17,17 @@ none to make. Anything stated here can be checked against the live sites.
 - Custom automation tools for repetitive office work
 - One trade per patch on our Growth plan
 
+## What it costs
+
+£299 to build your website, whichever plan you pick. Then choose how much I do afterwards.
+
+- Online: £15 a month, rolling, cancel any time. A smart, professional website built for your trade, live within a week. Set and forget: it just works.
+- Managed: £29 a month, rolling, cancel any time. Everything in Online, looked after, so you never have to touch it.
+- Growth: £179 a month (£99 for the first 3 months), 12 months. Everything in Managed, plus active work every month to put you in front of people who are searching right now.
+
+The £299 build fee is the same on all three. Full prices, including what each plan
+does not cover, are at https://picsel.co.uk/prices/.
+
 ## Work
 
 - [A Nevitt Construction](https://picsel.co.uk/work/nevitt-construction/): Construction in Hayle, Cornwall. Live site: https://haylebuilders.com/
@@ -27,18 +38,19 @@ none to make. Anything stated here can be checked against the live sites.
 
 ## Pages
 
-- [Websites for tradesmen across the UK | Picsel](https://picsel.co.uk/): We build fast, honest websites for tradespeople anywhere in the UK, get you found on Google and in AI search, and keep you there. Live in days, not months.
+- [Websites for tradesmen, from £15 a month | Picsel](https://picsel.co.uk/): We build fast, honest websites for tradespeople anywhere in the UK, get found on Google and in AI search, and stay there. From £15 a month, live in days.
 - [Work: websites built for trades and small firms](https://picsel.co.uk/work/): The five sites Picsel has built for tradespeople and small businesses. Every one links out to the live site, so you can judge it the way a customer would.
 - [A Nevitt Construction | Picsel](https://picsel.co.uk/work/nevitt-construction/): A site for a family-run building contractor in Hayle, built with SEO, covering everything from single-storey extensions to full design-and-build new homes.
 - [Julie Miller Art | Picsel](https://picsel.co.uk/work/julie-miller-art/): A portfolio for an illustrator working in mixed media in the Scottish Borders, built four hundred miles from Picsel, where the landscape drives the work.
 - [Lanora House | Picsel](https://picsel.co.uk/work/lanora-house/): A licensed house clearance and cleaning firm working across Cornwall and the South West, with the SEO work included to bring enquiries in. Built by Picsel.
 - [AJC Removals & Clearances | Picsel](https://picsel.co.uk/work/ajc-removals/): A removals and clearance company covering Cornwall, Devon and beyond, where the quote request takes seconds, not a long form to fill in. Built by Picsel.
 - [House of Cornwall | Picsel](https://picsel.co.uk/work/house-of-cornwall/): Live clearance auctions broadcast from Hayle every week, selling antiques, retro pieces and curiosities from house clearances, with the next sale up front.
-- [Website and search services for tradespeople](https://picsel.co.uk/services/): Four things we do: websites for tradespeople, Google Business Profiles, the monthly search and AI work, and custom tools for the paperwork you repeat.
-- [Websites for tradespeople, live within a week](https://picsel.co.uk/services/websites-for-tradespeople/): A five page website built around your trade, live within a week, with hosting, the security certificate and your Google Business Profile set up too.
-- [Google Business Profile setup and management](https://picsel.co.uk/services/google-business-profile/): We claim, verify and fill in your Google Business Profile: categories, services, photos and reviews. A one off job, or set up at launch with any website.
-- [Search and AI visibility for tradespeople](https://picsel.co.uk/services/search-and-ai-visibility/): Monthly work to get you found on Google and named by AI assistants. It is the Growth plan, and your build fee comes back if it misses five enquiries.
-- [Custom tools for trades: quotes, jobs and photos](https://picsel.co.uk/services/custom-tools/): Custom software built around how your business already works: quotes, job records, photos and stock. Built outright, or built and run for you monthly.
+- [Website and search services for tradespeople](https://picsel.co.uk/services/): Four things we do and what each costs: websites at £299 to build and £15 a month, Google Business Profiles, search and AI visibility, and custom apps.
+- [Websites for tradespeople, live within a week](https://picsel.co.uk/services/websites-for-tradespeople/): £299 to build a five page website around your trade, live within a week, then from £15 a month with hosting and your Google Business Profile included.
+- [Google Business Profile setup and management](https://picsel.co.uk/services/google-business-profile/): We claim, verify and fill in your Google Business Profile: categories, services, photos and reviews. £89 one off, or set up at launch with any website.
+- [Search and AI visibility for tradespeople](https://picsel.co.uk/services/search-and-ai-visibility/): Monthly work to get you found on Google and named by AI assistants. The Growth plan, £99 a month for three months then £179, with a lead guarantee on it.
+- [Custom tools for trades: quotes, jobs and photos](https://picsel.co.uk/services/custom-tools/): Custom software built around how your business already works: quotes, job records, photos and stock. £1,200 to build then £49 a month, or £149 a month.
+- [Website prices for tradespeople | Picsel](https://picsel.co.uk/prices/): £299 to build, then from £15 a month. Three plans, what each one covers, and the answers on pausing, leaving and who owns what. No lock-in on two of them.
 - [Guides for tradespeople | Picsel](https://picsel.co.uk/guides/): Plain answers to five questions tradespeople actually ask about websites, Google Business Profiles, reviews and what any of it should cost. No sales pitch.
 - [What a tradesman's website needs | Picsel](https://picsel.co.uk/guides/what-a-trades-website-needs/): Your phone number on every page, the jobs you do in the words customers use, the towns you cover, photos of your own work and a few reviews, little else.
 - [Why your Google Business Profile is not showing](https://picsel.co.uk/guides/google-business-profile-not-showing/): Usually one of four things: it is not verified, the category is wrong, your details do not match, or an old duplicate is competing with it. All fixable.
@@ -46,7 +58,7 @@ none to make. Anything stated here can be checked against the live sites.
 - [What GEO is, and why it matters for trades](https://picsel.co.uk/guides/what-is-geo/): GEO is getting your business quoted by AI assistants when someone asks one to recommend a tradesperson. It is what SEO is to Google, and why it matters.
 - [How to get more Google reviews | Picsel](https://picsel.co.uk/guides/how-to-get-more-google-reviews/): Ask every customer in person on the day the job finishes, and hand them a short review link. What stops it working, and two things that get you penalised.
 - [Blog: websites for tradespeople | Picsel](https://picsel.co.uk/blog/): What I think about websites for tradespeople, what they cost and why they cost it. Opinions rather than answers here. The answers are all in the guides.
-- [Why trades websites cost so much | Picsel](https://picsel.co.uk/blog/why-trades-websites-cost-so-much/): Where the money goes in a three thousand pound website quote, what a trades website actually has to do, and how to tell the two apart. One real number.
+- [Why trades websites cost so much | Picsel](https://picsel.co.uk/blog/why-trades-websites-cost-so-much/): Where the money goes in a three thousand pound website quote, what a trades website actually has to do, and what I charge instead. With one real number.
 - [Contact Picsel: websites for tradespeople](https://picsel.co.uk/contact/): Ring Picsel on 07456 809049, email ben@picsel.co.uk, or send an enquiry. Websites and Google visibility for tradespeople anywhere in the UK, no middleman.
 - [About Ben Miller, who runs Picsel](https://picsel.co.uk/about/): Ben Miller has built websites for about two years, since his time as creative director at Lanora House. That is why he started Picsel, and how a job runs.
 - [What happens to your details | Picsel](https://picsel.co.uk/privacy/): What Picsel does with your enquiry details: what the form collects, where it goes, how long we keep it, and how to get a copy or ask us to delete them.

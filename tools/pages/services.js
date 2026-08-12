@@ -30,7 +30,7 @@
    guide and from the homepage's route through both. */
 
 import { SITE, SHOW_PRICING, absoluteUrl } from '../../site.config.js';
-import { PLANS, EXTRAS, GUARANTEE, money } from '../../pricing.js';
+import { PLANS, EXTRAS, GUARANTEE, BUILD_FEE, RESCUE, money } from '../../pricing.js';
 import { reviewsForService } from '../../reviews.js';
 import { getProjectBySlug } from '../../projects.js';
 import { escapeHtml } from '../templates/page.js';
@@ -47,9 +47,8 @@ const [ONLINE, MANAGED, GROWTH] = PLANS;
 /* Found by name rather than by index. EXTRAS is a list somebody will reorder
    one day, and a page that quotes EXTRAS[0] would silently start describing
    Google Ads as a profile rescue. */
-const RESCUE = EXTRAS.find((extra) => extra.name === 'Google Profile Rescue');
 const ADS = EXTRAS.find((extra) => extra.name === 'Google Ads');
-const TOOLS = EXTRAS.find((extra) => extra.name === 'Custom tools');
+const TOOLS = EXTRAS.find((extra) => extra.name === 'Custom apps');
 
 /* Every service page carries this as its last FAQ, word for word. It lives
    here once so the four pages cannot drift into four different phrasings of
@@ -99,16 +98,17 @@ const SERVICES = [
     slug: 'websites-for-tradespeople',
     title: 'Websites for tradespeople, live within a week',
     description: SHOW_PRICING
-      ? `A five page website built around your trade, live within a week. From ${money(ONLINE.build)} to build and ${money(ONLINE.monthly)} a month, with hosting and your Google Business Profile included.`
+      ? `${money(BUILD_FEE)} to build a five page website around your trade, live within a week, then from ${money(ONLINE.monthly)} a month with hosting and your Google Business Profile included.`
       : 'A five page website built around your trade, live within a week, with hosting, the security certificate and your Google Business Profile set up too.',
     indexLine: SHOW_PRICING
-      ? `Five pages written around your trade, live within a week. From ${money(ONLINE.build)} to build and ${money(ONLINE.monthly)} a month.`
+      ? `Five pages written around your trade, live within a week. ${money(BUILD_FEE)} to build, then from ${money(ONLINE.monthly)} a month.`
       : 'Five pages written around your trade, live within a week. A build fee once, then a monthly cost to run it.',
     serviceType: 'Website design and build',
     lead: SHOW_PRICING
-      ? `Websites for tradespeople, five pages, live within a week. Online is ${money(ONLINE.build)} ` +
-        `to build and ${money(ONLINE.monthly)} a month, and that covers hosting, security and SSL, ` +
-        'and your Google Business Profile set up properly at launch.'
+      ? `Websites for tradespeople, five pages, live within a week. ${money(BUILD_FEE)} to ` +
+        'build, whichever plan you pick, and then from ' +
+        `${money(ONLINE.monthly)} a month, which covers hosting, security and SSL, and your ` +
+        'Google Business Profile set up properly at launch.'
       : 'Websites for tradespeople, five pages, live within a week. The smallest plan, Online, ' +
         'covers hosting, security and SSL, and your Google Business Profile set up properly at ' +
         'launch.',
@@ -241,8 +241,14 @@ const SERVICES = [
        worst version of this: invisible to a reader, quotable by an assistant,
        and wrong the moment the new model lands. */
     offers: SHOW_PRICING
-      ? PLANS.flatMap((plan) => [
+      ? [
           {
+            '@type': 'Offer',
+            name: 'Website build fee',
+            price: String(BUILD_FEE),
+            priceCurrency: 'GBP',
+          },
+          ...PLANS.map((plan) => ({
             '@type': 'Offer',
             name: `${plan.name}, monthly`,
             price: String(plan.monthly),
@@ -254,14 +260,8 @@ const SERVICES = [
               unitCode: 'MON',
               billingIncrement: 1,
             },
-          },
-          {
-            '@type': 'Offer',
-            name: `${plan.name}, build fee`,
-            price: String(plan.build),
-            priceCurrency: 'GBP',
-          },
-        ])
+          })),
+        ]
       : [],
   },
 
@@ -290,10 +290,10 @@ const SERVICES = [
            rather than the whole paragraph: everything before it is a list of
            work and none of it depends on the number. */
         paragraphs: [
-          SHOW_PRICING
-            ? RESCUE.body
-            : RESCUE.body.slice(0, RESCUE.body.indexOf('If you take a website later')).trim() +
-              ' If you take a website from us later, it comes off the build fee.',
+          /* The credit line is a separate field now, so the price-free version
+             is the body without it rather than the body sliced at a sentence
+             this file had to know the wording of. */
+          RESCUE.body + (SHOW_PRICING ? ` ${RESCUE.credit}` : ''),
         ],
         after: [
           'It is the listing that decides whether you appear when somebody searches your trade ' +
@@ -313,8 +313,8 @@ const SERVICES = [
         layout: 'split',
         paragraphs: [
           (SHOW_PRICING
-            ? `On Online, ${money(ONLINE.build)} to build and ${money(ONLINE.monthly)} a month, the ` +
-              'profile is set up properly at launch as part of the job. On Managed, ' +
+            ? `On Online, ${money(ONLINE.monthly)} a month after the ${money(BUILD_FEE)} build ` +
+              'fee, the profile is set up properly at launch as part of the job. On Managed, ' +
               `${money(MANAGED.monthly)} a month, we then keep it active with a monthly post `
             : 'On Online, the smallest plan, the profile is set up properly at launch as part ' +
               'of the job. On Managed we then keep it active with a monthly post ') +
@@ -394,17 +394,18 @@ const SERVICES = [
     title: 'Search and AI visibility for tradespeople',
     description:
       SHOW_PRICING
-        ? `Monthly work to get you found on Google and named by AI assistants. The Growth plan, ${money(GROWTH.monthly)} a month, and your build fee back if it misses five enquiries.`
+        ? `Monthly work to get you found on Google and named by AI assistants. The Growth plan, ${money(GROWTH.openingMonthly)} a month for three months then ${money(GROWTH.monthly)}, with a lead guarantee on it.`
         : 'Monthly work to get you found on Google and named by AI assistants. It is the Growth plan, and your build fee comes back if it misses five enquiries.',
     indexLine: SHOW_PRICING
-      ? `Monthly content, reviews, listings and the technical work behind being named in an AI answer. The Growth plan, ${money(GROWTH.monthly)} a month.`
+      ? `Monthly content, reviews, listings and the technical work behind being named in an AI answer. The Growth plan, ${money(GROWTH.openingMonthly)} a month for the first ${GROWTH.openingMonths} months and ${money(GROWTH.monthly)} after.`
       : 'Monthly content, reviews, listings and the technical work behind being named in an AI answer. The Growth plan, with the lead guarantee on it.',
     serviceType: 'Search engine optimisation and AI search visibility',
     lead: SHOW_PRICING
-      ? 'Monthly work to get you found on Google and named when somebody asks an assistant for a ' +
-        `tradesperson. It is the Growth plan, ${money(GROWTH.build)} to build and ` +
-        `${money(GROWTH.monthly)} a month. It is also the only plan that carries the lead ` +
-        'guarantee, which is set out in full below.'
+      ? 'Monthly work to get you found on Google and named when somebody asks an assistant ' +
+        `for a tradesperson. It is the Growth plan: ${money(GROWTH.openingMonthly)} a month for ` +
+        `the first ${GROWTH.openingMonths} months and ${money(GROWTH.monthly)} after, on a ` +
+        'twelve month term, because we turn down every other trade in your patch to do it. It ' +
+        'is also the only plan that carries the lead guarantee, which is set out in full below.'
       : 'Monthly work to get you found on Google and named when somebody asks an assistant for ' +
         'a tradesperson. It is the Growth plan, the top of the ladder, and the only one that ' +
         'carries the lead guarantee, which is set out in full below.',
@@ -475,9 +476,9 @@ const SERVICES = [
       {
         q: 'How long before it works?',
         a:
-          'The guarantee is measured over four months, which is a fair account of how long this ' +
-          'work takes to show. If you need the phone ringing this week, Google Ads is the faster ' +
-          'route, and your ad spend is separate from what we charge either way.',
+          'The guarantee is measured over four months, which is a fair account of how long ' +
+          'this work takes to show. If you need the phone ringing this week, Google Ads is the ' +
+          'faster route, and you pay Google directly for the ads either way.',
       },
       {
         q: 'Can you guarantee I will be named by ChatGPT?',
@@ -489,10 +490,10 @@ const SERVICES = [
       {
         q: 'What if it does not bring me any work?',
         a:
-          'On Growth, if the site and your Google Business Profile do not bring you five genuine ' +
-          'customer enquiries in four months, the build fee comes back in full. The monthly fee ' +
-          'does not, since it pays for work already done, and you keep the site, the domain and ' +
-          'the profile.',
+          'On Growth, if the site and your Google Business Profile do not bring you five ' +
+          `genuine customer enquiries in four months, you choose: ${money(GUARANTEE.cash)} of ` +
+          `the build fee back in cash, or the full ${money(GUARANTEE.credit)} as credit against ` +
+          'your monthly fee. A payout also ends the twelve month term on thirty days notice.',
       },
       {
         q: 'Will you work for a competitor of mine?',
@@ -504,8 +505,9 @@ const SERVICES = [
       {
         q: 'Do you take a cut of my ad budget?',
         a:
-          'No. Your ad spend goes straight to Google. What we charge for Google Ads covers the ' +
-          'work of running them, nothing else.',
+          'No. You pay Google directly, from your own card on your own account, so the budget ' +
+          `is yours and you can see every penny of it. The ${money(129)} a month covers the work ` +
+          'of running the ads, nothing else.',
       },
       RESPONSE_PROMISE_FAQ,
     ],
@@ -526,8 +528,21 @@ const SERVICES = [
           },
           {
             '@type': 'Offer',
-            name: 'Growth, build fee',
-            price: String(GROWTH.build),
+            name: `Growth, first ${GROWTH.openingMonths} months`,
+            price: String(GROWTH.openingMonthly),
+            priceCurrency: 'GBP',
+            priceSpecification: {
+              '@type': 'UnitPriceSpecification',
+              price: String(GROWTH.openingMonthly),
+              priceCurrency: 'GBP',
+              unitCode: 'MON',
+              billingIncrement: 1,
+            },
+          },
+          {
+            '@type': 'Offer',
+            name: 'Website build fee',
+            price: String(BUILD_FEE),
             priceCurrency: 'GBP',
           },
         ]
@@ -539,17 +554,17 @@ const SERVICES = [
     title: 'Custom tools for trades: quotes, jobs and photos',
     description:
       SHOW_PRICING
-        ? `Custom software built around how your business already works: quotes, job records, photos and stock. From ${money(1200)} as a one off, or from ${money(89)} a month to run.`
+        ? `Custom software built around how your business already works: quotes, job records, photos and stock. ${money(1200)} to build then ${money(49)} a month, or ${money(149)} a month.`
         : 'Custom software built around how your business already works: quotes, job records, photos and stock. Built outright, or built and run for you monthly.',
     indexLine: SHOW_PRICING
-      ? `Job organisation, photo records, inventory and quote builders, automated quotes. From ${money(1200)}, or from ${money(89)} a month.`
+      ? `Job organisation, photo records, inventory and quote builders, automated quotes. ${money(1200)} to build then ${money(49)} a month, or ${money(149)} a month with no build fee.`
       : 'Job organisation, photo records, inventory and quote builders, automated quotes. Built outright, or built and run monthly.',
     serviceType: 'Custom business software',
     lead: SHOW_PRICING
       ? 'Custom tools built around how your business already works: the quoting, the job ' +
-        `records, the photos, the stock. From ${money(1200)} as a one off, or from ${money(89)} a ` +
-        'month. If you spend hours on paperwork, this is the part that gives you your evenings ' +
-        'back.'
+        `records, the photos, the stock. ${money(1200)} to build and then ${money(49)} a month, ` +
+        `or ${money(149)} a month with no build fee on a twelve month term. If you spend hours ` +
+        'on paperwork, this is the part that gives you your evenings back.'
       : 'Custom tools built around how your business already works: the quoting, the job ' +
         'records, the photos, the stock. Built outright as a one off, or built and run for a ' +
         'monthly fee. If you spend hours on paperwork, this is the part that gives you your ' +
@@ -582,13 +597,14 @@ const SERVICES = [
         layout: 'split',
         paragraphs: [
           SHOW_PRICING
-            ? `${TOOLS.price}. The range is wide ` +
-              'because a quote builder for one trade and a photo record for a team of six are ' +
-              'not the same job, and quoting a single figure for both would mean one of them ' +
-              'is wrong.'
-            : 'It depends on the size of the job. A quote builder for one trade and a photo ' +
-              'record for a team of six are not the same work, and one figure for both would ' +
-              `be wrong for one of them. ${QUOTE_LINE}`,
+            ? `${TOOLS.price}. Two ways to the same tool: pay for the build and keep the ` +
+              'monthly small, or pay nothing up front and more each month. The second one ' +
+              'exists because a tool that saves you a day a week should not need a thousand ' +
+              'pounds before it saves you anything.'
+            : 'Two ways to the same tool: pay for the build and keep the monthly small, or pay ' +
+              'nothing up front and more each month. The second one exists because a tool that ' +
+              'saves you a day a week should not need a thousand pounds before it saves you ' +
+              `anything. ${QUOTE_LINE}`,
         ],
       },
       {
@@ -617,8 +633,9 @@ const SERVICES = [
       {
         q: 'Is it a one off cost or monthly?',
         a: SHOW_PRICING
-          ? `Either. From ${money(1200)} to build it outright, or from ${money(89)} a month. ` +
-            'Which one suits depends on the tool and how much of it we keep running for you.'
+          ? `Either. ${money(1200)} to build it and then ${money(49)} a month, or ` +
+            `${money(149)} a month with no build fee on a twelve month term. The monthly covers ` +
+            'hosting, backups, security updates, fixes and small changes either way.'
           : 'Either. Built outright as a one off, or built and run for a monthly fee. Which one ' +
             'suits depends on the tool and how much of it we keep running for you.',
       },
@@ -644,11 +661,11 @@ const SERVICES = [
           'Growth, a tool does not carry that protection.',
       },
       {
-        q: 'Why is the price a range rather than one figure?',
+        q: 'What does the monthly fee cover?',
         a:
-          'Because the jobs are not the same size. A quote builder for one trade and a photo ' +
-          'record for a team of six take different amounts of work, and quoting one figure for ' +
-          'both would mean one of them is wrong.',
+          'Hosting, backups, security updates, fixes and small changes. A tool nobody maintains ' +
+          'stops working the first time something it depends on changes. Larger new features ' +
+          'are quoted separately, before any work starts.',
       },
       RESPONSE_PROMISE_FAQ,
     ],
@@ -656,19 +673,31 @@ const SERVICES = [
       ? [
           {
             '@type': 'Offer',
-            name: 'Custom tool, built outright',
+            name: 'Custom app, build fee',
+            price: '1200',
+            priceCurrency: 'GBP',
+          },
+          {
+            '@type': 'Offer',
+            name: 'Custom app, monthly after the build fee',
+            price: '49',
+            priceCurrency: 'GBP',
             priceSpecification: {
-              '@type': 'PriceSpecification',
-              minPrice: '1200',
+              '@type': 'UnitPriceSpecification',
+              price: '49',
               priceCurrency: 'GBP',
+              unitCode: 'MON',
+              billingIncrement: 1,
             },
           },
           {
             '@type': 'Offer',
-            name: 'Custom tool, monthly',
+            name: 'Custom app, monthly with no build fee',
+            price: '149',
+            priceCurrency: 'GBP',
             priceSpecification: {
               '@type': 'UnitPriceSpecification',
-              minPrice: '89',
+              price: '149',
               priceCurrency: 'GBP',
               unitCode: 'MON',
               billingIncrement: 1,
@@ -1046,7 +1075,7 @@ export const SERVICES_INDEX_PAGE = {
   path: '/services/',
   title: 'Website and search services for tradespeople',
   description: SHOW_PRICING
-    ? `Four things we do and what each costs: websites from ${money(ONLINE.monthly)} a month, Google Business Profiles, the monthly search and AI work, and custom tools for paperwork.`
+    ? `Four things we do and what each costs: websites at ${money(BUILD_FEE)} to build and ${money(ONLINE.monthly)} a month, Google Business Profiles, search and AI visibility, and custom apps.`
     : 'Four things we do: websites for tradespeople, Google Business Profiles, the monthly search and AI work, and custom tools for the paperwork you repeat.',
   styles: ['/article.css'],
   schemaType: 'CollectionPage',

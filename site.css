@@ -777,8 +777,9 @@
 
 /* ---- The price rail (homepage) -------------------------------------------
    Three plans at a glance, and nothing more: the name, the monthly figure, the
-   build fee and one line. Everything else about them is on /prices, and
-   reproducing it here would make the homepage a second pricing page.
+   line each, under one statement of the build fee. Everything else about them
+   is on /prices, and reproducing it here would make the homepage a second
+   pricing page.
 
    The number is the biggest thing in each column on purpose. Someone scanning
    this band is doing one thing, which is finding out whether this is a £15
@@ -813,11 +814,15 @@
 
 .plan-rail__price {
   margin-top: var(--space-3);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
   color: var(--ink-muted);
 }
 
 /* The one accent on this band, and it marks the one thing the band exists to
-   say. Tabular figures so £15, £29 and £119 line up down the row rather than
+   say. Tabular figures so £15, £29 and £179 line up down the row rather than
    drifting by the width of a 1. */
 .plan-rail__amount {
   font-size: var(--text-2xl);
@@ -825,10 +830,32 @@
   color: var(--ink);
 }
 
-.plan-rail__build {
-  margin-top: var(--space-1);
+.plan-rail__period {
   font-size: var(--text-sm);
-  color: var(--ink-faint);
+}
+
+/* Growth has two rates, an opening one and the one after it, so its price is
+   three spans where the other two are two. The second period span takes a full
+   row rather than trailing off the end of the line, which keeps "then £179 a
+   month" readable instead of orphaned. Online and Managed never match this,
+   having only one period span each. */
+.plan-rail__period + .plan-rail__period,
+.plan-card__period + .plan-card__period {
+  flex-basis: 100%;
+}
+
+/* The build fee, above the three columns rather than repeated inside them.
+   There is one of it, and printing it three times is what makes a reader
+   compare three build fees that do not exist. */
+.plan-rail__build {
+  margin-bottom: var(--space-8);
+  max-width: var(--measure);
+  color: var(--ink-muted);
+}
+
+.plan-rail__build strong {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
 }
 
 .plan-rail__summary {

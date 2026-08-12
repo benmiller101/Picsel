@@ -29,7 +29,7 @@
    the edit is wrong. */
 
 import { SITE, SHOW_PRICING, absoluteUrl } from '../../site.config.js';
-import { PLANS, money } from '../../pricing.js';
+import { PLANS, BUILD_FEE, money } from '../../pricing.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs } from '../templates/schema.js';
 import { renderArticleSections } from '../partials/article-sections.js';
@@ -156,8 +156,8 @@ const GUIDES = [
     plan: {
       id: 'online',
       line:
-        'We build exactly this as a five page site, written for you, from ' +
-        `${money(ONLINE.build)} to build and ${money(ONLINE.monthly)} a month to run.`,
+        'We build exactly this as a five page site, written for you, for ' +
+        `${money(BUILD_FEE)} to build and ${money(ONLINE.monthly)} a month to run.`,
     },
     action: {
       href: '/services/websites-for-tradespeople/',
@@ -349,9 +349,9 @@ const GUIDES = [
       id: 'prices',
       href: '/prices/',
       line:
-        `Ours are on the page instead of in a quote: ${money(ONLINE.build)} to build and ` +
-        `${money(ONLINE.monthly)} a month at the smallest, with everything each plan covers ` +
-        'written down.',
+        `Ours are on the page instead of in a quote: ${money(BUILD_FEE)} to build, the same ` +
+        `on every plan, then from ${money(ONLINE.monthly)} a month, with everything each plan ` +
+        'covers written down.',
     },
     action: {
       href: '/services/websites-for-tradespeople/',
@@ -450,8 +450,9 @@ const GUIDES = [
     plan: {
       id: 'growth',
       line:
-        `The schema, the listings and the monthly content this needs are the Growth plan, at ` +
-        `${money(GROWTH.monthly)} a month.`,
+        'The schema, the listings and the monthly content this needs are the Growth plan, ' +
+        `at ${money(GROWTH.openingMonthly)} a month for the first ${GROWTH.openingMonths} ` +
+        `months and ${money(GROWTH.monthly)} after.`,
     },
     action: {
       href: '/services/search-and-ai-visibility/',
@@ -549,7 +550,8 @@ const GUIDES = [
       id: 'growth',
       line:
         'Asking for reviews and replying to them is part of the Growth plan, at ' +
-        `${money(GROWTH.monthly)} a month, if you would rather it was somebody else\'s job.`,
+        `${money(GROWTH.openingMonthly)} a month for the first ${GROWTH.openingMonths} months ` +
+        `and ${money(GROWTH.monthly)} after, if you would rather it was somebody else\'s job.`,
     },
     action: {
       href: '/services/search-and-ai-visibility/',

@@ -4,12 +4,20 @@
    thing, and the fastest way to end up with £15 on one page and £19 on another
    is to let each page write its own.
 
-   THE RAIL (homepage) is three names, three prices and one line each. It is
-   there to answer "can I afford this" before someone has scrolled far enough
-   to care about what is in each plan, and to send them to the page that says.
+   THE RAIL (homepage) is three names, three prices and one line each, over one
+   statement of the build fee. It is there to answer "can I afford this" before
+   someone has scrolled far enough to care about what is in each plan, and to
+   send them to the page that says.
 
-   THE CARDS (prices page) carry the name, the price, what is included and what
-   is not. Nothing else, and the "nothing else" is the design decision.
+   THE CARDS (prices page) carry the name, the price, the term, what is
+   included and what is not. Nothing else, and the "nothing else" is the design
+   decision.
+
+   NEITHER RENDERER PRINTS A BUILD FEE INSIDE A CARD, and that is the 12 August
+   2026 change rather than an oversight. There is one build fee for all three
+   plans. Printing it three times invites the comparison the single fee exists
+   to prevent, which is reading the cheap plan as the cheap build. It is stated
+   once, above, by whichever page is doing the rendering.
 
    The exclusivity promise and the lead guarantee started inside the Growth
    card, which is where they logically belong and where they looked ridiculous:
@@ -24,9 +32,30 @@
    been loosened by moving it. The band also gives the refund terms enough room
    to be read, which they were not getting at a third of the width. */
 
-import { PLANS, GUARANTEE, money } from '../../pricing.js';
+import { PLANS, GUARANTEE, BUILD_FEE, UPGRADE_OFFER, money } from '../../pricing.js';
 import { SITE } from '../../site.config.js';
 import { escapeHtml } from '../templates/page.js';
+
+/* The price, in the one shape that has to cope with two of them.
+
+   Online and Managed have a monthly figure and that is the whole story. Growth
+   has an opening rate for three months and a rate after it, and both belong in
+   the same block of type, because a reader who takes only the big number off
+   this card has to have taken the one they will actually pay first.
+
+   Written as "£99 a month for the first 3 months, then £179" rather than as a
+   saving. See the note in pricing.js: an opening price a customer can plan
+   around beats a discount they have to trust. */
+function renderPrice(plan, amountClass, periodClass) {
+  if (!plan.openingMonthly) {
+    return `            <span class="${amountClass}">${money(plan.monthly)}</span>
+            <span class="${periodClass}">a month</span>`;
+  }
+
+  return `            <span class="${amountClass}">${money(plan.openingMonthly)}</span>
+            <span class="${periodClass}">a month for the first ${plan.openingMonths} months</span>
+            <span class="${periodClass}">then ${money(plan.monthly)} a month</span>`;
+}
 
 /** The compact strip for the homepage. */
 export function renderPlanRail() {
@@ -34,9 +63,8 @@ export function renderPlanRail() {
     (plan) => `          <li class="plan-rail__item">
             <p class="plan-rail__name">${escapeHtml(plan.name)}</p>
             <p class="plan-rail__price">
-              <span class="plan-rail__amount">${money(plan.monthly)}</span> a month
+${renderPrice(plan, 'plan-rail__amount', 'plan-rail__period')}
             </p>
-            <p class="plan-rail__build">plus ${money(plan.build)} to build</p>
             <p class="plan-rail__summary">${escapeHtml(plan.summary)}</p>
           </li>`,
   ).join('\n\n');
@@ -47,6 +75,15 @@ export function renderPlanRail() {
           <h2 class="section-head__title" id="plans-heading">What it costs</h2>
           <a class="section-head__link" href="/prices/">See what is in each plan</a>
         </div>
+
+        <!-- The build fee before the plans, on the homepage as on /prices, and
+             for the same reason. Three monthly figures with no build fee above
+             them is the version where somebody works out the build fee must be
+             the difference between them. -->
+        <p class="plan-rail__build">
+          <strong>${money(BUILD_FEE)} to build your website, whichever plan you pick.</strong>
+          Then choose how much I do afterwards.
+        </p>
 
         <ul class="plan-rail">
 ${items}
@@ -81,6 +118,14 @@ function renderPlanCard(plan, commitmentsHref) {
     ? `\n          <p class="plan-card__excludes">${plan.excludes.map(escapeHtml).join(' ')}</p>`
     : '';
 
+  /* The term, and on Growth the reason for it in the same breath. A twelve
+     month term printed on its own is the line that loses the sale, and the
+     reason is not a softener, it is the actual explanation: a patch is being
+     held empty for a year and somebody has to carry that. */
+  const term = `\n          <p class="plan-card__term">${escapeHtml(plan.term)}${
+    plan.termReason ? `, ${escapeHtml(plan.termReason)}` : ''
+  }</p>`;
+
   /* "Best for" comes straight off Ben's own pricing sheet and it is the line
      that does the most work on the card. The other lines describe the plan;
      this one describes the customer, which is what somebody comparing three
@@ -104,10 +149,8 @@ function renderPlanCard(plan, commitmentsHref) {
           <p class="plan-card__summary">${escapeHtml(plan.summary)}</p>
 
           <p class="plan-card__price">
-            <span class="plan-card__amount">${money(plan.monthly)}</span>
-            <span class="plan-card__period">a month</span>
-          </p>
-          <p class="plan-card__build">${money(plan.build)} one off to build it</p>
+${renderPrice(plan, 'plan-card__amount', 'plan-card__period')}
+          </p>${term}
 
           <ul class="plan-card__includes">
 ${inherited}${includes}
@@ -118,17 +161,31 @@ ${inherited}${includes}
 }
 
 /**
- * The full set of plan cards. Used by /prices and by the websites service page.
+ * The full set of plan cards, with the upgrade offer attached underneath.
+ *
+ * The offer is rendered here rather than by the page, so it cannot come adrift
+ * from the card it belongs to. It is aimed at somebody already on Online or
+ * Managed and it removes the only real objection to Growth, which is
+ * committing to the number before seeing whether the work lands. On a phone
+ * Growth is the last card, so this sits literally under it; on a wide screen
+ * it runs the full width beneath the three, which is as close to "under
+ * Growth" as a three column grid allows.
  *
  * @param {object} [options]
  * @param {string} [options.commitmentsHref]  Where the Growth card's pointer to
  *   the exclusivity promise and the lead guarantee goes. Defaults to the
  *   in-page anchor, which is correct on /prices and wrong anywhere else.
+ * @param {boolean} [options.upgradeOffer]  Render the try-Growth offer under
+ *   the cards. On by default.
  */
-export function renderPlanCards({ commitmentsHref = '#commitments' } = {}) {
+export function renderPlanCards({ commitmentsHref = '#commitments', upgradeOffer = true } = {}) {
+  const offer = upgradeOffer
+    ? `\n\n      <p class="plan-upgrade">${escapeHtml(UPGRADE_OFFER)}</p>`
+    : '';
+
   return `      <div class="plan-cards">
 ${PLANS.map((plan) => renderPlanCard(plan, commitmentsHref)).join('\n\n')}
-      </div>`;
+      </div>${offer}`;
 }
 
 /* ---- What Growth carries --------------------------------------------------
@@ -158,6 +215,7 @@ export function renderGrowthCommitments() {
           <div class="commitment">
             <h3 class="commitment__title">Your competitor cannot hire us</h3>
             <p class="commitment__body">${SITE.exclusivity.full}</p>
+            <p class="commitment__terms">${escapeHtml(SITE.exclusivity.duration)}</p>
           </div>
 
           <div class="commitment">

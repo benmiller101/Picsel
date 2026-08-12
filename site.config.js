@@ -9,12 +9,17 @@
    signal that two different businesses might be involved. One constant, read
    everywhere, makes that class of mistake impossible. */
 
-/* ---- SHOW_PRICING — the temporary price blackout --------------------------
-   Set to false while the pricing model is being reworked. Nothing is deleted
-   when this is off: /prices stops being built and stops being linked, the plan
-   cards and every figure the site quotes about itself are swapped for the copy
-   that was there before prices went on the site, and the whole thing comes
-   back by setting this to true and running the build.
+/* ---- SHOW_PRICING — the price blackout switch -----------------------------
+   True, and the prices are on the site. Set it to false and nothing is
+   deleted: /prices stops being built and stops being linked, and the plan
+   cards and every figure the site quotes about its own work are swapped for
+   copy that names no number. Setting it back to true and running the build
+   restores the lot.
+
+   It exists because prices were taken off the site for four days in August
+   2026 while the model was reworked, and doing that by deleting copy would
+   have meant writing it again from memory. Leave it in place. The next
+   repricing will want it.
 
    WHAT IT DOES NOT COVER, deliberately. The guides discuss what a trades site
    costs on the open market, "roughly £500 to £2,000 as a one off", and those
@@ -24,9 +29,10 @@
    THE CONTRADICTION TO WATCH while this is off. The social bios lead with
    "from £15 a month", and the reason prices went on the site in the first
    place was that a site naming no number disagreed with them in public. That
-   disagreement is back for as long as this flag is false, so the bios need
-   changing too, or changing back when the new model lands. */
-export const SHOW_PRICING = false;
+   disagreement returns for as long as this flag is false, so the bios have to
+   change with it. £15 is still the Online monthly on the current card, so
+   while this is true they agree and nothing needs doing. */
+export const SHOW_PRICING = true;
 
 export const SITE = {
   name: 'Picsel',
@@ -104,6 +110,15 @@ export const SITE = {
       '<strong>One trade per patch.</strong> On our Growth plan, if we are working for a plumber ' +
       'in your patch, your town and roughly eight miles around it, we will not take on another ' +
       'plumber there while you are a client. A different trade in the same patch is fine.',
+    /* When the patch is held and when it is let go. Added with the 12 August
+       card, and it is the half a competitor's client cares about: a promise
+       with no stated end is either forever, which is not what is being
+       offered, or undefined, which is worse. Thirty days is long enough to
+       change your mind about leaving and short enough that a patch is not sat
+       on by somebody who has gone. */
+    duration:
+      'The patch is held for as long as you are on Growth, and frees up thirty days after you ' +
+      'stop.',
     /* For the places a full paragraph will not fit. Still carries the
        condition, because a short version that drops it is the failure this
        whole block exists to prevent. */

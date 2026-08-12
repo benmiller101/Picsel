@@ -25,7 +25,7 @@
    is not stated. */
 
 import { SHOW_PRICING } from '../../site.config.js';
-import { PLANS, money } from '../../pricing.js';
+import { PLANS, BUILD_FEE, money } from '../../pricing.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs, blogPosting, blogNode } from '../templates/schema.js';
 import { renderArticleSections } from '../partials/article-sections.js';
@@ -128,15 +128,20 @@ const POSTS = [
         ? {
             h2: 'What I charge, and what is in it',
             paragraphs: [
-              `The smallest plan is ${money(ONLINE.build)} to build and ${money(ONLINE.monthly)} a ` +
-                `month. ${MANAGED.name} is ${money(MANAGED.build)} and ${money(MANAGED.monthly)} a ` +
-                `month, which adds somebody looking after it so you never touch it. ` +
-                `${GROWTH.name} is ${money(GROWTH.build)} and ${money(GROWTH.monthly)} a month, ` +
-                'and that one buys active work every month rather than a site sitting still.',
+              `${money(BUILD_FEE)} to build it, whichever plan you pick. Then ` +
+                `${money(ONLINE.monthly)} a month on ${ONLINE.name} to host it and keep it ` +
+                `online, ${money(MANAGED.monthly)} on ${MANAGED.name}, which adds somebody ` +
+                `looking after it so you never touch it, or ${money(GROWTH.openingMonthly)} a ` +
+                `month for the first ${GROWTH.openingMonths} months and ` +
+                `${money(GROWTH.monthly)} after on ${GROWTH.name}, which buys active work every ` +
+                'month rather than a site sitting still.',
+              'One build fee rather than three is deliberate. Three would invite you to compare ' +
+                'them, and the moment you do, the cheap plan reads as the cheap build. It is ' +
+                'the same build every time.',
               'The figures matter less than where they are. They are on the website, so you can ' +
                 'hold them against anyone else before you pick up the phone. Most of this trade ' +
-                'still makes you ring to find out. If you want a straight price for your own job, ' +
-                '<a href="/contact/">get in touch</a> and I will give you one on the phone.',
+                'still makes you ring to find out. If you want a straight price for your own ' +
+                'job, <a href="/contact/">get in touch</a> and I will give you one on the phone.',
             ],
           }
         : {
@@ -171,7 +176,7 @@ const POSTS = [
           href: '/prices/',
           line:
             'Every plan is written down, including what it does not cover: ' +
-            `${money(ONLINE.build)} to build and ${money(ONLINE.monthly)} a month at the smallest.`,
+            `${money(BUILD_FEE)} to build, then from ${money(ONLINE.monthly)} a month.`,
           cta: 'See the prices',
         }
       : {

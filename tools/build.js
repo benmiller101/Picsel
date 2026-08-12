@@ -20,7 +20,7 @@ import { fileURLToPath } from 'node:url';
 import { SITE, SHOW_PRICING, absoluteUrl, REVIEWS_URL_IS_PLACEHOLDER } from '../site.config.js';
 import { PROJECTS } from '../projects.js';
 import { REVIEWS } from '../reviews.js';
-import { PLANS, money } from '../pricing.js';
+import { PLANS, BUILD_FEE, BUILD_LINE, money } from '../pricing.js';
 import { renderPage } from './templates/page.js';
 import { HOME_PAGE } from './pages/home.js';
 import { WORK_PAGE } from './pages/work.js';
@@ -794,12 +794,19 @@ async function writeLlmsTxt(rendered) {
   const COST_SECTION = SHOW_PRICING
     ? `## What it costs
 
+${BUILD_LINE}
+
 ${PLANS.map(
   (plan) =>
-    `- ${plan.name}: ${money(plan.build)} to build, then ${money(plan.monthly)} a month. ${plan.summary}`,
+    `- ${plan.name}: ${money(plan.monthly)} a month${
+      plan.openingMonthly
+        ? ` (${money(plan.openingMonthly)} for the first ${plan.openingMonths} months)`
+        : ''
+    }, ${plan.term.toLowerCase()}. ${plan.summary}`,
 ).join('\n')}
 
-Full prices, including what each plan does not cover, are at ${absoluteUrl('/prices/')}.
+The ${money(BUILD_FEE)} build fee is the same on all three. Full prices, including what each plan
+does not cover, are at ${absoluteUrl('/prices/')}.
 
 `
     : '';

@@ -60,8 +60,14 @@ same session. The plan's Site Profile and this block must never disagree; the pl
 | Purpose | Portfolio + lead-gen for a UK-wide web design & automation studio |
 | Audience | Tradespeople and small businesses **anywhere in the UK**, mostly non-technical, often burned by a previous web person |
 | Service area | **The United Kingdom. No town, county or region is ever named about Picsel** — not in copy, page titles, meta descriptions, alt text, image filenames or schema. Client locations are facts about clients and stay on their own pages. `tools/build.js` fails the build on a breach |
-| Exclusivity | **One trade per patch, on the Growth plan.** A patch is a town plus roughly eight miles. Written once in `SITE.exclusivity`; never print it without naming Growth |
-| Prices | **Published**, on `/prices`, from `pricing.js`. Online £99 + £15/mo · Managed £149 + £29/mo · Growth £149 + £119/mo. Never type a figure into a page: import it |
+| Exclusivity | **One trade per patch, on the Growth plan.** A patch is a town plus roughly eight miles, held while the client is on Growth and free thirty days after they stop. Written once in `SITE.exclusivity`; never print it without naming Growth |
+| Prices | **Published**, on `/prices`, from `pricing.js`. Card of **12 August 2026**. Never type a figure into a page: import it |
+| Build fee | **£299, the same on every plan.** One fee, exported as `BUILD_FEE` and never a field on a plan. Three build fees invite a reader to compare them, and the cheap plan then reads as the cheap build |
+| Plans | Online **£15/mo** rolling · Managed **£29/mo** rolling · Growth **£99/mo for the first 3 months then £179/mo**, 12 month term. Growth's term never prints without its reason: a patch is being held empty |
+| Annual | Twelve months for the price of ten: Online £150 · Managed £290 · Growth £1,600 |
+| Extras | Google Profile Rescue **£89** one off, credited against the build fee · extra changes **£45/hr**, half hour minimum · Google Ads **£129/mo** to manage on a minimum £400/mo budget the client pays Google directly · custom apps **£1,200 + £49/mo**, or **£149/mo** with no build fee on a 12 month term |
+| Lead guarantee | Growth only. Five genuine enquiries in four months or the client chooses **£149 back in cash** or **£299 as credit**. A payout also **ends the twelve month term on thirty days notice** |
+| Price blackout | `SHOW_PRICING` in `site.config.js`. False takes `/prices` out of the build, the nav, the footer, the sitemap and `llms.txt`, and swaps every figure for copy that names none |
 | Owner / contact | Ben Miller · 07456 809049 (`tel:+447456809049`) · ben@picsel.co.uk |
 | Domain | **picsel.co.uk**, live. Served from the apex; www redirects to it |
 | Hosting | Cloudflare, as an assets-only Worker (`wrangler.jsonc`). A push to `main` deploys |
@@ -77,6 +83,9 @@ same session. The plan's Site Profile and this block must never disagree; the pl
 - **No place name for Picsel, anywhere.** Not "based in", "local to", "near you" or "in your area" either.
 - **Never state the exclusivity promise without the Growth condition attached.** Short form: "one trade per patch on our Growth plan".
 - **Never use "guaranteed" as an adjective.** The lead guarantee is a named, conditional refund on Growth, stated in full with its terms or not at all.
+- **Never print the hourly rate next to the Growth plan.** It has to be published, because charging by the hour without naming the rate is how a small bill becomes an argument. Put it near Growth and a reader prices a monthly plan by the hour, which is an argument with a spreadsheet that does not know what the monthly work is.
+- **Never print Growth's twelve month term without its reason**, which is that a patch is being held empty. A term with no reason reads as a trap.
+- **Never write Growth's £99 as a discount.** It is the price of the first three months. A discount is an asterisk; a price is something a client can plan around.
 - No purple/blue/pink gradients beyond the hero blobs; no gradient-filled headline words.
 - No "Why choose us", no SaaS slogans, no jargon aimed at a non-technical audience.
 - No featuring a client site not cleared to feature; no implied endorsement.

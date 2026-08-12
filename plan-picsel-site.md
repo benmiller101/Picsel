@@ -139,7 +139,7 @@ Picsel is a brand-new studio. Credibility comes from the work shown, not from in
 | Contact sent | /contact/sent | Where the form lands after a successful send |
 | Services index | /services | The four things Picsel sells, each linking to its own page |
 | Service page (one per service) | /services/<slug> | One service, its price, what is in and out, its FAQs, one way to enquire |
-| Prices | /prices | The three plans and the add-ons, every figure read from `pricing.js`, plus the pricing FAQs |
+| Prices | /prices | The £299 build fee first, the Google Profile Rescue, then the three plans and the add-ons, every figure read from `pricing.js`, plus the four straight answers |
 | Guides index | /guides | The question-first pages, listed |
 | Guide (one per question) | /guides/<slug> | Answer one question a tradesperson actually types, plainly and first |
 | Blog index | /blog | The posts, listed, kept separate from the guides |
@@ -165,6 +165,10 @@ Picsel is a brand-new studio. Credibility comes from the work shown, not from in
       Prices are published on `/prices`, read from `pricing.js`. The original decision was overturned
       because the social bios already led with "from £15 a month", so the site naming no number was
       not discretion, it was a contradiction. See Repositioning at the top of this plan
+- [x] `[DECISION]` **Repriced 12 August 2026.** One £299 build fee for every plan, replacing the
+      old £99 and £149 per-plan fees; Growth opens at £99 a month for three months and then £179 on
+      a twelve month term; the founding offer is **cut**, its five slots gone. `SHOW_PRICING` in
+      `site.config.js` is the switch that hides the lot for the next repricing
 - [x] `[BEN]` **Confirm each of the five clients is happy to be featured** — all five cleared,
       August 2026, including Lanora House (Ben is a director) and House of Cornwall, which states an
       affiliation with Lanora House on its own site. Two of the five being connected businesses is a
@@ -444,8 +448,9 @@ line with 77 pixels to spare and nothing scrolls sideways.
       linking to each project page. Let the screenshots carry the colour
 - [x] Short, plain services note: websites, SEO & GEO, Google Business Profile help, custom
       automation tools — and the one-client-per-trade-per-town idea in a sentence. No "Why choose us"
-- [x] `[DECISION]` Founding-offer pricing block — **decided against.** Nothing is built for it and
-      nothing is stubbed; the page reads as finished without it
+- [x] `[DECISION]` Founding-offer pricing block — **decided against**, then built in August 2026,
+      then **cut on 12 August 2026** once the five slots were taken. A scarcity offer with no slots
+      left is worse than no offer, so the section came off the page rather than being reworded
 - [x] Closing **contact band**: a line, a big "Get in touch" button, the phone number
 
 **What we built:**

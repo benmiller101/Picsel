@@ -15,7 +15,7 @@
 import { FEATURED_PROJECTS } from '../../projects.js';
 import { REVIEWS } from '../../reviews.js';
 import { SITE, SHOW_PRICING } from '../../site.config.js';
-import { PLANS, money } from '../../pricing.js';
+import { PLANS, BUILD_FEE, money } from '../../pricing.js';
 import { renderWorkGrid } from '../partials/work-card.js';
 import { renderPlanRail } from '../partials/plan-cards.js';
 import { renderReviews } from '../partials/reviews.js';
@@ -31,7 +31,9 @@ const FROM_MONTHLY = money(PLANS[0].monthly);
    SHOW_PRICING is off. "Live in days" was always the second half of the line;
    with the number gone it carries the whole thing, which is fine, because
    speed is the other thing this audience is actually choosing on. */
-const PRICE_LINE = SHOW_PRICING ? `From ${FROM_MONTHLY} a month, live in days.` : 'Live in days.';
+const PRICE_LINE = SHOW_PRICING
+  ? `${money(BUILD_FEE)} to build, then from ${FROM_MONTHLY} a month. Live in days.`
+  : 'Live in days.';
 
 /* ---- The hero -------------------------------------------------------------
    Three layers over near-black: the drawn dot texture, the blobs on their pixel
@@ -99,11 +101,17 @@ const INTRO = `    <section class="section intro">
         <!-- "No jargon, no lock-in, no agency retainer" was one sentence with
              three beats in it. Three is the length a machine reaches for when
              it is padding, and a reader clocks the rhythm before the content.
-             Two of them, then a full stop, then the third as its own sentence. -->
+             Two of them, then a full stop, then the third as its own sentence.
+
+             "No lock-in" was also true and stopped being true on 12 August
+             2026, when Growth went onto a twelve month term. The claim is now
+             scoped to the two plans it still covers rather than dropped: a
+             rolling contract is the thing this audience has been burned on and
+             it is worth saying, but only about the plans that have one. -->
         <p class="intro__support measure">
           We build fast, honest websites for tradespeople anywhere in the UK, get you found on
-          Google and in AI search, and keep you there. No jargon and no lock-in. You are not
-          signing an agency retainer.
+          Google and in AI search, and keep you there. No jargon, and two of the three plans you
+          can cancel any time. You are not signing an agency retainer.
         </p>
       </div>
     </section>`;
@@ -226,13 +234,12 @@ const QUESTIONS = [
        whatever they guess, and "ring and ask" is a worse answer than a number
        but a much better one than silence. */
     a: SHOW_PRICING
-      ? `Builds start at ${money(PLANS[0].build)} and the site is then ${FROM_MONTHLY} a month, ` +
-        'which covers the hosting, the security and the Google listing. Two larger plans add ' +
-        'monthly edits and active search work. Every price is on the prices page, including ' +
-        'what each one does not cover.'
-      : 'We are rebuilding the plans, so there is no price list on the site at the moment. ' +
-        'Ring or send a message with what you need and you will get a figure the same day, ' +
-        'and what it covers in writing.',
+      ? `${money(BUILD_FEE)} to build it, whichever plan you pick, and then from ` +
+        `${FROM_MONTHLY} a month, which covers the hosting, the security and the Google ` +
+        'listing. Two larger plans add monthly changes and active search work. Every price is ' +
+        'on the prices page, including what each one does not cover.'
+      : 'There is no price list on the site at the moment. Ring or send a message with what ' +
+        'you need and you will get a figure the same day, and what it covers in writing.',
   },
   {
     q: 'Where do you work?',

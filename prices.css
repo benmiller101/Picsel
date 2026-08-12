@@ -67,12 +67,13 @@
 .plan-card__price {
   margin-top: var(--space-6);
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: var(--space-2);
   color: var(--ink-muted);
 }
 
-/* Tabular figures so £15, £29 and £119 sit on the same left edge across the
+/* Tabular figures so £15, £29 and £179 sit on the same left edge across the
    three cards instead of drifting by the width of a 1. */
 .plan-card__amount {
   font-size: var(--text-2xl);
@@ -84,8 +85,13 @@
   font-size: var(--text-sm);
 }
 
-.plan-card__build {
-  margin-top: var(--space-1);
+/* The term, under the price. Faint on Online and Managed, where it says
+   "rolling, cancel any time" and is reassurance; the same treatment on Growth,
+   where it is a twelve month commitment, because setting it louder there would
+   make the one plan that costs most look like the one with a catch. The reason
+   is attached to it in the markup, which is what stops it reading that way. */
+.plan-card__term {
+  margin-top: var(--space-2);
   font-size: var(--text-sm);
   color: var(--ink-faint);
 }
@@ -321,42 +327,125 @@
   color: var(--ink-faint);
 }
 
-/* ---- The founding offer ---------------------------------------------------
-   Two columns on a desktop: the explanation and, opposite it, the three things
-   being asked for in return. Side by side because it is a trade, and a trade
-   drawn as one long column reads as a list of conditions. */
-.founding__inner {
+/* ---- The build fee, at the top --------------------------------------------
+   The first thing on the page and the only thing in its own paragraph. Larger
+   than the lede under it, because the lede explains and this one states. */
+.prices-head__fee {
+  margin-top: var(--space-6);
+  max-width: var(--measure);
+  font-size: var(--text-xl);
+  color: var(--ink);
+}
+
+/* ---- The Google Profile Rescue --------------------------------------------
+   The way in, above the plans. Two columns on a desktop, with the price
+   opposite the words rather than under them: it is one number and it does not
+   need a column of its own height, and putting it on the right stops the
+   section reading as a fourth plan stacked above the three. */
+.rescue__inner {
   display: grid;
   gap: var(--space-8);
+  align-items: start;
 }
 
 @media (min-width: 64rem) {
-  .founding__inner {
+  .rescue__inner {
+    grid-template-columns: 1.4fr auto;
+    gap: var(--space-16);
+  }
+}
+
+.rescue__words > * + * {
+  margin-top: var(--space-4);
+}
+
+/* The half that turns a one off job into a deposit, so it is the one line in
+   this block set apart from the rest of it. */
+.rescue__credit {
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--accent);
+  color: var(--ink);
+}
+
+.rescue__price {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.rescue__amount {
+  font-size: var(--text-3xl);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.rescue__period {
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
+/* ---- Try Growth for a month -----------------------------------------------
+   Directly under the three cards and marked with the accent rule, because it
+   is the sentence on this page most likely to turn an existing client into a
+   Growth one and the easiest to skim past. Full width rather than inside a
+   card: it is not a fourth option, it is a way into the third. */
+.plan-upgrade {
+  margin-top: var(--space-8);
+  padding: var(--space-4) var(--space-6);
+  border-left: 2px solid var(--accent);
+  background: var(--bg-raised);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  max-width: 46rem;
+  color: var(--ink);
+}
+
+/* ---- Paying for the year up front -----------------------------------------
+   The explanation, and the three figures opposite it. Same two-column shape
+   the founding offer used before it was cut, and for the same reason: a short
+   list of numbers beside a sentence reads as an option, and underneath it
+   reads as a condition. */
+.annual__inner {
+  display: grid;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+@media (min-width: 64rem) {
+  .annual__inner {
     grid-template-columns: 1.2fr 1fr;
     gap: var(--space-16);
   }
 }
 
-.founding__words > * + * {
+.annual__words > * + * {
   margin-top: var(--space-4);
 }
 
-.founding__list {
+.annual__list {
   margin: 0;
-  padding: 0 0 0 var(--space-6);
   display: grid;
   gap: var(--space-3);
   align-content: start;
-  border-left: 2px solid var(--accent);
-  list-style: none;
 }
 
-/* Outside the accent rule, because it is not part of the trade. It is what
-   happens when the offer stops. */
-.founding__after {
-  margin-top: var(--space-6);
-  font-size: var(--text-sm);
-  color: var(--ink-faint);
+.annual__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+}
+
+.annual__plan {
+  color: var(--ink-muted);
+}
+
+.annual__price {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
 }
 
 /* ---- The extras -----------------------------------------------------------
@@ -388,6 +477,13 @@
   margin: var(--space-1) 0 0;
   font-variant-numeric: tabular-nums;
   color: var(--accent);
+}
+
+/* The hourly rate, and only the hourly rate. It keeps its place in the list
+   and loses the accent, because the accent marks the things being offered and
+   this one is being disclosed. See the note beside `quiet` in pricing.js. */
+.extras__item--quiet .extras__price {
+  color: var(--ink-muted);
 }
 
 .extras__body {

@@ -1,41 +1,61 @@
 /* ---- prices.js — /prices --------------------------------------------------
-   The page this site did not have, and the reason it needed one: the social
-   bios have always led with "from £15 a month" while the site named no number
-   anywhere. Anyone comparing the two found the gap in a single tab switch, and
-   a studio selling honesty cannot be the one being vague about money.
+   The money page. Every figure comes from pricing.js and nothing on this page
+   is typed, so the site and the price card cannot drift apart.
 
-   Every figure comes from pricing.js. Nothing on this page is typed.
+   THE ORDER OF THIS PAGE IS THE ARGUMENT, and it is worth understanding before
+   moving a section.
 
-   THE JOB OF THIS PAGE is to let someone rule themselves out. That sounds
-   defeatist and it is the opposite: this audience has been quoted four figures
-   by an agency and £30 by a man who vanished, and the useful thing a price page
-   does is tell them quickly which conversation this is. So the numbers are
-   large, near the top, and next to what they do and do not cover.
+     1. THE BUILD FEE, ALONE, FIRST. One number, before a plan is named. Lead
+        with the plans instead and a reader compares three build fees that do
+        not exist, then reads the cheap plan as the cheap build. Stating one
+        fixed fee removes a decision from the sale rather than adding one.
+     2. THE RESCUE, at £89, framed as the way in for somebody who is not ready
+        to buy a website. It comes off the build fee later, which turns a one
+        off job into a deposit.
+     3. THE PLANS, as a ladder, with the try-Growth offer attached underneath
+        by renderPlanCards. That offer is the most commercially important
+        sentence on the page and it is why it is not in a footer.
+     4. PROOF. Three sites these plans have built, at addresses a reader can
+        open in another tab. This is the page where somebody decides whether to
+        believe the numbers, and three live sites settle it faster than copy.
+     5. THE ANNUAL OPTION, then what Growth commits to, then the four questions
+        this audience will not ask on a call.
+     6. THE EXTRAS LAST, and quiet. The hourly rate has to be published,
+        because charging by the hour without naming the rate is how a small
+        bill becomes an argument. It must not sit near Growth: an advertised
+        hourly rate invites a reader to price a monthly plan by the hour, which
+        is an argument with a spreadsheet that does not know what the monthly
+        work is.
 
-   TWO CLAIMS ON THIS PAGE ARE PROMISES rather than descriptions, and both are
-   Growth-only: the one-trade-per-patch exclusivity and the lead guarantee.
-   Neither is written here. They come from SITE.exclusivity and GUARANTEE, and
-   they render into their own band under the cards rather than inside the Growth
-   card, which is a layout decision with a copy consequence worth knowing about.
+   WHY THERE ARE PRICES ON THE SITE AT ALL. The social bios have always led
+   with "from £15 a month" while the site named no number, which is a
+   contradiction anyone can find in one tab switch.
 
-   They were in the card. Two paragraphs of terms in a third-width column made
-   Growth nearly twice the height of Online, and three cards of wildly different
-   heights stop reading as a comparison, which is the only thing a price table
-   is for. Moving them out fixed the column and gave the refund terms room to be
-   read. What it must never do is loosen them: the band is headed with the plan
-   name, both pieces of wording name the plan themselves, and the Growth card
-   links down to it. tools/build.js fails the build if any page states the patch
-   promise without naming Growth. */
+   VOICE. This page speaks as "I", not "we". It is one person quoting a
+   tradesperson, and every commitment on it is a commitment Ben makes
+   personally. The rest of the site still says "we". */
 
-import { PLANS, EXTRAS, FOUNDING_OFFER, GUARANTEE, money } from '../../pricing.js';
+import { SITE, absoluteUrl } from '../../site.config.js';
+import {
+  PLANS,
+  EXTRAS,
+  GUARANTEE,
+  BUILD_FEE,
+  BUILD_LINE,
+  RESCUE,
+  ANNUAL,
+  PAUSE,
+  LEAVING,
+  OWNERSHIP,
+  money,
+} from '../../pricing.js';
 import { PROJECTS } from '../../projects.js';
-import { absoluteUrl } from '../../site.config.js';
 import { escapeHtml } from '../templates/page.js';
 import { SHOT_SIZES, shotSrcset } from '../templates/images.js';
 import { breadcrumbs, ORG_ID } from '../templates/schema.js';
-import { renderPlanCards, renderGrowthCommitments } from '../partials/plan-cards.js';
-import { renderContactBand } from '../partials/contact-band.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
+import { renderContactBand } from '../partials/contact-band.js';
+import { renderPlanCards, renderGrowthCommitments } from '../partials/plan-cards.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
 
 /* Declared once, ahead of everything below that reads it, so the visible nav
@@ -46,17 +66,22 @@ const PRICES_TRAIL = [
   { name: 'Prices', path: '/prices/' },
 ];
 
+/* ---- A. The build fee -----------------------------------------------------
+   The first thing on the page and the only thing in this section. BUILD_LINE
+   lives in pricing.js beside the number it names, because the sentence and the
+   figure have to change together. */
 const HEAD = `    <section class="section prices-head">
       <div class="wrap page-head">
         <div class="page-head__text">
           <p class="eyebrow">Prices</p>
           <h1>What a website costs</h1>
+          <p class="prices-head__fee">${escapeHtml(BUILD_LINE)}</p>
           <p class="lede measure">
-            Three plans. Each one contains the one before it, so the only question is how much
-            of the ongoing work you want us doing. Every price on this page is the price:
-            no setup fee hiding behind it, and nothing tied up for years. If you have been
-            quoted more than this elsewhere, <a href="/blog/why-trades-websites-cost-so-much/">why
-            trades websites cost so much</a> sets out where that money usually goes.
+            One build fee, three plans, and every price on this page is the price. No setup fee
+            hiding behind it. Two of the three you can cancel any time, and the one you cannot
+            says why on the card. If you have been quoted more than this elsewhere,
+            <a href="/blog/why-trades-websites-cost-so-much/">why trades websites cost so
+            much</a> sets out where that money usually goes.
           </p>
           <p class="measure">
             What the money actually buys is set out one job at a time:
@@ -71,6 +96,33 @@ ${PAGE_BLOB}
       </div>
     </section>`;
 
+/* ---- B. The way in --------------------------------------------------------
+   Above the plans on purpose. Somebody who has never had a website is not
+   choosing between three of them yet, and the honest first job for most of
+   this audience is the free listing they already own and have never claimed. */
+const RESCUE_SECTION = `    <section class="section rescue" id="rescue" aria-labelledby="rescue-heading">
+      <div class="wrap rescue__inner">
+        <div class="rescue__words">
+          <h2 id="rescue-heading">${escapeHtml(RESCUE.heading)}</h2>
+          <p class="measure">${escapeHtml(RESCUE.body)}</p>
+          <p class="measure rescue__credit">${escapeHtml(RESCUE.credit)}</p>
+          <p class="measure">
+            If yours has gone quiet or never showed up properly, read
+            <a href="/guides/google-business-profile-not-showing/">why is my Google Business
+            Profile not showing up</a> before you pay anybody to fix it, me included.
+          </p>
+        </div>
+
+        <p class="rescue__price">
+          <span class="rescue__amount">${money(RESCUE.price)}</span>
+          <span class="rescue__period">one off</span>
+        </p>
+      </div>
+    </section>`;
+
+/* ---- C and D. The plans, and the try-Growth offer --------------------------
+   renderPlanCards draws both. The offer is attached to the cards by the
+   partial rather than placed by this page, so the two cannot come adrift. */
 const PLAN_SECTION = `    <section class="section plans-full" aria-labelledby="plans-full-heading">
       <div class="wrap">
         <h2 class="visually-hidden" id="plans-full-heading">The three plans</h2>
@@ -79,11 +131,11 @@ ${renderPlanCards()}
       </div>
     </section>`;
 
-/* ---- What the prices above have actually bought ---------------------------
+/* ---- Proof ----------------------------------------------------------------
    The only band on this page with pictures in it, and the reason it earns them
    is that this is the page where a reader is deciding whether to believe the
    numbers. A tradesperson who has been quoted four figures by an agency reads
-   "£99 to build" as either a bargain or a warning, and no amount of copy
+   "£299 to build" as either a bargain or a warning, and no amount of copy
    settles which. Three sites that exist, at addresses they can open in another
    tab, with the plan each one runs on named underneath, settles it in about
    four seconds.
@@ -138,127 +190,66 @@ ${BUILT_ON.map((project) => {
       </div>
     </section>`;
 
-/* The founding offer sits under the plans rather than at the top. Someone who
-   has not yet decided what a plan costs cannot tell whether a discount on it is
-   worth having, and leading with a countdown is how a page reads as pressure. */
-const FOUNDING = `    <section class="section founding" aria-labelledby="founding-heading">
-      <div class="wrap founding__inner">
-        <div class="founding__words">
-          <h2 id="founding-heading">The first ${FOUNDING_OFFER.count} clients</h2>
+/* ---- F. Paying for the year up front --------------------------------------
+   Three figures rather than a percentage. "Save 17%" is a sum the reader has
+   to do; £150 is a number they can compare to what is in the account. */
+const ANNUAL_SECTION = `    <section class="section annual" id="annual" aria-labelledby="annual-heading">
+      <div class="wrap annual__inner">
+        <div class="annual__words">
+          <h2 id="annual-heading">Pay for the year up front</h2>
           <p class="measure">
-            While the studio is new, the build fee on any plan is ${money(FOUNDING_OFFER.build)}
-            instead of ${money(PLANS[0].build)} or ${money(PLANS[2].build)}, on a
-            ${escapeHtml(FOUNDING_OFFER.term)} term. The monthly price is the normal one.
-          </p>
-          <p class="measure">
-            It is a straight trade and here is our half of it. In return we ask for three things:
-          </p>
-          <p class="measure">
-            If you think you are one of the five, <a href="/contact/">get in touch</a> and say so.
+            ${escapeHtml(ANNUAL.headline)} Paid once, then nothing until the same time next
+            year.
           </p>
         </div>
 
-        <div class="founding__ask">
-          <ul class="founding__list">
-${FOUNDING_OFFER.give.map((item) => `            <li>${escapeHtml(item)}</li>`).join('\n')}
-          </ul>
-          <!-- What happens when the offer runs out, said before anyone has to
-               ask. A limited offer with no stated end is not a limited offer,
-               it is a price with urgency painted on it. -->
-          <p class="founding__after">${escapeHtml(FOUNDING_OFFER.after)}</p>
-        </div>
-      </div>
-    </section>`;
-
-/* Off the ladder on purpose: these are jobs rather than subscriptions, and
-   folding them into the three cards would cost every reader a paragraph for the
-   benefit of the few who want them. */
-const EXTRAS_SECTION = `    <section class="section extras" id="extras" aria-labelledby="extras-heading">
-      <div class="wrap">
-        <div class="section-head">
-          <h2 class="section-head__title" id="extras-heading">Other things we do</h2>
-        </div>
-
-        <p class="extras__note">
-          If your Google Business Profile has gone quiet or never showed up properly, read
-          <a href="/guides/google-business-profile-not-showing/">why is my Google Business
-          Profile not showing up</a> before you pay anyone to fix it.
-        </p>
-
-        <dl class="extras__list">
-${EXTRAS.map(
-  (extra) => `          <div class="extras__item">
-            <dt class="extras__name">${escapeHtml(extra.name)}</dt>
-            <dd class="extras__price">${escapeHtml(extra.price)}</dd>
-            <dd class="extras__body">${escapeHtml(extra.body)}</dd>
+        <dl class="annual__list">
+${ANNUAL.prices.map(
+  ({ plan, price }) => `          <div class="annual__item">
+            <dt class="annual__plan">${escapeHtml(plan)}</dt>
+            <dd class="annual__price">${money(price)}</dd>
           </div>`,
-).join('\n\n')}
+).join('\n')}
         </dl>
       </div>
     </section>`;
 
-/* ---- Questions before you pay ----------------------------------------------
-   CLAUDEseo section 5 calls an FAQ on the money page the highest-value
-   structure for AI extraction on a small business site, and /prices did not
-   have one while every guide did. These are the questions a tradesperson
-   actually asks before paying, not a generic template list, and every answer
-   is a fact already established elsewhere in this file or in pricing.js: the
-   plan data, the guarantee, the exclusivity promise. Nothing here is a new
-   claim.
+/* ---- H. The straight answers ----------------------------------------------
+   Four questions, and they do more selling than the price table above them.
+   This audience has usually been burned before, and these are the fears they
+   will not raise on a call. They will just not ring.
 
-   Two questions used to be left out here on purpose: what happens to the site
-   if a client stops paying, and whether someone can move between plans later.
-   Both are answered below now that the owner has actually stated the policy,
-   rather than have this page guess at one. */
+   FOUR, AND ONLY FOUR. The operational questions somebody asks after they have
+   decided (how long until it is live, what happens if a payment is missed, can
+   I move between plans) are answered on
+   /services/websites-for-tradespeople/, which is where a reader who has got
+   that far already is. Repeating them here would bury the four that matter. */
 const FAQS = [
   {
-    q: 'Who owns the domain?',
-    a: 'You do. The domain is registered in your name, and you keep it, the site and your ' +
-      'Google Business Profile whatever happens afterwards.',
+    q: 'Can I pay for the year up front?',
+    a:
+      `${ANNUAL.headline} ` +
+      ANNUAL.prices.map(({ plan, price }) => `${plan} ${money(price)}`).join(', ') +
+      '.',
   },
   {
-    q: 'How long until the site is live?',
-    a: "About a week for Online, once we have your logo, your photos and the jobs you want " +
-      "listed. Managed and Growth take just as long to build, since the build itself doesn't " +
-      "change.",
+    q: 'Can I pause?',
+    a: PAUSE.body,
   },
   {
-    q: "What's not included?",
-    a: "On Online, ongoing edits aren't included. Changes are quoted when you want them. " +
-      'Managed and Growth both cover minor edits and monthly work as part of the price, set out ' +
-      'above.',
+    q: 'What if I leave?',
+    a: LEAVING,
   },
   {
-    q: "What if the site doesn't bring me any work?",
-    a: "On Growth, if the site and your Google Business Profile don't bring you five genuine " +
-      'customer enquiries in four months, we refund the build fee in full. The monthly fee ' +
-      "doesn't come back, since it pays for work already done. Either way, you keep the site, " +
-      'the domain and the profile.',
-  },
-  {
-    q: 'Will you build a site for a competitor of mine?',
-    a: "Not on Growth. If we're already working for a tradesperson in your town and about " +
-      "eight miles around it, we won't take on a direct competitor there while you're a client. " +
-      'A different trade in the same patch is fine.',
-  },
-  {
-    q: 'What happens if I stop paying?',
-    a: "If a payment is missed, you get a 14 day grace period to sort it out. If it's " +
-      'still unpaid after that, the site comes down.',
-  },
-  {
-    q: 'Can I move between plans later?',
-    a: "Yes, in either direction. Moving up adds what the next plan includes. Moving down " +
-      "means losing what the higher plan covered: drop from Growth to Managed and you lose " +
-      'the monthly content, the review generation and the AI search work; drop from Managed ' +
-      'to Online and you lose the monthly changes and the monthly Google profile upkeep.',
+    q: 'Who owns what?',
+    a: OWNERSHIP,
   },
 ];
 
 const FAQ_SECTION = `    <section class="section prices-faq" aria-labelledby="prices-faq-heading">
       <div class="wrap">
         <div class="section-head">
-          <h2 class="section-head__title" id="prices-faq-heading">Questions before you pay</h2>
+          <h2 class="section-head__title" id="prices-faq-heading">Straight answers</h2>
         </div>
 
         <div class="faq__grid">
@@ -272,11 +263,37 @@ ${FAQS.map(
       </div>
     </section>`;
 
+/* ---- E. The extras --------------------------------------------------------
+   Last on the page and styled quiet. Read the note at the top of this file for
+   why the hourly rate is here rather than up beside the plans, and read the
+   one in pricing.js for why it is published at all. */
+const EXTRAS_SECTION = `    <section class="section extras" id="extras" aria-labelledby="extras-heading">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 class="section-head__title" id="extras-heading">Other things I do</h2>
+        </div>
+
+        <dl class="extras__list">
+${EXTRAS.map(
+  (extra) => `          <div class="extras__item${extra.quiet ? ' extras__item--quiet' : ''}">
+            <dt class="extras__name">${escapeHtml(extra.name)}</dt>
+            <dd class="extras__price">${escapeHtml(extra.price)}</dd>
+            <dd class="extras__body">${escapeHtml(extra.body)}</dd>
+          </div>`,
+).join('\n\n')}
+        </dl>
+      </div>
+    </section>`;
+
 /* ---- The machine-readable version -----------------------------------------
-   One Service node per plan, each with the monthly Offer on it. The build fee
-   is a second Offer rather than being folded into the monthly figure, because
-   £15 a month and £99 once are two different prices and a schema that averaged
-   them into one number would be describing a plan nobody sells.
+   One Service node per plan, each carrying its own monthly Offer, plus the
+   single build fee as an Offer on the page's own node. The build fee is not
+   repeated onto each plan for the same reason it is not printed on each card:
+   there is one of it.
+
+   Growth's Offer states £179, the rate a client pays from month four onward,
+   with the opening rate as a second Offer beside it. Putting £99 in as the
+   price would describe a plan that costs that forever, which is not the offer.
 
    No aggregateRating and no review count. There are none, and the standard way
    this markup goes wrong is inventing them. */
@@ -302,21 +319,57 @@ const PLAN_SCHEMA = PLANS.map((plan) => ({
         billingIncrement: 1,
       },
     },
-    {
-      '@type': 'Offer',
-      name: `${plan.name}, build fee`,
-      price: String(plan.build),
-      priceCurrency: 'GBP',
-    },
+    ...(plan.openingMonthly
+      ? [
+          {
+            '@type': 'Offer',
+            name: `${plan.name}, first ${plan.openingMonths} months`,
+            price: String(plan.openingMonthly),
+            priceCurrency: 'GBP',
+            priceSpecification: {
+              '@type': 'UnitPriceSpecification',
+              price: String(plan.openingMonthly),
+              priceCurrency: 'GBP',
+              unitCode: 'MON',
+              billingIncrement: 1,
+            },
+          },
+        ]
+      : []),
   ],
 }));
+
+const PAGE_OFFERS = [
+  {
+    '@type': 'Offer',
+    name: 'Website build fee',
+    price: String(BUILD_FEE),
+    priceCurrency: 'GBP',
+  },
+  {
+    '@type': 'Offer',
+    name: RESCUE.name,
+    price: String(RESCUE.price),
+    priceCurrency: 'GBP',
+  },
+];
 
 export const PRICES_PAGE = {
   path: '/prices/',
   title: 'Website prices for tradespeople | Picsel',
   description:
-    `Three plans, from ${money(PLANS[0].monthly)} a month with a ${money(PLANS[0].build)} build fee. What each one covers, what it does not, and the add-ons. No retainer, no lock-in, and a Growth refund.`,
+    `${money(BUILD_FEE)} to build, then from ${money(PLANS[0].monthly)} a month. Three plans, what each one covers, and the answers on pausing, leaving and who owns what. No lock-in on two of them.`,
   schemaExtra: [
+    {
+      '@type': 'Service',
+      '@id': `${absoluteUrl('/prices/')}#build`,
+      name: 'Website build',
+      description: BUILD_LINE,
+      provider: { '@id': ORG_ID },
+      serviceType: 'Website design and build',
+      areaServed: { '@type': 'Country', name: 'United Kingdom' },
+      offers: PAGE_OFFERS,
+    },
     ...PLAN_SCHEMA,
     {
       '@type': 'FAQPage',
@@ -334,19 +387,20 @@ export const PRICES_PAGE = {
   content: [
     renderBreadcrumbs(PRICES_TRAIL),
     HEAD,
+    RESCUE_SECTION,
     PLAN_SECTION,
     /* Directly under the cards, which is where the question it answers gets
-       asked. Someone who has just read "£99 to build" is at their most
-       sceptical on this page, and the next thing they meet is three sites those
-       figures paid for. */
+       asked. Someone who has just read three monthly figures is at their most
+       sceptical on this page, and the next thing they meet is three sites
+       those figures paid for. */
     BUILT_SECTION,
+    ANNUAL_SECTION,
     renderGrowthCommitments(),
-    FOUNDING,
-    EXTRAS_SECTION,
     FAQ_SECTION,
+    EXTRAS_SECTION,
     renderContactBand({
       heading: 'Not sure which one?',
-      body: `Ring and describe the job. We&rsquo;ll tell you which plan fits and, if none of them do, we&rsquo;ll say that too. ${escapeHtml(GUARANTEE.proposal)}`,
+      body: `Ring and describe the job. I&rsquo;ll tell you which plan fits and, if none of them do, I&rsquo;ll say that too. ${escapeHtml(GUARANTEE.proposal)}`,
     }),
   ].join('\n\n'),
 };
