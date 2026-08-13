@@ -308,6 +308,23 @@ export const GUARANTEE = {
   monthlyNotRefundable:
     'The monthly fee is not refundable. It only ever covers months already worked.',
   proposal: 'Full terms are set out in your proposal before you sign anything.',
+
+  /* The conditions line, and the reason the guarantee can be varied or
+     declined at all. Without it the page reads as an unconditional promise
+     made automatically to every Growth client, which is not what the proposal
+     says and not what the terms say. It names the two things that actually
+     carry the discretion, what counts as an enquiry and what the client has to
+     do, and then stops. It deliberately does NOT list them: a set of get-outs
+     printed under a refund offer reads worse than no offer at all.
+
+     This replaces `proposal` in the terms list rather than joining it. Both
+     sentences point at the same document, and two of them back to back would
+     read as hedging the promise twice. `proposal` stays on the object because
+     the closing block on the prices page still uses it, where the guarantee is
+     not the subject and the shorter sentence is the right one. */
+  conditions:
+    'Full conditions are set out in your proposal, including what counts as an enquiry and the ' +
+    'few things I need from you to make it fair.',
 };
 
 /* The terms in the order they are shown, built from the named fields above so
@@ -317,5 +334,5 @@ GUARANTEE.terms = [
   GUARANTEE.termRelease,
   GUARANTEE.keepEverything,
   GUARANTEE.monthlyNotRefundable,
-  GUARANTEE.proposal,
+  GUARANTEE.conditions,
 ];

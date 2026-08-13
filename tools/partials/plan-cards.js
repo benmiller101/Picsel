@@ -221,7 +221,15 @@ export function renderGrowthCommitments() {
           <div class="commitment">
             <h3 class="commitment__title">The lead guarantee</h3>
             <p class="commitment__body">${escapeHtml(GUARANTEE.promise)}</p>
-${GUARANTEE.terms.map((term) => `            <p class="commitment__terms">${escapeHtml(term)}</p>`).join('\n')}
+${GUARANTEE.terms
+  .map((term) => {
+    /* The conditions line is the only term that points somewhere else rather
+       than stating something. Setting it apart in italic is what stops it
+       reading as a sixth condition of the refund. */
+    const note = term === GUARANTEE.conditions ? ' commitment__terms--note' : '';
+    return `            <p class="commitment__terms${note}">${escapeHtml(term)}</p>`;
+  })
+  .join('\n')}
           </div>
         </div>
       </div>

@@ -319,6 +319,14 @@
   color: var(--ink-faint);
 }
 
+/* The one line under the guarantee that points at the proposal rather than
+   stating a term. Italic and pushed down a little so it reads as a footnote to
+   the promise instead of another condition on it. */
+.commitment__terms--note {
+  margin-top: var(--space-4);
+  font-style: italic;
+}
+
 /* The qualifier opposite the heading, in the slot .section-head keeps for a
    link. It is not a link here: "applies on Growth only" is a condition, and
    making it clickable would invite somebody to treat reading it as optional. */
