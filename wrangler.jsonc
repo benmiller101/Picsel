@@ -2,10 +2,15 @@
    Read by `npx wrangler deploy`, which is the deploy command Cloudflare runs
    on every push to main.
 
-   There is no `main` field here and that is deliberate: this is an assets-only
-   Worker. No code runs on request. Cloudflare takes the files listed below,
-   puts them on its edge, and serves them as static files. Nothing to boot,
-   nothing to keep alive, nothing that can fall over.
+   This was an assets-only Worker with no `main` at all, and for every page on
+   the site it still behaves like one: Cloudflare takes the files listed below,
+   puts them on its edge, and serves them as static files.
+
+   `main` was added in August 2026 for the two addresses that cannot be files,
+   /card and /card-stats, which are the business card QR code and its scan
+   readout. Cloudflare runs worker.js only when a request matches no file, so
+   no page, stylesheet, screenshot or font goes anywhere near it. See worker.js
+   for what it does, which is almost nothing.
 
    The assets directory is the repo root rather than a build output folder,
    because tools/build.js writes the generated HTML alongside the CSS and JS it
@@ -14,6 +19,9 @@
 {
   "name": "picsel",
 
+  /* The router for /card and /card-stats. Nothing else reaches it. */
+  "main": "worker.js",
+
   /* Pins the Workers runtime behaviour to how it worked on this date, so a
      future platform change cannot alter how the site is served without this
      line being edited first. */
@@ -21,6 +29,12 @@
 
   "assets": {
     "directory": "./",
+
+    /* Lets worker.js hand a request it does not recognise back to the static
+       files, by calling env.ASSETS.fetch(). Without this binding the two rules
+       below would stop applying to anything that reached the script, and a
+       typo'd address would return an empty 404 instead of the real 404 page. */
+    "binding": "ASSETS",
 
     /* The site's routes are directories: /work/ is work/index.html on disk.
        "auto-trailing-slash" resolves those, and also sends /work to /work/ so
@@ -38,4 +52,27 @@
        and serve it, with a 404 status, for anything that matches no route. */
     "not_found_handling": "404-page"
   }
+
+  /* ---- THE ONE THING LEFT TO DO BY HAND ----------------------------------
+     Card scans are stored in a KV namespace, which is Cloudflare's key/value
+     store. It has to be created on Ben's Cloudflare account, and this file
+     has to be told its id, because a Worker takes its storage bindings from
+     here rather than from the dashboard. A binding added in the dashboard
+     would be wiped by the next deploy.
+
+     The id is not a secret. It names a store; it does not open one. Committing
+     it is normal and is how every Workers project does this.
+
+     Create it with one command:
+
+         npx wrangler kv namespace create CARD_SCANS
+
+     It prints a block containing an id. Uncomment the block below, paste the
+     id in, and push. Until then /card still redirects and simply counts
+     nothing, which is exactly how card.js is written to behave.
+
+  , "kv_namespaces": [
+      { "binding": "CARD_SCANS", "id": "PASTE_THE_ID_HERE" }
+    ]
+  */
 }

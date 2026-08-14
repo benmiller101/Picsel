@@ -1343,6 +1343,78 @@ if the same shortcut gets taken again:
 
 ---
 
+## Section 18: Card scan tracking, August 2026
+**Priority: MEDIUM | Effort: built, one manual step outstanding**
+
+The QR code on the Picsel business cards points at `picsel.co.uk/card`, which until now was a
+404. It needs to send the person to the homepage and count that a card was scanned, so there is
+some evidence about whether handing cards out does anything.
+
+- [x] `/card` redirects to the homepage with a 302, `no-store` and `noindex`
+- [x] The destination is one named constant, so the cards can be repointed without a reprint
+- [x] The print run comes from `?b=`, defaults to `v4`, and anything not matching `v` plus up to
+      three digits is filed under `unknown`
+- [x] One storage record per scan rather than a running total, so no scan can overwrite another
+- [x] Nothing identifying is stored: no IP, user agent, referrer, country or cookie
+- [x] Link preview bots, crawlers and prefetches are redirected but not counted
+- [x] The scan is also sent to Picsel HQ, which cannot receive it yet and will start when HQ can
+- [x] `/card-stats?key=` returns the numbers as JSON, and returns a blank 404 to everyone else
+- [x] Neither route is in `sitemap.xml`, `robots.txt` or `llms.txt`
+- [x] `worker.js` and `functions/` are kept out of the published files
+- [ ] `[MANUAL]` Create the `CARD_SCANS` KV namespace and paste its id into `wrangler.jsonc`
+- [ ] `[MANUAL]` Add `CARD_STATS_KEY` and `PICSEL_SITE_KEY` as secrets in the Cloudflare dashboard
+- [ ] `[MANUAL]` Scan a printed card with a phone and confirm one scan appears under `v4`
+- [ ] Picsel HQ needs a `card` hit type. Its endpoint takes `call` and `form` only, so the POST
+      from `/card` comes back 4xx and is discarded until that changes. The prompt for the HQ
+      repo is `picsel-hq-card-hit-prompt.md`
+
+**What we built:**
+
+Someone points a phone at a card, taps the address, and lands on the homepage. Behind that, one
+small record is written saying a card was scanned today and which print run it came from. That is
+the whole of it. Nothing about the person is written down, so there is nothing to put a cookie
+banner in front of and nothing that would be awkward to show a client.
+
+The address the card points at is one line of code, not something printed on the card. Every card
+already in a wallet can be sent somewhere else, a case study or a booking page, by changing that
+line and pushing. That is worth more than the counting is.
+
+The numbers are read back at `/card-stats?key=…`, which returns plain JSON in a browser tab and a
+blank 404 to anyone without the key. There is no page, no login screen and no chart, because each
+of those is a thing to maintain and a thing that can leak.
+
+**Decisions made:**
+
+- **The site now runs a small amount of code, for the first time.** It was an assets-only Worker
+  with no code at all, which is why `functions/card.js` as originally specified could not have
+  worked: Pages Functions only exist in a Cloudflare Pages project, and this site is not one. It
+  would have been published as a readable text file with the HQ address inside it. `wrangler.jsonc`
+  now names `worker.js`, which Cloudflare runs only when a request matches no file. Every page,
+  stylesheet and screenshot is served exactly as before.
+- **A 302 redirect, never a 301.** A 301 tells the phone the move is permanent and the phone
+  believes it, so the second scan of that card would go straight to the homepage without touching
+  the endpoint. The count would stop and the cards could no longer be repointed.
+- **One record per scan, not a counter.** Cloudflare KV cannot add one to a number safely, so two
+  scans a second apart can read the same total and one write wins. A list of scans also survives
+  questions a total cannot answer, which matches how the rest of HQ works: every number is worked
+  out from records rather than typed in.
+- **The timestamp is written into the record's metadata as well as its body**, because Cloudflare
+  returns metadata when it lists keys. `/card-stats` gets the first and last scan from one sweep
+  instead of fetching every record.
+- **Bots are turned away by user agent, and the user agent is then thrown away.** Reading it to
+  make a decision is not the same as keeping it. A scan figure padded with WhatsApp link previews
+  is worse than no figure, because it looks plausible enough to repeat to somebody.
+- **`hq.picsel.co.uk` stays out of anything a browser loads, and this is now only half true for
+  the site as a whole.** The new code is server-side and is excluded from the published files. But
+  `hq-beacon.js`, which counts calls and enquiries, has shipped that address in every page since it
+  went in. Now that the site has a Worker, the beacon could post to a same-origin path and have
+  `worker.js` forward it, which would remove the string from the browser entirely. Not done here.
+
+**Done when:** a printed card scanned with a phone lands on the homepage and shows up as one scan
+under `v4` at `/card-stats`.
+
+---
+
 ## Build order summary
 
 | # | Section | Phase | Priority | Depends on |
@@ -1364,6 +1436,7 @@ if the same shortcut gets taken again:
 | 15 | Picsel's own SEO / GBP | 2 | Medium | 13 |
 | 16 | The search build-out | 2 | High | 13 |
 | 17 | The pre-launch checklist | 2 | High | 13, 16 |
+| 18 | Card scan tracking | 2 | Medium | 12 |
 
 ---
 
@@ -1413,6 +1486,8 @@ if the same shortcut gets taken again:
       and attaching reviews to their pages wait on Ben's reviewer-to-client mapping and
       biographical facts, the Cloudflare token and Google profile link are still needed, and two
       privacy-page judgement calls need his sign-off)
+- [ ] Section 18: Card scan tracking (built; the KV namespace, the two secrets and a real
+      scan with a phone are `[MANUAL]`, and HQ needs a card hit type)
 
 ---
 

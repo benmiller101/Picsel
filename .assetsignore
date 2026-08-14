@@ -28,6 +28,20 @@ site.config.js
 projects.js
 pricing.js
 
+# The server-side code for /card and /card-stats. This matters more than the
+# usual entry on this list: card.js contains the Picsel HQ address, and the
+# reason the scan counting is done server-side at all is that the address never
+# reaches a browser. Served as a file it would be readable by anybody.
+#
+# Wrangler already leaves the Worker entry point and everything it imports out
+# of the assets, because it bundles them into the Worker instead. Verified with
+# `wrangler deploy --dry-run`: the file count is the same with and without
+# these two lines. They are here as the stated rule rather than a behaviour
+# that happens to hold, so that moving a file or dropping the `main` field
+# cannot quietly publish it.
+worker.js
+functions
+
 # noise-4d.js is imported only by the two exporters in tools/, which run in
 # Node. No page loads it. Its sibling noise.js is NOT on this list and must not
 # be: the hero and the backdrop both import it in the browser.
