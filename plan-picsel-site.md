@@ -1364,9 +1364,11 @@ some evidence about whether handing cards out does anything.
 - [ ] `[MANUAL]` Create the `CARD_SCANS` KV namespace and paste its id into `wrangler.jsonc`
 - [ ] `[MANUAL]` Add `CARD_STATS_KEY` and `PICSEL_SITE_KEY` as secrets in the Cloudflare dashboard
 - [ ] `[MANUAL]` Scan a printed card with a phone and confirm one scan appears under `v4`
-- [ ] Picsel HQ needs a `card` hit type. Its endpoint takes `call` and `form` only, so the POST
-      from `/card` comes back 4xx and is discarded until that changes. The prompt for the HQ
-      repo is `picsel-hq-card-hit-prompt.md`
+- [x] Picsel HQ accepts a `card` hit type, built the same day in the HQ repo as its Section 17c.
+      The scans show as a third tile in the picsel.co.uk band on Overview and a third row in
+      Settings
+- [ ] `[MANUAL]` Paste HQ's `0026_card_scans.sql` into Supabase and deploy HQ. Until that runs,
+      HQ still refuses every scan and KV is the only record
 
 **What we built:**
 
@@ -1486,8 +1488,8 @@ under `v4` at `/card-stats`.
       and attaching reviews to their pages wait on Ben's reviewer-to-client mapping and
       biographical facts, the Cloudflare token and Google profile link are still needed, and two
       privacy-page judgement calls need his sign-off)
-- [ ] Section 18: Card scan tracking (built; the KV namespace, the two secrets and a real
-      scan with a phone are `[MANUAL]`, and HQ needs a card hit type)
+- [ ] Section 18: Card scan tracking (built, and HQ can now receive the scans; the KV namespace,
+      the two secrets, HQ's migration and a real scan with a phone are `[MANUAL]`)
 
 ---
 

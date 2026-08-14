@@ -165,10 +165,11 @@ async function recordScan(env, batch) {
  * Send the same scan to Picsel HQ, so card scans sit next to the call and
  * enquiry counts instead of in a separate place that has to be remembered.
  *
- * HQ DOES NOT ACCEPT t=card YET. Its endpoint takes "call" and "form", so
- * until that changes this request comes back 4xx and is swallowed, and the
- * KV records carry the numbers on their own. It is built now so it starts
- * working the moment HQ catches up, with nothing to deploy here.
+ * HQ LEARNED t=card ON 14 AUGUST 2026, its Section 17c, a few hours after this
+ * file shipped. Until its migration 0026 is pasted into Supabase and HQ is
+ * deployed, this request still comes back 4xx and is still swallowed, and the
+ * KV records carry the numbers on their own. Nothing here changes either way,
+ * which was the point of building it before HQ was ready.
  *
  * @param {object} env The Worker environment, holding PICSEL_SITE_KEY.
  */
