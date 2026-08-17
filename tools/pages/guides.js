@@ -633,14 +633,323 @@ const HUB_BACKLINK = {
    The backlink to the hub is NOT a field. It is appended to sections by
    toGuide below, so it cannot be forgotten on a page and cannot drift from
    page to page. */
-const TRADE_COST_PAGES = [];
+const TRADE_COST_PAGES = [
+  {
+    slug: 'builder-website-cost',
+    trade: 'Builders',
+    summary:
+      'What a building firm pays, what each price buys, and why the site earns its keep after the quote goes in rather than before.',
+
+    question: "How much does a builder's website cost?",
+    title: "How much does a builder's website cost? UK, 2026",
+    description:
+      'Around £500 to £2,000 as a one off, or £15 to £120 a month. What each price buys a '
+      + 'building firm, and why the site matters most after the quote goes in.',
+
+    /* The Article node's image, and the same shot the page opens its closing
+       section with. A social card showing the work is worth more than one
+       showing a logo. */
+    article: { image: '/assets/work/nevitt-construction/desktop.webp' },
+
+    /* The five under "Common questions" are the FAQ, and the H1 is the
+       article's headline rather than a sixth question. See renderGuide. */
+    faqFromAlso: true,
+    alsoHeading: 'Common questions',
+
+    answer:
+      'Between £500 and £2,000 as a one off for a small building firm, or £15 to £120 a month '
+      + 'if it is built and looked after on a subscription. At the top end an agency will quote '
+      + '£3,000 upwards, and for most builders that is money spent on process rather than on the '
+      + 'website.',
+
+    intro: [
+      'For scale: the architect&rsquo;s drawings on a single extension run £350 to £950, and the '
+      + 'extension itself averages £48,000. The website costs about the same as the drawings and '
+      + 'it works on every job you quote for, not one.',
+    ],
+
+    sections: [
+      {
+        h2: 'What you are actually paying for',
+        blocks: [
+          { p: 'Price differences between builders&rsquo; websites come down to four things.' },
+          {
+            p: '<strong>Who writes it.</strong> A template filled in with your details takes an '
+              + 'afternoon. A site written around the jobs you actually do, in the words '
+              + 'homeowners search for, takes a few days and is the reason one ranks and the '
+              + 'other does not.',
+          },
+          {
+            p: '<strong>Whether anyone did the search work.</strong> &ldquo;Builder&rdquo; is '
+              + 'unwinnable. &ldquo;Loft conversion [your town]&rdquo; is not. Someone has to '
+              + 'work out which searches you can realistically win before a word is written, and '
+              + 'plenty of cheap sites skip it entirely.',
+          },
+          {
+            p: '<strong>Photos.</strong> Your own jobs, shot properly and compressed so the page '
+              + 'still loads on a phone in a van. Stock images of somebody else&rsquo;s kitchen '
+              + 'do the opposite of what you want.',
+          },
+          {
+            p: '<strong>What happens afterwards.</strong> A site nobody touches for two years '
+              + 'slides. Hosting, security, a monthly Google post, changes when your services '
+              + 'change. This is the bulk of what a monthly fee buys and it is the part most one '
+              + 'off quotes leave out.',
+          },
+        ],
+      },
+
+      {
+        h2: 'The going rate, and what sits behind it',
+        blocks: [
+          {
+            table: {
+              caption: 'What a small building firm pays, by who builds it',
+              head: ['What you buy', 'Typical UK cost'],
+              rows: [
+                ['Template site you build yourself', '£15 to £30 a month, plus your weekend'],
+                ['Freelancer, one off build', '£500 to £1,500'],
+                ['Small studio, built and maintained', '£15 to £120 a month, sometimes with a build fee'],
+                ['Agency', '£3,000 to £10,000, plus a retainer'],
+              ],
+            },
+          },
+          /* Immediately after the table, because it is that table turned into
+             comparable first year totals. Before it, it would be a chart of
+             numbers the reader has not met yet. */
+          { figure: { svg: 'builder-website-cost-comparison.svg', prefix: 'cc' } },
+          {
+            p: 'Picsel sits in the third row. £299 to build, then £15 a month for hosting and '
+              + 'security, £29 a month if you want changes made for you, or £99 a month for the '
+              + 'first three months and £179 after that if you want us actively working on '
+              + 'getting you found. Numbers on the <a href="/prices/">prices page</a>.',
+          },
+        ],
+      },
+
+      {
+        h2: '“I get all my work from word of mouth”',
+        blocks: [
+          {
+            p: 'Most builders do, and it is the best way to get work there is. A website does '
+              + 'not replace it. It stops it leaking.',
+          },
+          {
+            p: 'Here is what actually happens. Someone recommends you to a neighbour. The '
+              + 'neighbour has your name and your number and nothing else, and they are about to '
+              + 'let a stranger work on their house for three to six months. So they look you '
+              + 'up. If they find a Facebook page whose last post was 2023, or a Checkatrade '
+              + 'profile that helpfully shows them two other builders on the same screen, the '
+              + 'recommendation you earned starts competing with people who did nothing to earn '
+              + 'it.',
+          },
+          { figure: { svg: 'builder-word-of-mouth-flow.svg', prefix: 'wom' } },
+          {
+            p: 'I ran a house clearance company before I did this. Every job came from word of '
+              + 'mouth or from our own website, and the two were not separate things. Word of '
+              + 'mouth got us named. The website was what people found when they went and '
+              + 'checked.',
+          },
+          {
+            p: 'That is what a builder&rsquo;s website is for. Not leads. Confirmation.',
+          },
+        ],
+      },
+
+      {
+        h2: 'What a builder’s site needs that other trades do not',
+        blocks: [
+          {
+            p: '<strong>Previous jobs, in volume.</strong> A homeowner spending £48,000 wants to '
+              + 'see twenty jobs, not three. Before and after on the same extension does more '
+              + 'work than any paragraph you could write.',
+          },
+          {
+            p: '<strong>How long you have been going.</strong> A firm that has been trading '
+              + 'since 1975 should say so in the first screen. It is the single strongest thing '
+              + 'a long standing builder owns and it is free.',
+          },
+          {
+            p: '<strong>Separate pages for separate jobs.</strong> Extensions, loft conversions, '
+              + 'garage conversions, new builds and renovations are different searches by '
+              + 'different people with different budgets. One &ldquo;Services&rdquo; page trying '
+              + 'to catch all five catches none.',
+          },
+          {
+            p: '<strong>The awkward questions answered.</strong> How long will it take, what '
+              + 'happens if it overruns, do you handle building control, do you use your own '
+              + 'trades or subcontract. Every homeowner wants to ask and most are too polite. '
+              + 'Answer them on the page and you will spend less time on the phone with people '
+              + 'who were never going to book.',
+          },
+          {
+            p: '<strong>Somewhere for the reviews to live.</strong> Copy them onto your own site '
+              + 'rather than leaving them on a platform you do not control.',
+          },
+        ],
+      },
+
+      {
+        h2: 'What a very cheap site actually costs',
+        blocks: [
+          {
+            p: 'The £99 and free builds usually recover the money somewhere else. Three things '
+              + 'worth checking before you sign anything.',
+          },
+          {
+            p: '<strong>Who owns the domain.</strong> If it is registered in their name and you '
+              + 'leave, you lose your web address, and any ranking attached to it. Ask to be '
+              + 'listed as the registrant. If the answer is complicated, that is the answer.',
+          },
+          {
+            p: '<strong>Whether you can leave.</strong> A twelve month term is reasonable. '
+              + 'Automatic renewal you have to give ninety days notice to escape is not.',
+          },
+          {
+            p: '<strong>What a change costs.</strong> Some cheap builds are cheap until you want '
+              + 'a phone number updated, and then it is £75 and a fortnight.',
+          },
+        ],
+      },
+
+      {
+        h2: 'Questions worth asking before you pay anyone',
+        blocks: [
+          {
+            orderedList: [
+              'Will I own the domain name?',
+              'What exactly happens if I want to leave, and when?',
+              'Which searches are you building this to win?',
+              'What does a change cost me after launch?',
+              'Can I see a site you built for a builder, live?',
+            ],
+          },
+          {
+            p: 'Any of those getting a vague answer tells you more than the price does.',
+          },
+        ],
+      },
+
+      {
+        h2: 'If you want it done for you',
+        blocks: [
+          {
+            p: 'Picsel builds websites for building firms anywhere in the UK. £299 to build, '
+              + 'then from £15 a month, and live in days.',
+          },
+          {
+            p: 'Call Ben on <a href="tel:+447456809049">07456 809049</a> or '
+              + '<a href="/contact/">send a message</a>. Have a look at '
+              + '<a href="/work/nevitt-construction/">A Nevitt Construction</a>, a family firm '
+              + 'going since 1975.',
+          },
+          /* The client's own work, beside the link to their page. No Picsel mark
+             on either: the diagrams carry it and that is the only place it
+             belongs on somebody else's site. Captured by npm run shots. */
+          {
+            figure: {
+              images: [
+                {
+                  src: '/assets/work/nevitt-construction/desktop.webp',
+                  alt: 'The A Nevitt Construction website, built by Picsel, showing their extension and new build work',
+                  width: 1440,
+                  height: 900,
+                },
+                {
+                  src: '/assets/work/nevitt-construction/mobile.webp',
+                  alt: 'The same A Nevitt Construction website on a phone',
+                  width: 780,
+                  height: 1688,
+                },
+              ],
+            },
+          },
+          {
+            p: 'More on <a href="/guides/how-much-a-trades-website-costs/">what a website costs '
+              + 'across the trades</a>, or what is included on the '
+              + '<a href="/services/websites-for-tradespeople/">websites for tradespeople</a> '
+              + 'page.',
+          },
+        ],
+      },
+    ],
+
+    also: [
+      {
+        q: 'Is a website worth it if I am already busy?',
+        a:
+          'Being busy is when to build one, because search takes three to six months to do '
+          + 'anything. A site built in a quiet month is already too late for that quiet month. '
+          + 'The other reason is that a website changes which jobs you get offered rather than '
+          + 'only how many. A firm that shows twenty finished extensions gets asked to quote for '
+          + 'extensions. A firm with a phone number gets asked for anything.',
+      },
+      {
+        q: 'Should I just use Checkatrade instead?',
+        a:
+          'If your customers use Checkatrade, it is a reasonable place to be, and plenty of '
+          + 'builders get real work from it. Worth knowing what it is though. It puts you in a '
+          + 'list next to your competitors, the profile belongs to them and not to you, and it '
+          + 'does not publish what it charges, so you cannot compare it against anything until '
+          + 'you have rung them. Most builders end up doing both, and the site is the half you '
+          + 'own.',
+      },
+      {
+        q: 'What about Wix or Squarespace?',
+        a:
+          'If you enjoy that sort of thing and have a free weekend, they work, and £20 a month '
+          + 'is honest value. Most builders never finish. The site sits at 80% done for a year '
+          + 'with placeholder text still on the about page. The question is not whether the tool '
+          + 'is any good, it is whether you are going to spend the weekend.',
+      },
+      {
+        q: "How long does a builder's website take to build?",
+        a:
+          'Days rather than months, if whoever is building it is organised. What holds it up is '
+          + 'almost always photos. Have thirty pictures of finished jobs on your phone ready to '
+          + 'send and the whole thing moves quickly.',
+      },
+      {
+        q: 'Will it get me to the top of Google?',
+        a:
+          'Not on its own, and anyone promising that should worry you. A new site takes months '
+          + 'before positions move, and it moves in an order: you get seen, then you climb, then '
+          + 'you get clicks, then you get calls. Where a website earns its money quickly is the '
+          + 'person who already has your name and is checking you out.',
+      },
+    ],
+  },
+];
 
 /* A trade entry, as an ordinary guide record.
 
-   The backlink section is appended last so it lands at the foot of the body,
-   after the page has answered the question it was opened for. A link out of a
-   page the reader has not finished with is a link that costs a reader. */
+   THE BACKLINK IS ONLY APPENDED IF THE PAGE HAS NOT ALREADY WRITTEN ONE. The
+   structure's promise is that every spoke links back to the hub in body copy,
+   not that every spoke ends with a section headed the same way. A page whose
+   own closing paragraph already sends the reader to the hub has kept the
+   promise, and bolting a second link underneath it would be the renderer
+   talking over the copy.
+
+   So the appended section is a floor rather than a fixture: it guarantees the
+   link exists, and gets out of the way when it already does.
+
+   The check reads the rendered blocks rather than trusting a flag on the
+   entry, because a flag is a claim somebody has to remember to keep true and
+   this is the fact itself. */
+function linksToHub(entry) {
+  const strings = (entry.sections || []).flatMap((section) => [
+    ...(section.blocks || []).map((block) => block.p || ''),
+    ...(section.blocks || []).flatMap((block) => block.list || block.orderedList || []),
+    ...(section.paragraphs || []),
+    ...(section.list || []),
+  ]);
+
+  return strings.some((text) => String(text).includes(`href="${COST_HUB_PATH}"`));
+}
+
 function toGuide(entry) {
+  if (linksToHub(entry)) return entry;
+
   return {
     ...entry,
     sections: [
@@ -658,7 +967,11 @@ function toGuide(entry) {
    structure ships now, empty and harmless, and starts insisting on copy at
    the exact moment copy would become visible. */
 function assertHubBacklinkWritten() {
-  if (!TRADE_COST_PAGES.length) return;
+  /* Only the entries that have not written their own backlink need this copy.
+     A list where every page links to the hub in its own words never asks for
+     it, which is the correct answer and not a loophole: the thing being
+     guarded is the link, and the link is there. */
+  if (!TRADE_COST_PAGES.some((entry) => !linksToHub(entry))) return;
 
   const unwritten = [HUB_BACKLINK.h2, HUB_BACKLINK.paragraph]
     .some((text) => text.startsWith('TODO'));
@@ -725,6 +1038,7 @@ ${rows}
    look like the answer, because it is: the whole page is a question and this is
    the reply. */
 function renderGuide(guide) {
+  const nl = String.fromCharCode(10);
   const sections = renderArticleSections(guide.sections, 'guide');
 
   /* The one thing to do before the reader has scrolled. It sits under the
@@ -732,7 +1046,25 @@ function renderGuide(guide) {
      the top of the page, and it carries a single link rather than a card:
      the sticky mobile bar from Task 7 already carries Call, so a second
      button here would be the third phone route on the same small screen. */
-  const action = `        <p class="guide__action">${escapeHtml(guide.action.line)} <a class="guide__action-link" href="${escapeHtml(guide.action.href)}">${escapeHtml(guide.action.cta)}</a>.</p>`;
+  /* Optional, since August 2026. The five original guides each carry one, and
+     a page written elsewhere as finished copy may not: this one closes with
+     its own section that does the same job in its own words. An action line
+     invented to fill the slot would be a sentence nobody wrote. */
+  const action = guide.action
+    ? `        <p class="guide__action">${escapeHtml(guide.action.line)} <a class="guide__action-link" href="${escapeHtml(guide.action.href)}">${escapeHtml(guide.action.cta)}</a>.</p>`
+    : '';
+
+  /* Lead paragraphs between the answer and the first h2. The answer field is
+     the one that has to stand alone in a schema block and get lifted whole, so
+     it is kept to about fifty words. A page whose opening runs to two
+     paragraphs puts the second here rather than making the first too long to
+     quote. */
+  /* Carries its own trailing gap when there is one, and is otherwise the empty
+     string, so a guide without an intro renders exactly as it did before this
+     field existed. The five published guides are byte for byte unchanged. */
+  const intro = guide.intro
+    ? `${guide.intro.map((text) => `        <p class="guide__intro">${text}</p>`).join(nl)}${nl}${nl}`
+    : '';
 
   /* One array, fed to the visible nav below and to the JSON-LD in
      schemaExtra, so the two accounts of this page's place in the site
@@ -748,7 +1080,7 @@ function renderGuide(guide) {
      contradicting the page it sits on. */
   const also = guide.also.length
     ? `        <section class="guide__section guide__also">
-          <h2>While you are here</h2>
+          <h2>${escapeHtml(guide.alsoHeading || 'While you are here')}</h2>
 ${guide.also
   .map(
     ({ q, a }) => `          <div class="guide__qa">
@@ -771,7 +1103,7 @@ ${guide.also
 
      The `plan` data stays in the guide records above so this comes back
      whole. */
-  const plan = SHOW_PRICING
+  const plan = SHOW_PRICING && guide.plan
     ? `        <aside class="guide__plan">
           <p>${escapeHtml(guide.plan.line)}</p>
           <a class="guide__plan-link" href="${escapeHtml(guide.plan.href || `/prices/#${guide.plan.id}`)}">See what that includes</a>
@@ -798,7 +1130,7 @@ ${guide.also
 
         <p class="guide__answer">${escapeHtml(guide.answer)}</p>
 
-${action}
+${intro}${action}
 
 ${sections}
 
@@ -814,13 +1146,38 @@ ${trades}${plan}
     description: guide.description,
     styles: ['/article.css'],
     schemaExtra: [
+      /* An Article node only where a guide asks for one. The five original
+         guides are a question and its answer and nothing else, and describing
+         those as an Article says less about them than FAQPage already does.
+         A page long enough to have a headline, a body and a subject is an
+         Article, and saying so is what lets it be understood as one thing
+         rather than as a bag of questions. */
+      ...(guide.article
+        ? [{
+          '@type': 'Article',
+          '@id': `${absoluteUrl(`/guides/${guide.slug}/`)}#article`,
+          headline: guide.question,
+          description: guide.description,
+          articleSection: 'Guides',
+          inLanguage: 'en-GB',
+          mainEntityOfPage: { '@type': 'WebPage', '@id': absoluteUrl(`/guides/${guide.slug}/`) },
+          ...(guide.article.image ? { image: absoluteUrl(guide.article.image) } : {}),
+        }]
+        : []),
       {
         '@type': 'FAQPage',
         '@id': `${absoluteUrl(`/guides/${guide.slug}/`)}#faq`,
-        mainEntity: [
-          { q: guide.question, a: guide.answer },
-          ...guide.also,
-        ].map(({ q, a }) => ({
+        /* Normally the page's own question leads the list, because on a
+           guide the H1 IS a question and its answer is the first paragraph.
+           A guide carrying `faqFromAlso` says otherwise: its H1 is the
+           article's headline and the questions it wants indexed are the ones
+           written under the follow-ups heading. Describing the headline as a
+           sixth FAQ entry there would put a question in the schema that the
+           page does not present as one. */
+        mainEntity: (guide.faqFromAlso
+          ? guide.also
+          : [{ q: guide.question, a: guide.answer }, ...guide.also]
+        ).map(({ q, a }) => ({
           '@type': 'Question',
           name: q,
           acceptedAnswer: { '@type': 'Answer', text: a },
@@ -868,25 +1225,29 @@ const GUIDES_INDEX_TRAIL = [
   { name: 'Guides', path: '/guides/' },
 ];
 
-/* The index lists every guide, trade pages included, so that a spoke is
-   never an orphan reachable only from the hub.
+/* The index lists every guide, trade pages included, so that a spoke is never
+   an orphan reachable only from the hub.
 
-   ITS META DESCRIPTION COUNTS THEM IN WORDS, and that is a fact with an
-   expiry date on it. The first trade page makes "five questions" wrong on a
-   line Google prints under the result. Rewording it is Ben's, not the
-   build's, so the build refuses to publish the stale version instead of
-   quietly guessing at a new one. */
+   ITS META DESCRIPTION COUNTS THEM, AND THE COUNT IS NOW DERIVED. It used to
+   say "five questions" as a literal, with a build check to catch the day that
+   stopped being true. The check fired on the first trade page, exactly as
+   intended, and then the fix was going to be somebody typing a new number that
+   would go stale again at the next page. So the sentence counts the list
+   instead. A number nobody types is a number nobody has to remember.
+
+   Written as a word rather than a digit because it is prose, and "Plain
+   answers to 6 questions" reads like a spreadsheet. Past twelve it falls back
+   to the digit, which is the point where a word stops helping anyway. */
+const COUNT_WORDS = [
+  'no', 'one', 'two', 'three', 'four', 'five', 'six',
+  'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve',
+];
+
+const countWord = (n) => COUNT_WORDS[n] ?? String(n);
+
 const INDEX_DESCRIPTION =
-  'Plain answers to five questions tradespeople actually ask about websites, Google Business Profiles, reviews and what any of it should cost. No sales pitch.';
-
-if (ALL_GUIDES.length !== 5 && INDEX_DESCRIPTION.includes('five questions')) {
-  throw new Error(
-    `guides.js: the /guides/ index says "five questions" and there are now `
-    + `${ALL_GUIDES.length}. That sentence is the meta description Google `
-    + 'prints under the result. Reword INDEX_DESCRIPTION in '
-    + 'tools/pages/guides.js, then build again.',
-  );
-}
+  `Plain answers to ${countWord(ALL_GUIDES.length)} questions tradespeople actually ask about `
+  + 'websites, Google Business Profiles, reviews and what any of it should cost. No sales pitch.';
 
 export const GUIDES_INDEX_PAGE = {
   path: '/guides/',

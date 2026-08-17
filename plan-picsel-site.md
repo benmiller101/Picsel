@@ -1353,6 +1353,73 @@ if the same shortcut gets taken again:
 
 ---
 
+## Section 20: The first spoke, /guides/builder-website-cost/, August 2026
+**Priority: HIGH | Effort: the page, two diagrams and a renderer that could not hold them**
+
+The first of the five per trade cost pages, and the one that proves the hub and spoke structure
+from Section 19 works. Copy, meta and both diagrams came from Ben as finished work.
+
+- [x] `/guides/builder-website-cost/` from the supplied draft, copy unchanged
+- [x] Both diagrams inlined, not linked, with every id namespaced per diagram
+- [x] `--chart-accent` and `--chart-emphasis` in `tokens.css`
+- [x] The client's desktop and mobile shots from `npm run shots`, no Picsel mark on either
+- [x] `Article` plus `FAQPage` over the five Common questions, no `LocalBusiness`, no address
+- [x] Listed on the hub, and links back to it in its own body copy
+- [x] In `sitemap.xml` in the same commit, which the build does by construction
+- [ ] `[BEN]` Paste the live URL into the Rich Results Test after deploy. It needs a public URL
+      and cannot be run from here
+
+**What we built:**
+
+The page reads as one argument with two diagrams in it: a chart turning the price table into
+comparable first year totals, and a flow showing what happens after somebody is recommended. Both
+are drawn into the HTML rather than loaded as pictures, so a screen reader gets the whole thing
+read out and the colours come from the site's own tokens.
+
+**Decisions made:**
+
+- **A section can now carry ordered blocks.** The renderer could do paragraphs and then a list, in
+  that order, and nothing else. This page needs a table with a paragraph after it and a diagram
+  between the second and third paragraph. Fixed slots would have rendered the copy in slot order,
+  which is not a layout problem: it is the renderer editing the writing. Sections may now carry
+  `blocks`, rendered in the order written. The five older guides were not touched and build byte
+  for byte identically.
+- **Every id in an inlined diagram is prefixed.** The flow diagram defines `<marker id="arw">` and
+  points its arrowheads at it. Two diagrams on one page both defining that id leaves the browser
+  picking one for both, and the loser's arrowheads vanish. Prefixing is done at build time by
+  `tools/partials/inline-svg.js`, which rewrites the definitions, the `url(#...)` references and
+  `aria-labelledby` in one pass, and touches only ids the file itself defines.
+- **Diagrams get their own colour tokens rather than the accent.** An inlined diagram inherits
+  whatever the page defines, so one drawn with `--accent` repaints itself every time the brand
+  changes. Right for a button, wrong for a chart, where the orange bar means "this row is us".
+- **Figures leave the reading measure, and scroll below a floor.** Measured rather than assumed: at
+  `--measure` the axis labels rendered at 8.1 pixels on a desktop and 4.6 on a phone. Figures now
+  run to 56rem and hold a 44rem floor, scrolling inside their own box under it, which is the same
+  bargain the price table makes.
+- **The backlink is only appended when the copy has not written one.** Section 19 appended a link
+  to the hub on every trade page. This page's own closing paragraph already sends the reader there,
+  so the appended section would have been the renderer talking over the copy. The promise was that
+  the link exists, not that every page ends the same way.
+- **The index meta counts the guides instead of naming a number.** The Section 19 guard fired on
+  the first trade page exactly as designed, and the obvious fix was to type "six", which goes stale
+  at the next page. The sentence counts the list now.
+
+**What was changed in the supplied copy, and it was one thing:** the closing sentence read "a
+family firm in West Cornwall going since 1975". `findLocationClaims` fails the build on it, because
+a client's location is only forgiven where it is actually rendered as that client's own fact. Ben
+chose to drop the two words. Everything else is verbatim.
+
+**Verified:** builds at 27 pages, 25 in the sitemap. 983 internal links and assets checked, none
+broken. Every id on the page unique and every `url(#...)` resolving. With JavaScript disabled the
+page is identical to with it on: 1,502 words, 8 sections, 28 paragraphs, the table, both diagrams
+and both screenshots. At 375px nothing pushes the page sideways. Lighthouse desktop 99 performance,
+100 accessibility, 96 best practices, 100 SEO; mobile 90, 100, 96, 100. The best practices
+deduction is the Cloudflare beacon refusing a localhost origin and is identical on existing pages.
+
+**Done when:** the Rich Results Test comes back clean on the live URL.
+
+---
+
 ## Section 19: Hub and spoke for the cost guides, August 2026
 **Priority: MEDIUM | Effort: structure only, no pages yet**
 
@@ -1558,6 +1625,9 @@ under `v4` at `/card-stats`.
       the two secrets, HQ's migration and a real scan with a phone are `[MANUAL]`)
 - [ ] Section 19: Hub and spoke for the cost guides (structure built and shipped empty; the
       backlink copy and the five trade pages are Ben's)
+- [ ] Section 20: The first spoke, the builder cost page (published; the Rich Results Test needs a
+      live URL and is Ben's after deploy. Four trade pages left: plumber, electrician, roofer,
+      scaffolder)
 
 ---
 

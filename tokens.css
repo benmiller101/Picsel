@@ -103,6 +103,25 @@
      about. */
   --emphasis: #ffd500;
 
+  /* ---- Diagram colours ---------------------------------------------------
+     The same two colours again, under names the diagrams use.
+
+     WHY THEY ARE NOT JUST --accent AND --emphasis, which is the first thing
+     anybody will try to simplify. A diagram is inlined into the page and
+     inherits whatever the page defines, so a diagram drawn with --accent
+     silently repaints itself every time the brand accent changes. That is
+     right for a button and wrong for a chart: the orange bar in the cost
+     comparison is the Picsel row, and it has to stay the colour of the studio
+     in the reader's head, not become whatever the buttons happen to be next
+     year. The SVGs were authored against these names for that reason and each
+     carries the hex as its own fallback, so they render correctly even
+     somewhere the tokens are absent.
+
+     Same values as the accent pair today. If they ever diverge, that is the
+     system working rather than a mistake to tidy up. */
+  --chart-accent: #f7861f;
+  --chart-emphasis: #ffd500;
+
   /* The other half of the glitch split. Hero-only, never used as text. */
   --glitch-magenta: #ff0050;
 

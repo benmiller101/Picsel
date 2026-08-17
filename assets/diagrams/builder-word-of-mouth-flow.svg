@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 530" role="img"
+     aria-labelledby="womTitle womDesc" font-family="var(--font-body, 'Lexend', ui-sans-serif, system-ui, sans-serif)">
+  <title id="womTitle">What happens after someone recommends your building firm</title>
+  <desc id="womDesc">Flow diagram. Someone recommends you to a neighbour. The neighbour has your name and nothing else, and is about to let a stranger work on their house for four months, so they look you up. The path then splits. If they find a Facebook page last posted in 2023, or a directory profile showing them two other builders, the recommendation you earned starts competing with people who did nothing to earn it. If they find your own website with twenty finished extensions, real reviews and a firm trading since 1975, they ring you.</desc>
+
+  <rect width="880" height="530" fill="var(--bg, #0a0a0a)"/>
+
+  <defs>
+    <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--line-strong, rgba(255,255,255,0.22))"/>
+    </marker>
+  </defs>
+
+  <g stroke="var(--line-strong, rgba(255,255,255,0.22))" stroke-width="1.5" fill="none" marker-end="url(#arw)">
+    <path d="M440 100 V126"/>
+    <path d="M230 388 V412"/>
+    <path d="M650 388 V412"/>
+  </g>
+  <g stroke="var(--line-strong, rgba(255,255,255,0.22))" stroke-width="1.5" fill="none">
+    <path d="M440 222 V264 M230 264 H650 M230 264 V276 M650 264 V276"/>
+  </g>
+  <g stroke="var(--line-strong, rgba(255,255,255,0.22))" stroke-width="1.5" fill="none" marker-end="url(#arw)">
+    <path d="M230 268 V282"/>
+    <path d="M650 268 V282"/>
+  </g>
+
+  <g rx="8">
+    <rect x="240" y="40" width="400" height="60" rx="8" fill="var(--bg-raised, #131313)" stroke="var(--line, rgba(255,255,255,0.12))"/>
+    <rect x="190" y="130" width="500" height="92" rx="8" fill="var(--bg-raised, #131313)" stroke="var(--line, rgba(255,255,255,0.12))"/>
+    <rect x="40" y="282" width="380" height="106" rx="8" fill="var(--bg-raised, #131313)" stroke="var(--line, rgba(255,255,255,0.12))"/>
+    <rect x="460" y="282" width="380" height="106" rx="8" fill="var(--bg-raised, #131313)" stroke="var(--line, rgba(255,255,255,0.12))"/>
+    <rect x="40" y="412" width="380" height="68" rx="8" fill="var(--bg-raised, #131313)" stroke="var(--line-strong, rgba(255,255,255,0.22))"/>
+    <rect x="460" y="412" width="380" height="68" rx="8" fill="var(--bg-raised, #131313)" stroke="var(--chart-accent, #f7861f)" stroke-width="1.5"/>
+  </g>
+
+  <g fill="var(--ink, #ffffff)" font-size="16" text-anchor="middle">
+    <text x="440" y="76">Someone recommends you to a neighbour</text>
+  </g>
+
+  <g fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="15" text-anchor="middle">
+    <text x="440" y="160">They have your name and nothing else, and they are</text>
+    <text x="440" y="182">about to let a stranger work on their house for four</text>
+    <text x="440" y="204">months. So they look you up.</text>
+  </g>
+
+  <g fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="15">
+    <text x="64" y="316">They find a Facebook page last posted</text>
+    <text x="64" y="338">in 2023, or a directory profile that</text>
+    <text x="64" y="360">shows them two other builders.</text>
+    <text x="484" y="316">They find your own site. Twenty finished</text>
+    <text x="484" y="338">extensions, real reviews, and a firm</text>
+    <text x="484" y="360">trading since 1975.</text>
+  </g>
+
+  <g fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="15">
+    <text x="64" y="443">The recommendation you earned now</text>
+    <text x="64" y="465">competes with people who did not earn it.</text>
+  </g>
+  <text x="650" y="454" fill="var(--chart-emphasis, #ffd500)" font-size="18" font-weight="500" text-anchor="middle">They ring you.</text>
+
+  <text x="840" y="514" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="12"
+        text-anchor="end" letter-spacing="0.06em">picsel.co.uk</text>
+</svg>

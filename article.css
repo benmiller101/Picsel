@@ -339,6 +339,125 @@
   margin-top: var(--space-2);
 }
 
+/* ---- Tables and figures inside an article ---------------------------------
+   Everything else in a guide sits at --measure, 38rem, which is the width a
+   paragraph should be and has nothing to do with how wide a diagram needs to
+   be. A chart drawn on a 900 unit canvas squeezed into 38rem renders its axis
+   labels at about 8 pixels on a desktop and under 5 on a phone, which was
+   measured rather than guessed and is the reason all of this exists.
+
+   So a table and a figure are the two things allowed out of the reading
+   measure. Neither is prose. */
+
+.guide__table-wrap,
+.post__table-wrap {
+  max-width: var(--measure);
+  overflow-x: auto;
+}
+
+.guide__table,
+.post__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  text-align: left;
+}
+
+.guide__table caption,
+.post__table caption {
+  text-align: left;
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+  padding-bottom: var(--space-2);
+}
+
+.guide__table th,
+.guide__table td,
+.post__table th,
+.post__table td {
+  padding: var(--space-3) var(--space-4) var(--space-3) 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+  line-height: var(--leading-snug);
+}
+
+.guide__table thead th,
+.post__table thead th {
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.guide__table tbody th,
+.post__table tbody th {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+  padding-right: var(--space-6);
+}
+
+/* A figure runs wider than the prose, out to 56rem, and stops there rather
+   than at the wrap's full 72rem: a diagram as wide as the page pulls the eye
+   out of the column it was reading and makes the paragraph after it feel like
+   a different article.
+
+   The 100vw term is what keeps it inside the viewport on the way down. The
+   section it sits in is only 38rem, so the figure is deliberately overflowing
+   its own parent to the right; without that cap it would overflow the page
+   too, and the whole article would scroll sideways. */
+.guide__figure,
+.post__figure {
+  max-width: none;
+  width: min(56rem, calc(100vw - var(--page-gutter) * 2));
+  margin: var(--space-6) 0;
+}
+
+/* THE DIAGRAM GETS A FLOOR AND SCROLLS BELOW IT, which is the honest answer to
+   a 900 unit chart on a 375 pixel phone. Scaled to fit, its labels land at 4.6
+   pixels and the diagram is decoration. Held at 44rem it stays readable and
+   the reader swipes, which is the same bargain the table above makes and the
+   same one every train timetable makes.
+
+   The floor is set from the smallest type in the diagrams: at 44rem the 13
+   unit axis labels render just over 10 pixels, and the 21 unit title over 16. */
+.guide__figure:not(.guide__figure--pair) {
+  overflow-x: auto;
+}
+
+.guide__figure svg {
+  display: block;
+  width: 100%;
+  min-width: 44rem;
+  height: auto;
+}
+
+/* The screenshots. Side by side where there is room, stacked on a phone, and
+   the phone shot is held narrower than the desktop one so the pair reads as a
+   desktop and a phone rather than as two pictures of different sites.
+
+   No min-width and no scrolling here: a screenshot that has to be scrolled to
+   be seen is worse than a small one, because unlike a chart there is nothing
+   in it that has to be read. */
+.guide__figure--pair {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+@media (min-width: 40rem) {
+  .guide__figure--pair { grid-template-columns: 3fr 1fr; }
+}
+
+.guide__figure--pair img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+
 /* ---- The per trade cost pages, listed on the cost guide -------------------
    The hub half of the hub and spoke set up in tools/pages/guides.js. It only
    ever appears on /guides/how-much-a-trades-website-costs/, and only once
