@@ -278,6 +278,25 @@ select {
   border-radius: var(--radius-sm);
 }
 
+/* The emphasis colour, as the one way to apply it.
+
+   The social posts put yellow on exactly one thing per tile: the word the
+   headline turns on, or the numeral a point is counted by. This is that, and
+   it is a class rather than a token used freely so there is one place to look
+   when somebody asks where the yellow is allowed.
+
+   THE RULE, AND IT IS THE WHOLE VALUE OF THE COLOUR: one per screen, and never
+   on anything clickable. Orange marks what you can press; yellow marks a word
+   you should read. Put yellow on a link and a reader has to work out which of
+   two colours means "this does something", and by then neither does.
+
+   Nothing on the site uses it yet. Which word on which page earns it is a
+   decision about the copy, not about the CSS, so the mechanism ships and the
+   choice waits. */
+.emphasis {
+  color: var(--emphasis);
+}
+
 /* Visually hidden but still read aloud by screen readers. Used for the skip
    link and for labels that would be redundant on screen but are needed by
    someone listening to the page. */

@@ -74,7 +74,8 @@ same session. The plan's Site Profile and this block must never disagree; the pl
 | Stack | Static multi-page HTML/CSS/JS on the existing hero; no framework |
 | Fonts | Adobe web project `ior4aly` (`argent-pixel-cf` resting wordmark; `gridlite-pe-variable`, `pf-pixelscript`, `pixelify-sans` in the glitch) + Google `Lexend` (body) and `Pixelify Sans` (fallback) |
 | Contact form | Web3Forms (access key in the host dashboard, not the repo) |
-| Accent | `#00e1ff` — the cyan half of the wordmark glitch's red/cyan split. One accent, marking one thing per screen (Section 2). The magenta `#ff0050` is hero-only and never used as text |
+| Accent | `#f7861f`, the orange from the social posts. One accent, marking one thing per screen (Section 2). Replaced the cyan `#00e1ff` on 17 August 2026 so the site matches the posts; the hero keeps its red/cyan glitch and the magenta `#ff0050` stays hero-only and never text |
+| Emphasis | `#ffd500`, the yellow the posts use for the one word or number a tile is built around. Never on anything clickable: orange is what you can press, yellow is what you should read. One per screen |
 | Featured projects | five, defined in `projects.js` |
 
 **The never-do list for this site (absolute):**

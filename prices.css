@@ -169,7 +169,7 @@
 
 .plan-card__carries a {
   color: var(--accent);
-  text-decoration-color: rgba(0, 225, 255, 0.4);
+  text-decoration-color: var(--accent-soft);
   text-underline-offset: 0.25em;
   transition: text-decoration-color var(--dur-fast) var(--ease);
 }

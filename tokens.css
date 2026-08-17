@@ -48,21 +48,60 @@
   --line-strong: rgba(255, 255, 255, 0.22);
 
   /* ---- The accent ------------------------------------------------------
-     Lifted directly from the wordmark's chromatic aberration in hero.css —
-     the cyan half of the red/cyan split the glitch already throws. It is the
-     brand's own colour rather than an invented one, which is the whole test.
+     Taken from the social posts, 17 August 2026, and sampled from the artwork
+     rather than guessed at: orange #f7861f is the dominant colour on every
+     tile, yellow #ffd500 is the one it uses for emphasis.
 
-     Cyan and not the magenta twin for a plain accessibility reason: #00e1ff
-     on near-black measures about 11:1, while the magenta #ff0050 measures
-     about 4:1 and fails as text. The magenta stays where it belongs — inside
-     the hero's aberration, at a size and duration where contrast rules do not
-     apply — and is named below so hero.css can stop hardcoding it.
+     WHAT CHANGED AND WHY THE OLD REASON NO LONGER HOLDS. The accent used to be
+     the cyan #00e1ff lifted out of the wordmark's red/cyan chromatic
+     aberration, and the argument for it was that it was the brand's own colour
+     rather than an invented one. That argument was sound and it is now out of
+     date: the posts are what people see first and most often, and a site whose
+     buttons are a different colour from the last six things somebody scrolled
+     past does not read as the same studio.
 
-     RESTRAINT RULE: this colour marks one thing per screen. The primary
-     button, the focus ring, a live link. It is never a section background,
-     never a gradient, and never fills a headline word. */
-  --accent: #00e1ff;
+     So the accent follows the posts, and the hero keeps its red/cyan glitch.
+     Those two facts are in tension and the tension is deliberate: the glitch is
+     a two-second animation at the top of one page, the accent is on every
+     button on the site. Recolouring the glitch was considered and declined,
+     because the red/cyan split is what makes it read as chromatic aberration
+     rather than as a logo that happens to be orange. If the homepage ever
+     starts to look like two brands, that is the thing to revisit.
+
+     Both colours were measured against --bg rather than assumed:
+       #f7861f on #0a0a0a  7.9:1   passes AA at any size, AAA for body
+       #ffd500 on #0a0a0a  13.9:1  passes AAA at any size
+       #0a0a0a on #f7861f  7.9:1   which is what --accent-ink relies on
+
+     RESTRAINT RULE, unchanged and now carrying two colours instead of one:
+     the accent marks ONE thing per screen. The primary button, the focus ring,
+     a live link. It is never a section background, never a gradient, and never
+     fills a headline word. */
+  --accent: #f7861f;
   --accent-ink: #0a0a0a;   /* text on top of a filled accent surface */
+
+  /* Underlines and hairlines drawn in the accent. A token rather than an rgba()
+     written at each call site: prices.css had a hardcoded rgba(0, 225, 255, 0.4)
+     that survived here as a stray cyan line long after the accent changed,
+     which is exactly the failure the "no colour outside tokens.css" rule
+     exists to prevent. */
+  --accent-soft: rgba(247, 134, 31, 0.4);
+
+  /* ---- The emphasis colour ----------------------------------------------
+     Yellow, and it does one job, the same job it does on the posts: the single
+     word or number a tile is built around. "NEEDS." in the headline. The huge
+     numeral beside a point. Never a button, never a link, never a border.
+
+     IT IS NOT A SECOND ACCENT AND THE DISTINCTION IS THE WHOLE POINT. Orange
+     is for things you can click. Yellow is for a word you should read. The
+     moment yellow appears on something interactive, a reader has to learn
+     which of two colours means "this does something", and the answer is that
+     neither does any more.
+
+     One per screen, and it does not share a screen with a second one. If a
+     page needs two emphasised words, the page has not decided what it is
+     about. */
+  --emphasis: #ffd500;
 
   /* The other half of the glitch split. Hero-only, never used as text. */
   --glitch-magenta: #ff0050;

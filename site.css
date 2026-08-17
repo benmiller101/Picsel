@@ -278,8 +278,8 @@
   transform: scaleX(1);
 }
 
-/* Not on the call to action. It is a solid cyan button, so a cyan line on top
-   of it is invisible, and it does not need a second way of standing out. */
+/* Not on the call to action. It is a solid accent button, so an accent line on
+   top of it is invisible, and it does not need a second way of standing out. */
 .site-nav__link--accent::after {
   content: none;
 }
@@ -289,7 +289,7 @@
 
    No background here. It used to carry the same pill as hover, one step
    brighter, which gave the bar two filled shapes at rest: the current page and
-   the cyan call to action. Ben's read was that the Home bubble was competing
+   the accent call to action. Ben's read was that the Home bubble was competing
    with the button for the one bit of emphasis the bar has, and he is right, so
    the pill is now purely a hover response. Full-strength text against the muted
    labels is what marks the current page instead. That is a real difference, not
@@ -301,8 +301,9 @@
 
 /* The one call to action, and now the only filled shape in the bar at rest.
    Wider padding than the plain links so it reads as a button rather than a link
-   that happens to be coloured in. Black text on cyan measures about 11:1, well
-   past the AA floor. */
+   that happens to be coloured in. Near-black on the accent orange measures
+   7.9:1, well past the AA floor. It was 11:1 while the accent was cyan; the
+   figure changed with the colour and the conclusion did not. */
 .site-nav__link--accent {
   background: var(--accent);
   color: var(--accent-ink);
@@ -312,8 +313,8 @@
 
 /* Keeps the black label when the button is also the current page. Without this
    the [aria-current] rule above wins on specificity and turns the text on the
-   cyan button white, which is the one place on the site where the accent colour
-   would fail contrast. No background needed here any more: aria-current stopped
+   accent button white, which is the one place on the site where the accent
+   colour would fail contrast. No background needed here any more: aria-current stopped
    setting one when the Home bubble came off, so nothing is competing for it. */
 .site-nav__link--accent[aria-current='page'] {
   color: var(--accent-ink);
@@ -1185,8 +1186,9 @@
 
 /* The colour has to change on this one as well, and that is the actual bug the
    offset only made worse. The global ring is --accent, which is this button's
-   own background, so at 375px what survived the cropping was a cyan line drawn
-   on cyan: a keyboard user tabbing from Call to Enquire got no signal that
+   own background, so at 375px what survived the cropping was an accent line
+   drawn on the accent: a keyboard user tabbing from Call to Enquire got no
+   signal that
    anything had moved. --accent-ink is the near-black already carrying the label
    on this surface, so the ring is the same pairing as the text sitting inside
    it and is legible for exactly the same reason. */

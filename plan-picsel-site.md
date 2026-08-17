@@ -290,13 +290,23 @@ and button clears the 44-pixel tap minimum, and there is no sideways scrolling a
 
 **Decisions made:**
 
-- **The accent is the glitch's cyan, `#00e1ff`, and only the cyan.** The wordmark already throws a
-  red/cyan split; the accent is lifted straight out of it rather than invented. Cyan and not its
-  magenta twin for a plain accessibility reason: cyan on near-black measures 12.5:1, the magenta
-  measures about 4:1 and fails as text. The magenta stays inside the hero's aberration, where it is
-  a one-pixel edge rather than something anyone reads. The accent marks **one thing per screen** —
-  the primary button and the focus ring. It is never a background, never a gradient, never a
-  headline word.
+- **The accent was the glitch's cyan `#00e1ff`, and is now the posts' orange `#f7861f`.** The
+  original reasoning was good: the wordmark throws a red/cyan split and the accent was lifted
+  straight out of it rather than invented, with cyan over its magenta twin because cyan on
+  near-black measures 12.5:1 and the magenta about 4:1. It was superseded on 17 August 2026, not
+  overturned. The social posts are what people see first and most often, and a site whose buttons
+  are a different colour from the last six things somebody scrolled past does not read as the same
+  studio. Orange measures 7.9:1 on near-black, so the accessibility argument survives the swap.
+  The hero keeps its red/cyan glitch: recolouring it was considered and declined, because the split
+  is what makes it read as chromatic aberration rather than as a logo that happens to be orange.
+  The magenta stays inside the hero's aberration, a one-pixel edge rather than something anyone
+  reads. The accent marks **one thing per screen**: the primary button and the focus ring. It is
+  never a background, never a gradient, never a headline word.
+- **Yellow `#ffd500` is an emphasis colour, not a second accent.** It does on the site what it does
+  on the posts: the single word or number a screen is built around. Orange is for things you can
+  click and yellow is for a word you should read, and the moment yellow appears on something
+  interactive a reader has to learn which of two colours means "this does something". The answer
+  would be neither.
 - **No hamburger menu — this is a deliberate departure from the checklist above.** The bar holds
   four things and all four fit at 375px with 77px to spare (measured, not estimated). Hiding a
   phone-first, mostly non-technical audience's route to contact behind a button they have to find
@@ -1343,6 +1353,62 @@ if the same shortcut gets taken again:
 
 ---
 
+## Section 19: Hub and spoke for the cost guides, August 2026
+**Priority: MEDIUM | Effort: structure only, no pages yet**
+
+Five per trade cost pages are coming: plumber, electrician, roofer, builder, scaffolder. Published
+against the existing `/guides/how-much-a-trades-website-costs/` with nothing joining them up, they
+would compete with it and with each other for overlapping searches, Google would pick one more or
+less at random, and the broad page would lose the authority it already has. This is the structure
+that stops that, built and shipped empty before the first page exists.
+
+- [x] Audited the broad page. Its title, meta and H1 all target the broad question and no trade is
+      named anywhere in its copy, so nothing had to change
+- [x] `TRADE_COST_PAGES` in `tools/pages/guides.js`, empty, with the field reference beside it
+- [x] A "What it costs for your trade" section at the foot of the broad page, generated from that
+      list, which renders nothing at all while the list is empty
+- [x] Every trade page automatically gets a section linking back to the broad page in body copy
+- [x] Trade pages flow into the sitemap, the `/guides/` index and the ItemList schema with no extra
+      wiring, so a page and its sitemap entry cannot ship apart
+- [x] Three build-time guards: the backlink copy cannot ship as a placeholder, it cannot ship
+      without a link to the hub in it, and the index meta cannot keep saying "five questions" once
+      there are more than five
+- [ ] `[BEN]` Write the backlink heading and sentence. The build asks for them the moment the first
+      trade page is added
+- [ ] `[BEN]` The five trade pages themselves
+
+**What we built:**
+
+The broad cost page becomes the hub and the trade pages become spokes off it. The hub lists every
+trade page; every trade page links back to the hub in its body copy rather than only in the nav.
+Neither direction is written by hand, so a page cannot exist without both links and cannot be
+deleted while leaving one behind.
+
+Nothing is visible yet. The list is empty, and empty means the section does not render, the heading
+does not print and no link points anywhere. The five existing guides build byte for byte as they did
+before this was written.
+
+**Decisions made:**
+
+- **A trade page is a guide, not a new kind of page.** It goes through `renderGuide` like the five
+  written ones, so it inherits the answer block, the FAQPage schema, the breadcrumbs, the card on
+  `/guides/` and the sitemap line. One entry in one list is the whole of publishing a page.
+- **The backlink is not a field on the entry.** It is appended to every trade page by the renderer,
+  so it cannot be forgotten on one page or worded differently on another.
+- **No copy was invented.** The backlink heading and sentence are placeholders, and the build throws
+  if a trade page exists while they still say TODO. That is why they can sit in the repo unwritten
+  without any risk of reaching a page.
+- **A description list, not a bulleted one.** The first version put a `<span>` inside an `<li>` and
+  the build refused it: `findUnescapedCopy` allows only `a`, `em`, `strong` and `abbr` in there
+  because list copy on this site is written unescaped. That rule is worth more than the markup, so
+  the markup changed rather than the rule.
+- **The `/guides/` index lists the trade pages too.** A spoke reachable only from the hub is an
+  orphan by the CLAUDEseo rule, and the index is the one page that exists to list guides.
+
+**Done when:** the plumber page is one entry in `TRADE_COST_PAGES` and everything else follows.
+
+---
+
 ## Section 18: Card scan tracking, August 2026
 **Priority: MEDIUM | Effort: built, one manual step outstanding**
 
@@ -1490,6 +1556,8 @@ under `v4` at `/card-stats`.
       privacy-page judgement calls need his sign-off)
 - [ ] Section 18: Card scan tracking (built, and HQ can now receive the scans; the KV namespace,
       the two secrets, HQ's migration and a real scan with a phone are `[MANUAL]`)
+- [ ] Section 19: Hub and spoke for the cost guides (structure built and shipped empty; the
+      backlink copy and the five trade pages are Ben's)
 
 ---
 
