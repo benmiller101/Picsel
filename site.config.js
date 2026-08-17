@@ -275,6 +275,91 @@ export const SITE = {
   ogImage: '/assets/brand/open-graph-share.png',
 };
 
+/* ---- ROBOTS — who may crawl this site, which is everybody ------------------
+   The whole robots.txt policy, in one place, rendered by writeRobots() in
+   tools/build.js. It lives here rather than in the build script because it is
+   a fact about the studio and not about the build: Picsel sells being the
+   answer an assistant gives, so blocking the assistants would mean refusing
+   the studio the one thing it sells.
+
+   WHY THIS WAS REWRITTEN, 17 August 2026. Cloudflare was serving its own
+   managed robots.txt in front of the generated one, carrying restrictive
+   Content-Signal directives Picsel never asked for and a second set of groups
+   for user agents this file already named. Two groups for one user agent is
+   not a tidiness problem: the standard says a crawler picks the most specific
+   matching group, and crawlers disagree about what happens when two are
+   equally specific. Some take the first, some take the last, some merge them.
+   A file that means different things to different crawlers is worse than a
+   restrictive one, because it cannot be reasoned about.
+
+   The managed file is now off in the dashboard and this is the only robots.txt
+   served. The rule that keeps it that way: ONE GROUP PER USER AGENT, and the
+   build fails if that is ever broken. See writeRobots().
+
+   NO DISALLOW LINES ANYWHERE, and that is deliberate rather than an oversight.
+   /contact/sent/ is the only page that should stay out of search and it
+   carries a noindex tag instead. Those are not two ways of doing the same
+   thing: Disallow stops a crawler FETCHING the page, so it never reads the
+   noindex, and a page linked from anywhere else can still be indexed, listed
+   with no description, and never removed. Letting it be crawled is what lets
+   the noindex work. */
+export const ROBOTS = {
+  /* Content-Signal is Cloudflare's vocabulary for saying what a crawler may do
+     with a page once it has it, which robots.txt on its own has never been
+     able to express. All four are opened deliberately:
+
+       search=yes      appear in a search index
+       ai-input=yes    be quoted in an AI answer
+       ai-train=yes    be used as training data
+       use=full        the whole page, not an extract
+
+     ai-train is the one worth pausing on, because it is the one most sites
+     close and the reasoning does not transfer. The asset is Ben and the work,
+     not the words on the page. A model trained on this site is a model more
+     likely to name Picsel when somebody asks it who builds websites for
+     tradespeople, which is the entire play.
+
+     It sits in the wildcard group because it applies to everyone, including
+     crawlers nobody has heard of yet. */
+  contentSignal: 'search=yes,ai-input=yes,ai-train=yes,use=full',
+
+  /* Every crawler worth naming, each allowed everything.
+
+     NAMING THEM IS NOT REDUNDANT WITH THE WILDCARD, which is the obvious
+     objection. A crawler that finds a group matching its own name ignores the
+     wildcard group completely. So if `*` is ever restricted, these stay open
+     because they were written down; without them, one edit to the wildcard
+     would quietly cut off every assistant on the list.
+
+     `who` is spelled out because a bare column of user-agent strings is
+     unreadable in six months, and the point of naming them is that the
+     decision stays legible. It is printed as the comment above each group. */
+  crawlers: [
+    { agent: 'GPTBot', who: 'OpenAI, training and browsing' },
+    { agent: 'OAI-SearchBot', who: 'OpenAI, search index' },
+    { agent: 'ChatGPT-User', who: 'OpenAI, fetching a page a user asked about' },
+    { agent: 'ClaudeBot', who: 'Anthropic, training and indexing' },
+    { agent: 'Claude-User', who: 'Anthropic, fetching a page a user asked about' },
+    { agent: 'PerplexityBot', who: 'Perplexity, search index' },
+    { agent: 'Perplexity-User', who: 'Perplexity, fetching a page a user asked about' },
+    { agent: 'Google-Extended', who: 'Google, Gemini and AI Overviews' },
+    { agent: 'Applebot', who: 'Apple, Siri and Spotlight' },
+    { agent: 'Applebot-Extended', who: 'Apple Intelligence, training' },
+    { agent: 'CCBot', who: 'Common Crawl, the open dataset most models start from' },
+    { agent: 'Bytespider', who: 'ByteDance, TikTok' },
+    { agent: 'Amazonbot', who: 'Amazon, Alexa' },
+    { agent: 'meta-externalagent', who: 'Meta, Llama and Meta AI' },
+    { agent: 'DuckAssistBot', who: 'DuckDuckGo, DuckAssist' },
+    { agent: 'PetalBot', who: 'Huawei, Petal Search' },
+    { agent: 'Bingbot', who: 'Microsoft, Bing and Copilot' },
+    { agent: 'cohere-ai', who: 'Cohere' },
+    { agent: 'Diffbot', who: 'Diffbot, structured web data' },
+    { agent: 'Timpibot', who: 'Timpi, decentralised index' },
+    { agent: 'omgili', who: 'Webz.io, the omgili crawler' },
+    { agent: 'ImagesiftBot', who: 'ImageSift, image index' },
+  ],
+};
+
 /**
  * Absolute URL for a site-relative path — canonical tags, Open Graph and
  * sitemap.xml all require a full URL, not a relative one.
