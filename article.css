@@ -339,6 +339,54 @@
   margin-top: var(--space-2);
 }
 
+/* ---- The per trade cost pages, listed on the cost guide -------------------
+   The hub half of the hub and spoke set up in tools/pages/guides.js. It only
+   ever appears on /guides/how-much-a-trades-website-costs/, and only once
+   there is at least one trade page to link to: the renderer returns nothing at
+   all while the list is empty, so none of this matches anything today.
+
+   Given the same top border as the follow-up questions above it, because it is
+   the same kind of thing in the same place: a block at the foot of the page
+   offering somewhere to go next, rather than more of the argument. */
+.guide__trades {
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--line);
+}
+
+/* A description list, so the spacing is NOT a grid with one gap.
+   A dl alternates dt and dd, and a single gap would push a trade as far from
+   its own summary as from the next trade, which reads as six loose lines
+   rather than three pairs. The rhythm has to be tight inside a pair and loose
+   between them, so the margins do it and each element states its own. */
+.guide__trade-list {
+  margin: var(--space-4) 0 0;
+  padding: 0;
+}
+
+/* The trade is the link and it carries the row. Sized like the h3 in a
+   follow-up question, because it is doing the same job: naming the thing the
+   next paragraph is about. */
+.guide__trade a {
+  font-size: var(--text-lg);
+  color: var(--ink);
+}
+
+/* The space between one trade and the next, applied above rather than below so
+   the first one sits tight under the heading and the list ends flush. */
+.guide__trade-summary + .guide__trade {
+  margin-top: var(--space-6);
+}
+
+/* margin-inline-start is reset because a dd carries a 40px indent from the
+   browser by default, which would step every summary in from the trade above
+   it for no reason anybody chose. */
+.guide__trade-summary {
+  margin: var(--space-1) 0 0;
+  margin-inline-start: 0;
+  color: var(--ink-muted);
+  line-height: var(--leading-body);
+}
+
 /* ---- The link to a plan ---------------------------------------------------
    One per guide, at the end, and deliberately quiet. A guide that turns into an
    advert halfway down gets closed by the person reading and skipped by the

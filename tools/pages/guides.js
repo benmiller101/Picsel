@@ -561,6 +561,165 @@ const GUIDES = [
   },
 ];
 
+/* ---- The cost hub, and the per trade pages that hang off it ---------------
+   /guides/how-much-a-trades-website-costs/ answers the broad question. Five
+   per trade pages are coming: plumber, electrician, roofer, builder,
+   scaffolder. Left to themselves they would compete with it and with each
+   other for the same searches, Google would pick one more or less at random,
+   and the broad page would lose the authority it already has.
+
+   So the broad page is the hub and the trade pages are spokes. The hub links
+   down to every spoke, and every spoke links back up, in body copy rather
+   than only in the nav, which is what CLAUDEseo section 4 asks for. Neither
+   direction is written by hand: both are generated from TRADE_COST_PAGES
+   below, so a page and its two links arrive together or not at all.
+
+   THE LIST IS EMPTY AND THE SITE IS CORRECT WITH IT EMPTY. Nothing here
+   renders a heading with no list under it, and nothing links to a page that
+   has not been built. Adding one entry adds the page, its sitemap line, its
+   card on /guides/, its link from the hub and its link back. Removing the
+   entry removes all six. */
+
+/* The slug of the hub, written once. Both the hub section and the backlink on
+   every spoke read it, so the two cannot end up pointing at different pages. */
+const COST_HUB_SLUG = 'how-much-a-trades-website-costs';
+const COST_HUB_PATH = `/guides/${COST_HUB_SLUG}/`;
+
+/* The sentence that carries a spoke's link back to the hub, and the heading it
+   sits under. One sentence, written once, printed on every trade page.
+
+   IT IS A PLACEHOLDER AND THE BUILD REFUSES TO SHIP IT. Ben writes the copy on
+   this site; inventing a sentence here and letting it go live would put words
+   in his mouth on five pages at once. While TRADE_COST_PAGES is empty this
+   costs nothing and the build passes. The moment a trade page is added, the
+   build stops and asks for the sentence. See assertHubBacklinkWritten.
+
+   The sentence may carry an <a>, like any other guide paragraph. If it does
+   not carry one pointing at the hub, the build rejects it too: a backlink
+   section with no backlink in it is the failure this whole structure exists
+   to prevent, and it would be invisible on the page. */
+const HUB_BACKLINK_TODO = 'TODO: write the sentence that links back to the cost guide.';
+
+const HUB_BACKLINK = {
+  h2: 'TODO: write the heading for the link back to the cost guide.',
+  paragraph: HUB_BACKLINK_TODO,
+};
+
+/* FIELD REFERENCE for TRADE_COST_PAGES.
+
+   The first three are what the hub section prints. The rest are the ordinary
+   guide fields, because a trade page IS a guide: it is rendered by renderGuide
+   like the five above, so it gets the same answer block, the same FAQPage
+   schema, the same breadcrumbs and the same sitemap entry with no extra
+   wiring.
+
+     slug      URL segment under /guides/. Permanent once published.
+     trade     The trade, capitalised as it would be written in a sentence.
+               Printed as the link text in the hub section.
+     summary   One line, printed under the link in the hub section. A sentence,
+               not a teaser: somebody reading only the hub should get something
+               from it.
+
+     question  The H1 and the schema question, asked the way a customer asks it.
+     title     <title>, 60 characters max, enforced by the build.
+     description  The meta description, 155 characters max, enforced.
+     answer    First paragraph and schema answer, about 50 words, quotable on
+               its own.
+     sections  The body. See the FIELD REFERENCE above GUIDES.
+     also      Follow-up question and answer pairs for the FAQPage node.
+     plan      Which plan the page points at, and the sentence that does it.
+     action    The one thing to do, shown under the answer.
+
+   The backlink to the hub is NOT a field. It is appended to sections by
+   toGuide below, so it cannot be forgotten on a page and cannot drift from
+   page to page. */
+const TRADE_COST_PAGES = [];
+
+/* A trade entry, as an ordinary guide record.
+
+   The backlink section is appended last so it lands at the foot of the body,
+   after the page has answered the question it was opened for. A link out of a
+   page the reader has not finished with is a link that costs a reader. */
+function toGuide(entry) {
+  return {
+    ...entry,
+    sections: [
+      ...entry.sections,
+      { h2: HUB_BACKLINK.h2, paragraphs: [HUB_BACKLINK.paragraph] },
+    ],
+  };
+}
+
+/* The two checks that keep the placeholder above from ever reaching a page.
+   Run at module load, which is build time, so a broken structure is a failed
+   build rather than a live page with the word TODO on it.
+
+   Both are silent while there are no trade pages. That is the point: the
+   structure ships now, empty and harmless, and starts insisting on copy at
+   the exact moment copy would become visible. */
+function assertHubBacklinkWritten() {
+  if (!TRADE_COST_PAGES.length) return;
+
+  const unwritten = [HUB_BACKLINK.h2, HUB_BACKLINK.paragraph]
+    .some((text) => text.startsWith('TODO'));
+
+  if (unwritten) {
+    throw new Error(
+      'guides.js: TRADE_COST_PAGES has entries but HUB_BACKLINK is still the '
+      + 'placeholder. Every trade page prints that heading and sentence, so '
+      + 'publishing now would put "TODO" on all of them. Write both in '
+      + 'tools/pages/guides.js, then build again.',
+    );
+  }
+
+  if (!HUB_BACKLINK.paragraph.includes(`href="${COST_HUB_PATH}"`)) {
+    throw new Error(
+      `guides.js: HUB_BACKLINK.paragraph does not link to ${COST_HUB_PATH}. `
+      + 'The section exists to carry that link in body copy; without it the '
+      + 'trade pages compete with the hub instead of feeding it. Add an <a> '
+      + 'pointing at the hub.',
+    );
+  }
+}
+
+assertHubBacklinkWritten();
+
+/* The hub section, printed at the foot of the broad cost guide.
+
+   RETURNS NOTHING AT ALL WHEN THERE ARE NO TRADE PAGES, which is the whole
+   requirement. An empty heading tells a reader a section is missing and tells
+   a crawler the page is thin, and both are true only because the markup said
+   so. */
+function renderTradeCostHub() {
+  if (!TRADE_COST_PAGES.length) return '';
+
+  /* One newline, named because a bare escape inside a join() reads as a typo
+     next to the template literals above it. */
+  const ROW_SEPARATOR = String.fromCharCode(10);
+
+  /* A description list, not a bulleted one. Each row is a term and its
+     description, which is exactly what a trade and its summary are, and it
+     avoids putting a <span> inside an <li>: findUnescapedCopy in build.js
+     allows only a, em, strong and abbr in there, because everything inside a
+     list item on this site is normally unescaped studio copy. That rule is
+     worth more than this markup, so this markup moved. */
+  const rows = TRADE_COST_PAGES.map(
+    ({ slug, trade, summary }) => `            <dt class="guide__trade">
+              <a href="/guides/${escapeHtml(slug)}/">${escapeHtml(trade)}</a>
+            </dt>
+            <dd class="guide__trade-summary">${escapeHtml(summary)}</dd>`,
+  ).join(ROW_SEPARATOR);
+
+  return `        <section class="guide__section guide__trades">
+          <h2>What it costs for your trade</h2>
+          <dl class="guide__trade-list">
+${rows}
+          </dl>
+        </section>
+
+`;
+}
+
 /* ---- One guide, as a page -------------------------------------------------
    The answer is rendered into its own block above everything else and styled to
    look like the answer, because it is: the whole page is a question and this is
@@ -619,6 +778,18 @@ ${guide.also
         </aside>`
     : '';
 
+  /* The hub section, and only on the hub. It sits after the follow-up
+     questions and before the plan aside: past the point where the broad
+     question has been answered, and still above the one link that sells.
+
+     Every other guide gets an empty string, and so does the hub while the
+     trade list is empty. The section carries its own trailing blank line when
+     it renders, so an empty hub adds not one character to any page: the five
+     existing guides build byte for byte as they did before this was written,
+     which keeps a structural change out of the diff of five files it did not
+     change. */
+  const trades = guide.slug === COST_HUB_SLUG ? renderTradeCostHub() : '';
+
   const content = `${renderBreadcrumbs(trail)}
 
     <article class="section guide">
@@ -633,7 +804,7 @@ ${sections}
 
 ${also}
 
-${plan}
+${trades}${plan}
       </div>
     </article>`;
 
@@ -664,7 +835,15 @@ ${plan}
   };
 }
 
-export const GUIDE_PAGES = GUIDES.map(renderGuide);
+/* The five written guides, then the trade pages, in one list. Everything
+   downstream reads this rather than GUIDES: the page list in build.js, the
+   sitemap that is written from it, the /guides/ index and the ItemList
+   schema on it. That is what makes a new trade page and its sitemap entry
+   arrive in the same commit without anybody remembering to do it, which is
+   the Sitemap Law working by construction instead of by discipline. */
+const ALL_GUIDES = [...GUIDES, ...TRADE_COST_PAGES.map(toGuide)];
+
+export const GUIDE_PAGES = ALL_GUIDES.map(renderGuide);
 
 /* ---- The index ------------------------------------------------------------
    Each card carries the question and the answer in full rather than a teaser.
@@ -672,7 +851,7 @@ export const GUIDE_PAGES = GUIDES.map(renderGuide);
    visitor who gets their answer here and leaves satisfied is a better outcome
    than one who clicks through to get it. */
 const INDEX_LIST = `      <ul class="guide-index">
-${GUIDES.map(
+${ALL_GUIDES.map(
   (guide) => `        <li class="guide-index__item">
           <h2 class="guide-index__q">
             <a href="/guides/${escapeHtml(guide.slug)}/">${escapeHtml(guide.question)}</a>
@@ -689,19 +868,38 @@ const GUIDES_INDEX_TRAIL = [
   { name: 'Guides', path: '/guides/' },
 ];
 
+/* The index lists every guide, trade pages included, so that a spoke is
+   never an orphan reachable only from the hub.
+
+   ITS META DESCRIPTION COUNTS THEM IN WORDS, and that is a fact with an
+   expiry date on it. The first trade page makes "five questions" wrong on a
+   line Google prints under the result. Rewording it is Ben's, not the
+   build's, so the build refuses to publish the stale version instead of
+   quietly guessing at a new one. */
+const INDEX_DESCRIPTION =
+  'Plain answers to five questions tradespeople actually ask about websites, Google Business Profiles, reviews and what any of it should cost. No sales pitch.';
+
+if (ALL_GUIDES.length !== 5 && INDEX_DESCRIPTION.includes('five questions')) {
+  throw new Error(
+    `guides.js: the /guides/ index says "five questions" and there are now `
+    + `${ALL_GUIDES.length}. That sentence is the meta description Google `
+    + 'prints under the result. Reword INDEX_DESCRIPTION in '
+    + 'tools/pages/guides.js, then build again.',
+  );
+}
+
 export const GUIDES_INDEX_PAGE = {
   path: '/guides/',
   title: 'Guides for tradespeople | Picsel',
-  description:
-    'Plain answers to five questions tradespeople actually ask about websites, Google Business Profiles, reviews and what any of it should cost. No sales pitch.',
+  description: INDEX_DESCRIPTION,
   styles: ['/article.css'],
   schemaType: 'CollectionPage',
   schemaExtra: [
     {
       '@type': 'ItemList',
       name: 'Guides for tradespeople',
-      numberOfItems: GUIDES.length,
-      itemListElement: GUIDES.map((guide, index) => ({
+      numberOfItems: ALL_GUIDES.length,
+      itemListElement: ALL_GUIDES.map((guide, index) => ({
         '@type': 'ListItem',
         position: index + 1,
         name: guide.question,
