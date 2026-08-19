@@ -462,6 +462,10 @@ line with 77 pixels to spare and nothing scrolls sideways.
       then **cut on 12 August 2026** once the five slots were taken. A scarcity offer with no slots
       left is worse than no offer, so the section came off the page rather than being reworded
 - [x] Closing **contact band**: a line, a big "Get in touch" button, the phone number
+- [x] `[DECISION]` **The work became a pinned 3D ring, August 2026.** The flat grid is now the
+      fallback rather than the section. Six projects on a wheel that turns one project per scroll,
+      with the grid still underneath it in the HTML for anyone without JavaScript and anyone who
+      has asked for less motion
 
 **What we built:**
 
@@ -489,8 +493,115 @@ interactive element under the 44-pixel tap minimum at any width, and no console 
 screenshot declares its true pixel size, verified against the files rather than assumed, so no text
 jumps down the page as the images arrive.
 
+*Changed August 2026: the grid became a ring.* The work section is now one pinned stage. The six
+projects sit on a wheel mounted on a horizontal axle, modelled in Blender before it was written,
+and it turns one whole project at a time as you scroll: the wheel slides in from the right as the
+section arrives, holds while you go through the six, then slides out and hands the page back. The
+left column carries the name, the sector line and the button; the wheel carries the screenshots.
+
+What the section IS did not change, and that is the part worth being clear about. In the HTML it is
+still six links, six screenshots and six names in a list. The ring is a layer `work-ring.js` adds
+on top of that and never a thing the content depends on. Script blocked, script broken, crawler
+reading the page, reader who has asked for less motion: all of them get the plain grid, which is
+the same grid that was there before. The rule that no content on this site needs JavaScript to
+appear was the constraint the section was designed around rather than something checked afterwards.
+
+Three files, split the way the hero is: `work-ring.css` and `work-ring.js` at the root, loaded by
+the homepage alone, and `tools/partials/work-ring.js` generating the markup from `projects.js` so
+adding a project is still one entry. Every number that shapes the thing lives in one named `cfg`
+block at the top of the script, which is how it gets tuned.
+
+Not yet done, and not to be ticked until it is: the device pass. It has not been driven end to end
+in a browser, and the blur on the cards is the one genuinely expensive thing in it, so a real mid
+range Android is the test that matters before this ships.
+
 **Decisions made:**
 
+- **The empty half of the "What we do" column got the page-head blob.** The services intro is two
+  short paragraphs beside a column that runs the height of four services, so most of it was empty,
+  and on a desktop that reads as a gap rather than as space. It is the same component `/work` and
+  `/contact` already use, given a modifier for where it sits and how big it is, because that is a
+  fact about the column and not about the blob. Desktop only, as it already was: below 64rem the
+  section is a single column and there is nothing to fill.
+- **The featured work is a pinned 3D ring with a plain grid fallback.** August 2026. The grid was
+  correct and it was also the same grid every portfolio has. The ring is the one place on this site
+  where the studio shows off rather than explains, and it is the right place for it: the work is
+  what the page is arguing, so the work is what gets the composition. It is built as an enhancement
+  and not as the section, which is what makes it a safe thing to have done.
+- **Sticky section, not scroll hijacking.** The section is tall and the stage inside it is sticky,
+  so the trackpad, the touchscreen, the scrollbar and the keyboard all still do what they normally
+  do. The requirement that the wheel is never left resting between two projects is met by the wheel
+  only ever animating to whole positions, not by taking the scroll away from the visitor. Taking
+  the scroll away is the version of this section that everybody hates.
+- **Blur is set once per turn, not per frame.** Each card gets a fixed blur and dim for its place
+  on the wheel and the browser eases between them. Recalculating a blur on six large screenshots
+  sixty times a second is what makes sections like this stutter on a mid range phone, which is the
+  phone the audience for this site is holding.
+- **No snap point on the first project.** There is one invisible snap marker per project except
+  that one. A marker at the section's start grabs the page as you come down towards it and you
+  never see the wheel slide in, which is the best moment in the section.
+- **The pinned view is three things: the name, the job, the way in.** The prototype carried a
+  section heading, a small label above it, an "01 / 06" counter and the link to the index. All of
+  them are off the screen while the ring is running. The heading and the index link are still in the
+  markup and still read by a crawler, and the grid underneath still shows them; they are hidden, not
+  deleted. The counter went because it numbered a sequence that is not otherwise on screen, next to
+  a wheel that already shows you where you are.
+- **On a phone the wheel goes on top and the words go underneath it.** Beside each other is a
+  desktop arrangement; stacked with the text first, the wheel was left with whatever height was
+  spare and a screenshot too small to read anything in. Now the wheel takes the top of the screen
+  and the free space with it, at `cardPhone` of the full width, and the name, the sector line and
+  the button read as a caption to the thing you are looking at. Done with grid rows rather than DOM
+  order, so the source keeps one reading order at every width.
+- **The phone has no panel behind its text, and the cards are what keep it readable.** There was a
+  gradient floor of `--bg` under the text so a blurred card could not show through. It worked, and
+  it looked like what it was: a black plate laid over the picture with a visible edge where it
+  stopped. The cards do it instead, blurring to `maxBlurPhone` and fading by `fadePhone` as they go
+  round the back, so what passes behind the name is dim enough to read through. Push the thing
+  further back rather than hiding it behind something.
+- **The phone reserves room for the floating call bar.** "View full project" is now the last thing
+  above it. Taken off `--sticky-cta-height` and gated behind `.sticky-cta-armed`, the same way the
+  footer already does it, so a page without the bar does not carry an empty strip for nothing.
+- **The phone's top padding comes off `--nav-height`** plus the gap the nav floats in, rather than
+  the round number it was, which had drifted under the bar.
+- **A word is one unbreakable box.** Splitting a name into letters hands the browser a break
+  opportunity between every pair of them, and the names started wrapping mid-word: "AJC Removal /
+  s & Clearances". Each word is wrapped and set nowrap, with the spaces left as real text nodes so
+  those stay the only places a line can break. Anything that splits text into letters has this bug
+  waiting in it.
+- **The name builds itself in, the way the hero wordmark does.** Each name is split into letters and
+  they land in random order as that project comes to the front, each one flashing to a different
+  pixel face with the chromatic split and a small sideways kick. It is the hero's glitch doing a
+  second job, and it is the reason the section reads as the same site rather than as a component
+  bought in. Worth being honest about the cost: tokens.css justifies keeping the glitch red and cyan
+  while the accent is orange on the grounds that it is "a two-second animation at the top of one
+  page". It is now two places on that page. If the homepage starts to look like two brands, this is
+  the second thing to revisit.
+- **The text leaves to the left and the wheel leaves to the right.** They arrive from opposite sides
+  and they leave the same way, so the section opens and closes on one gesture instead of sliding off
+  together like a slab. It is a dial, `panelExitDir`, next to the wheel's own `exitDir`.
+- **The button uses the site's roll on hover**, the same turn the nav links make, rather than a
+  nudge invented for this one button. A second hover idiom on the same page would be a reader having
+  to learn which of two things means the same thing.
+- **The client's name is set in argent-pixel-cf**, the studio's own display face, at 400 and tracked
+  wide like every other use of it. It is the one thing in the section allowed to be decorative, and
+  it is the client's name rather than anything Picsel says about itself. The measure had to be
+  widened to suit it: the prototype capped the text column at 26ch, which was right for the body
+  face and left "AJC Removals & Clearances" breaking over four lines with the ampersand alone on the
+  third once the pixel face went in.
+- **The heading is still the heading, sized as a label.** "Recent work" sits at the top of the
+  panel as a small tracked line rather than as a headline. It stays an `<h2>` with the id
+  `aria-labelledby` points at, so the page outline and a crawler are unaffected; it is a size
+  change, not a content one. Two things in the pixel face, one of them large and italic, would have
+  been two things competing.
+- **The text sits on a deep left margin rather than against the gutter**, scaled to the viewport so
+  the proportion holds on a laptop. It is what gives the name room to be the largest thing on the
+  screen without crowding the wheel, and it is the difference between a composition and two columns
+  of content.
+- **The section's underline is orange, not the prototype's blue.** The prototype carried a cool
+  blue for it. The accent moved to the orange of the social posts on 17 August 2026 precisely so
+  the site stopped carrying a second unrelated hue, and a blue hairline under the section title is
+  that hue coming back in through a side door. It uses `--accent-soft`, which already existed for
+  exactly this.
 - **Card shape is a fact about the layout, not about the client.** The shapes cycle by position in
   the grid rather than being stored per project. Putting a size in `projects.js` would mean adding a
   sixth project could quietly break the fifth one's row, and it would be recording a layout decision
@@ -596,7 +707,18 @@ sites stays; the count of counties does not.
 Checked in a browser at 375, 768, 1024 and 1440: no sideways scrolling, no tap target under 44
 pixels, one `<h1>`, a clean console, and all five links matching their slugs in `projects.js`.
 
-**Decisions made:**
+*Changed August 2026: this page kept the grid and the homepage did not.* The homepage work section
+became a pinned 3D ring (Section 4) and `/work` is untouched by that. The card partial the two used
+to share is now this page's alone.
+
+That reads like the drift the shared component existed to prevent, and it is the opposite. The two
+were sharing a component while doing the same job, so sharing kept them honest. They are now doing
+different jobs: the homepage is persuading somebody who has not decided to care yet, and this page
+is a catalogue for somebody who has. A ring that turns one project at a time is a good way to be
+shown six things and a bad way to compare eleven. Forcing one component to serve both would mean it
+answering to the ring's structure and the grid's at once, which is how both ends up compromised.
+What still cannot drift is the part that matters: every fact on both still comes from
+`projects.js`, and neither has a name, a sector or a link typed into it.
 
 - **Hover and focus were measured, not eyeballed.** Both are states a screenshot cannot show, and
   "cards must look clickable" is a checkbox that is easy to tick without checking. Compared

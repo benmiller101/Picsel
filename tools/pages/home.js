@@ -16,10 +16,11 @@ import { FEATURED_PROJECTS } from '../../projects.js';
 import { REVIEWS } from '../../reviews.js';
 import { SITE, SHOW_PRICING } from '../../site.config.js';
 import { PLANS, BUILD_FEE, money } from '../../pricing.js';
-import { renderWorkGrid } from '../partials/work-card.js';
+import { renderWorkRing } from '../partials/work-ring.js';
 import { renderPlanRail } from '../partials/plan-cards.js';
 import { renderReviews } from '../partials/reviews.js';
 import { renderContactBand } from '../partials/contact-band.js';
+import { SERVICES_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
 
 /* The cheapest monthly figure on the site, read from the plan data rather than
    typed. It appears in the opening statement, in the questions and on /prices,
@@ -116,25 +117,17 @@ const INTRO = `    <section class="section intro">
       </div>
     </section>`;
 
-/* ---- Selected work --------------------------------------------------------
+/* ---- The work ------------------------------------------------------------
    The screenshots carry all the colour on this page. Everything around them is
    near-black on purpose: every client site brings its own palette, and half a
-   dozen of them at once will fight anything else trying to be colourful. */
-const WORK = `    <section class="section work" aria-labelledby="work-heading">
-      <div class="wrap">
-        <div class="section-head">
-          <!-- "Recent work", not "Selected work". Every build is on this page,
-               so there is no selection happening. "Selected" would imply a
-               larger body of work being curated down, which is a claim a studio
-               this new should not be making. The day the grid stops showing all
-               of them, this heading is the thing to revisit. -->
-          <h2 class="section-head__title" id="work-heading">Recent work</h2>
-          <a class="section-head__link" href="/work/">See every project</a>
-        </div>
+   dozen of them at once will fight anything else trying to be colourful.
 
-${renderWorkGrid(FEATURED_PROJECTS)}
-      </div>
-    </section>`;
+   This was a flat grid until August 2026 and is now a pinned 3D ring that
+   turns one project per scroll. What it is in the HTML has not changed: six
+   links, six screenshots, six names. The ring is a layer work-ring.js adds on
+   top of that and takes away again for anybody who has asked for less motion.
+   The markup lives in partials/work-ring.js, generated from projects.js. */
+const WORK = renderWorkRing(FEATURED_PROJECTS);
 
 /* ---- What Picsel does -----------------------------------------------------
    A plain list, not a sales section. Each line says what the thing is and what
@@ -151,6 +144,13 @@ const SERVICES = `    <section class="section services" aria-labelledby="service
             Four things, and they lean on each other. A site nobody can find is no use, and
             being easy to find is no use if the site puts people off when they get there.
           </p>
+          <!-- The intro is two short paragraphs against a column that runs the
+               height of four services, so most of it is empty. On a desktop
+               that reads as a gap rather than as space. Same blob the page
+               heads on /work and /contact use, for the same reason. Desktop
+               only: below 64rem the section is one column and there is no
+               emptiness to fill. -->
+${SERVICES_BLOB}
         </div>
 
         <dl class="services__list">
@@ -352,13 +352,20 @@ export const HOME_PAGE = {
   bodyClass: 'page-hero',
   /* Only this page loads the hero's styling and its animation. The contact page
      has no blobs to draw and should not pay for the code that draws them. */
-  styles: ['/hero.css', '/reviews.css'],
-  /* A module, so it can import the noise generator it shares with the site-wide
-     backdrop. Modules are deferred by default: the script waits for the page to
-     be parsed and never blocks it from appearing. Everything it does is
-     decoration — with the file missing, blocked or still loading, the homepage
-     is a complete, readable page. */
-  extraScripts: '  <script type="module" src="/hero.js"></script>',
+  styles: ['/hero.css', '/work-ring.css', '/reviews.css'],
+  /* Two enhancements, neither of which the page needs to be readable.
+
+     hero.js is a module so it can import the noise generator it shares with the
+     site-wide backdrop. work-ring.js imports nothing and is a plain IIFE, so it
+     takes `defer` instead. Both amount to the same promise: the script waits for
+     the page to be parsed and never blocks it from appearing.
+
+     With either file missing, blocked or still loading, the homepage is
+     complete and readable. The hero is a still composition and the work section
+     is a grid of six links. */
+  extraScripts: `  <script type="module" src="/hero.js"></script>
+  <script defer src="/work-ring.js"></script>
+${PAGE_BLOB_SCRIPT}`,
   /* The order is what someone decides in. Proof, then what we do, then what it
      costs, then the four things still in their head, then other people saying
      the same thing, then the phone number.

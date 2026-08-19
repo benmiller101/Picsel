@@ -51,6 +51,12 @@ noise-4d.js
 # internal notes because they are.
 *.md
 
+# The work ring's standalone prototype. Kept in the repo because it is where the
+# geometry and the four traps were worked out and it is the only place the tuning
+# panel still exists, but it is a development file: it is not part of the site and
+# must never be reachable at picsel.co.uk/work-ring-prototype.html.
+work-ring-prototype.html
+
 # npm metadata. Reveals the toolchain, serves no visitor.
 package.json
 package-lock.json

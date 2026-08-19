@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Picsel work ring · prototype</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ------------------------------------------------------------------
+   TOKENS
+   Everything visual comes from here, same rule as tokens.css on the
+   real site. Nothing below hardcodes a colour.
+------------------------------------------------------------------ */
+:root{
+  --bg:#08080a;
+  --ink:#f2f3f5;
+  --ink-dim:#9aa1a9;
+  --line:rgba(255,255,255,.11);
+  --accent:#f0a04b;          /* the orange button from your live site */
+  --accent-cool:#7fb0ff;     /* the underline under the section title */
+  --radius:14px;
+  --step-ms:620ms;           /* kept in sync with the JS by the tuner */
+}
+
+*{box-sizing:border-box}
+html{
+  overflow-x:clip;           /* lets the ring slide off screen without a sideways scrollbar */
+  scroll-behavior:auto;
+}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Lexend',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-weight:300;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* The site wide dot grid, fixed behind everything, as on picsel.co.uk */
+body::before{
+  content:'';
+  position:fixed; inset:0;
+  background-image:radial-gradient(rgba(255,255,255,.07) 1px, transparent 1px);
+  background-size:26px 26px;
+  pointer-events:none;
+  z-index:0;
+}
+
+.wrap{max-width:1440px;margin:0 auto;padding:0 clamp(20px,5vw,72px);position:relative;z-index:1}
+
+/* ------------------------------------------------------------------
+   FAKE HERO + FAKE NEXT SECTION
+   Only here so you can scroll into the work section and out the other
+   side and feel the hand off. Neither is part of the deliverable.
+------------------------------------------------------------------ */
+.filler{min-height:100vh;display:flex;flex-direction:column;justify-content:center;gap:18px}
+.filler h1{font-size:clamp(40px,7vw,92px);font-weight:500;margin:0;letter-spacing:-.02em}
+.filler p{color:var(--ink-dim);max-width:46ch;font-size:17px;line-height:1.6;margin:0}
+.hint{color:var(--ink-dim);font-size:13px;letter-spacing:.14em;text-transform:uppercase;margin-top:28px}
+
+/* ------------------------------------------------------------------
+   THE WORK SECTION, PLAIN VERSION
+   This is what everybody gets first: a normal grid of six links. No
+   JavaScript needed for the work to exist, which is your build rule
+   and also what search engines and AI crawlers read.
+------------------------------------------------------------------ */
+.work{position:relative;overflow-x:clip}
+.work__stage{padding:120px 0}
+.work__eyebrow{margin:0 0 6px;color:var(--ink-dim);font-size:13px;letter-spacing:.16em;text-transform:uppercase}
+.work__title{
+  margin:0 0 34px;font-size:clamp(38px,6vw,72px);font-weight:500;letter-spacing:-.02em;
+  display:inline-block;border-bottom:3px solid var(--accent-cool);padding-bottom:6px;
+}
+.work__counter{display:none}
+
+.work__list{list-style:none;margin:0;padding:0;display:grid;gap:26px;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.project__link{display:block;text-decoration:none;color:inherit}
+.project__shot{display:block;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#101014;aspect-ratio:16/10}
+.project__shot img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+.project__name{display:block;margin-top:14px;font-size:20px;font-weight:500}
+.project__sector{display:block;color:var(--ink-dim);font-size:15px;margin-top:2px}
+.project__cta{display:none}
+.project__link:hover .project__name{color:var(--accent)}
+.work__ring{display:none}
+
+/* ------------------------------------------------------------------
+   THE WORK SECTION, RING VERSION
+   Added by JavaScript. Everything under .is-ring is the enhancement.
+------------------------------------------------------------------ */
+.work.is-ring .work__stage{
+  position:sticky;top:0;height:100vh;padding:0;
+  display:grid;grid-template-columns:41% 59%;align-items:center;
+}
+
+/* left hand text column ------------------------------------------ */
+.work.is-ring .work__panel{
+  position:relative;z-index:2;
+  /* left aligned in its column: auto margins would centre it and shrink it */
+  margin:0;max-width:none;width:100%;padding-right:24px;
+  transform:translate3d(var(--panel-x,0px),var(--panel-y,0px),0);
+  opacity:var(--panel-o,1);
+}
+.work.is-ring .work__counter{
+  display:block;color:var(--ink-dim);font-size:13px;letter-spacing:.2em;margin:0 0 26px
+}
+.work.is-ring .work__list{display:block;position:relative;min-height:290px;max-width:26ch}
+/* The name that is leaving fades out quickly and lifts away; the one arriving
+   waits for it to clear before coming in, so two long names never overlap. */
+.work.is-ring .project{
+  position:absolute;left:0;top:0;width:100%;
+  opacity:0;transform:translateY(12px);pointer-events:none;
+  transition:opacity .2s ease,transform .2s ease;
+}
+.work.is-ring .project.is-active{
+  opacity:1;transform:none;pointer-events:auto;
+  transition:opacity .3s ease .2s,transform .38s cubic-bezier(.2,.8,.2,1) .2s;
+}
+.work.is-ring .project__shot{display:none}          /* the ring shows the screenshots now */
+.work.is-ring .project__name{margin-top:0;font-size:clamp(30px,3.1vw,46px);font-weight:500;letter-spacing:-.02em;line-height:1.08;text-wrap:balance}
+.work.is-ring .project__sector{font-size:17px;margin-top:12px}
+.work.is-ring .project__cta{
+  display:inline-block;white-space:nowrap;margin-top:28px;padding:14px 30px;border-radius:999px;
+  background:var(--accent);color:#151007;font-weight:500;font-size:16px;
+  transition:transform .2s ease,filter .2s ease;
+}
+.work.is-ring .project__link:hover .project__cta{transform:translateX(4px);filter:brightness(1.08)}
+.work.is-ring .project__link:hover .project__name{color:inherit}
+.work.is-ring .project__link:focus-visible{outline:2px solid var(--accent-cool);outline-offset:8px;border-radius:6px}
+
+/* right hand 3D area --------------------------------------------- */
+.work.is-ring .work__ring{
+  display:block;position:relative;height:100vh;
+  perspective:var(--persp,1500px);
+  perspective-origin:26% 50%;      /* we stand slightly to the left of the wheel */
+}
+.ring__slide{
+  position:absolute;inset:0;
+  transform-style:preserve-3d;
+  transform:translate3d(var(--slide-x,0px),0,0);
+  /* no opacity here on purpose: fading a 3D parent flattens the ring */
+}
+.ring{
+  position:absolute;left:52%;top:50%;width:0;height:0;
+  transform-style:preserve-3d;
+  /* The wheel is pushed back by its own radius so the card at the front sits
+     at true size instead of being magnified by the perspective, and nudged
+     sideways so that turning the wheel round does not drag the front card
+     off centre with it. */
+  transform:translate3d(var(--ringx,0px),0,var(--ringz,0px))
+            rotateY(var(--tilt,-14deg)) rotateX(var(--spin,0deg));
+}
+.card{
+  position:absolute;
+  width:var(--card-w,620px);height:var(--card-h,388px);
+  left:calc(var(--card-w,620px) / -2);top:calc(var(--card-h,388px) / -2);
+  transform-style:preserve-3d;
+}
+.card__face{
+  position:absolute;inset:0;border-radius:var(--radius);overflow:hidden;
+  background:#101014;border:1px solid var(--line);
+  box-shadow:0 34px 70px rgba(0,0,0,.6);
+  /* blur and dim are set once per turn, then the browser eases them.
+     Nothing recalculates blur frame by frame, which is what keeps it smooth. */
+  transition:filter var(--step-ms) cubic-bezier(.4,0,.2,1),
+             opacity var(--step-ms) cubic-bezier(.4,0,.2,1);
+}
+.card__face img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+
+/* invisible markers the browser snaps to, one per project */
+.work__snaps{position:absolute;inset:0;pointer-events:none}
+.work__snaps i{position:absolute;left:0;width:1px;height:1px;scroll-snap-align:start}
+
+/* ------------------------------------------------------------------
+   PHONES: same idea, stacked, ring under the text
+------------------------------------------------------------------ */
+@media (max-width:900px){
+  .work.is-ring .work__stage{grid-template-columns:1fr;grid-template-rows:auto 1fr;align-content:start;padding:70px 0 0}
+  .work.is-ring .work__panel{
+    padding:0 clamp(20px,5vw,72px) 22px;
+    /* the wheel passes behind the text on a phone, so the text keeps its own
+       floor of background rather than letting a blurred card show through */
+    background:linear-gradient(180deg,var(--bg) 78%,rgba(8,8,10,0));
+  }
+  .work.is-ring .work__title{margin-bottom:20px}
+  .work.is-ring .work__counter{margin-bottom:16px}
+  .work.is-ring .work__list{min-height:210px;max-width:none}
+  .work.is-ring .project__name{font-size:clamp(26px,7.4vw,38px)}
+  .work.is-ring .project__sector{font-size:16px;margin-top:8px}
+  .work.is-ring .project__cta{margin-top:18px;padding:12px 24px;font-size:15px}
+  .work.is-ring .work__ring{height:100%;perspective-origin:50% 50%}
+  .ring{left:50%}
+}
+
+/* ------------------------------------------------------------------
+   REDUCED MOTION: no pinning, no spinning, just the grid
+------------------------------------------------------------------ */
+@media (prefers-reduced-motion:reduce){
+  .work.is-ring .work__stage{position:static;height:auto;display:block;padding:120px 0}
+  .work.is-ring .work__ring{display:none}
+  .work.is-ring .work__list{display:grid;position:static}
+  .work.is-ring .project{position:static;opacity:1;transform:none;pointer-events:auto}
+  .work.is-ring .project__shot{display:block}
+}
+
+/* ------------------------------------------------------------------
+   TUNER (prototype only, delete before this goes near the site)
+------------------------------------------------------------------ */
+.tuner{position:fixed;left:18px;bottom:18px;z-index:50;font-size:12px;color:var(--ink)}
+.tuner__btn{
+  background:rgba(20,20,24,.9);border:1px solid var(--line);color:var(--ink);
+  padding:9px 16px;border-radius:999px;cursor:pointer;font:inherit;backdrop-filter:blur(8px)
+}
+.tuner__body{
+  display:none;margin-top:10px;width:290px;padding:16px;border-radius:14px;
+  background:rgba(16,16,20,.94);border:1px solid var(--line);backdrop-filter:blur(10px);
+  max-height:70vh;overflow:auto
+}
+.tuner.is-open .tuner__body{display:block}
+.tuner__row{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;margin-bottom:9px}
+.tuner__row label{color:var(--ink-dim)}
+.tuner__row output{font-variant-numeric:tabular-nums}
+.tuner input[type=range]{grid-column:1 / -1;width:100%;accent-color:var(--accent)}
+.tuner__note{color:var(--ink-dim);line-height:1.5;margin:12px 0 0}
+</style>
+</head>
+<body>
+
+<div class="wrap filler">
+  <h1>Scroll down</h1>
+  <p>This block is standing in for your hero so you can feel the work section arrive and leave. It is not part of what would get built.</p>
+  <p class="hint">Prototype · not the live site</p>
+</div>
+
+<!-- ================= THE WORK SECTION ================= -->
+<section class="work" id="work" aria-labelledby="work-title">
+  <div class="work__snaps" aria-hidden="true"></div>
+
+  <div class="work__stage">
+    <div class="work__panel wrap">
+      <p class="work__eyebrow">Recent work</p>
+      <h2 class="work__title" id="work-title">Work</h2>
+      <p class="work__counter" aria-hidden="true"><span data-count>01</span> / 06</p>
+
+      <ul class="work__list">
+        <li class="project">
+          <a class="project__link" href="https://picsel.co.uk/work/nevitt-construction/">
+            <span class="project__shot"><img src="https://picsel.co.uk/assets/work/nevitt-construction/desktop.webp" alt="Screenshot of the A Nevitt Construction website" loading="lazy"></span>
+            <span class="project__name">A Nevitt Construction</span>
+            <span class="project__sector">Construction · Website and SEO</span>
+            <span class="project__cta">View full project</span>
+          </a>
+        </li>
+        <li class="project">
+          <a class="project__link" href="https://picsel.co.uk/work/wolf-pine/">
+            <span class="project__shot"><img src="https://picsel.co.uk/assets/work/wolf-pine/desktop.webp" alt="Screenshot of the Wolf Pine website" loading="lazy"></span>
+            <span class="project__name">Wolf Pine</span>
+            <span class="project__sector">Tree surgery · Website, SEO and Google Profile</span>
+            <span class="project__cta">View full project</span>
+          </a>
+        </li>
+        <li class="project">
+          <a class="project__link" href="https://picsel.co.uk/work/lanora-house/">
+            <span class="project__shot"><img src="https://picsel.co.uk/assets/work/lanora-house/desktop.webp" alt="Screenshot of the Lanora House website" loading="lazy"></span>
+            <span class="project__name">Lanora House</span>
+            <span class="project__sector">House clearance · Website and SEO</span>
+            <span class="project__cta">View full project</span>
+          </a>
+        </li>
+        <li class="project">
+          <a class="project__link" href="https://picsel.co.uk/work/ajc-removals/">
+            <span class="project__shot"><img src="https://picsel.co.uk/assets/work/ajc-removals/desktop.webp" alt="Screenshot of the AJC Removals and Clearances website" loading="lazy"></span>
+            <span class="project__name">AJC Removals &amp; Clearances</span>
+            <span class="project__sector">Removals &amp; clearance · Website</span>
+            <span class="project__cta">View full project</span>
+          </a>
+        </li>
+        <li class="project">
+          <a class="project__link" href="https://picsel.co.uk/work/julie-miller-art/">
+            <span class="project__shot"><img src="https://picsel.co.uk/assets/work/julie-miller-art/desktop.webp" alt="Screenshot of the Julie Miller Art website" loading="lazy"></span>
+            <span class="project__name">Julie Miller Art</span>
+            <span class="project__sector">Artist portfolio · Website</span>
+            <span class="project__cta">View full project</span>
+          </a>
+        </li>
+        <li class="project">
+          <a class="project__link" href="https://picsel.co.uk/work/house-of-cornwall/">
+            <span class="project__shot"><img src="https://picsel.co.uk/assets/work/house-of-cornwall/desktop.webp" alt="Screenshot of the House of Cornwall website" loading="lazy"></span>
+            <span class="project__name">House of Cornwall</span>
+            <span class="project__sector">Antiques &amp; auctions · Website</span>
+            <span class="project__cta">View full project</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="work__ring" aria-hidden="true">
+      <div class="ring__slide"><div class="ring"></div></div>
+    </div>
+  </div>
+</section>
+<!-- =============== END WORK SECTION =============== -->
+
+<div class="wrap filler">
+  <h1>And on we go</h1>
+  <p>The section has handed back to the page. Scroll up and the whole thing runs in reverse.</p>
+</div>
+
+<!-- Tuner: prototype only -->
+<div class="tuner" id="tuner">
+  <button class="tuner__btn" type="button" data-toggle>Tune the ring</button>
+  <div class="tuner__body">
+    <div class="tuner__row"><label for="t-tilt">Ring angle (how far round we stand)</label><output id="o-tilt"></output>
+      <input id="t-tilt" type="range" min="-45" max="10" step="1"></div>
+    <div class="tuner__row"><label for="t-bill">Cards face the camera</label><output id="o-bill"></output>
+      <input id="t-bill" type="range" min="0" max="1" step="0.05"></div>
+    <div class="tuner__row"><label for="t-rad">Wheel size</label><output id="o-rad"></output>
+      <input id="t-rad" type="range" min="0.8" max="2.2" step="0.02"></div>
+    <div class="tuner__row"><label for="t-card">Card width</label><output id="o-card"></output>
+      <input id="t-card" type="range" min="0.4" max="0.95" step="0.01"></div>
+    <div class="tuner__row"><label for="t-persp">Depth of the 3D</label><output id="o-persp"></output>
+      <input id="t-persp" type="range" min="700" max="3200" step="50"></div>
+    <div class="tuner__row"><label for="t-ms">Turn speed</label><output id="o-ms"></output>
+      <input id="t-ms" type="range" min="260" max="1300" step="20"></div>
+    <div class="tuner__row"><label for="t-scroll">Scroll per project</label><output id="o-scroll"></output>
+      <input id="t-scroll" type="range" min="0.4" max="1.6" step="0.05"></div>
+    <div class="tuner__row"><label for="t-blur">Blur at the back</label><output id="o-blur"></output>
+      <input id="t-blur" type="range" min="0" max="26" step="1"></div>
+    <p class="tuner__note">Tell me the numbers you land on and I will bake them in. This panel does not exist in the real build.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ================================================================
+     THE DIALS
+     Every fixed value lives here with a name, nothing magic further
+     down. The tuner panel writes into this same object.
+  ================================================================ */
+  var cfg = {
+    tilt        : -19,    // degrees. how far round the side of the wheel we stand
+    billboard   : 0.45,   // 0 = cards sit flat on the ring (your Blender file), 1 = always face you
+    radiusRatio : 1.18,   // wheel radius as a multiple of card height
+    cardRatio   : 0.72,   // card width as a share of the 3D column
+    persp       : 1500,   // px. smaller = more dramatic 3D
+    stepMs      : 620,    // how long one turn takes
+    stepVh      : 0.85,   // how much scrolling moves you on one project (share of screen height)
+    entryVh     : 0.65,   // how much scrolling the slide in takes
+    exitVh      : 0.80,   // how much scrolling the slide out takes
+    maxBlur     : 14,     // px of blur on the card furthest round the back
+    exitDir     : 1,      // 1 slides out to the right, -1 to the left
+    snap        : true    // land on whole projects rather than between them
+  };
+
+  var CARD_ASPECT = 16 / 10;
+
+  /* -1 means the next project rises up from below and the one you have just
+     seen rolls up and over the back, which is the way your scroll is going.
+     Flip it to 1 and the wheel turns the other way. */
+  var TURN = -1;
+
+  var section = document.getElementById('work');
+  var stage   = section.querySelector('.work__stage');
+  var panel   = section.querySelector('.work__panel');
+  var ringBox = section.querySelector('.work__ring');
+  var slide   = section.querySelector('.ring__slide');
+  var ring    = section.querySelector('.ring');
+  var snaps   = section.querySelector('.work__snaps');
+  var counter = section.querySelector('[data-count]');
+  var items   = Array.prototype.slice.call(section.querySelectorAll('.project'));
+  var links   = items.map(function(li){ return li.querySelector('.project__link'); });
+  var N       = items.length;
+  var STEP_DEG = 360 / N;
+
+  /* Anybody who has asked for less motion keeps the plain grid.
+     No pinning, no wheel, nothing that moves on its own. */
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (reduced.matches) return;
+
+  /* ---------------------------------------------------------------
+     BUILD THE WHEEL
+     The cards are copies of the screenshots that are already in the
+     HTML. They are marked hidden from screen readers because the real
+     links in the text column are the ones that carry meaning.
+  --------------------------------------------------------------- */
+  /* a holding colour per card, so a card still looks like a card in the
+     half second before its screenshot arrives */
+  var TINTS = ['#b8482e','#2f3a26','#2a2a72','#16181c','#e9e5dd','#1b2233'];
+
+  var faces = [];
+  var cards = [];
+  items.forEach(function(li, n){
+    var src  = li.querySelector('img').getAttribute('src');
+    var card = document.createElement('div');
+    var face = document.createElement('div');
+    var img  = document.createElement('img');
+    card.className = 'card';
+    face.className = 'card__face';
+    face.style.background = TINTS[n % TINTS.length];
+    img.src = src; img.alt = ''; img.setAttribute('draggable','false');
+    face.appendChild(img); card.appendChild(face); ring.appendChild(card);
+    cards.push(card); faces.push(face);
+  });
+
+  /* One invisible marker per project for the browser to snap to, but none on
+     the first one: a snap point right at the section's start would grab the
+     page as you approach and you would never see the ring slide in. */
+  for (var s = 1; s < N; s++) snaps.appendChild(document.createElement('i'));
+  var markers = Array.prototype.slice.call(snaps.children);
+
+  section.classList.add('is-ring');
+
+  /* ---------------------------------------------------------------
+     SIZES
+     Recalculated on load and on resize only, never while scrolling.
+  --------------------------------------------------------------- */
+  var vh = 0, stepPx = 0, entryPx = 0, exitPx = 0, radius = 0;
+
+  function layout(){
+    vh = window.innerHeight;
+    stepPx  = vh * cfg.stepVh;
+    entryPx = vh * cfg.entryVh;
+    exitPx  = vh * cfg.exitVh;
+
+    /* the section is tall enough for: one screen of pinning, one step
+       of scroll per project after the first, then the slide out */
+    section.style.height = (vh + (N - 1) * stepPx + exitPx) + 'px';
+
+    var colW = ringBox.clientWidth || window.innerWidth;
+    var cardW = Math.min(colW * cfg.cardRatio, 760);
+    if (window.innerWidth <= 900) cardW = Math.min(window.innerWidth * (cfg.cardRatio + 0.04), 460);
+    var cardH = cardW / CARD_ASPECT;
+    radius = cardH * cfg.radiusRatio;
+
+    ringBox.style.setProperty('--persp', cfg.persp + 'px');
+    ring.style.setProperty('--tilt', cfg.tilt + 'deg');
+    ring.style.setProperty('--ringz', (-radius) + 'px');
+    ring.style.setProperty('--ringx', (-radius * Math.sin(cfg.tilt * Math.PI / 180)).toFixed(1) + 'px');
+    section.style.setProperty('--card-w', cardW + 'px');
+    section.style.setProperty('--card-h', cardH + 'px');
+    section.style.setProperty('--step-ms', cfg.stepMs + 'ms');
+
+    placeCards();
+    markers.forEach(function(m, i){ m.style.top = ((i + 1) * stepPx) + 'px'; });
+    document.documentElement.style.scrollSnapType = cfg.snap ? 'y proximity' : 'none';
+    onScroll();
+    spin();
+  }
+
+  /* Where each card sits around the wheel, in degrees, wrapped so that
+     "a bit further round" is always measured the short way. */
+  var place = [];
+  function wrap(deg){ return ((deg + 180) % 360 + 360) % 360 - 180; }
+
+  function placeCards(){
+    for (var i = 0; i < N; i++) place[i] = wrap(TURN * i * STEP_DEG);
+    applyCards(-TURN * shown * STEP_DEG);
+  }
+
+  /* Each card is rotated round the wheel, pushed out to the rim, then tipped
+     back towards you by a share of however far round it currently is. The card
+     at the front is always dead square to you; the ones behind lean away. */
+  function applyCards(ringAngle){
+    for (var i = 0; i < N; i++){
+      var facing = wrap(place[i] + ringAngle);         // where this card looks right now
+      cards[i].style.transform =
+        'rotateX(' + place[i] + 'deg) translateZ(' + radius + 'px) ' +
+        'rotateX(' + (-facing * cfg.billboard).toFixed(2) + 'deg)';
+    }
+  }
+
+  /* ---------------------------------------------------------------
+     DEPTH
+     Called once at the start of each turn, not every frame. The browser
+     eases blur and brightness to the new values on its own, which is
+     the cheap way to do it.
+  --------------------------------------------------------------- */
+  var half = Math.floor(N / 2);
+  function paint(front){
+    for (var i = 0; i < N; i++){
+      var d = ((i - front) % N + N) % N;
+      if (d > N / 2) d = N - d;                 // how many places back, 0 to 3
+      var t = d / half;                          // 0 at the front, 1 at the very back
+      var e = Math.pow(t, 0.75);                 // blur climbs quickly then levels off
+      var blur   = cfg.maxBlur * e;
+      var bright = 1 - 0.82 * e;
+      var op     = (d >= half) ? 0 : (1 - 0.35 * e);
+      faces[i].style.filter  = 'blur(' + blur.toFixed(2) + 'px) brightness(' + bright.toFixed(3) + ')';
+      faces[i].style.opacity = op.toFixed(3);
+    }
+  }
+
+  function setActive(i){
+    items.forEach(function(li, j){ li.classList.toggle('is-active', j === i); });
+    counter.textContent = ('0' + (i + 1)).slice(-2);
+  }
+
+  /* ---------------------------------------------------------------
+     THE TURN
+     shown is where the wheel actually is. target is where the scroll
+     position says it should be. We always travel a whole project at a
+     time, so the wheel is never left resting between two states, and
+     if you scroll fast it rolls through them rather than jumping.
+  --------------------------------------------------------------- */
+  var shown = 0, target = 0, from = 0, to = 0, t0 = 0, turning = false, dur = 620;
+
+  function easeInOutCubic(p){ return p < 0.5 ? 4*p*p*p : 1 - Math.pow(-2*p + 2, 3) / 2; }
+
+  function spin(){
+    var angle = -TURN * shown * STEP_DEG;
+    ring.style.setProperty('--spin', angle.toFixed(3) + 'deg');
+    applyCards(angle);
+  }
+
+  function startTurn(){
+    var here = Math.round(shown);
+    var dir  = target > here ? 1 : -1;
+    from = shown;
+    to   = here + dir;
+    /* if you have scrolled several projects ahead the wheel still visits
+       every one, just faster, so it catches up instead of dragging behind */
+    dur  = Math.abs(target - here) > 1 ? cfg.stepMs * 0.5 : cfg.stepMs;
+    section.style.setProperty('--step-ms', Math.round(dur) + 'ms');
+    t0   = performance.now();
+    turning = true;
+    paint(to);        // the browser eases blur and dim over the same time as the turn
+    setActive(to);
+  }
+
+  function frame(now){
+    if (turning){
+      var p = Math.min(1, (now - t0) / dur);
+      shown = from + (to - from) * easeInOutCubic(p);
+      spin();
+      if (p === 1){
+        shown = to; turning = false;
+        if (to !== target) startTurn();     // keep rolling if the scroll ran ahead
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  /* ---------------------------------------------------------------
+     SCROLL
+     Reads the section's position and works out three things: how far
+     through the slide in we are, which project we should be on, and
+     how far through the slide out we are.
+  --------------------------------------------------------------- */
+  function clamp(v, a, b){ return v < a ? a : (v > b ? b : v); }
+
+  function onScroll(){
+    var rect = section.getBoundingClientRect();
+    var y = -rect.top;                                   // how far into the section we are
+
+    var entry = clamp(1 - rect.top / entryPx, 0, 1);     // 0 off to the right, 1 settled
+    var exit  = clamp((y - (N - 1) * stepPx) / exitPx, 0, 1);
+
+    var offRight = window.innerWidth * 0.8;
+    var slideX = (1 - entry) * offRight + exit * offRight * 1.2 * cfg.exitDir;
+    slide.style.setProperty('--slide-x', slideX.toFixed(1) + 'px');
+
+    panel.style.setProperty('--panel-o', (entry * (1 - exit)).toFixed(3));
+    panel.style.setProperty('--panel-y', ((1 - entry) * 28).toFixed(1) + 'px');
+    panel.style.setProperty('--panel-x', (exit * offRight * cfg.exitDir).toFixed(1) + 'px');
+
+    var want = clamp(Math.round(y / stepPx), 0, N - 1);
+    if (want !== target){
+      target = want;
+      if (!turning) startTurn();
+    }
+  }
+
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){ onScroll(); ticking = false; });
+  }, {passive:true});
+
+  window.addEventListener('resize', layout);
+
+  /* ---------------------------------------------------------------
+     KEYBOARD
+     Left and right arrows turn the wheel while the section owns the
+     screen. Up and down are left alone so normal scrolling still works.
+     Tabbing to a hidden project scrolls the page to it, so a keyboard
+     user never lands on something they cannot see.
+  --------------------------------------------------------------- */
+  function goTo(i){
+    i = clamp(i, 0, N - 1);
+    var top = section.getBoundingClientRect().top + window.scrollY + i * stepPx;
+    window.scrollTo({top: top, behavior: 'smooth'});
+  }
+
+  document.addEventListener('keydown', function(e){
+    var rect = section.getBoundingClientRect();
+    var pinned = rect.top <= 1 && rect.bottom > vh;
+    if (!pinned) return;
+    if (e.key === 'ArrowRight'){ e.preventDefault(); goTo(target + 1); }
+    if (e.key === 'ArrowLeft'){  e.preventDefault(); goTo(target - 1); }
+  });
+
+  links.forEach(function(a, i){
+    a.addEventListener('focus', function(){
+      if (i !== target) goTo(i);
+    });
+  });
+
+  /* ---------------------------------------------------------------
+     GO
+  --------------------------------------------------------------- */
+  setActive(0);
+  paint(0);
+  layout();
+
+  /* ---------------------------------------------------------------
+     TUNER (prototype only)
+  --------------------------------------------------------------- */
+  var tuner = document.getElementById('tuner');
+  tuner.querySelector('[data-toggle]').addEventListener('click', function(){
+    tuner.classList.toggle('is-open');
+  });
+
+  function wire(id, key, fmt, after){
+    var input = document.getElementById('t-' + id);
+    var out   = document.getElementById('o-' + id);
+    input.value = cfg[key];
+    out.textContent = fmt(cfg[key]);
+    input.addEventListener('input', function(){
+      cfg[key] = parseFloat(input.value);
+      out.textContent = fmt(cfg[key]);
+      if (after) after();
+      layout();
+      paint(Math.round(shown));
+    });
+  }
+  wire('tilt',   'tilt',        function(v){ return v + '°'; });
+  wire('bill',   'billboard',   function(v){ return Math.round(v * 100) + '%'; });
+  wire('rad',    'radiusRatio', function(v){ return v.toFixed(2) + '×'; });
+  wire('card',   'cardRatio',   function(v){ return Math.round(v * 100) + '%'; });
+  wire('persp',  'persp',       function(v){ return v + 'px'; });
+  wire('ms',     'stepMs',      function(v){ return v + 'ms'; });
+  wire('scroll', 'stepVh',      function(v){ return v.toFixed(2) + ' screens'; });
+  wire('blur',   'maxBlur',     function(v){ return v + 'px'; });
+})();
+</script>
+</body>
+</html>

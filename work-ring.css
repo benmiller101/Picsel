@@ -1,0 +1,601 @@
+/* ---- work-ring.css — the homepage Work section ---------------------------
+   Two states in one stylesheet, and the order matters.
+
+   PLAIN is what everybody gets: a normal grid of six links, no JavaScript
+   involved. It is what a crawler reads, what an AI summariser reads, what
+   somebody with scripts blocked reads, and what anybody who has asked for
+   less motion keeps. Content never depends on JavaScript on this site.
+
+   RING is the enhancement, and every rule for it is nested under `.is-ring`,
+   a class that only work-ring.js adds. If that file never loads, never runs,
+   or throws, none of this applies and the plain grid is simply what the page
+   is. The enhancement cannot break the content because it is not holding it
+   up.
+
+   Loaded only by the homepage, the way hero.css is. No other page has a ring.
+
+   Colour comes from tokens.css by name, per the rule that nothing else in the
+   project hardcodes a value. The prototype carried its own six tokens; they
+   are gone, mapped onto the ones the site already had. */
+
+/* ------------------------------------------------------------------
+   THE WORK SECTION, PLAIN VERSION
+------------------------------------------------------------------ */
+.work {
+  position: relative;
+
+  /* The ring slides in from off screen right and leaves the same way. Without
+     this the page grows a horizontal scrollbar for the width of a card.
+     `clip` rather than `hidden` on purpose: `hidden` makes this element a
+     scroll container, and a scroll container between the sticky stage and the
+     viewport is what stops `position: sticky` sticking. */
+  overflow-x: clip;
+}
+
+.work__stage {
+  padding-block: var(--section-y);
+}
+
+.work__title {
+  margin: 0 0 34px;
+  font-size: clamp(38px, 6vw, 72px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  display: inline-block;
+
+  /* The prototype drew this rule in a cool blue. There is no cool colour in
+     this site's palette and there is a dated note in tokens.css explaining
+     why: the accent moved to the orange of the social posts precisely so the
+     site stops carrying a second, unrelated hue. --accent-soft is the token
+     that already exists for an accent hairline. */
+  border-bottom: 3px solid var(--accent-soft);
+  padding-bottom: 6px;
+}
+
+/* Only the ring has a position to count. In the plain grid all six are on
+   screen at once and "01 / 06" would be describing nothing. */
+.work__counter {
+  display: none;
+}
+
+.work__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 26px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.project__link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.project__shot {
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg-raised);
+  aspect-ratio: 16 / 10;
+}
+
+.project__shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  /* Top of the page, not the middle of it. A website screenshot cropped from
+     the centre throws away the header, which is the part that identifies the
+     site to anybody scanning. */
+  object-position: top center;
+  display: block;
+}
+
+.project__name {
+  display: block;
+  margin-top: 14px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.project__sector {
+  display: block;
+  color: var(--ink-faint);
+  font-size: 15px;
+  margin-top: 2px;
+}
+
+/* The whole card is the link in the grid, so a separate "View full project"
+   would be a second target for the same destination. The ring turns it on,
+   because there the card is a decorative copy and the button is the only
+   visible thing to click. */
+.project__cta {
+  display: none;
+}
+
+.project__link:hover .project__name {
+  color: var(--accent);
+}
+
+/* The route to the full index. It was on the old grid's heading row and it
+   stays: the nav carries /work too, but a link inside the content is the one
+   somebody reading the section actually follows. */
+.work__more {
+  margin: 34px 0 0;
+}
+
+.work__ring {
+  display: none;
+}
+
+/* ------------------------------------------------------------------
+   THE WORK SECTION, RING VERSION
+   Everything below is the enhancement. work-ring.js adds `.is-ring`.
+------------------------------------------------------------------ */
+.work.is-ring .work__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 41% 59%;
+  align-items: center;
+}
+
+/* ---- left hand text column ---------------------------------------------- */
+.work.is-ring .work__panel {
+  position: relative;
+  z-index: 2;
+
+  /* This carries the site's .wrap class, which sets `margin-inline: auto` and
+     a max-width. On a grid item those two together shrink the panel to the
+     width of its own text and centre it in the column, which reads as a bug
+     and is very hard to see as a cause. Left aligned, full width, explicitly.
+     Do not remove these three. */
+  margin: 0;
+  max-width: none;
+  width: 100%;
+
+  /* The left margin is the composition. The panel is a 41% column and the text
+     sits well inside it rather than against the gutter, which is what gives the
+     name room to be the largest thing on the screen without crowding the wheel.
+     Scales with the viewport so the proportion holds instead of the inset
+     shrinking to nothing on a laptop. */
+  padding-left: clamp(2rem, 9vw, 10rem);
+  padding-right: 24px;
+
+  transform: translate3d(var(--panel-x, 0px), var(--panel-y, 0px), 0);
+  opacity: var(--panel-o, 1);
+}
+
+/* The section's heading, still an <h2> and still "Recent work", but sized as a
+   label rather than as a headline. It sits above the client's name and hands
+   the display face over to it: two things in the pixel face, one of them large
+   and italic, would be two things competing.
+
+   Restyled rather than replaced with a separate eyebrow element. A small label
+   above a heading that says the same words is one line of duplication, and the
+   heading is the one the page's outline and `aria-labelledby` need. */
+.work.is-ring .work__title {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: var(--weight-regular);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border-bottom: 0;
+  padding-bottom: 0;
+  margin: 0 0 26px;
+  display: block;
+}
+
+/* The index link is the one thing genuinely taken off the screen. The grid
+   underneath still carries it and a crawler still reads it: hidden, not
+   deleted. */
+.work.is-ring .work__more {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.work.is-ring .work__counter {
+  display: none;
+}
+
+.work.is-ring .work__list {
+  display: block;
+  position: relative;
+  min-height: 290px;
+
+  /* No measure of its own: the panel's left padding is what shapes this column
+     now, and the names use whatever it leaves.
+
+     The prototype capped this at 26ch, which was right when the names were set
+     in the body face. They are set in the pixel face tracked at 0.14em, where a
+     character is far wider than a `ch` of Lexend, so 26ch left a box roughly
+     290px across. "AJC Removals & Clearances" broke over four lines in it with
+     the ampersand alone on the third, which is the kind of thing you only see
+     once it is on the screen. */
+  max-width: none;
+}
+
+/* The six sit stacked in the same place and only one is shown. The name that
+   is leaving fades out quickly and lifts away; the one arriving waits for it
+   to clear before it starts, so two long client names never overlap. */
+.work.is-ring .project {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.work.is-ring .project.is-active {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  transition: opacity 0.3s ease 0.2s, transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s;
+}
+
+/* The ring is showing the screenshots now. */
+.work.is-ring .project__shot {
+  display: none;
+}
+
+/* The client's name in the studio's own pixel face, which is the one place in
+   this section anything is allowed to be decorative. Set from the same tokens
+   as base.css's .display rather than by hand:
+
+   400 always. argent-pixel-cf ships one weight, so asking for 500 makes the
+   browser fake it by smearing the glyphs sideways, and on a face drawn to a
+   pixel grid that reads as a rendering fault rather than as emphasis.
+
+   Tracked wide always. Pixel letterforms jam together without the extra air. */
+.work.is-ring .project__name {
+  margin-top: 0;
+  font-family: var(--font-display);
+  font-size: clamp(30px, 3.1vw, 46px);
+  font-weight: var(--weight-regular);
+  font-style: italic;
+
+  /* Tighter than --tracking-display. That token is set for the wordmark, which
+     is four letters at hero size and needs the air; a client's full name at
+     46px over two lines does not, and at 0.14em the words start reading as
+     separate letters rather than a name. */
+  letter-spacing: 0.05em;
+  line-height: var(--leading-tight);
+  text-wrap: balance;
+}
+
+/* ---- the name's build-in ------------------------------------------------
+   One span per letter, added by work-ring.js. None of this exists without the
+   script, and the plain grid never sees it. */
+/* Each word is one unbreakable box. Without it the line can break between any
+   two letter spans and a name wraps mid-word: "AJC Removal / s & Clearances".
+   The spaces between words are real text nodes, so those are the only places a
+   line is allowed to break. */
+.work.is-ring .project__name .word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.work.is-ring .project__name .letter {
+  display: inline-block;
+}
+
+/* Laid out but not yet arrived. Opacity rather than display, so the name holds
+   its final width from the first frame and nothing reflows as letters land. */
+.work.is-ring .project__name .letter.is-waiting {
+  opacity: 0;
+}
+
+/* The flash as a letter lands: the hero's chromatic aberration, which is where
+   these two colours come from. They are written here rather than taken from
+   tokens.css for the reason tokens.css gives for keeping the hero's glitch
+   red/cyan while the accent is orange: the split is the fault being imitated,
+   not a brand colour, and recolouring it to the accent stops it reading as
+   chromatic aberration at all. hero.css holds the original pair. */
+.work.is-ring .project__name .letter.is-glitching {
+  text-shadow:
+    -0.08em 0 rgba(255, 0, 60, 0.95),
+     0.08em 0 rgba(0, 225, 255, 0.95);
+}
+
+.work.is-ring .project__sector {
+  font-size: 17px;
+  margin-top: 12px;
+}
+
+.work.is-ring .project__cta {
+  display: inline-block;
+  white-space: nowrap;
+  margin-top: 28px;
+  padding: 14px 30px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 500;
+  font-size: 16px;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+/* Hover and focus are the site's roll: the label turns over to the second copy
+   of itself, the same move the nav links make. The pill needs the overflow
+   clipped to its own rounded box, otherwise the copy waiting underneath shows
+   below the button before it is asked for. */
+.work.is-ring .project__cta {
+  overflow: hidden;
+}
+
+.work.is-ring .project__link:hover .project__cta,
+.work.is-ring .project__link:focus-visible .project__cta {
+  filter: brightness(1.08);
+}
+
+/* The name is the largest thing in the column and recolouring it on hover
+   pulls the eye off the button, which is the thing to click. */
+.work.is-ring .project__link:hover .project__name {
+  color: inherit;
+}
+
+.work.is-ring .project__link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 8px;
+  border-radius: 6px;
+}
+
+/* ---- right hand 3D area -------------------------------------------------- */
+.work.is-ring .work__ring {
+  display: block;
+  position: relative;
+  height: 100vh;
+  perspective: var(--persp, 1500px);
+
+  /* We stand slightly to the left of the wheel rather than square on, which is
+     what makes it read as a wheel instead of a stack. */
+  perspective-origin: 26% 50%;
+}
+
+.ring__slide {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: translate3d(var(--slide-x, 0px), 0, 0);
+
+  /* No opacity on this element, ever. Fading a 3D parent forces the browser to
+     flatten the subtree into one layer and the ring collapses into a flat
+     stack of cards. The slide in and out is movement only. */
+}
+
+.ring {
+  position: absolute;
+  left: 52%;
+
+  /* Where the front card sits in its column. Half way down on a desktop, where
+     the wheel has the full height to itself; higher on a phone, where it is
+     sharing the screen with the text above it. */
+  top: var(--ring-y, 50%);
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+
+  /* The translate has to come BEFORE the rotations and both parts of it earn
+     their place. --ringz pushes the wheel back by exactly its own radius, so
+     the card at the front lands back at the origin and is drawn at true size
+     instead of being magnified by the perspective. --ringx cancels the
+     sideways drag the tilt puts on it, so the front card sits dead centre.
+     Take either one out and the front card looks blown up or off centre. */
+  transform: translate3d(var(--ringx, 0px), 0, var(--ringz, 0px))
+             rotateY(var(--tilt, -14deg))
+             rotateX(var(--spin, 0deg));
+}
+
+.card {
+  position: absolute;
+  width: var(--card-w, 620px);
+  height: var(--card-h, 388px);
+  left: calc(var(--card-w, 620px) / -2);
+  top: calc(var(--card-h, 388px) / -2);
+  transform-style: preserve-3d;
+}
+
+.card__face {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  box-shadow: 0 34px 70px rgba(0, 0, 0, 0.6);
+
+  /* Blur and dim are set once per turn and the browser eases between them over
+     --step-ms. Nothing recalculates a blur frame by frame, which is the whole
+     reason this stays smooth on a phone: blurring six large screenshots sixty
+     times a second is what makes sections like this stutter. */
+  transition: filter var(--step-ms, 620ms) cubic-bezier(0.4, 0, 0.2, 1),
+              opacity var(--step-ms, 620ms) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card__face img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+/* Invisible markers for the browser to snap to, one per project after the
+   first. Positioned by the script. */
+.work__snaps {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.work__snaps i {
+  position: absolute;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  scroll-snap-align: start;
+}
+
+/* ------------------------------------------------------------------
+   PHONES: same wheel, smaller, stacked under the text
+------------------------------------------------------------------ */
+@media (max-width: 900px) {
+  /* THE ORDER FLIPS AT THIS WIDTH. On a desktop the text is beside the wheel;
+     on a phone it is under it. The wheel takes the top of the screen and the
+     free space with it, and the name, the sector line and the button sit below
+     as a caption to what you are looking at.
+
+     Grid rows rather than DOM order, so the markup stays one reading order: the
+     link and its label come first in the source either way, and the wheel is
+     aria-hidden decoration that a screen reader never reaches. */
+  .work.is-ring .work__stage {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+
+    /* Clears the floating nav. It is --nav-height tall and sits --space-4 down
+       from the top of the screen, and the section is pinned underneath it, so
+       anything less than the sum of those two puts the label behind the bar.
+       Stated from the tokens rather than as a round number, so it follows the
+       nav if the nav ever changes. */
+    padding: calc(var(--nav-height) + var(--space-4) + var(--space-6)) 0 0;
+  }
+
+  .work.is-ring .work__panel {
+    grid-row: 2;
+    padding: 0 var(--page-gutter) var(--space-6);
+
+    /* NO BACKGROUND HERE ON PURPOSE. This used to carry a gradient floor of
+       --bg so a blurred card could not show through the text. It worked and it
+       looked like what it was: a black panel laid over the picture, with a
+       visible edge where it stopped.
+
+       The cards do the job instead. At this width they blur harder and fade
+       further as they go round the back (maxBlurPhone and fadePhone in
+       work-ring.js), so what passes behind the text is dim enough to read
+       through rather than being hidden behind a plate. */
+  }
+
+  .work.is-ring .work__title {
+    margin-bottom: 20px;
+  }
+
+  .work.is-ring .work__counter {
+    margin-bottom: 16px;
+  }
+
+  .work.is-ring .work__list {
+    min-height: 210px;
+    max-width: none;
+  }
+
+  .work.is-ring .project__name {
+    font-size: clamp(26px, 7.4vw, 38px);
+  }
+
+  .work.is-ring .project__sector {
+    font-size: 16px;
+    margin-top: 8px;
+  }
+
+  .work.is-ring .project__cta {
+    margin-top: 18px;
+    padding: 12px 24px;
+    font-size: 15px;
+  }
+
+  /* The floating call bar covers the bottom of the screen, and "View full
+     project" is now the last thing above it. Reserved the same way the footer
+     reserves it, off the same token and behind the same class: sticky-cta.js
+     adds .sticky-cta-armed only once the bar is really there, so a page without
+     it does not carry a strip of empty space for nothing. */
+  .sticky-cta-armed .work.is-ring .work__panel {
+    padding-bottom: calc(var(--space-6) + var(--sticky-cta-height));
+  }
+
+  .work.is-ring .work__ring {
+    grid-row: 1;
+    height: 100%;
+    perspective-origin: 50% 50%;
+  }
+
+  .ring {
+    left: 50%;
+
+    /* A little above the middle of its own row, which now sits at the top of
+       the screen. High enough that the card coming up from below is in shot,
+       which is what makes this read as a wheel rather than as one picture. */
+    --ring-y: 44%;
+  }
+}
+
+/* ------------------------------------------------------------------
+   REDUCED MOTION: no pinning, no spinning, just the grid
+
+   The script returns before it adds `.is-ring` at all, so in practice none of
+   the above is ever applied. This block is the belt to that braces: it undoes
+   the ring for anyone who turns the preference on after the page has loaded,
+   which is exactly what happens when somebody tests it in DevTools.
+------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .work.is-ring .work__stage {
+    position: static;
+    height: auto;
+    display: block;
+    padding-block: var(--section-y);
+  }
+
+  .work.is-ring .work__ring {
+    display: none;
+  }
+
+  .work.is-ring .work__list {
+    display: grid;
+    position: static;
+  }
+
+  .work.is-ring .project {
+    position: static;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .work.is-ring .project__shot {
+    display: block;
+  }
+
+  /* The ring's typography and its button go back to the grid's as well, not
+     just its layout. Without these the fallback is the plain grid wearing the
+     ring's 46px names and a button under every card, which is neither state. */
+  .work.is-ring .project__name {
+    margin-top: 14px;
+    font-size: 20px;
+    line-height: inherit;
+    letter-spacing: normal;
+  }
+
+  .work.is-ring .project__sector {
+    font-size: 15px;
+    margin-top: 2px;
+  }
+
+  .work.is-ring .project__cta {
+    display: none;
+  }
+}

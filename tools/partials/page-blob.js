@@ -17,6 +17,13 @@ export const PAGE_BLOB = `        <div class="page-blob" aria-hidden="true">
           <canvas class="page-blob__canvas"></canvas>
         </div>`;
 
+/* The homepage's one, in the empty half of the "What we do" column. Same box
+   and the same script finds it; the modifier only changes where it sits and how
+   big it is, which is a fact about that column and not about the blob. */
+export const SERVICES_BLOB = `          <div class="page-blob page-blob--services" aria-hidden="true">
+            <canvas class="page-blob__canvas"></canvas>
+          </div>`;
+
 /* The script that draws it. A module, so it can import the noise generator it
    shares with the backdrop and the palette it shares with the hero. Modules are
    deferred by default: it waits for the page to be parsed and never blocks it

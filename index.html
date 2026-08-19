@@ -66,9 +66,13 @@
        unreachable the mark still renders as a pixel face instead of dropping
        to Courier. preconnect opens the connection early so the text is not
        waiting on a handshake. -->
+  <!-- Lexend 500 is the work ring's: its project names, the section title and
+       the button on the card. Asked for rather than left to the browser, which
+       would otherwise fake it by smearing the 400 weight and make those three
+       things look subtly wrong next to everything else set in this face. -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Lexend:wght@300;400&display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Lexend:wght@300;400;500&display=swap"
         rel="stylesheet" />
 
   <!-- Order matters: tokens defines the vocabulary, base uses it, the page
@@ -77,6 +81,7 @@
   <link rel="stylesheet" href="/base.css" />
   <link rel="stylesheet" href="/site.css" />
   <link rel="stylesheet" href="/hero.css" />
+  <link rel="stylesheet" href="/work-ring.css" />
   <link rel="stylesheet" href="/reviews.css" />
 
   <!-- The one script on the site allowed to block, and only because of what it
@@ -285,64 +290,66 @@
       </div>
     </section>
 
-    <section class="section work" aria-labelledby="work-heading">
-      <div class="wrap">
-        <div class="section-head">
+    <section class="work" id="work" aria-labelledby="work-heading">
+      <!-- Filled by work-ring.js with one invisible marker per project after
+           the first, for the browser to snap to. Empty and harmless without
+           the script. -->
+      <div class="work__snaps" aria-hidden="true"></div>
+
+      <div class="work__stage">
+        <div class="work__panel wrap">
           <!-- "Recent work", not "Selected work". Every build is on this page,
                so there is no selection happening. "Selected" would imply a
                larger body of work being curated down, which is a claim a studio
-               this new should not be making. The day the grid stops showing all
-               of them, this heading is the thing to revisit. -->
-          <h2 class="section-head__title" id="work-heading">Recent work</h2>
-          <a class="section-head__link" href="/work/">See every project</a>
-        </div>
+               this new should not be making. The day this stops showing all of
+               them, this heading is the thing to revisit.
 
-      <div class="work-grid">
-        <article class="work-card work-card--lead">
-          <a class="work-card__link roll-trigger" href="/work/nevitt-construction/">
-            <span class="work-card__frame" style="--card-ratio: 16 / 10">
-              <img
-                class="work-card__shot"
+               The prototype had a small "Recent work" label sitting above a
+               large "Work". Two lines where the smaller one said more than the
+               heading it was introducing, and the heading lost a word it had
+               had since the grid. One line now. -->
+          <h2 class="work__title" id="work-heading">Recent work</h2>
+          <!-- Decoration in the plain grid, where all six are on screen and
+               there is no position to be in. The stylesheet hides it until the
+               ring turns on. -->
+          <p class="work__counter" aria-hidden="true"><span data-count>01</span> / 06</p>
+
+          <ul class="work__list">
+          <li class="project">
+            <a class="project__link roll-trigger" href="/work/nevitt-construction/">
+              <span class="project__shot"><img
                 src="/assets/work/nevitt-construction/desktop.webp"
                 srcset="/assets/work/nevitt-construction/desktop-640.webp 640w, /assets/work/nevitt-construction/desktop-1024.webp 1024w, /assets/work/nevitt-construction/desktop.webp 1440w"
-                sizes="(min-width: 48rem) 48rem, 92vw"
+                sizes="(min-width: 48rem) 36rem, 92vw"
                 alt="Screenshot of the A Nevitt Construction website"
                 width="1440"
                 height="900"
                 loading="lazy" decoding="async"
-              />
-            </span>
-            <span class="work-card__meta">
-              <h3 class="work-card__name"><span class="roll"><span class="roll__inner"><span class="roll__line">A Nevitt Construction</span><span class="roll__line" aria-hidden="true">A Nevitt Construction</span></span></span></h3>
-              <p class="work-card__sector">Construction &middot; Website and SEO</p>
-            </span>
-          </a>
-        </article>
-        <article class="work-card work-card--phone">
-          <a class="work-card__link roll-trigger" href="/work/wolf-pine/">
-            <span class="work-card__frame" style="--card-ratio: 3 / 4">
-              <img
-                class="work-card__shot"
-                src="/assets/work/wolf-pine/mobile.webp"
-                srcset="/assets/work/wolf-pine/mobile-640.webp 640w, /assets/work/wolf-pine/mobile.webp 780w"
-                sizes="(min-width: 48rem) 24rem, 92vw"
+              /></span>
+              <span class="project__name">A Nevitt Construction</span>
+              <span class="project__sector">Construction &middot; Website and SEO</span>
+              <span class="project__cta"><span class="roll"><span class="roll__inner"><span class="roll__line">View full project</span><span class="roll__line" aria-hidden="true">View full project</span></span></span></span>
+            </a>
+          </li>
+          <li class="project">
+            <a class="project__link roll-trigger" href="/work/wolf-pine/">
+              <span class="project__shot"><img
+                src="/assets/work/wolf-pine/desktop.webp"
+                srcset="/assets/work/wolf-pine/desktop-640.webp 640w, /assets/work/wolf-pine/desktop-1024.webp 1024w, /assets/work/wolf-pine/desktop.webp 1440w"
+                sizes="(min-width: 48rem) 36rem, 92vw"
                 alt="Screenshot of the Wolf Pine tree surgery website"
-                width="780"
-                height="1688"
+                width="1440"
+                height="900"
                 loading="lazy" decoding="async"
-              />
-            </span>
-            <span class="work-card__meta">
-              <h3 class="work-card__name"><span class="roll"><span class="roll__inner"><span class="roll__line">Wolf Pine</span><span class="roll__line" aria-hidden="true">Wolf Pine</span></span></span></h3>
-              <p class="work-card__sector">Tree surgery &middot; Website, SEO and Google Profile</p>
-            </span>
-          </a>
-        </article>
-        <article class="work-card work-card--half">
-          <a class="work-card__link roll-trigger" href="/work/lanora-house/">
-            <span class="work-card__frame" style="--card-ratio: 16 / 10">
-              <img
-                class="work-card__shot"
+              /></span>
+              <span class="project__name">Wolf Pine</span>
+              <span class="project__sector">Tree surgery &middot; Website, SEO and Google Profile</span>
+              <span class="project__cta"><span class="roll"><span class="roll__inner"><span class="roll__line">View full project</span><span class="roll__line" aria-hidden="true">View full project</span></span></span></span>
+            </a>
+          </li>
+          <li class="project">
+            <a class="project__link roll-trigger" href="/work/lanora-house/">
+              <span class="project__shot"><img
                 src="/assets/work/lanora-house/desktop.webp"
                 srcset="/assets/work/lanora-house/desktop-640.webp 640w, /assets/work/lanora-house/desktop-1024.webp 1024w, /assets/work/lanora-house/desktop.webp 1440w"
                 sizes="(min-width: 48rem) 36rem, 92vw"
@@ -350,19 +357,15 @@
                 width="1440"
                 height="900"
                 loading="lazy" decoding="async"
-              />
-            </span>
-            <span class="work-card__meta">
-              <h3 class="work-card__name"><span class="roll"><span class="roll__inner"><span class="roll__line">Lanora House</span><span class="roll__line" aria-hidden="true">Lanora House</span></span></span></h3>
-              <p class="work-card__sector">House clearance &middot; Website and SEO</p>
-            </span>
-          </a>
-        </article>
-        <article class="work-card work-card--half">
-          <a class="work-card__link roll-trigger" href="/work/ajc-removals/">
-            <span class="work-card__frame" style="--card-ratio: 16 / 10">
-              <img
-                class="work-card__shot"
+              /></span>
+              <span class="project__name">Lanora House</span>
+              <span class="project__sector">House clearance &middot; Website and SEO</span>
+              <span class="project__cta"><span class="roll"><span class="roll__inner"><span class="roll__line">View full project</span><span class="roll__line" aria-hidden="true">View full project</span></span></span></span>
+            </a>
+          </li>
+          <li class="project">
+            <a class="project__link roll-trigger" href="/work/ajc-removals/">
+              <span class="project__shot"><img
                 src="/assets/work/ajc-removals/desktop.webp"
                 srcset="/assets/work/ajc-removals/desktop-640.webp 640w, /assets/work/ajc-removals/desktop-1024.webp 1024w, /assets/work/ajc-removals/desktop.webp 1440w"
                 sizes="(min-width: 48rem) 36rem, 92vw"
@@ -370,55 +373,56 @@
                 width="1440"
                 height="900"
                 loading="lazy" decoding="async"
-              />
-            </span>
-            <span class="work-card__meta">
-              <h3 class="work-card__name"><span class="roll"><span class="roll__inner"><span class="roll__line">AJC Removals &amp; Clearances</span><span class="roll__line" aria-hidden="true">AJC Removals &amp; Clearances</span></span></span></h3>
-              <p class="work-card__sector">Removals &amp; clearance &middot; Website</p>
-            </span>
-          </a>
-        </article>
-        <article class="work-card work-card--banner">
-          <a class="work-card__link roll-trigger" href="/work/julie-miller-art/">
-            <span class="work-card__frame" style="--card-ratio: 21 / 9">
-              <img
-                class="work-card__shot"
+              /></span>
+              <span class="project__name">AJC Removals &amp; Clearances</span>
+              <span class="project__sector">Removals &amp; clearance &middot; Website</span>
+              <span class="project__cta"><span class="roll"><span class="roll__inner"><span class="roll__line">View full project</span><span class="roll__line" aria-hidden="true">View full project</span></span></span></span>
+            </a>
+          </li>
+          <li class="project">
+            <a class="project__link roll-trigger" href="/work/julie-miller-art/">
+              <span class="project__shot"><img
                 src="/assets/work/julie-miller-art/desktop.webp"
                 srcset="/assets/work/julie-miller-art/desktop-640.webp 640w, /assets/work/julie-miller-art/desktop-1024.webp 1024w, /assets/work/julie-miller-art/desktop.webp 1440w"
-                sizes="(min-width: 48rem) 72rem, 92vw"
+                sizes="(min-width: 48rem) 36rem, 92vw"
                 alt="Screenshot of the Julie Miller Art website"
                 width="1440"
                 height="900"
                 loading="lazy" decoding="async"
-              />
-            </span>
-            <span class="work-card__meta">
-              <h3 class="work-card__name"><span class="roll"><span class="roll__inner"><span class="roll__line">Julie Miller Art</span><span class="roll__line" aria-hidden="true">Julie Miller Art</span></span></span></h3>
-              <p class="work-card__sector">Artist portfolio &middot; Website</p>
-            </span>
-          </a>
-        </article>
-        <article class="work-card work-card--lead">
-          <a class="work-card__link roll-trigger" href="/work/house-of-cornwall/">
-            <span class="work-card__frame" style="--card-ratio: 16 / 10">
-              <img
-                class="work-card__shot"
+              /></span>
+              <span class="project__name">Julie Miller Art</span>
+              <span class="project__sector">Artist portfolio &middot; Website</span>
+              <span class="project__cta"><span class="roll"><span class="roll__inner"><span class="roll__line">View full project</span><span class="roll__line" aria-hidden="true">View full project</span></span></span></span>
+            </a>
+          </li>
+          <li class="project">
+            <a class="project__link roll-trigger" href="/work/house-of-cornwall/">
+              <span class="project__shot"><img
                 src="/assets/work/house-of-cornwall/desktop.webp"
                 srcset="/assets/work/house-of-cornwall/desktop-640.webp 640w, /assets/work/house-of-cornwall/desktop-1024.webp 1024w, /assets/work/house-of-cornwall/desktop.webp 1440w"
-                sizes="(min-width: 48rem) 48rem, 92vw"
+                sizes="(min-width: 48rem) 36rem, 92vw"
                 alt="Screenshot of the House of Cornwall website"
                 width="1440"
                 height="900"
                 loading="lazy" decoding="async"
-              />
-            </span>
-            <span class="work-card__meta">
-              <h3 class="work-card__name"><span class="roll"><span class="roll__inner"><span class="roll__line">House of Cornwall</span><span class="roll__line" aria-hidden="true">House of Cornwall</span></span></span></h3>
-              <p class="work-card__sector">Antiques &amp; auctions &middot; Website</p>
-            </span>
-          </a>
-        </article>
-      </div>
+              /></span>
+              <span class="project__name">House of Cornwall</span>
+              <span class="project__sector">Antiques &amp; auctions &middot; Website</span>
+              <span class="project__cta"><span class="roll"><span class="roll__inner"><span class="roll__line">View full project</span><span class="roll__line" aria-hidden="true">View full project</span></span></span></span>
+            </a>
+          </li>
+          </ul>
+
+          <p class="work__more"><a class="section-head__link" href="/work/">See every project</a></p>
+        </div>
+
+        <!-- The wheel. Built by the script from the screenshots above and
+             hidden from assistive technology: every card on it is a copy of a
+             link that is already in the list, and announcing all six twice is
+             worse than not announcing them at all. -->
+        <div class="work__ring" aria-hidden="true">
+          <div class="ring__slide"><div class="ring"></div></div>
+        </div>
       </div>
     </section>
 
@@ -430,6 +434,15 @@
             Four things, and they lean on each other. A site nobody can find is no use, and
             being easy to find is no use if the site puts people off when they get there.
           </p>
+          <!-- The intro is two short paragraphs against a column that runs the
+               height of four services, so most of it is empty. On a desktop
+               that reads as a gap rather than as space. Same blob the page
+               heads on /work and /contact use, for the same reason. Desktop
+               only: below 64rem the section is one column and there is no
+               emptiness to fill. -->
+          <div class="page-blob page-blob--services" aria-hidden="true">
+            <canvas class="page-blob__canvas"></canvas>
+          </div>
         </div>
 
         <dl class="services__list">
@@ -712,5 +725,7 @@
           data-hq-host="picsel.co.uk"></script>
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "c188a5b33e2f48fe83bab3a27266377d"}'></script>
   <script type="module" src="/hero.js"></script>
+  <script defer src="/work-ring.js"></script>
+  <script type="module" src="/page-blob.js"></script>
 </body>
 </html>

@@ -552,6 +552,18 @@
     overflow: hidden;
   }
 
+  /* The homepage's copy of it, in the empty half of the "What we do" column.
+     The page-head blob is pushed to the right edge of its grid cell, because
+     there it balances a heading on the left. This one sits under the text it
+     belongs to and lines up with it, so it reads as part of that column rather
+     than as something floating between the two. Given more room as well: it has
+     the height of four services to fill, not a page head. */
+  .page-blob--services {
+    justify-self: start;
+    width: clamp(15rem, 24vw, 22rem);
+    margin-top: var(--space-8);
+  }
+
   .page-blob__canvas {
     display: block;
     /* One source pixel becomes one hard block of one flat colour. Without this
