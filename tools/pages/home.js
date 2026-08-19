@@ -118,15 +118,16 @@ const INTRO = `    <section class="section intro">
 
 /* ---- Selected work --------------------------------------------------------
    The screenshots carry all the colour on this page. Everything around them is
-   near-black on purpose: five client sites in five different palettes will
-   fight anything else that is trying to be colourful. */
+   near-black on purpose: every client site brings its own palette, and half a
+   dozen of them at once will fight anything else trying to be colourful. */
 const WORK = `    <section class="section work" aria-labelledby="work-heading">
       <div class="wrap">
         <div class="section-head">
-          <!-- "Recent work", not "Selected work". There are five builds and all
-               five are on this page, so there is no selection happening —
-               "selected" would imply a larger body of work being curated down,
-               which is a claim a studio this new should not be making. -->
+          <!-- "Recent work", not "Selected work". Every build is on this page,
+               so there is no selection happening. "Selected" would imply a
+               larger body of work being curated down, which is a claim a studio
+               this new should not be making. The day the grid stops showing all
+               of them, this heading is the thing to revisit. -->
           <h2 class="section-head__title" id="work-heading">Recent work</h2>
           <a class="section-head__link" href="/work/">See every project</a>
         </div>

@@ -25,12 +25,14 @@
    is not stated. */
 
 import { SHOW_PRICING } from '../../site.config.js';
+import { PROJECTS } from '../../projects.js';
 import { PLANS, BUILD_FEE, money } from '../../pricing.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs, blogPosting, blogNode } from '../templates/schema.js';
 import { renderArticleSections } from '../partials/article-sections.js';
 import { renderContactBand } from '../partials/contact-band.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
+import { countWord } from '../templates/words.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
 
 /* Read rather than retyped, so a post can never quote a price the prices page
@@ -182,7 +184,11 @@ const POSTS = [
       : {
           href: '/work/',
           line:
-            'That argument is only worth what the work behind it is worth. Five live sites, ' +
+            /* Counted from the list, not typed. This branch only renders while
+               SHOW_PRICING is off, which is exactly how a hand-written number
+               goes stale unnoticed: nobody re-reads the copy that is currently
+               hidden. */
+            `That argument is only worth what the work behind it is worth. ${countWord(PROJECTS.length, { capitalise: true })} live sites, ` +
             'each with a note on what it had to do.',
           cta: 'See the sites',
         },

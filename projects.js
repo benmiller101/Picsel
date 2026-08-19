@@ -90,16 +90,19 @@ import { SHOW_PRICING } from './site.config.js';
    perfectly good order for a Cornwall studio and the wrong one for a studio
    that works anywhere.
 
-   Julie Miller Art is second on purpose. It is several hundred miles from every
-   other client on this list, and having it high in the grid is how the site
-   demonstrates that distance is not a problem instead of asserting it in copy.
-   A visitor in Newcastle scrolling past five Cornwall towns draws their own
-   conclusion; the same visitor seeing the Scottish Borders in the second card
-   draws a different one, and neither needed a sentence.
-
    Nevitt leads because it is the fullest trade build on the list, a
    construction firm with the search work included, and it is the closest thing
-   here to what the site is now selling. */
+   here to what the site is now selling. Wolf Pine follows it for the same
+   reason and takes it further: a tree surgeon with the build, the search work
+   and the Google Profile, which is every service this site sells on one job.
+
+   Julie Miller Art used to sit second, on the argument that a visitor in
+   Newcastle seeing the Scottish Borders early draws their own conclusion about
+   whether distance matters. Ben moved it to fifth in August 2026 when Wolf
+   Pine arrived. The grid now leads with the two fullest trade builds, which is
+   what the site sells, and the distance argument is made further down instead
+   of in the second card. If the portfolio ever stops being Cornwall-heavy at
+   the top, this is the decision to revisit. */
 
 /* The half of each `related` note that names the plan a build runs on. It
    disappears with SHOW_PRICING and the guide sentence beside it does not,
@@ -146,37 +149,32 @@ export const PROJECTS = [
     },
   },
   {
-    slug: 'julie-miller-art',
-    name: 'Julie Miller Art',
-    url: 'https://juliemillerart.co.uk/',
-    sector: 'Artist portfolio',
-    // Scottish Borders. This was the exception on a Cornwall studio's list and
-    // it is now the proof on a national one: the same build, done at four
-    // hundred miles, with nothing about it that needed the client to be nearby.
-    // Second in the list for that reason. Do not add a Cornwall mention here.
-    location: 'Scottish Borders',
+    slug: 'wolf-pine',
+    // The domain is wolfpine.uk, but the logo, the site header and the page
+    // title all set it as two words, so that is the name used here.
+    name: 'Wolf Pine',
+    url: 'https://wolfpine.uk/',
+    sector: 'Tree surgery',
+    location: 'Hayle, Cornwall',
     featured: true,
-    tags: ['Website'],
+    tags: ['Website', 'SEO', 'Google Profile'],
+    // Online today. He has said he intends to move to Managed once he is down
+    // in Cornwall; this field records what the build runs on now, not what it
+    // is expected to run on, and changes on the day the plan actually does.
     plan: 'online',
     blurb:
-      'A portfolio for an illustrator working in mixed media in the Scottish Borders, built ' +
-      'four hundred miles from Picsel, where the landscape drives the work. The design stays ' +
-      'quiet and gives the pieces space, because on an artist site the work is the interface ' +
-      'and anything else is in the way.',
-    alt: 'Screenshot of the Julie Miller Art website',
+      'A tree surgeon working out of Hayle, covering west Cornwall from St Ives round to ' +
+      'Penzance and Redruth, with the search and Google Profile work included. The hero is ' +
+      'his own footage of a fell. It runs a shorter cut on a phone than on a desktop, ' +
+      'because a stock photograph of somebody else\'s tree would have said nothing about ' +
+      'him. Underneath it the site sets out how quoting works before it asks for anything: ' +
+      'every job priced on site, in person, never over the phone.',
+    alt: 'Screenshot of the Wolf Pine tree surgery website',
     related:
-      'The same idea, that real work beats stock photography, is one of the points in ' +
-      '<a href="/guides/what-a-trades-website-needs/">what a tradesperson\'s website needs</a>.' +
-      planNote('A site this size sits on our <a href="/prices/#online">Online plan</a>.'),
-    // A single monitor rather than a multi-device spread: the gallery grid is
-    // the whole point of this site and a wide desktop screen is where it
-    // reads best, so that is the one device shown. Dimensions are
-    // mockup.webp's own, as tools/convert-photo.js printed them.
-    mockup: {
-      alt: 'The Julie Miller Art gallery grid shown on a desktop monitor',
-      width: 1440,
-      height: 1181,
-    },
+      'Footage of his own work in the hero, rather than a stock photograph of somebody ' +
+      'else\'s tree, is the case <a href="/guides/what-a-trades-website-needs/">what a ' +
+      'tradesperson\'s website needs</a> makes for using your own photos.' +
+      planNote('This one was built on our <a href="/prices/#online">Online plan</a>.'),
   },
   {
     slug: 'lanora-house',
@@ -230,6 +228,38 @@ export const PROJECTS = [
       alt: 'The AJC Removals & Clearances website shown together on a laptop, a tablet and two phones',
       width: 1440,
       height: 583,
+    },
+  },
+  {
+    slug: 'julie-miller-art',
+    name: 'Julie Miller Art',
+    url: 'https://juliemillerart.co.uk/',
+    sector: 'Artist portfolio',
+    // Scottish Borders, and the only client on this list outside Cornwall: the
+    // same build, done at four hundred miles, with nothing about it that needed
+    // the client to be nearby. Do not add a Cornwall mention here.
+    location: 'Scottish Borders',
+    featured: true,
+    tags: ['Website'],
+    plan: 'online',
+    blurb:
+      'A portfolio for an illustrator working in mixed media in the Scottish Borders, built ' +
+      'four hundred miles from Picsel, where the landscape drives the work. The design stays ' +
+      'quiet and gives the pieces space, because on an artist site the work is the interface ' +
+      'and anything else is in the way.',
+    alt: 'Screenshot of the Julie Miller Art website',
+    related:
+      'The same idea, that real work beats stock photography, is one of the points in ' +
+      '<a href="/guides/what-a-trades-website-needs/">what a tradesperson\'s website needs</a>.' +
+      planNote('A site this size sits on our <a href="/prices/#online">Online plan</a>.'),
+    // A single monitor rather than a multi-device spread: the gallery grid is
+    // the whole point of this site and a wide desktop screen is where it
+    // reads best, so that is the one device shown. Dimensions are
+    // mockup.webp's own, as tools/convert-photo.js printed them.
+    mockup: {
+      alt: 'The Julie Miller Art gallery grid shown on a desktop monitor',
+      width: 1440,
+      height: 1181,
     },
   },
   {

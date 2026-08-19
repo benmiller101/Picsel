@@ -8,7 +8,7 @@
    exists because Ben built one company's site as their creative director and
    saw what a website could actually do.
 
-   THAT COMPANY IS LANORA HOUSE, which is also one of the five projects in
+   THAT COMPANY IS LANORA HOUSE, which is also one of the projects in
    /work/. This page used to carry a second sentence spelling out that Ben is
    still a director there. Ben removed it, and that is his call to make about
    his own company.
