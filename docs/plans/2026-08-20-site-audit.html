@@ -1,0 +1,747 @@
+<title>Picsel Site Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+
+<style>
+:root {
+  --ground: #faf7f4;
+  --surface: #ffffff;
+  --surface-2: #f3eee9;
+  --ink: #1a1512;
+  --ink-2: #4a423c;
+  --muted: #7a6f66;
+  --line: #e6ddd5;
+  --line-strong: #d3c7bc;
+  --accent: #c25c05;
+  --accent-soft: #fbeee1;
+  --crit: #a52218;
+  --crit-soft: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-soft: #fbf1dd;
+  --good: #2b6244;
+  --good-soft: #e6f1ea;
+
+  --step--1: 0.8125rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.25rem;
+  --step-2: 1.625rem;
+  --step-3: 2.25rem;
+  --step-4: clamp(2.5rem, 5vw + 1rem, 3.75rem);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #100e0c;
+    --surface: #191614;
+    --surface-2: #221e1a;
+    --ink: #f4efe9;
+    --ink-2: #cdc3ba;
+    --muted: #978a80;
+    --line: #2b2622;
+    --line-strong: #3d362f;
+    --accent: #f7861f;
+    --accent-soft: #2a1c0c;
+    --crit: #f28b80;
+    --crit-soft: #2c1512;
+    --warn: #e0a84a;
+    --warn-soft: #291e0c;
+    --good: #7fc9a0;
+    --good-soft: #10241a;
+  }
+}
+
+:root[data-theme="dark"] {
+  --ground: #100e0c;
+  --surface: #191614;
+  --surface-2: #221e1a;
+  --ink: #f4efe9;
+  --ink-2: #cdc3ba;
+  --muted: #978a80;
+  --line: #2b2622;
+  --line-strong: #3d362f;
+  --accent: #f7861f;
+  --accent-soft: #2a1c0c;
+  --crit: #f28b80;
+  --crit-soft: #2c1512;
+  --warn: #e0a84a;
+  --warn-soft: #291e0c;
+  --good: #7fc9a0;
+  --good-soft: #10241a;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink-2);
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--step-0);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  max-width: 54rem;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 5rem) clamp(1.15rem, 5vw, 3rem) 6rem;
+}
+
+/* ---- masthead ---- */
+
+.masthead {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 2px solid var(--ink);
+}
+
+.pixelrow {
+  display: flex;
+  gap: 3px;
+  height: 10px;
+}
+.pixelrow i {
+  width: 10px;
+  background: var(--line-strong);
+  display: block;
+}
+.pixelrow i:nth-child(3n+1) { background: var(--accent); }
+.pixelrow i:nth-child(7n)   { background: var(--ink); }
+
+h1 {
+  font-family: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  font-size: var(--step-4);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.dek {
+  font-size: var(--step-1);
+  line-height: 1.5;
+  color: var(--ink-2);
+  margin: 0;
+  max-width: 40ch;
+}
+
+.byline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: var(--step--1);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ---- verdict ---- */
+
+.verdict {
+  margin: 3rem 0 0;
+  padding: 1.75rem clamp(1.15rem, 3vw, 2rem);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.verdict p { margin: 0; }
+.verdict p:first-of-type { color: var(--ink); font-size: var(--step-1); line-height: 1.5; }
+
+/* ---- sections ---- */
+
+section {
+  margin-top: 4.5rem;
+}
+
+.sec-head {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.sec-num {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: var(--step--1);
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  flex: none;
+}
+
+h2 {
+  font-family: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: var(--step-3);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 0;
+  text-wrap: balance;
+}
+
+h3 {
+  font-family: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: var(--step-2);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin: 0 0 0.5rem;
+  text-wrap: balance;
+}
+
+h4 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 600;
+  font-size: var(--step-0);
+  color: var(--ink);
+  margin: 1.75rem 0 0.5rem;
+}
+
+p { margin: 0 0 1.1rem; max-width: 68ch; }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+code {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.875em;
+  background: var(--surface-2);
+  padding: 0.12em 0.35em;
+  border-radius: 2px;
+  color: var(--ink);
+}
+
+pre {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: var(--step--1);
+  line-height: 1.55;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  margin: 0 0 1.25rem;
+  color: var(--ink);
+}
+pre code { background: none; padding: 0; font-size: 1em; }
+pre .add { color: var(--good); }
+pre .del { color: var(--crit); }
+
+/* ---- finding blocks ---- */
+
+.finding {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--sev, var(--line-strong));
+  padding: 1.35rem clamp(1.1rem, 3vw, 1.75rem);
+  margin-bottom: 1.75rem;
+}
+.finding.crit { --sev: var(--crit); }
+.finding.warn { --sev: var(--warn); }
+.finding.good { --sev: var(--good); }
+
+.chip {
+  display: inline-block;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  margin-bottom: 0.65rem;
+  border-radius: 2px;
+}
+.chip.crit { background: var(--crit-soft); color: var(--crit); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); }
+.chip.good { background: var(--good-soft); color: var(--good); }
+
+/* ---- tables ---- */
+
+.tablewrap { overflow-x: auto; margin: 0 0 1.5rem; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+}
+th, td {
+  text-align: left;
+  padding: 0.6rem 0.9rem 0.6rem 0;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+th {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-weight: 500;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line-strong);
+}
+td:first-child { color: var(--ink); }
+td.num { text-align: right; padding-right: 1.5rem; }
+tr.total td { font-weight: 600; color: var(--ink); }
+
+/* comment-share bar */
+.bar {
+  display: inline-block;
+  height: 8px;
+  background: var(--accent);
+  vertical-align: middle;
+  margin-right: 0.6rem;
+}
+
+/* ---- lists ---- */
+
+ul, ol { max-width: 68ch; padding-left: 1.25rem; margin: 0 0 1.25rem; }
+li { margin-bottom: 0.5rem; }
+li::marker { color: var(--muted); }
+
+ul.ticks { list-style: none; padding-left: 0; }
+ul.ticks li {
+  padding-left: 1.6rem;
+  position: relative;
+}
+ul.ticks li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 8px;
+  height: 8px;
+  background: var(--good);
+}
+
+/* ---- phase plan ---- */
+
+.phase {
+  border-top: 1px solid var(--line-strong);
+  padding-top: 1.5rem;
+  margin-top: 2rem;
+  display: grid;
+  gap: 0.75rem 1.5rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 46rem) {
+  .phase { grid-template-columns: 9rem 1fr; }
+}
+.phase-label {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  line-height: 1.4;
+}
+.phase-label b { display: block; color: var(--ink); font-weight: 500; letter-spacing: 0; text-transform: none; font-size: var(--step-0); font-family: "IBM Plex Sans", sans-serif; }
+.phase ol { margin: 0; }
+
+/* ---- status ---- */
+
+.status {
+  display: inline-block;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border-radius: 2px;
+  background: var(--good-soft);
+  color: var(--good);
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+.status.open { background: var(--warn-soft); color: var(--warn); }
+
+.done {
+  border-left-color: var(--good);
+  background: linear-gradient(90deg, var(--good-soft), var(--surface) 22%);
+}
+
+.resultbar {
+  margin: 2.5rem 0 0;
+  padding: 1.5rem clamp(1.15rem, 3vw, 2rem);
+  background: var(--good-soft);
+  border: 1px solid var(--good);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.resultbar p { margin: 0; }
+.resultbar strong { color: var(--ink); }
+
+/* ---- footer ---- */
+
+footer {
+  margin-top: 5rem;
+  padding-top: 2rem;
+  border-top: 2px solid var(--ink);
+  font-size: var(--step--1);
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <div class="pixelrow" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+    <h1>Picsel site audit</h1>
+    <p class="dek">What the site ships, what search engines see, what a visitor actually reads, and what is left in the repo that nothing uses.</p>
+    <div class="byline">
+      <span>20 August 2026</span>
+      <span>Branch: work-ring</span>
+      <span>28 pages built</span>
+      <span style="color:var(--good)">Phases 1 to 5 shipped</span>
+    </div>
+  </header>
+
+  <div class="verdict">
+    <p>The build is disciplined, the security thinking is written down, and the SEO groundwork is better than most agency sites. Three things are hurting it.</p>
+    <p>The site ships 106 KB of gzipped text per page and roughly 60% of that is source comments. The fixed nav pill covers copy on every long page. And the homepage spends two full screens before it says what Picsel sells.</p>
+    <p style="color:var(--muted);font-size:var(--step--1)">Everything below was measured against a local build viewed at 1440px in Chrome. Where a number appears, it came from a command.</p>
+  </div>
+
+  <div class="resultbar">
+    <p><strong>All five phases are built and verified.</strong> The homepage now sends 26&nbsp;KB of gzipped text instead of 106&nbsp;KB. The nav no longer covers anything. The sitemap tells the truth. The site publishes from <code>dist/</code>, so nothing reaches the web unless a page asked for it.</p>
+    <p style="font-size:var(--step--1)">Two items are left and both are yours to decide: the 50&nbsp;MB of irreplaceable mockup sources in the repo root, and whether two projects need mockup variants. Every finding below carries what happened to it.</p>
+  </div>
+
+  <!-- 1 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><h2>Speed and payload</h2></div>
+
+    <div class="finding crit">
+      <span class="chip crit">Biggest single win</span>
+      <h3>Nothing is minified, and the comments are enormous <span class="status">Fixed</span></h3>
+      <p style="color:var(--good)"><b>What changed:</b> esbuild minifies every published stylesheet and script. Sources keep every word. <b>106 KB down to 26 KB gzipped on the homepage.</b></p>
+      <p>The comments in this codebase are unusually good. They explain decisions rather than restating the code. They should stay in the source. They should not be downloaded by a plumber on a 4G connection.</p>
+      <p>Measured on the homepage, counting every same-origin CSS and JS file it loads:</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Homepage text payload</th><th class="num">Raw</th><th class="num">Gzipped</th></tr></thead>
+          <tbody>
+            <tr><td>As shipped today</td><td class="num">300 KB</td><td class="num">106 KB</td></tr>
+            <tr><td>With comments stripped</td><td class="num">138 KB</td><td class="num">42 KB</td></tr>
+            <tr class="total"><td>Saving</td><td class="num">162 KB</td><td class="num">64 KB</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Per-file comment share:</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>File</th><th class="num">Size</th><th>Comments</th></tr></thead>
+          <tbody>
+            <tr><td><code>tokens.css</code></td><td class="num">15.6 KB</td><td><span class="bar" style="width:85px"></span>85%</td></tr>
+            <tr><td><code>base.css</code></td><td class="num">15.7 KB</td><td><span class="bar" style="width:73px"></span>73%</td></tr>
+            <tr><td><code>site.css</code></td><td class="num">57.3 KB</td><td><span class="bar" style="width:67px"></span>67%</td></tr>
+            <tr><td><code>hero.js</code></td><td class="num">81.6 KB</td><td><span class="bar" style="width:63px"></span>63%</td></tr>
+            <tr><td><code>page-blob.js</code></td><td class="num">27.5 KB</td><td><span class="bar" style="width:59px"></span>59%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The built HTML has the same problem: 185 KB of HTML comments across 28 pages, 27% of the total. There is no minification step anywhere. <code>tools/build.js</code> writes the templates out verbatim.</p>
+    </div>
+
+    <div class="finding warn">
+      <span class="chip warn">Critical path</span>
+      <h3>The page waits on two font providers <span class="status">Fixed</span></h3>
+      <p style="color:var(--good)"><b>What changed:</b> Lexend and Pixelify Sans are Open Font Licence and now served from picsel.co.uk. One render-blocking third party left instead of two. Typekit stays: its licence forbids self-hosting.</p>
+      <p>Every page opens six same-origin stylesheets plus two third-party ones: Adobe Typekit for the wordmark faces, Google Fonts for Lexend and Pixelify Sans. Both block rendering. The homepage's largest contentful paint is the wordmark, so the measured load time waits on the Typekit stylesheet, the second sheet it imports from <code>p.typekit.net</code>, and then the font file itself.</p>
+      <p>The preconnects are already there and correctly reasoned. They reduce the cost of the round trip. They do not remove it.</p>
+    </div>
+
+    <div class="finding warn">
+      <span class="chip warn">81 KB above the fold</span>
+      <h3><code>hero.js</code> is the largest file on the site, and it is decoration <span class="status">Fixed</span></h3>
+      <p style="color:var(--good)"><b>What changed:</b> Minification took it from 81.6 KB to 13.8 KB. It is a module, so it was already deferred. Nothing further needed.</p>
+      <p>It drives a canvas that sits behind the wordmark. Stripping comments takes it to about 30 KB. Beyond that, it runs above the fold on exactly one page and could load after first paint rather than as a module in the head.</p>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><h2>SEO</h2></div>
+
+    <div class="finding crit">
+      <span class="chip crit">Wrong data, every deploy</span>
+      <h3>The sitemap says every page changed today <span class="status">Fixed</span></h3>
+      <p style="color:var(--good)"><b>What changed:</b> Every URL now carries the date of the last commit that changed that page, read from git in one pass. Verified stable across repeated builds.</p>
+      <p><code>sitemap.xml</code> sets <code>lastmod</code> from the build date. Run the build with no content change at all and every one of the 26 URLs moves:</p>
+<pre><code><span class="del">-    &lt;lastmod&gt;2026-08-19&lt;/lastmod&gt;</span>
+<span class="add">+    &lt;lastmod&gt;2026-08-20&lt;/lastmod&gt;</span></code></pre>
+      <p>Google treats a <code>lastmod</code> that always says "today" as noise and stops reading it. Worse, it hides the pages that genuinely did change.</p>
+      <p><strong>Fix:</strong> derive each page's <code>lastmod</code> from the last commit that touched its source, with <code>git log -1 --format=%cs -- &lt;file&gt;</code>, falling back to the build date when git is not available.</p>
+    </div>
+
+    <div class="finding warn">
+      <span class="chip warn">Conversion</span>
+      <h3>The homepage buries its own pitch <span class="status">Fixed</span></h3>
+      <p style="color:var(--good)"><b>What changed:</b> The hero is 56% of the screen (50% on a phone) and the pinned scrub went from a full screen to a sixth of one. The pitch, the price and a Get in touch button are all on the first screen.</p>
+      <p>Load the site and the first screen is the wordmark, "Design Studio", and the word SCROLL. The second screen is empty dot field. The first sentence a visitor reads sits roughly two viewport heights down.</p>
+      <p>The title, meta description and h1 are all correct and well written. Nobody reads them on the page. For a site whose job is turning a Google click into a phone call, a full-screen splash before the offer is expensive.</p>
+    </div>
+
+    <div class="finding good">
+      <span class="chip good">Already right</span>
+      <h3>What is working, and it is unusual</h3>
+      <ul class="ticks">
+        <li><code>robots.txt</code> names 22 AI and search crawlers individually, with a <code>Content-Signal</code> line. Ahead of the field.</li>
+        <li><code>llms.txt</code> present and current.</li>
+        <li>Organization and WebSite schema on all 28 pages, generated rather than typed.</li>
+        <li>Exactly one <code>h1</code> per page across all 28. No exceptions.</li>
+        <li>Alt text on all 69 images. Width and height on 63, so nothing jumps as they load.</li>
+        <li>A typo'd address returns the real 404 page with a 404 status, not the homepage with a 200.</li>
+        <li>No em dashes in any rendered copy, title or meta description. Checked with comments and scripts stripped out first.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><h2>Security</h2></div>
+
+    <div class="finding crit">
+      <span class="chip crit">One file to fix</span>
+      <h3>There are no response headers at all <span class="status">Fixed</span></h3>
+      <p style="color:var(--good)"><b>What changed:</b> A <code>_headers</code> file ships HSTS, nosniff, a referrer policy, a permissions policy, and an enforced CSP covering framing, base-uri, object-src and form-action. The full source policy ships report-only for a week first.</p>
+      <p>There is no <code>_headers</code> file. Cloudflare serves the site with no CSP, no <code>X-Content-Type-Options</code>, no <code>Referrer-Policy</code>, no <code>Permissions-Policy</code> and no HSTS. The site loads scripts from <code>static.cloudflareinsights.com</code> and stylesheets from two font CDNs, none of them constrained by anything.</p>
+      <p>This is the one real gap in an otherwise careful setup. Proposed starting point:</p>
+<pre><code>/*
+  Content-Security-Policy: default-src 'self';
+    script-src 'self' https://static.cloudflareinsights.com;
+    style-src 'self' https://use.typekit.net https://fonts.googleapis.com;
+    font-src 'self' https://use.typekit.net https://p.typekit.net
+             https://fonts.gstatic.com;
+    img-src 'self' data:;
+    connect-src 'self' https://hq.picsel.co.uk https://api.web3forms.com
+                https://cloudflareinsights.com;
+    form-action https://api.web3forms.com;
+    frame-ancestors 'none'; base-uri 'self'
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()</code></pre>
+      <p>The homepage carries one inline <code>&lt;script&gt;</code> block, so it needs either a hash in <code>script-src</code> or a move into a file. Sort that out first, then ship the policy as <code>Content-Security-Policy-Report-Only</code> for a week before enforcing it.</p>
+    </div>
+
+    <div class="finding good">
+      <span class="chip good">Already right</span>
+      <h3>The rest of the posture holds up</h3>
+      <ul class="ticks">
+        <li><code>.assetsignore</code> keeps <code>worker.js</code>, <code>functions/</code>, <code>tools/</code>, <code>site.config.js</code>, <code>projects.js</code>, <code>pricing.js</code> and every markdown file out of the published assets. The reasoning is written into the file, including why the HQ address in <code>card.js</code> must never reach a browser.</li>
+        <li>The contact form carries both a honeypot and a botcheck field.</li>
+        <li>No <code>innerHTML</code> and no inline event handlers anywhere in shipped JavaScript.</li>
+        <li><code>card.js</code> validates the <code>?b=</code> batch parameter against <code>/^v[0-9]{1,3}$/</code> before it becomes a storage key, and filters crawler user agents out of the counts.</li>
+        <li>The Web3Forms access key and the Cloudflare beacon token are public identifiers by design, and both are documented as such where they live.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><h2>Design and layout</h2></div>
+
+    <div class="finding crit">
+      <span class="chip crit">Every page, every scroll</span>
+      <h3>The nav pill covers the copy underneath it <span class="status">Fixed</span></h3>
+      <p style="color:var(--good)"><b>What changed:</b> The bar hides while you read down the page and comes back the moment you scroll up. Verified at four scroll positions plus keyboard focus while hidden.</p>
+      <p>This is the worst of the design problems, because it does not depend on the page or the scroll position. The pill is fixed, centred and opaque, and body text passes behind it.</p>
+      <p>Caught in the act:</p>
+      <ul>
+        <li>FAQ: "Do I need to know anything about we[bsites]" and "How much does a website cost?" both clipped mid heading.</li>
+        <li>Reviews: "We're getting three times [as many]" and a review date hidden behind the pill.</li>
+        <li>The intro paragraph: "get you found on Google and in AI search, and [keep]" cut mid sentence.</li>
+      </ul>
+      <h4>Three fixes, in order of preference</h4>
+      <ol>
+        <li>Hide the pill on scroll down, show it on scroll up. <code>nav.js</code> already tracks scroll direction for the entry animation.</li>
+        <li>Give the pill a solid backdrop and add matching top padding and <code>scroll-margin-top</code> to every section, so nothing ever sits under it.</li>
+        <li>Move it out of the centre. The overlap only reads as broken because it lands in the middle of a line of text.</li>
+      </ol>
+    </div>
+
+    <div class="finding warn">
+      <span class="chip warn">Work ring</span>
+      <h3>The name and the screenshot fall out of step <span class="status">Fixed</span></h3>
+      <p style="color:var(--good)"><b>What changed:</b> Both the panel crossfade and the letter build are now shares of the same turn duration the wheel uses. Every letter lands by 350ms of a 620ms turn; it used to take 1.3 seconds on a long client name.</p>
+      <p>The pinned ring animates the project name and subtitle separately from the card. Mid transition the panel showed "Tree surgery &middot; Website, SEO and Google Profile" with no name above it, while A Nevitt Construction's screenshot was still the card on screen. The glitch effect on the name also renders it as scattered fragments for long enough to read as broken rather than as an effect.</p>
+      <p>Drive the text swap from the same scroll progress value as the card, and shorten the glitch so the name is legible through most of the transition.</p>
+    </div>
+
+    <div class="finding warn">
+      <span class="chip good">Withdrawn</span>
+      <h3>The ring does not clip at the right edge</h3>
+      <p>I reported this from a screenshot and it was wrong. Measuring every element in the ring at 1280, 1440 and 1920, at rest and sampled across four turns, the widest right edge reaches exactly the viewport and never passes it.</p>
+      <p>What I read as a clipped card was a card <em>behind</em> the front one, blurred and bleeding off the right edge, which is the wheel effect working. The front card sits inside the viewport with a gutter. Nothing to fix.</p>
+    </div>
+
+    <div class="finding">
+      <span class="chip good">Done, and clean</span>
+      <h3>Mobile was tested, and it holds up</h3>
+      <p>Driven through headless Chrome at 375, 768, 1024 and 1440 across nine routes, measuring every element for horizontal overflow and every control for tap-target size.</p>
+      <p><b>No horizontal overflow anywhere. No undersized tap targets.</b> The one flag was the contact form's honeypot checkbox, which is 13&times;13 and parked at <code>left: -9999px</code> where no person can reach it. A false positive, and the honeypot is doing its job.</p>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">05</span><h2>Dead code and the directory</h2></div>
+
+    <div class="finding good">
+      <span class="chip good">Done in this pass</span>
+      <h3>The work grid's shape system is gone</h3>
+      <p>The last commit replaced the homepage grid with the pinned 3D ring. That left <code>tools/partials/work-card.js</code> cycling five card shapes nothing rendered any more, and four span rules in <code>site.css</code> nothing matched.</p>
+      <ul>
+        <li><code>SHAPES</code> and the <code>variant</code> option removed. The component now has one shape and one caller.</li>
+        <li><code>.work-card--lead</code>, <code>--phone</code>, <code>--half</code>, <code>--banner</code>, the <code>.work-grid--index</code> modifier and the <code>:not()</code> guard that existed only to keep the two layouts apart. The 64rem six-column block went with them.</li>
+        <li><code>.display--centred</code> in <code>base.css</code> and <code>--text-display</code> in <code>tokens.css</code>, both unreferenced.</li>
+      </ul>
+      <p>135 lines deleted, 74 added. The build still produces 28 pages, all 7 tests pass, and <code>/work</code> renders identically.</p>
+    </div>
+
+    <div class="finding good">
+      <span class="chip good">Done in this pass</span>
+      <h3>Every plan, prompt and spec now lives in one place</h3>
+<pre><code>docs/plans/       plan-picsel-site.md, work-ring-port-brief.md, 2 SDD plans
+docs/prompts/     CLAUDEseo.md, instructions-picsel-site.md, 2 prompt files
+docs/specs/       3 design specs
+docs/drafts/      builder-website-cost.md
+docs/prototypes/  work-ring-prototype.html</code></pre>
+      <p><code>CLAUDE.md</code> stays at the root because the tooling reads it there. <code>.assetsignore</code> now excludes <code>docs</code> as one rule instead of listing <code>*.md</code> and the prototype separately, which also means the prototype can never be reached at <code>picsel.co.uk/work-ring-prototype.html</code>. The repo root went from 56 tracked files to 49.</p>
+    </div>
+
+    <div class="finding">
+      <span class="chip warn">Kept on purpose</span>
+      <h3>Four unused selectors that should stay</h3>
+      <p><code>.post__figure</code>, <code>.post__list</code>, <code>.post__table</code> and <code>.post__table-wrap</code> in <code>article.css</code> are unused today. They are the blog's half of selectors whose <code>.guide__</code> twins are live. Delete them and the next blog post with a table silently loses styling the guides have.</p>
+    </div>
+
+    <div class="finding crit">
+      <span class="chip crit">Your call, not mine</span>
+      <h3>50 MB of irreplaceable source files sit in the repo root</h3>
+      <p>Git ignores them and nothing on the site references them:</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>File</th><th class="num">Size</th></tr></thead>
+          <tbody>
+            <tr><td><code>ben-laptop.jpg</code></td><td class="num">11.8 MB</td></tr>
+            <tr><td><code>a-nevitt-mockup-nobg.png</code></td><td class="num">9.7 MB</td></tr>
+            <tr><td><code>a-nevitt-mockup-2-nobg-flipped.png</code></td><td class="num">5.5 MB</td></tr>
+            <tr><td><code>a-nevitt-mockup2-nobg.png</code></td><td class="num">5.5 MB</td></tr>
+            <tr><td><code>ajc-mockup-2-nobg.png</code></td><td class="num">5.4 MB</td></tr>
+            <tr><td><code>julie-miller-mockup-nobg.png</code></td><td class="num">4.6 MB</td></tr>
+            <tr><td><code>group-mockup-nobg.png</code></td><td class="num">4.5 MB</td></tr>
+            <tr><td><code>ajc-mockup-nobg.png</code></td><td class="num">3.1 MB</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><code>.gitignore</code> says these are one-off design-tool exports that no script can regenerate, and that if one is deleted it is gone for good. I have not touched them. They belong in your own storage rather than in a working directory, and moving them out is your decision.</p>
+      <p><code>assets/backdrop/</code> is another 70 MB, but that one is exactly regenerable with <code>npm run backdrop</code> and <code>npm run backdrop:video</code>, so it can go whenever you like.</p>
+    </div>
+
+    <div class="finding">
+      <span class="chip warn">Inconsistency</span>
+      <h3>Two projects have no mockup variants</h3>
+      <p><code>house-of-cornwall</code> and <code>lanora-house</code> have no <code>mockup*.webp</code> files. The other four projects have four each. Either they are missing, or those two use a different card treatment deliberately.</p>
+    </div>
+  </section>
+
+  <!-- plan -->
+  <section>
+    <div class="sec-head"><span class="sec-num">06</span><h2>What shipped</h2></div>
+    <p>Five phases, ordered by what a visitor feels first. All five are built and verified.</p>
+
+    <div class="phase">
+      <div class="phase-label">Phase 1<b>Stop the bleeding</b></div>
+      <ol>
+        <li><b>Nav overlap.</b> <code>nav.js</code> tracks scroll direction behind an 8px deadband and one rAF; the bar hides going down and returns going up. The <code>:focus-within</code> escape hatch still brings it back for a keyboard.</li>
+        <li><b>Sitemap <code>lastmod</code>.</b> One <code>git log</code> pass maps every built page to the commit that last changed it, with uncommitted pages falling back to today. Two consecutive builds now produce a byte-identical sitemap.</li>
+        <li><b><code>_headers</code>.</b> HSTS, nosniff, referrer and permissions policies, plus an enforced CSP for framing, base-uri, object-src and form-action. The source policy ships report-only until you have watched a console for a week.</li>
+        <li><b>Mobile pass.</b> 375, 768, 1024, 1440 across nine routes. Clean.</li>
+      </ol>
+    </div>
+
+    <div class="phase">
+      <div class="phase-label">Phase 2<b>Cut the payload</b></div>
+      <ol start="5">
+        <li><b>Minification.</b> esbuild, used as a minifier and deliberately not as a bundler: every module keeps its own file and its own imports, so <code>hq-beacon.js</code> is still one instance shared between the page and <code>contact.js</code>.</li>
+        <li><b>One core stylesheet.</b> <code>tokens</code>, <code>base</code> and <code>site</code> are still authored as three files and served as <code>core.css</code>. 88.6 KB of source, 19.5 KB shipped, three round trips saved on all 28 pages.</li>
+        <li><b><code>hero.js</code>.</b> 81.6 KB to 13.8 KB, already deferred. No restructuring needed.</li>
+        <li><b>Self-hosted fonts.</b> <code>npm run fonts</code> vendors Lexend and Pixelify Sans with their OFL licences. The build itself never touches the network.</li>
+      </ol>
+    </div>
+
+    <div class="phase">
+      <div class="phase-label">Phase 3<b>Earn the first screen</b></div>
+      <ol start="9">
+        <li>Hero stage cut to 56svh, and 50svh on a phone. The pinned scrub went from a full screen to a sixth of one.</li>
+        <li>A <b>Get in touch</b> button and the phone number added under the opening statement, above the small print. Until now the first thing on the site anybody could act on was at the very bottom of the page.</li>
+        <li>The <b>Scroll</b> cue removed. It earned its place when the hero was the whole screen and nothing else said the page continued; now the page shows you. It was also landing on top of the new button.</li>
+      </ol>
+    </div>
+
+    <div class="phase">
+      <div class="phase-label">Phase 4<b>Finish the ring</b></div>
+      <ol start="12">
+        <li>Panel crossfade and letter build are both shares of <code>--step-ms</code>, the same value the wheel turns on, so they cannot come apart at any scroll speed.</li>
+        <li>The glitch has a time budget rather than a fixed per-letter step, so a twenty-five letter client name lands in the same time as a nine letter one.</li>
+        <li>Right-edge clipping: measured, and it does not happen. Finding withdrawn.</li>
+      </ol>
+    </div>
+
+    <div class="phase">
+      <div class="phase-label">Phase 5<b>Housekeeping</b></div>
+      <ol start="15">
+        <li><b><code>npm run check</code></b> added: builds, tests, then scans for class names nothing uses, tokens nothing reads, and em dashes in rendered copy. Nothing fails the build; it prints and a person decides.</li>
+        <li>The mockup sources and <code>ben-laptop.jpg</code>: still untouched, still yours to move.</li>
+        <li><code>house-of-cornwall</code> and <code>lanora-house</code> mockup variants: still your call.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">07</span><h2>The numbers</h2></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Homepage, same origin</th><th class="num">Before</th><th class="num">After</th></tr></thead>
+        <tbody>
+          <tr><td>Raw text</td><td class="num">300 KB</td><td class="num">85 KB</td></tr>
+          <tr class="total"><td>Gzipped text</td><td class="num">106 KB</td><td class="num">26 KB</td></tr>
+          <tr><td>Render-blocking third parties</td><td class="num">2</td><td class="num">1</td></tr>
+          <tr><td>Always-on stylesheet requests</td><td class="num">3</td><td class="num">1</td></tr>
+          <tr><td>Screens before the pitch</td><td class="num">2</td><td class="num">0</td></tr>
+          <tr><td>Files reachable on the web</td><td class="num">everything not denied</td><td class="num">110, all referenced</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Build produces 28 pages and 26 sitemap entries. <code>npm test</code> passes 7 of 7. No console errors, page errors or failed same-origin requests across twelve routes; the only failing request is the Cloudflare analytics beacon refusing CORS on <code>localhost</code>, which is expected off the real domain.</p>
+  </section>
+
+  <footer>
+    <p><strong style="color:var(--ink)">Staged, not committed.</strong> New: <code>_headers</code>, <code>fonts.css</code>, <code>tools/assets.js</code>, <code>tools/check.js</code>, <code>tools/fetch-fonts.js</code>, the vendored fonts, and <code>dist/</code>. Deleted: <code>.assetsignore</code>, and the build output that used to sit in the repo root. Modified: the build, the page template, the nav, the hero, the ring, and four stylesheets.</p>
+    <p><strong style="color:var(--ink)">One thing to know about the deploy.</strong> <code>dist/</code> is committed rather than ignored, because Cloudflare runs <code>wrangler deploy</code> on a push with no build step visible in the repo. Add <code>npm run build</code> to the Workers Build settings and it can be ignored instead; <code>.gitignore</code> carries the line and the instructions.</p>
+  </footer>
+
+</div>
