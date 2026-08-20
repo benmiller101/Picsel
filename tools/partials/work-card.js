@@ -1,7 +1,8 @@
 /* ---- work-card.js — one project, as a card --------------------------------
-   Used by the homepage's Selected Work grid and by /work. Written once here so
-   the two can never drift into looking like different components, and so
-   adding a project changes nothing but projects.js.
+   Used by /work, the catalogue of every build. The homepage shows its projects
+   through the pinned ring in partials/work-ring.js instead, so this component
+   has one caller and one shape. Adding a project still changes nothing but
+   projects.js.
 
    Every fact on the card comes from the project record. Nothing is written by
    hand into the markup — a name typed into a page is a name that will one day
@@ -10,37 +11,19 @@
 import { escapeHtml, rollLabel } from '../templates/page.js';
 import { SHOT_SIZES, shotSrcset, cardSizes } from '../templates/images.js';
 
-/* The shapes a card can take, cycled through by position in the grid. This is
-   what stops the grid being five identical rectangles in a row — the rhythm is
-   composed rather than repeated.
+/* One shape, used by every card. /work is a catalogue: someone has come to
+   compare builds, and comparing is what varied card sizes make harder, because
+   a bigger card reads as a better project rather than as a layout decision.
 
-   Cycled by index rather than stored per project: a card's size is a fact about
-   the LAYOUT, not about the client, and putting it in projects.js would mean
-   adding a sixth project could quietly break the fifth one's row.
+   The homepage used to cycle five different spans through this same component.
+   It no longer renders cards at all — the pinned 3D ring in partials/work-ring.js
+   replaced it in August 2026 — so the cycle and its four span rules in site.css
+   went with it rather than sitting here unreachable.
 
-   `span` is columns of the six-column grid; the cycle adds up to two full rows
-   plus a banner, so any number of projects fills tidily.
-
-   The phone shape is not decoration. It is the same client's site at phone
-   size, and a portfolio for small businesses — whose customers are overwhelmingly
-   on phones — should show that it was thought about. */
-const SHAPES = [
-  { name: 'lead', span: 4, shot: 'desktop', ratio: '16 / 10' },
-  { name: 'phone', span: 2, shot: 'mobile', ratio: '3 / 4' },
-  { name: 'half', span: 3, shot: 'desktop', ratio: '16 / 10' },
-  { name: 'half', span: 3, shot: 'desktop', ratio: '16 / 10' },
-  { name: 'banner', span: 6, shot: 'desktop', ratio: '21 / 9' },
-];
-
-/* The index shape: every card the same, in a plain two-up grid.
-   /work and the homepage do different jobs and should not look identical.
-   The homepage is a showcase — the varied rhythm above is doing persuasion,
-   giving one build more room than another. /work is a catalogue: someone has
-   come to compare, and comparing is exactly what varied sizes make harder,
-   because a bigger card reads as a better project rather than as a layout
-   decision. Same card component either way, so the two can never drift into
-   looking like different things. */
-const INDEX_SHAPE = { name: 'index', span: 3, shot: 'desktop', ratio: '16 / 10' };
+   `span` is columns of the grid, and templates/images.js reads it to work out
+   the `sizes` attribute. Kept as a field rather than inlined because that is
+   the one place the number has to agree with the CSS. */
+const CARD_SHAPE = { span: 3, shot: 'desktop', ratio: '16 / 10' };
 
 /* The captures' real pixel sizes now live in templates/images.js, next to the
    variant widths they have to agree with. They are still stated on every <img>
@@ -69,7 +52,6 @@ function workDone(project) {
 
 /**
  * @param {object} project  A record from projects.js.
- * @param {number} index    Position in the grid, which picks the shape.
  * @param {object} [options]
  * @param {boolean} [options.eager]   Skip lazy-loading — for a card that is
  *                                    above the fold on its own page. The first
@@ -77,11 +59,9 @@ function workDone(project) {
  *                                    because it is the one the browser should
  *                                    fetch before anything else on the page.
  * @param {boolean} [options.first]   True for the highest-priority card.
- * @param {'showcase'|'index'} [options.variant]  'showcase' cycles the shapes
- *                                    above; 'index' makes every card the same.
  */
-export function renderWorkCard(project, index, { eager = false, first = false, variant = 'showcase' } = {}) {
-  const shape = variant === 'index' ? INDEX_SHAPE : SHAPES[index % SHAPES.length];
+export function renderWorkCard(project, { eager = false, first = false } = {}) {
+  const shape = CARD_SHAPE;
   const size = SHOT_SIZES[shape.shot];
   const src = `/assets/work/${project.slug}/${shape.shot}.webp`;
 
@@ -90,7 +70,7 @@ export function renderWorkCard(project, index, { eager = false, first = false, v
      and to search engines — and this site sells search work. */
   const alt = escapeHtml(project.alt);
 
-  return `        <article class="work-card work-card--${shape.name}">
+  return `        <article class="work-card">
           <a class="work-card__link roll-trigger" href="/work/${escapeHtml(project.slug)}/">
             <span class="work-card__frame" style="--card-ratio: ${shape.ratio}">
               <img
@@ -130,13 +110,12 @@ export function renderWorkCard(project, index, { eager = false, first = false, v
  *   hero, so every card there genuinely is off screen and lazy is correct.
  */
 export function renderWorkGrid(projects, options = {}) {
-  const modifier = options.variant === 'index' ? ' work-grid--index' : '';
   const eagerCount = options.eagerCount ?? 0;
 
-  return `      <div class="work-grid${modifier}">
+  return `      <div class="work-grid">
 ${projects
   .map((project, index) =>
-    renderWorkCard(project, index, {
+    renderWorkCard(project, {
       ...options,
       eager: index < eagerCount,
       first: index === 0 && eagerCount > 0,

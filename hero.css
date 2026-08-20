@@ -34,15 +34,27 @@
     var(--aberration-rest) + (var(--aberration-exit) - var(--aberration-rest)) * var(--hero-exit)
   );
 
-  /* How far the page scrolls while the hero is pinned — the length of the
-     reverse intro, in viewport heights. One screen of scrolling: long enough
-     to read the blobs travelling back out, short enough that nobody thinks the
-     page is stuck. hero.js does not hardcode this; it measures the element, so
-     changing this one number changes the scrub length and nothing else.
+  /* EXTRA scrolling on top of the hero's own screen, during which the stage is
+     pinned and the reverse intro is scrubbed. hero.js does not hardcode this;
+     it measures the element, so this one number is the whole control.
 
-     0 would break the effect but not the page: the hero would simply scroll
-     away like any other section. */
-  --hero-scroll: 100svh;
+     ZERO, AND THAT IS THE POINT. It was 100svh: a full screen of pinned scroll
+     after the full screen of splash, so the first sentence about what Picsel
+     sells arrived two screens in and the whole of the second screen was an
+     empty dot field with a dispersing wordmark in it. Somebody scrolling to
+     find out what this company does was scrolling through nothing.
+
+     Setting it to 0 does not cost the un-build. The hero is a full screen and
+     it plays as the hero LEAVES: hero.js falls back to scrubbing over the
+     stage's own height when there is no pinned distance, so the wordmark comes
+     apart as it travels up and off, and the opening statement is arriving from
+     below the whole time it happens. One screen of hero, and the next thing on
+     the site is visible from the first flick of a wheel.
+
+     Raise this above 0 and the pinning comes back, along with a stretch of
+     scrolling where nothing new arrives. It is not a tuning knob so much as a
+     switch, and it is off. */
+  --hero-scroll: 0svh;
 
   /* Set by hero.js, 0 to 1, as the hero is scrolled through: 0 is the hero at
      rest, 1 is fully un-built. Declared here so the styles below have a value
@@ -60,7 +72,12 @@
   /* lvh, to match the stage below. The pinned distance is the difference
      between these two heights, so stating the section in the same unit the
      stage ends up being keeps that distance exactly --hero-scroll rather than
-     --hero-scroll minus the height of a phone's address bar. */
+     --hero-scroll minus the height of a phone's address bar.
+
+     With --hero-scroll at 0 that difference is nothing: the section is exactly
+     one stage tall, the sticky stage has no room to stick, and the hero
+     scrolls away like any other section with the opening statement coming up
+     behind it. */
   height: calc(100lvh + var(--hero-scroll));
 
   /* isolate keeps the blobs' blending and stacking to themselves, so nothing
@@ -255,6 +272,11 @@
    below. For an audience that is mostly not technical and often on a phone,
    that is worth one quiet word. It fades out almost immediately once scrolling
    starts, because by then it has done its job.
+
+   It was taken out for a day, while the hero was 56% of a screen and the
+   opening statement sat under it in plain view. That hero is gone and this is
+   back with it: a full screen with nothing below it showing is exactly the
+   condition the cue was written for.
 
    aria-hidden: it is a visual hint about a gesture, not information. A screen
    reader user is already being told the page has more content by the page

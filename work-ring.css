@@ -230,7 +230,20 @@
 
 /* The six sit stacked in the same place and only one is shown. The name that
    is leaving fades out quickly and lifts away; the one arriving waits for it
-   to clear before it starts, so two long client names never overlap. */
+   to clear before it starts, so two long client names never overlap.
+
+   EVERY DURATION HERE IS A SHARE OF ONE TURN, not a number of its own. These
+   were 0.2s and 0.3s while the wheel took 620ms, which looked right until you
+   scrolled two projects at once: work-ring.js halves the turn to catch up, the
+   wheel arrives in 310ms, and the text was still crossfading over a fixed 500.
+   The result was a card sitting still under somebody else's name. Reading the
+   same --step-ms the wheel is using means the two cannot come apart, at any
+   speed, without this file being edited.
+
+   The shares: the outgoing name is gone by a third of the way through, the
+   incoming one starts there and is fully in at eight tenths, and the wheel
+   finishes last. It reads as the name arriving with the card rather than
+   catching up to it. */
 .work.is-ring .project {
   position: absolute;
   left: 0;
@@ -239,14 +252,19 @@
   opacity: 0;
   transform: translateY(12px);
   pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity calc(var(--step-ms, 620ms) * 0.32) ease,
+    transform calc(var(--step-ms, 620ms) * 0.32) ease;
 }
 
 .work.is-ring .project.is-active {
   opacity: 1;
   transform: none;
   pointer-events: auto;
-  transition: opacity 0.3s ease 0.2s, transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s;
+  transition:
+    opacity calc(var(--step-ms, 620ms) * 0.48) ease calc(var(--step-ms, 620ms) * 0.32),
+    transform calc(var(--step-ms, 620ms) * 0.6) cubic-bezier(0.2, 0.8, 0.2, 1)
+      calc(var(--step-ms, 620ms) * 0.32);
 }
 
 /* The ring is showing the screenshots now. */

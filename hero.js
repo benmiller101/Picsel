@@ -777,9 +777,25 @@ function createPicselHero(root) {
 
     /* The pinned distance: how much taller the section is than the stage. That
        is exactly how far the page scrolls while the stage is held on screen,
-       and therefore the length of the reverse intro. Under reduced motion
-       hero.css sets it to zero and the guard below leaves the hero alone. */
+       and therefore the length of the reverse intro. */
     scrubRange = root.offsetHeight - stage.offsetHeight;
+
+    /* NO PINNED DISTANCE, WHICH IS THE NORMAL CASE NOW. hero.css sets
+       --hero-scroll to 0: the hero is one screen, the stage has no room to
+       stick, and the next section arrives on the first flick of a wheel. That
+       used to mean the un-build never ran, because there was no pinned scroll
+       to scrub it against and the guard below returned 0 forever.
+
+       So when there is nothing to pin, the hero is scrubbed against its own
+       departure instead. The wordmark comes apart over exactly the distance
+       the hero takes to travel up and off the screen, which is the same
+       animation, playing while the opening statement rises behind it rather
+       than while the page sits still.
+
+       Reduced motion is handled by scrubOn, not by this number. Somebody who
+       has asked for less movement gets a hero that simply scrolls away. */
+    if (scrubRange <= 0) scrubRange = stage.offsetHeight;
+
     heroTop = root.offsetTop;
     stacked = vw <= BLOBS.STACK_BELOW;
 

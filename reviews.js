@@ -20,11 +20,55 @@
    which is verifiable in a way a star rating in a SERP is not.
 
    `service` and `project` say which pages a review belongs on. Null means it
-   only appears in the homepage band. */
+   only appears in the homepage band.
+
+   `rating` is out of five and every one of them is five, which is not a
+   flattering coincidence: the profile's average is 5.0 across every review on
+   it. It is a field rather than a constant because the first four-star review
+   must show four stars, and a hard-coded five would show five and be a lie
+   printed on the homepage. If one ever arrives, change the number here and the
+   card follows.
+
+   `subject` is the line under the name on the card: which business the person
+   is from, or what the job was. It replaced the date, which used to sit there
+   and was the wrong fact to lead with. "4 August 2026" tells a reader nothing
+   about whether this review is relevant to them; "AJC Removals, removals and
+   clearance" tells a removals firm they are reading about someone like
+   themselves. Dates are still here and still sort the list, they are just not
+   the thing on the card.
+
+   Null subject means the card carries the name alone, which is correct for a
+   private individual who left a first name and nothing else.
+
+   DO NOT INVENT ONE TO TIDY THE LAYOUT. Three of these are real named people
+   and this is a public page: a made-up job title under a real customer's name
+   is a fabricated fact about somebody who did not agree to it, on the one
+   section of the site whose entire worth is that a reader can go and check it.
+   The cards line up because reviews.css reserves the row whether or not there
+   is anything in it, which is a layout problem with a layout answer. Do not invent one.
+
+   And do not repeat the name in it. "AJC Removals" over "AJC Removals,
+   removals and clearance" is the same words twice on a card two lines tall;
+   the subject's whole job is to add the fact the name does not carry.
+
+   ---- CHECK BEFORE THE NEXT DEPLOY ------------------------------------------
+   The bottom three came off the Google profile on 20 August 2026 and their
+   text is exactly as posted. Two things about them are NOT verified:
+
+     1. The dates are derived from Google's "3 days ago" and "a week ago", so
+        they are within a day or two rather than exact. Nothing displays them,
+        so the only thing they affect is the order of the cards.
+     2. Google's own count says five reviews and only three were readable;
+        "More reviews (2)" would not load. Whether the four above it are the
+        older two plus two that Google is filtering, or something else, is
+        worth Ben checking, because the section says out loud that every quote
+        on it is on that profile word for word. */
 
 export const REVIEWS = [
   {
     id: 'brenna-nevitt',
+    rating: 5,
+    subject: 'Custom eBay listing tool',
     author: 'Brenna Nevitt',
     text:
       'Ben at Picsel built us a custom eBay listing tool for our clearance business in Hayle. ' +
@@ -40,6 +84,8 @@ export const REVIEWS = [
   },
   {
     id: 'matthew-pinch',
+    rating: 5,
+    subject: 'Lanora House, house clearance',
     author: 'Matthew Pinch',
     text:
       'Ben made our website from ok to unbeliveable , we saw increases in work very soon after. I ' +
@@ -52,6 +98,8 @@ export const REVIEWS = [
   },
   {
     id: 'julie-miller',
+    rating: 5,
+    subject: 'Artist portfolio',
     author: 'Julie Miller',
     text:
       'I had my website designed by Picsel Design Studio, and the process was very straightforward ' +
@@ -64,11 +112,53 @@ export const REVIEWS = [
   },
   {
     id: 'zoe',
+    rating: 5,
+    subject: null,
     author: 'Zoe',
     text:
       "Can't recommend Ben enough! Really happy with how my website turned out. I'd definitely " +
       'recommend him to anyone looking for a website in Edinburgh or surrounding areas!',
     date: '2026-08-09',
+    source: 'google',
+    service: 'websites-for-tradespeople',
+    project: null,
+  },
+  {
+    id: 'ajc-removals',
+    rating: 5,
+    author: 'AJC Removals',
+    subject: 'Removals and clearance',
+    text:
+      'Really happy with the design of the website. Ben made it super quick to get it up and ' +
+      'running and constantly checks in with us to see if we want anything updating. Really ' +
+      'responsive to any messages ect.100% recommend',
+    date: '2026-08-17',
+    source: 'google',
+    service: 'websites-for-tradespeople',
+    project: 'ajc-removals',
+  },
+  {
+    id: 'david-sanderson',
+    rating: 5,
+    author: 'David Sanderson',
+    subject: null,
+    text:
+      'Really happy with the work from Picsel Design Studio - professional, quick to respond, and ' +
+      'delivered exactly what we needed. Would definitely recommend.',
+    date: '2026-08-13',
+    source: 'google',
+    service: 'websites-for-tradespeople',
+    project: null,
+  },
+  {
+    id: 'kyle-graham',
+    rating: 5,
+    author: 'Kyle Graham',
+    subject: null,
+    text:
+      'Really great service, very efficient and cost effective. Website looks amazing! Would ' +
+      'highly recommend',
+    date: '2026-08-13',
     source: 'google',
     service: 'websites-for-tradespeople',
     project: null,

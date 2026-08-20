@@ -7,8 +7,10 @@
   "scripts": {
     "build": "node tools/build.js",
     "test": "node --test tools/**/*.test.js",
-    "dev": "npm run build && npx --yes serve . --listen 3000",
+    "check": "npm run build && npm test && node tools/check.js",
+    "dev": "npm run build && npx --yes serve dist --listen 3000",
     "shots": "node tools/capture-shots.js",
+    "fonts": "node tools/fetch-fonts.js",
     "photo": "node tools/convert-photo.js",
     "backdrop": "node tools/export-backdrop.js",
     "backdrop:video": "node tools/export-backdrop-video.js"
@@ -17,6 +19,7 @@
     "node": ">=20"
   },
   "devDependencies": {
+    "esbuild": "^0.28.2",
     "mediabunny": "^1.53.0",
     "puppeteer-core": "^25.4.0"
   }

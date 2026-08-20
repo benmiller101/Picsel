@@ -15,11 +15,21 @@
    Everything else is handed straight back to the static files, which includes
    the real 404 page for a typo'd address.
 
-   WHY THIS FILE MUST NOT BE PUBLISHED AS AN ASSET. The assets directory is
-   the repo root, so without an entry in .assetsignore this file and the two
-   in functions/ would also be served as readable text on the live site, and
-   the Picsel HQ address inside card.js would be public. .assetsignore lists
-   both. If either is removed from that list, HQ is exposed. */
+   WHY THIS FILE MUST NOT BE PUBLISHED AS AN ASSET. card.js contains the
+   Picsel HQ address, and the reason the scan counting happens on a server at
+   all is that the address never reaches a browser. Served as a file it would
+   be readable by anybody.
+
+   This used to depend on .assetsignore naming worker.js and functions/ by
+   hand. It no longer does. The assets directory is dist/, which tools/build.js
+   writes from nothing on every run and fills only with files the built pages
+   reference. This file is not one of them and cannot become one: it is never
+   linked from a page, so the collector in tools/assets.js has no way to reach
+   it. Wrangler bundles it into the Worker separately, which is how it runs.
+
+   The rule that keeps that true: nothing in dist/ is authored, and nothing
+   gets in by being added to a list. If a file needs to be on the web, a page
+   has to ask for it. */
 
 import { onCardRequest } from './functions/card.js';
 import { onCardStatsRequest } from './functions/card-stats.js';

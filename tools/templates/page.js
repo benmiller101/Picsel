@@ -16,6 +16,7 @@
 import { SITE, absoluteUrl } from '../../site.config.js';
 import { renderSchema } from './schema.js';
 import { renderStickyCta } from '../partials/sticky-cta.js';
+import { renderSocialLinks } from '../partials/social.js';
 
 /* Page copy is written by hand, but it still passes through here on its way
    into an HTML attribute. An unescaped apostrophe or ampersand in a meta
@@ -181,22 +182,27 @@ function renderHead({ title, description, path, ogType, ogImage, styles, extraHe
   <!-- Lexend carries every word of reading copy on the site. Pixelify Sans is
        the licence-independent safety net for the wordmark: if Typekit is
        unreachable the mark still renders as a pixel face instead of dropping
-       to Courier. preconnect opens the connection early so the text is not
-       waiting on a handshake. -->
-  <!-- Lexend 500 is the work ring's: its project names, the section title and
-       the button on the card. Asked for rather than left to the browser, which
-       would otherwise fake it by smearing the 400 weight and make those three
-       things look subtly wrong next to everything else set in this face. -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Lexend:wght@300;400;500&display=swap"
-        rel="stylesheet" />
+       to Courier. Lexend 500 is the work ring's, for its project names, the
+       section title and the button on the card.
 
-  <!-- Order matters: tokens defines the vocabulary, base uses it, the page
-       sheet overrides. Swapping them silently breaks the cascade. -->
-  <link rel="stylesheet" href="/tokens.css" />
-  <link rel="stylesheet" href="/base.css" />
-  <link rel="stylesheet" href="/site.css" />${styles
+       SERVED BY THIS SITE, not by Google. Both faces are Open Font Licence, so
+       unlike the Typekit sheet above they are free to move, and moving them
+       took a render-blocking stylesheet on fonts.googleapis.com and the second
+       host it fetched the files from off the critical path of every page. See
+       tools/fetch-fonts.js. The preload is for the one file every page needs
+       before it can paint a sentence: a stylesheet does not reveal what it
+       needs until it has been parsed, and by then the request could have been
+       in flight. -->
+  <link rel="preload" href="/assets/fonts/lexend-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/fonts.css" />
+
+  <!-- One sheet, built from tokens.css, base.css and site.css in that order:
+       tokens defines the vocabulary, base uses it, site overrides. They are
+       authored as three files because they are three jobs, and they are served
+       as one because all 28 pages ask for all three every time and three
+       round trips buy nothing. tools/assets.js does the joining, so the
+       cascade order lives there rather than being retyped here. -->
+  <link rel="stylesheet" href="/core.css" />${styles
     .map((href) => `\n  <link rel="stylesheet" href="${escapeHtml(href)}" />`)
     .join('')}${extraHead ? `\n${extraHead}` : ''}
 
@@ -258,6 +264,10 @@ function renderFooter() {
             <a href="${escapeHtml(SITE.contact.phoneHref)}">${escapeHtml(SITE.contact.phoneDisplay)}</a>
             <a href="mailto:${escapeHtml(SITE.contact.email)}">${escapeHtml(SITE.contact.email)}</a>
           </p>
+          <!-- Under the phone and the email because it belongs with them: it
+               is a fourth way to reach the same studio, not a badge row. Same
+               handle on all three, which is why they read as one thing. -->
+${renderSocialLinks({ className: 'site-social' })}
         </div>
 
         <div class="site-footer__end">

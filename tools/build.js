@@ -14,7 +14,8 @@
    checks it every single run and refuses to let a duplicate through. */
 
 import { writeFile, mkdir } from 'node:fs/promises';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join, relative, resolve, sep } from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 import { SITE, SHOW_PRICING, ROBOTS, absoluteUrl, REVIEWS_URL_IS_PLACEHOLDER } from '../site.config.js';
@@ -22,6 +23,7 @@ import { PROJECTS } from '../projects.js';
 import { REVIEWS } from '../reviews.js';
 import { PLANS, BUILD_FEE, BUILD_LINE, money } from '../pricing.js';
 import { renderPage } from './templates/page.js';
+import { buildAssets, resetDist } from './assets.js';
 import { HOME_PAGE } from './pages/home.js';
 import { WORK_PAGE } from './pages/work.js';
 import { PROJECT_PAGES } from './pages/project.js';
@@ -35,6 +37,20 @@ import { PRIVACY_PAGE } from './pages/privacy.js';
 import { NOT_FOUND_PAGE } from './pages/not-found.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+
+/* WHERE THE SITE IS PUBLISHED FROM, and the reason this constant exists.
+
+   Everything the build produces lands in dist/ and Cloudflare serves that
+   directory, rather than serving the repo root as it used to. The old
+   arrangement meant every file in the project was on the web unless
+   .assetsignore named it, which is a denylist protecting a public directory,
+   and the cost of forgetting a line was silent. dist/ is the other way round:
+   a file is published because a page asked for it, and nothing else is there
+   at all. See tools/assets.js for how that list is worked out.
+
+   Nothing in here is authored. dist/ can be deleted at any point and the next
+   build puts it back byte for byte. */
+const DIST = join(ROOT, 'dist');
 
 /* Search engines truncate past these, so anything longer is written but never
    read. Treated as hard limits rather than guidance.
@@ -219,8 +235,8 @@ async function build() {
          land at the repo root as a bare file for Cloudflare's asset handling
          to find it, not inside a 404.html/ directory. */
       outPath: page.path.endsWith('.html')
-        ? join(ROOT, page.path.replace(/^\/+/, ''))
-        : join(ROOT, page.path.replace(/^\/+/, ''), 'index.html'),
+        ? join(DIST, page.path.replace(/^\/+/, ''))
+        : join(DIST, page.path.replace(/^\/+/, ''), 'index.html'),
     });
   }
 
@@ -251,24 +267,83 @@ async function build() {
     return;
   }
 
+  /* Emptied and rebuilt every time, and only once every page has passed its
+     checks above. A build that fails leaves the last good dist/ untouched
+     rather than half-replacing it. */
+  await resetDist(DIST);
+
+  let htmlBefore = 0;
+  let htmlAfter = 0;
+
   for (const { page, html, outPath } of rendered) {
+    const published = stripComments(html);
+    htmlBefore += Buffer.byteLength(html);
+    htmlAfter += Buffer.byteLength(published);
+
     await mkdir(dirname(outPath), { recursive: true });
-    await writeFile(outPath, html, 'utf8');
+    await writeFile(outPath, published, 'utf8');
     const relativeOut = page.path.endsWith('.html')
       ? page.path.replace(/^\/+/, '')
       : `${page.path.replace(/^\/+/, '')}index.html`;
-    console.log(`  built  ${page.path.padEnd(20)} -> ${relativeOut}`);
+    console.log(`  built  ${page.path.padEnd(20)} -> dist/${relativeOut}`);
   }
 
   const listed = await writeSitemap(rendered);
   await writeRobots();
   await writeLlmsTxt(rendered);
-  await writeWebManifest();
+  const manifest = await writeWebManifest();
+
+  /* Last, because it reads the finished pages to decide what to publish. */
+  const assets = await buildAssets({
+    root: ROOT,
+    dist: DIST,
+    documents: [...rendered.map(({ html }) => html), manifest],
+    origin: SITE.origin,
+  });
+
+  const kb = (bytes) => `${Math.round(bytes / 1024)} KB`;
 
   console.log(
     `\nBuilt ${PAGES.length} page(s), ${listed} in sitemap.xml` +
-      `${warnings.length ? `, with ${warnings.length} warning(s)` : ''}.`,
+      `${warnings.length ? `, with ${warnings.length} warning(s)` : ''}.` +
+      `\n  html    ${kb(htmlBefore)} -> ${kb(htmlAfter)}  (comments removed)` +
+      `\n  css/js  ${kb(assets.minifiedFrom)} -> ${kb(assets.minifiedTo)}  (minified)` +
+      `\n  copied  ${assets.copied} file(s)` +
+      `\n  dist/   ${assets.files + rendered.length} file(s) published`,
   );
+}
+
+/* HTML comments, out of the published copy only.
+
+   There are 185 KB of them across the 28 pages, which is 27% of the HTML, and
+   every byte is explaining the markup to whoever reads the repo next. That is
+   worth keeping in the source and worth not sending to a phone.
+
+   The one thing this must never touch is the inside of a <script>, where a
+   "<!--" is not a comment and the structured-data blocks live, or a <pre>,
+   where whitespace is content. So the document is split on those first and
+   only the gaps between them are cleaned.
+
+   Blank lines go with the comments, because a removed comment leaves the two
+   newlines that surrounded it and the result is a page of gaps. */
+function stripComments(html) {
+  const protectedBlocks = /<(script|pre|textarea)\b[^>]*>[\s\S]*?<\/\1>/gi;
+
+  let out = '';
+  let cursor = 0;
+
+  for (const match of html.matchAll(protectedBlocks)) {
+    out += clean(html.slice(cursor, match.index));
+    out += match[0];
+    cursor = match.index + match[0].length;
+  }
+  out += clean(html.slice(cursor));
+
+  return out;
+
+  function clean(chunk) {
+    return chunk.replace(/<!--[\s\S]*?-->/g, '').replace(/\n[ \t]*(?=\n)/g, '');
+  }
 }
 
 /* ---- Entity consistency ---------------------------------------------------
@@ -661,20 +736,112 @@ function excerpt(text, index) {
 
    Opting out is deliberate and rare: the shell-check proof sheet is a build
    artefact, not a page for visitors, and carries a noindex tag as well. */
+/* Every page's own last-changed date, read out of git.
+
+   WHY THE BUILT FILE AND NOT THE SOURCE. A page changes when any of a dozen
+   things change: its own module, a partial, a token, the price list, the
+   shared template. Tracking that dependency graph by hand is a thing that
+   would be wrong within a month. The built HTML is committed, so git already
+   knows the answer exactly: the last commit that changed work/index.html IS
+   the last time /work/ changed, whatever caused it.
+
+   One `git log` for the whole history rather than one per page. The log prints
+   a date, then the files that commit touched, so walking it top down and
+   keeping the FIRST date seen for each path gives every file its newest commit
+   in a single pass.
+
+   No git, a shallow clone with no history, or a page built for the first time:
+   the map simply has no entry and the caller falls back to today. That is the
+   old behaviour, and for a page nothing has ever recorded it is also true. */
+function gitLastCommitDates() {
+  const dates = new Map();
+
+  let log;
+  try {
+    log = execFileSync('git', ['log', '--no-merges', '--pretty=format:%cs', '--name-only'], {
+      cwd: ROOT,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+      maxBuffer: 64 * 1024 * 1024,
+    });
+  } catch {
+    return dates;
+  }
+
+  let date = null;
+  for (const line of log.split('\n')) {
+    const entry = line.trim();
+    if (!entry) continue;
+    /* A commit header is exactly a date, and no file in this repo is named
+       like one. If one ever is, it gets today's date rather than a wrong one,
+       which is the right way round for this to fail. */
+    if (/^\d{4}-\d{2}-\d{2}$/.test(entry)) {
+      date = entry;
+      continue;
+    }
+    if (date && !dates.has(entry)) dates.set(entry, date);
+  }
+
+  return dates;
+}
+
+/* What this working tree has changed and not committed.
+
+   The sitemap is written after the pages are, so a page this build just
+   rewrote turns up here, and "changed today" is the true answer for it rather
+   than whatever its last commit said. Without this, deploying from a dirty
+   tree would publish a lastmod older than the content it describes. */
+function gitUncommittedPaths() {
+  const changed = new Set();
+
+  let status;
+  try {
+    status = execFileSync('git', ['status', '--porcelain', '--untracked-files=all'], {
+      cwd: ROOT,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+  } catch {
+    return changed;
+  }
+
+  for (const line of status.split('\n')) {
+    if (!line.trim()) continue;
+    const path = line.slice(3).trim();
+    /* A rename reads "old -> new". The new name is the one on disk. */
+    const arrow = path.indexOf(' -> ');
+    changed.add(arrow === -1 ? path : path.slice(arrow + 4));
+  }
+
+  return changed;
+}
+
 async function writeSitemap(rendered) {
   const entries = rendered.filter(({ page }) => !page.excludeFromSitemap);
 
-  /* lastmod is the build date rather than a per-page one. Faking a precise
-     modification date per page — which nothing here tracks — would be telling
-     search engines something untrue about content that has not changed.
-     Date only, no time: this is a build stamp, not a timestamp. */
-  const lastmod = new Date().toISOString().slice(0, 10);
+  /* lastmod used to be the build date, on every URL, on every build. That is
+     worse than leaving it out. A sitemap claiming all 26 pages changed today,
+     every day, is telling search engines something untrue, and it buries the
+     one page that genuinely did change in the noise from the twenty-five that
+     did not. A lastmod a crawler cannot trust is a lastmod it stops reading.
+
+     Date only, no time. Git records the second, but a page is not accurate to
+     the second, and pretending otherwise is the same mistake in miniature. */
+  const history = gitLastCommitDates();
+  const uncommitted = gitUncommittedPaths();
+  const today = new Date().toISOString().slice(0, 10);
+
+  function lastmodFor(outPath) {
+    const repoPath = relative(ROOT, outPath).split(sep).join('/');
+    if (uncommitted.has(repoPath)) return today;
+    return history.get(repoPath) ?? today;
+  }
 
   const urls = entries
     .map(
-      ({ page }) => `  <url>
+      ({ page, outPath }) => `  <url>
     <loc>${absoluteUrl(page.path)}</loc>
-    <lastmod>${lastmod}</lastmod>
+    <lastmod>${lastmodFor(outPath)}</lastmod>
   </url>`,
     )
     .join('\n');
@@ -685,7 +852,7 @@ ${urls}
 </urlset>
 `;
 
-  await writeFile(join(ROOT, 'sitemap.xml'), xml, 'utf8');
+  await writeFile(join(DIST, 'sitemap.xml'), xml, 'utf8');
   return entries.length;
 }
 
@@ -770,7 +937,7 @@ ${groups.join(BLANK_LINE)}
 Sitemap: ${absoluteUrl('/sitemap.xml')}
 `;
 
-  await writeFile(join(ROOT, 'robots.txt'), robots, 'utf8');
+  await writeFile(join(DIST, 'robots.txt'), robots, 'utf8');
 }
 
 /* ---- site.webmanifest -----------------------------------------------------
@@ -798,7 +965,14 @@ async function writeWebManifest() {
     ],
   };
 
-  await writeFile(join(ROOT, 'site.webmanifest'), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+  const json = `${JSON.stringify(manifest, null, 2)}\n`;
+  await writeFile(join(DIST, 'site.webmanifest'), json, 'utf8');
+
+  /* Handed back so the asset pass can read the icon paths out of it. The
+     manifest is the one generated file that names other files, and it is
+     never linked from a stylesheet or a page, so nothing else would find
+     them. */
+  return json;
 }
 
 /* ---- llms.txt -------------------------------------------------------------
@@ -878,7 +1052,7 @@ ${projectLines}
 ${pageLines}
 `;
 
-  await writeFile(join(ROOT, 'llms.txt'), llms, 'utf8');
+  await writeFile(join(DIST, 'llms.txt'), llms, 'utf8');
 }
 
 build().catch((error) => {

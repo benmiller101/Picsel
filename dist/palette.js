@@ -1,0 +1,1 @@
+export const BLOB_GRADIENTS=[[["#00e676","#00d4ff","#3d5afe","#9c27ff","#ff29c3"],["#2bff88","#00c2ff","#5b6cff","#b14dff","#ff4fd8"],["#00ffa3","#00b0ff","#4a3dff","#8b2fff","#e838ff"]],[["#ffe600","#ffa000","#ff2d55","#ff1493","#b6e800"],["#fff02e","#ff8c1a","#ff1f4b","#ff3da6","#c8f03a"],["#ffd600","#ff7300","#ff0a3c","#ff2d95","#a8e000"]]];

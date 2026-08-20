@@ -128,11 +128,28 @@ export const SITE = {
   /* Real profiles only. An invented or dead profile in sameAs is worse than no
      sameAs at all. These three are live, and naming them here is what ties the
      accounts and the site together as one entity for a search engine or an
-     assistant trying to work out whether they are the same business. */
+     assistant trying to work out whether they are the same business.
+
+     THEY ARE IN THE FOOTER NOW, not only in the schema. For two years of this
+     file's life these URLs were machine-readable and invisible: a search engine
+     could see that Picsel had a TikTok and a person on the site could not. The
+     handle is the same on all three, which is the point of it, and it is worth
+     saying once in a place somebody can click.
+
+     `network` is what the footer draws an icon for, and it has to match a key
+     in SOCIAL_ICONS in tools/partials/social.js. `handle` is read out by a
+     screen reader alongside the name. `href` is what schema.js publishes as
+     sameAs, unchanged.
+
+     `name` is written out rather than derived from `network`, and the reason
+     is TikTok. Capitalising the first letter of a slug gives "Tiktok", which
+     is not what the company is called, and it was being read out that way to
+     anybody using a screen reader. A rule that gets two out of three right is
+     a rule that has to be checked every time somebody adds a fourth. */
   socialProfiles: [
-    'https://www.facebook.com/picseluk',
-    'https://www.instagram.com/picseluk',
-    'https://www.tiktok.com/@picseluk',
+    { network: 'facebook', name: 'Facebook', handle: '@picseluk', href: 'https://www.facebook.com/picseluk' },
+    { network: 'instagram', name: 'Instagram', handle: '@picseluk', href: 'https://www.instagram.com/picseluk' },
+    { network: 'tiktok', name: 'TikTok', handle: '@picseluk', href: 'https://www.tiktok.com/@picseluk' },
   ],
 
   /* The public Google Business Profile, which is where the reviews in

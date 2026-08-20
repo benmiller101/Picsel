@@ -54,6 +54,7 @@ import {
 } from '../../pricing.js';
 import { PROJECTS } from '../../projects.js';
 import { escapeHtml } from '../templates/page.js';
+import { renderFaq } from '../partials/faq.js';
 import { SHOT_SIZES, shotSrcset } from '../templates/images.js';
 import { breadcrumbs, ORG_ID } from '../templates/schema.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
@@ -279,18 +280,12 @@ const FAQS = [
 
 const FAQ_SECTION = `    <section class="section prices-faq" aria-labelledby="prices-faq-heading">
       <div class="wrap">
-        <div class="section-head">
-          <h2 class="section-head__title" id="prices-faq-heading">Straight answers</h2>
-        </div>
-
-        <div class="faq__grid">
-${FAQS.map(
-  ({ q, a }) => `          <div class="faq__item">
-            <h3 class="faq__q">${escapeHtml(q)}</h3>
-            <p class="faq__a">${escapeHtml(a)}</p>
-          </div>`,
-).join('\n\n')}
-        </div>
+${renderFaq({
+  faqs: FAQS,
+  name: 'prices-faq',
+  heading: 'Straight answers',
+  headingId: 'prices-faq-heading',
+})}
       </div>
     </section>`;
 

@@ -1,11 +1,19 @@
 /* ---- nav.js — bringing the nav in on scroll -------------------------------
    The bar is not on screen at the top of a page. It arrives once the page has
-   scrolled --nav-reveal (a quarter of a screen) and stays until you come back
-   to the top. site.css owns how it looks doing that; this file only decides
+   scrolled --nav-reveal (a quarter of a screen). After that it follows the
+   direction of travel: gone while you read down the page, back the moment you
+   scroll up. site.css owns how it looks doing that; this file only decides
    when, by putting two classes on <html>:
 
      nav-armed   this script is running, so the CSS may hide the bar
-     nav-shown   the page is scrolled past the trip wire
+     nav-shown   past the trip wire AND not currently reading downward
+
+   WHY IT HIDES ON THE WAY DOWN. The bar is fixed, centred and solid, so any
+   text that scrolls under it is text nobody can read. On a long page that is
+   not a rare collision: it was clipping FAQ headings mid-word, hiding a line
+   of a review, and cutting the homepage intro paragraph in half. Reading is
+   downward and reaching for the nav is upward, so the two never want the same
+   pixels at the same time.
 
    ARMED IS A SEPARATE CLASS FOR A REASON. Every rule that hides the nav is
    behind .nav-armed, so a browser that never gets this file — blocked, offline
@@ -44,8 +52,15 @@
       return;
     }
 
-    function show(on) {
-      root.classList.toggle('nav-shown', on);
+    /* Two independent answers, combined into one class. `past` is the trip
+       wire, reported by the observer below. `heading` is which way the last
+       real scroll went. The bar is only on screen when the page is past the
+       wire and the visitor is not reading downward. */
+    var past = false;
+    var heading = 'up';
+
+    function show() {
+      root.classList.toggle('nav-shown', past && heading === 'up');
     }
 
     /* A page shorter than the trip wire can never scroll past it, and a nav
@@ -75,16 +90,52 @@
        be told the same answer is work this site does not need to do. */
     var io = new IntersectionObserver(function (entries) {
       // Past the wire is exactly "the strip is no longer visible".
-      show(!entries[entries.length - 1].isIntersecting);
+      past = !entries[entries.length - 1].isIntersecting;
+
+      /* Coming back up over the wire from a downward scroll would otherwise
+         leave `heading` stale, and the bar would stay hidden for the whole
+         way back to the top. At the top there is nothing to hide from. */
+      if (!past) heading = 'up';
+      show();
     });
     io.observe(sentinel);
+
+    /* Direction DOES need the scroll position, which the observer above cannot
+       give. One passive listener that does nothing but store a number, and one
+       rAF that does the comparison, so the work per frame is a subtraction and
+       at most one classList write.
+
+       The 8px deadband is not tuning for its own sake. Momentum scrolling and
+       rubber-banding at the ends of a page both produce single-pixel moves in
+       the wrong direction, and without a floor the bar flickers in and out
+       while the page is standing still. */
+    var lastY = window.scrollY;
+    var pending = false;
+    var DEADBAND = 8;
+
+    function onScroll() {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(function () {
+        pending = false;
+        var y = window.scrollY;
+        var moved = y - lastY;
+        if (Math.abs(moved) < DEADBAND) return;
+        lastY = y;
+        heading = moved > 0 ? 'down' : 'up';
+        show();
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
 
     /* A reload partway down a page, or a browser restoring the scroll
        position, both start below the wire. The observer reports that on its
        first callback anyway; this only stops the bar sliding in from off
        screen a frame later, which reads as an animation nobody asked for on a
        page that was already scrolled. */
-    show(window.scrollY > sentinel.offsetHeight);
+    past = window.scrollY > sentinel.offsetHeight;
+    show();
 
     checkScrollable();
     window.addEventListener('resize', checkScrollable, { passive: true });

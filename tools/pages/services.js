@@ -34,6 +34,7 @@ import { PLANS, EXTRAS, GUARANTEE, BUILD_FEE, RESCUE, money } from '../../pricin
 import { reviewsForService } from '../../reviews.js';
 import { getProjectBySlug } from '../../projects.js';
 import { escapeHtml } from '../templates/page.js';
+import { renderFaq } from '../partials/faq.js';
 import { SHOT_SIZES, shotSrcset, mockupSrcset } from '../templates/images.js';
 import { breadcrumbs, ORG_ID } from '../templates/schema.js';
 import { renderContactBand } from '../partials/contact-band.js';
@@ -952,18 +953,15 @@ function renderService(service) {
   });
 
   const faqs = `        <section class="service__faq" aria-labelledby="${escapeHtml(service.slug)}-faq">
-          <h2 id="${escapeHtml(service.slug)}-faq">Questions people ask first</h2>
-
-          <div class="faq__grid">
-${service.faqs
-  .map(
-    ({ q, a }) => `            <div class="faq__item">
-              <h3 class="faq__q">${escapeHtml(q)}</h3>
-              <p class="faq__a">${escapeHtml(a)}</p>
-            </div>`,
-  )
-  .join('\n\n')}
-          </div>
+${renderFaq({
+  faqs: service.faqs,
+  /* Namespaced by slug. Every service page carries exactly one of these, but a
+     shared name is the sort of thing that only breaks once two land on the same
+     page, which is too late to be finding out. */
+  name: `${service.slug}-faq-group`,
+  heading: 'Questions people ask first',
+  headingId: `${service.slug}-faq`,
+})}
         </section>`;
 
   const content = `${renderBreadcrumbs(trail)}

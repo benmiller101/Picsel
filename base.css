@@ -231,15 +231,6 @@ select {
   margin-right: calc(var(--tracking-display) * -1);
 }
 
-/* Centred use is the exception, and it is the one case where the trailing gap
-   does matter: it drags the whole line off-centre by half of itself. An indent
-   of the same size puts it back. This is what hero.css does to the wordmark. */
-.display--centred {
-  text-align: center;
-  margin-right: 0;
-  text-indent: var(--tracking-display);
-}
-
 /* The small capitalised label above a section heading. It exists to say what
    kind of thing follows, so it is only ever used where there is something true
    to say — never as decoration. */

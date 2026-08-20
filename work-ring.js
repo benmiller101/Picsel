@@ -53,10 +53,31 @@
      letters landing under the old name would read as a fault. */
   var NAME_GLITCH = {
     ENABLED     : true,
-    START_DELAY : 200,      // ms, matches the .is-active transition delay
+    /* Share of one turn spent waiting for the outgoing name to clear, and it
+       has to be the same 0.32 the .is-active transition delay in
+       work-ring.css uses. Letters landing under a name that has not finished
+       leaving read as a fault rather than as an effect. It was a flat 200ms,
+       which stopped matching the moment the turn changed length. */
+    START_SHARE : 0.32,
     STEP        : [24, 62], // ms between letters, randomised
     FLASH       : [60, 150],// ms a letter stays swapped as it lands
-    JITTER      : 1.4       // px, max horizontal kick on a landing letter
+    JITTER      : 1.4,      // px, max horizontal kick on a landing letter
+
+    /* How long the whole word may take to assemble, as a share of one turn.
+
+       STEP alone used to decide this, and it does not scale. At 24-62ms a
+       letter, "AJC Removals & Clearances" is twenty-five letters and took
+       about 1.3 seconds: the card it belongs to had arrived, stopped and been
+       sitting there for most of a second while its name was still a handful of
+       scattered fragments. Wolf Pine, nine letters, was finished before the
+       card landed. Same effect, two completely different readings, decided by
+       nothing but how long the client's name happens to be.
+
+       So STEP is a ceiling now rather than the rule, and a long name simply
+       lands its letters faster. 0.7 of a turn puts the last letter down while
+       the wheel is still moving, which is what makes the two read as one
+       movement rather than as a caption catching up. */
+    BUILD_SHARE : 0.7
   };
 
   /* The faces the flash swaps to, and the list is hero.js's FONTS.ROTATION
@@ -366,10 +387,19 @@
       var tmp = queue[q]; queue[q] = queue[r]; queue[r] = tmp;
     }
 
-    var t = NAME_GLITCH.START_DELAY;
+    /* The budget the whole word has to land in, and the per-letter gap that
+       fits it. A short name keeps the randomised STEP it always had; a long
+       one is squeezed down to whatever fits, so both finish together. Never
+       longer than STEP's own maximum, and never so fast it stops reading as
+       letters arriving one at a time. */
+    var startDelay = dur * NAME_GLITCH.START_SHARE;
+    var budget = Math.max(0, dur * NAME_GLITCH.BUILD_SHARE - startDelay);
+    var cap = queue.length ? budget / queue.length : NAME_GLITCH.STEP[1];
+
+    var t = startDelay;
     queue.forEach(function(span){
       span.classList.add('is-waiting');
-      t += rand(NAME_GLITCH.STEP[0], NAME_GLITCH.STEP[1]);
+      t += Math.min(rand(NAME_GLITCH.STEP[0], NAME_GLITCH.STEP[1]), cap);
       buildTimers.push(setTimeout(function(){ land(span); }, t));
     });
   }

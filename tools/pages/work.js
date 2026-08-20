@@ -68,7 +68,7 @@ const GRID = `    <section class="section work" aria-labelledby="work-heading">
       <div class="wrap">
         <h2 class="visually-hidden" id="work-heading">Projects</h2>
 
-${renderWorkGrid(PROJECTS, { variant: 'index', eagerCount: 2 })}
+${renderWorkGrid(PROJECTS, { eagerCount: 2 })}
       </div>
     </section>`;
 

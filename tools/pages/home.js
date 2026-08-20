@@ -16,8 +16,10 @@ import { FEATURED_PROJECTS } from '../../projects.js';
 import { REVIEWS } from '../../reviews.js';
 import { SITE, SHOW_PRICING } from '../../site.config.js';
 import { PLANS, BUILD_FEE, money } from '../../pricing.js';
+import { escapeHtml } from '../templates/page.js';
 import { renderWorkRing } from '../partials/work-ring.js';
 import { renderPlanRail } from '../partials/plan-cards.js';
+import { renderFaq } from '../partials/faq.js';
 import { renderReviews } from '../partials/reviews.js';
 import { renderContactBand } from '../partials/contact-band.js';
 import { SERVICES_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
@@ -99,6 +101,24 @@ const INTRO = `    <section class="section intro">
           Websites and Google visibility for tradespeople. ${SITE.exclusivity.short}, so we
           never work for your competitor. ${PRICE_LINE}
         </p>
+        <!-- The first thing on the site anybody can act on, and until August
+             2026 there was nothing to act on until the very bottom of the
+             page. The nav's button does not count: it is hidden at the top of
+             a page and only comes back on the way up, so somebody reading down
+             has no way to reach it without going backwards.
+
+             Same two routes as the closing band, and deliberately the same
+             pair everywhere: some of this audience will ring, some would
+             rather type. The number is written out because on a phone it dials
+             and on a desktop it is the thing a person with a landline needs to
+             be able to read. -->
+        <p class="intro__actions">
+          <a class="btn btn--primary" href="/contact/#enquiry">Get in touch</a>
+          <a class="intro__phone" href="${escapeHtml(SITE.contact.phoneHref)}">${escapeHtml(
+            SITE.contact.phoneDisplay,
+          )}</a>
+        </p>
+
         <!-- "No jargon, no lock-in, no agency retainer" was one sentence with
              three beats in it. Three is the length a machine reaches for when
              it is padding, and a reader clocks the rhythm before the content.
@@ -269,37 +289,37 @@ const QUESTIONS = [
   },
 ];
 
-/* Two across on a wide screen rather than one long column: the services list
-   directly above is already a vertical stack, and repeating that shape twice in
-   a row makes the bottom of the page read as one undifferentiated list. */
+/* Collapsed, one open at a time, in partials/faq.js. It was a two-column grid
+   with all five answers showing, which put about 130 words in front of somebody
+   who arrived at this section with one question. */
 const FAQ = `    <section class="section faq" aria-labelledby="faq-heading">
       <div class="wrap">
-        <div class="section-head">
-          <h2 class="section-head__title" id="faq-heading">Common questions</h2>
-          <!-- The only route to /guides from the homepage, and it sits here
-               rather than in the nav because the guides are the long answers to
-               exactly these questions. Someone who has read four short answers
-               and wants a fifth is the person they are written for. -->
-          <a class="section-head__link" href="/guides/">Longer answers in the guides</a>
-        </div>
-
-        <div class="faq__grid">
-${QUESTIONS.map(
-  ({ q, a }) => `          <div class="faq__item">
-            <h3 class="faq__q">${q}</h3>
-            <p class="faq__a">${a}</p>
-          </div>`,
-).join('\n\n')}
-        </div>
+${renderFaq({
+  faqs: QUESTIONS,
+  name: 'home-faq',
+  heading: 'Common questions',
+  headingId: 'faq-heading',
+  /* The only route to /guides from the homepage, and it sits with this heading
+     rather than in the nav because the guides are the long answers to exactly
+     these questions. Someone who has read four short answers and wants a fifth
+     is the person they are written for. */
+  link: { href: '/guides/', label: 'Longer answers in the guides' },
+  /* These answers are written with entities already in them, unlike the other
+     two callers', so they are safe and must not be escaped a second time. */
+  escapeAnswers: false,
+})}
       </div>
     </section>`;
 
 /* ---- What people say -------------------------------------------------------
-   Immediately above the contact band on purpose: the last thing a reader sees
-   before the call to action is someone else vouching for the work, not the
-   studio describing itself. All four reviews appear here rather than a
-   curated subset — with only four, choosing three would look like the fourth
-   was hidden for a reason, and four is not enough to need trimming for length.
+   Directly above the price, which is the whole reason it is where it is: see
+   the note on `content` at the bottom of this file. Somebody about to read a
+   number should have just read seven people saying it was worth paying.
+
+   Every review appears here rather than a curated subset. Picking the best
+   five of seven is the point at which a testimonial section stops being
+   evidence and starts being marketing, and the rail costs nothing to show all
+   of them: it is one card tall whatever the count.
 
    The heading names no place, in keeping with the rest of the page: what is
    true of these clients is not a claim about where Picsel is based. */
@@ -366,24 +386,34 @@ export const HOME_PAGE = {
   extraScripts: `  <script type="module" src="/hero.js"></script>
   <script defer src="/work-ring.js"></script>
 ${PAGE_BLOB_SCRIPT}`,
-  /* The order is what someone decides in. Proof, then what we do, then what it
-     costs, then the four things still in their head, then other people saying
-     the same thing, then the phone number.
+  /* The order is what someone decides in. The work, what we do, other people
+     saying it was worth it, what it costs, the questions still in their head,
+     then the phone number.
 
-     Price goes after the services list and before the questions on purpose. Put
-     it any earlier and it is a number with nothing attached to it; put it any
-     later and someone who was only ever going to ask "how much" has already
-     left. The reviews go last of the content sections, immediately before the
-     contact band, so the final impression before the call to action is proof
-     rather than another claim from the studio itself. */
+     THE REVIEWS MOVED ABOVE THE PRICE on 20 August 2026, and it is the one
+     ordering decision on this page worth arguing about.
+
+     They used to sit last, immediately before the contact band, so the final
+     thing a reader met was proof rather than another claim from the studio.
+     That reasoning was sound and it was answering the wrong question. Nobody
+     reaches the bottom of a page undecided about whether the work is any good;
+     they reach the price undecided about whether it is worth it, and that is
+     four sections earlier. A number lands differently depending on what was in
+     front of it, and "seven people said this was worth paying for" is a better
+     thing to have just read than a list of services.
+
+     Price still comes after the services list, for the reason it always did:
+     any earlier and it is a number with nothing attached to it. The questions
+     are last now, which suits them, because a question is the thing somebody
+     has after they have seen the number rather than before. */
   content: [
     HERO,
     INTRO,
     WORK,
     SERVICES,
+    REVIEWS_SECTION,
     ...(SHOW_PRICING ? [renderPlanRail()] : []),
     FAQ,
-    REVIEWS_SECTION,
     renderContactBand(),
   ].join('\n\n'),
 };

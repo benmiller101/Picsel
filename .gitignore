@@ -54,3 +54,15 @@ $RECYCLE.BIN/
 .vscode/
 .idea/
 *.swp
+
+# The published site. tools/build.js writes dist/ from nothing on every run:
+# the pages, the minified stylesheets and scripts, and the images they name.
+# Every byte of it is regenerable with `npm run build`.
+#
+# IT IS COMMITTED ANYWAY, and the reason is the deploy. Cloudflare runs
+# `npx wrangler deploy` on a push to main and nothing else, so whatever dist/
+# holds at that moment is what goes live. Add `npm run build` to the Workers
+# Build settings in the Cloudflare dashboard and this becomes a real ignore
+# rule: uncomment the line below and `git rm -r --cached dist`.
+#
+# dist/

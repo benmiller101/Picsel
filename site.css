@@ -412,6 +412,18 @@
    edge of the grid, with the quieter line set below and indented on wide
    screens — the shape says "this is the important sentence" without making it
    bigger or louder. */
+
+/* Less air above this one section than the rest of the page gets, and it is
+   the only section on the site that takes an exception.
+
+   It follows the hero, which already ends in most of a screen of empty
+   near-black, so a full --section-y on top of that is a second helping of the
+   same gap. It also decides whether the sentence that says what Picsel sells
+   is on the first screen or below it, which no other section's padding does.
+   The bottom is left alone: below this the page goes back to its own rhythm. */
+.intro {
+  padding-top: var(--space-8);
+}
 .intro__inner > * + * {
   margin-top: var(--space-4);
 }
@@ -430,6 +442,38 @@
   color: var(--ink-muted);
 }
 
+/* The button and the number, side by side under the opening statement.
+
+   Wrapping, not scrolling: on a narrow phone the number drops under the
+   button rather than the pair being squeezed until the number's tap target
+   is too small to hit. The gap is the same on both axes so the two-row
+   version looks composed rather than collapsed. */
+.intro__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+
+/* Underlined rather than boxed. Two buttons of equal weight ask the reader to
+   choose between them; a button and a link say which one is the suggestion and
+   leave the other there for whoever wants it. Matches the closing band, which
+   makes the same call for the same reason. */
+.intro__phone {
+  color: var(--ink);
+  font-size: var(--text-lg);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  /* 44px of height on a phone without a border to show for it, so the number
+     is as easy to hit as the button beside it. */
+  padding-block: var(--space-2);
+}
+
+.intro__phone:hover {
+  text-decoration-color: var(--accent);
+}
+
 /* .intro__aside is gone with the paragraph it styled. The line read "Five sites
    are live. They are all below, and each one links straight out to the real
    thing. Not a mock-up." It was defending the work against a suspicion nobody
@@ -437,59 +481,28 @@
    asking to be believed. */
 
 /* ---- Work grid -----------------------------------------------------------
-   Six columns, and the cards take different spans in a repeating cycle — see
-   SHAPES in tools/partials/work-card.js, which must agree with the classes
-   below. Five identical rectangles would be a list; the varied rhythm is what
-   makes it a composition.
+   The catalogue on /work: two columns of identical cards. Identical is the
+   point. Someone here has come to compare builds, and a card given more room
+   than its neighbour reads as a better project rather than as a layout
+   decision.
 
-   Mobile first: one column, every card full width. The spans only exist from
-   the tablet breakpoint up, where there is room for two things side by side. */
+   The homepage used to run the same cards through a cycle of five different
+   spans. The pinned ring replaced that in August 2026, and the six-column rules
+   it needed went with it, along with the `--index` modifier that existed only
+   to tell the two layouts apart.
+
+   Mobile first: one column, every card full width. Two columns from the tablet
+   width up and no further, because a card narrower than about 300px turns a
+   full desktop screenshot into an unreadable stamp. */
 .work-grid {
   display: grid;
   gap: var(--space-6);
 }
 
-/* The index variant on /work: a plain two-up catalogue rather than the
-   homepage's composed rhythm. Same cards, different job — see INDEX_SHAPE in
-   tools/partials/work-card.js. Two columns and not three, because a card
-   narrower than about 300px turns a full desktop screenshot into an unreadable
-   stamp. Every card here is identical, so it works from the tablet width up. */
 @media (min-width: 48rem) {
-  .work-grid--index {
+  .work-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-
-  .work-card--index {
-    grid-column: auto;
-  }
-}
-
-/* The homepage's composed rhythm needs a desktop, and starts at 64rem rather
-   than the 48rem the rest of the site uses.
-
-   It was tried at 48rem and the narrowest card in the cycle — the phone shape,
-   two columns of six — came out 220px wide. At that width the caption under it
-   wraps onto a second line while its neighbour's stays on one, so the two
-   cards in that row could not be made to line up: one of the caption and the
-   frame had to sit 25px lower than the other. The composed layout only earns
-   its place when there is room for it, and below 64rem there is not. One column
-   of full-width screenshots is the better answer on a portrait tablet anyway.
-   At 64rem the phone card is 299px, where the caption fits on one line. */
-@media (min-width: 64rem) {
-  /* :not(--index) is load-bearing, not tidiness. Both selectors are one class,
-     so they have identical specificity and the later one simply wins — which
-     silently turned the catalogue into a six-column grid whose cards each
-     occupied one column, 137px wide. Naming who this applies to means the two
-     layouts cannot fight over source order again. */
-  .work-grid:not(.work-grid--index) {
-    grid-template-columns: repeat(6, 1fr);
-    gap: var(--space-6) var(--space-6);
-  }
-
-  .work-card--lead { grid-column: span 4; }
-  .work-card--phone { grid-column: span 2; }
-  .work-card--half { grid-column: span 3; }
-  .work-card--banner { grid-column: span 6; }
 }
 
 /* ---- Page heads ----------------------------------------------------------
@@ -757,35 +770,182 @@
    Two across from the tablet breakpoint. The services list directly above is a
    vertical stack, and a second vertical stack under it would make the whole
    bottom half of the page read as one long undifferentiated list. */
-.faq__grid {
+/* ---- Questions -----------------------------------------------------------
+   Heading in a column of its own, questions in a column beside it, each one
+   collapsed until somebody wants it. See partials/faq.js for why this is
+   <details> and not a script.
+
+   It was a two-column grid with every answer showing, which on the homepage
+   put five questions and about 130 words of answer in front of a visitor who
+   arrived with one question. Collapsed, the same five are five lines and the
+   one they came for is one tap.
+
+   The heading being in its own column is the other half of it: it gives the
+   questions a narrower column to sit in, so an open answer is a readable
+   measure rather than a line stretching the width of the page. */
+.faq__layout {
   display: grid;
   gap: var(--space-8);
 }
 
-@media (min-width: 48rem) {
-  .faq__grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-12) var(--space-16);
+/* 64rem rather than the site's usual 48rem. At tablet width the two columns
+   would be about 300px each, and a question is a sentence: it needs the room
+   more than the layout needs to be two things side by side. */
+@media (min-width: 64rem) {
+  .faq__layout {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: var(--space-16);
   }
 }
 
-.faq__item {
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--line);
-}
-
-/* The question is the thing being scanned, so it sits forward in full ink
-   while the answer stays at reading weight. No larger, though: a question set
-   big enough to compete with the section heading turns the section into a list
-   of headlines. */
-.faq__q {
-  font-size: var(--text-lg);
+.faq__heading {
+  font-size: var(--text-2xl);
   color: var(--ink);
 }
 
-.faq__a {
+.faq__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
   margin-top: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  transition: color var(--dur-fast) var(--ease),
+              text-decoration-color var(--dur-fast) var(--ease);
+}
+
+.faq__link:hover {
+  color: var(--ink);
+  text-decoration-color: var(--accent);
+}
+
+.faq__list {
+  display: grid;
+  gap: var(--space-2);
+}
+
+/* Closed, a question is a line with a rule under it and nothing else, so ten
+   of them read as a list rather than as ten boxes. Open, it lifts onto the
+   same raised surface the nav pill and the review cards use, which is the
+   site's one way of saying "this thing is in front of the page". */
+.faq__item {
+  border: 1px solid transparent;
+  border-bottom-color: var(--line);
+  border-radius: var(--radius-lg);
+  transition: background var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+
+.faq__item[open] {
+  border-color: var(--line);
+  background: var(--bg-raised);
+}
+
+/* The default disclosure triangle, removed twice: list-style for everything
+   modern and the -webkit- pseudo-element for Safari, which ignored the first
+   one for years. The plus on the right replaces it, and it is on the right
+   because that is the side a thumb is on. */
+.faq__q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+
+  /* A whole line as the tap target, not just the words in it. */
+  min-height: var(--tap-min);
+  padding: var(--space-4);
+
+  font-size: var(--text-lg);
+  color: var(--ink);
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq__q::-webkit-details-marker {
+  display: none;
+}
+
+.faq__q:hover {
+  color: var(--ink);
+}
+
+.faq__q:hover .faq__toggle {
+  color: var(--accent);
+}
+
+/* The ring goes on the row, because the row is what the browser focuses and a
+   ring drawn around the text alone would leave the plus outside it. */
+.faq__q:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  border-radius: var(--radius-lg);
+}
+
+.faq__q-text {
+  /* Wraps, rather than shoving the plus off the end on a narrow screen. */
+  min-width: 0;
+}
+
+/* A plus made of two bars, one of them rotated. Open, the whole thing turns a
+   quarter turn and it is a cross: same two bars, no second icon to load, and
+   the turn is what says the two states are the same control rather than two
+   different ones. */
+.faq__toggle {
+  position: relative;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  color: var(--ink-faint);
+  transition: transform var(--dur-base) var(--ease),
+              color var(--dur-fast) var(--ease);
+}
+
+.faq__toggle::before,
+.faq__toggle::after {
+  content: '';
+  position: absolute;
+  inset: 50% 0 auto 0;
+  height: 2px;
+  margin-top: -1px;
+  background: currentColor;
+}
+
+.faq__toggle::after {
+  transform: rotate(90deg);
+}
+
+.faq__item[open] .faq__toggle {
+  transform: rotate(45deg);
+  color: var(--accent);
+}
+
+/* Padded to line up with the question above it, and stopped at the reading
+   measure: an answer allowed to run the full width of the column would be a
+   longer line than anything else on the site. */
+.faq__a {
+  padding: 0 var(--space-4) var(--space-4);
   max-width: var(--measure);
+}
+
+.faq__a p {
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+/* The open and shut cannot be animated without script, so the answer fades in
+   instead of appearing hard. Skipped entirely for anybody who has asked for
+   less movement, along with the plus's quarter turn. */
+@media (prefers-reduced-motion: no-preference) {
+  .faq__item[open] .faq__a {
+    animation: faq-answer-in var(--dur-base) var(--ease) both;
+  }
+}
+
+@keyframes faq-answer-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
 }
 
 /* ---- The price rail (homepage) -------------------------------------------
@@ -1055,6 +1215,58 @@
 
 .site-footer__contact a:hover {
   text-decoration-color: var(--accent);
+}
+
+/* ---- The three accounts --------------------------------------------------
+   @picseluk on Facebook, Instagram and TikTok, under the phone and the email
+   because it is a fourth way to reach the same studio.
+
+   Quiet by default and lit on hover. These are the least important links in
+   the footer and there are three of them in a row, which is exactly the shape
+   that turns into a badge rail if they are given any colour of their own. They
+   get the faint ink until you reach for one, and then the accent.
+
+   The box is 44px square whatever the mark inside it measures, so the tap
+   target is the same as every other control on the site rather than being 16px
+   because that is how big the glyph happens to be. */
+.site-social__list {
+  display: flex;
+  gap: var(--space-2);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-social__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  /* Pulled left by the padding, so the first icon lines up with the phone
+     number above it rather than sitting a few pixels inboard of it. */
+  margin-left: calc(var(--tap-min) / -2 + 8px);
+  color: var(--ink-faint);
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.site-social__item:not(:first-child) .site-social__link {
+  margin-left: 0;
+}
+
+.site-social__link:hover,
+.site-social__link:focus-visible {
+  color: var(--accent);
+}
+
+/* The mark itself. fill only, and deliberately NOT stroke: Instagram's rect
+   and lens carry their own stroke="currentColor" in the markup, and setting a
+   stroke here as well would put a 1px outline around Facebook's f and TikTok's
+   note, which are solid shapes and come out looking swollen. */
+.site-social__icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
 }
 
 .site-footer__meta {

@@ -12,10 +12,15 @@
    no page, stylesheet, screenshot or font goes anywhere near it. See worker.js
    for what it does, which is almost nothing.
 
-   The assets directory is the repo root rather than a build output folder,
-   because tools/build.js writes the generated HTML alongside the CSS and JS it
-   references, and the pages link to /base.css and /hero.js at the root. That
-   choice is what makes .assetsignore necessary — see the comments in it. */
+   The assets directory is dist/, which tools/build.js writes from scratch on
+   every run. It holds the generated pages, the minified stylesheets and
+   scripts, and the images and icons those reference. Nothing else.
+
+   It used to be the repo root, with a .assetsignore file naming everything
+   that must not be published. That is a denylist in front of a public
+   directory, and it was already leaking: 70MB of social video under
+   assets/backdrop was on the web because nobody had thought to add a line for
+   it. dist/ makes the default private instead. See tools/assets.js. */
 {
   "name": "picsel",
 
@@ -28,7 +33,7 @@
   "compatibility_date": "2026-08-01",
 
   "assets": {
-    "directory": "./",
+    "directory": "./dist",
 
     /* Lets worker.js hand a request it does not recognise back to the static
        files, by calling env.ASSETS.fetch(). Without this binding the two rules
@@ -43,7 +48,7 @@
     "html_handling": "auto-trailing-slash",
 
     /* An unknown path gets the real 404 page in tools/pages/not-found.js,
-       written to /404.html at the repo root, rather than the homepage or a
+       written to dist/404.html, rather than the homepage or a
        bare blank response. A catch-all serving the homepage would mean every
        typo returns HTTP 200, which is how a site ends up with search engines
        indexing junk URLs; "none" would return an empty 404 with nothing on it

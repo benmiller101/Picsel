@@ -1,114 +1,257 @@
 /* ---- reviews.css — the quoted Google reviews -------------------------------
-   Loaded wherever renderReviews() is placed. Only the homepage does today,
-   but the classes are named for the content ("review", not "home-review") so
-   a service or project page can pull the same partial in later without a
-   second stylesheet.
+   Loaded wherever renderReviews() is placed: the homepage, three service pages
+   and three project pages. Classes are named for the content ("review", not
+   "home-review") so all seven use the one stylesheet.
 
-   The brief for this section is explicit: no frosted glass, no glow, no
-   drop shadow stacked on every card. A hairline rule and honest space are the
-   only materials, the same ones every other section on the site already uses
-   for a divider (.faq__item, .services__item, .plan-rail__item). The quote is
-   the largest text in the block and the attribution is small and quiet,
-   because the point of this section is what the client said, not who is
-   telling you. */
+   The brief for this section has not changed and still rules out the obvious
+   card treatment: no frosted glass, no glow, no stack of soft shadows. What a
+   card gets is the same raised surface and hairline the nav pill already uses,
+   which is the only card-like object anywhere else on this site.
+
+   WHAT CHANGED IS THE SHAPE. This was a two-column grid, and the section grew
+   a row taller with every review Picsel earned. Seven of them made the
+   homepage's testimonial band longer than its work section. A rail is a fixed
+   height whatever the count: past it is one flick, into it is a sideways drag,
+   and the reader picks. */
 
 .reviews {
   padding-block: var(--section-y);
   border-top: 1px solid var(--line);
+  /* The rail below reaches the right edge of the screen deliberately. Without
+     this the page itself gains a horizontal scrollbar, and a page that scrolls
+     sideways is a bug even when one strip inside it is meant to. */
+  overflow-x: clip;
 }
 
-.reviews__heading {
-  max-width: var(--measure);
-  font-size: var(--text-2xl);
+/* The heading and the link to the Google profile, using the same .section-head
+   the questions and the work already use: title left, link opposite, both on
+   one baseline over a hairline. Reusing it rather than styling a second
+   version is what keeps the three section heads on this page identical, which
+   is the only reason they read as one page rather than three.
+
+   The bottom margin goes because the rail below brings its own top margin, and
+   two gaps stacked put the first card a full --space-20 clear of the rule it is
+   meant to sit under. */
+.reviews__head {
+  margin-bottom: 0;
 }
 
-/* One column below the tablet breakpoint, two above it — the same threshold
-   the FAQ grid above this section on the homepage already uses, so the two
-   stacks change shape at the same width instead of one flipping to columns
-   before the other. */
-.reviews__list {
+/* ---- The rail ------------------------------------------------------------
+   Starts at the text column and runs off the right of the screen.
+
+   THE OVERHANG IS THE CONTROL. A card sliced by the edge of the viewport is
+   what tells a reader there is more sideways, and it does that job for
+   everybody without a single arrow, dot or label to build. Which is why the
+   padding is asymmetric: the left has to line up with every other block on the
+   page, and the right must NOT, because a rail that ends tidily inside the
+   column looks finished and nobody drags it.
+
+   scroll-padding matches the left inset so a snapped card lands on the text
+   column rather than hard against the window. */
+.reviews__rail {
   margin-top: var(--space-12);
-  display: grid;
-  gap: var(--space-12);
+  /* The inset that lines the first card up with the heading above it. .wrap
+     centres a --page-max column and pads it by --page-gutter, so on a wide
+     screen its content starts halfway through the leftover space and on a
+     narrow one it starts at the gutter. max() is both cases in one value.
+     Both terms are needed and the first version had only one of them, which
+     left the first card 40px to the left of the heading at 1440: .wrap centres
+     its box AND pads inside it, so the content starts at the centring offset
+     PLUS the gutter, not at whichever of the two is larger. */
+  --rail-inset: calc(max(0px, (100% - var(--page-max)) / 2) + var(--page-gutter));
+
+  padding-inline: var(--rail-inset);
+  padding-block: var(--space-2);
+  scroll-padding-inline-start: var(--rail-inset);
+
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+
+  /* proximity rather than mandatory on purpose. Mandatory fights a reader who
+     is dragging slowly through long quotes, yanking the card they are halfway
+     through reading into place. Proximity tidies the ending of a flick and
+     otherwise leaves them alone. */
 }
 
-@media (min-width: 48rem) {
-  .reviews__list {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-12) var(--space-16);
-  }
-
-  /* Task 13 put this partial on pages carrying one review (custom-tools,
-     lanora-house) or three (websites-for-tradespeople), and the homepage's
-     four-up grid was never built for either count: an odd total leaves the
-     last card alone in the final row with the other column empty beside it,
-     which reads as a broken layout rather than a deliberate one. :last-child
-     combined with :nth-child(odd) catches exactly that trailing orphan —
-     true for review 1 of 1 and review 3 of 3, false throughout the
-     homepage's four — so it fires only where an empty half-row would
-     otherwise appear. Capped to --measure, the same width every paragraph on
-     the site reads at, so that lone card spanning the full grid at 1440px
-     does not turn into a line too long to track back to the start of. */
-  .review:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
-    max-width: var(--measure);
-  }
+/* Tab lands here, because arrow-key scrolling is the keyboard route through a
+   rail and an element only takes arrow keys if it can hold focus. Which means
+   it needs a focus ring, and it needs one that reads as "this strip", not as a
+   line drawn round the whole page. */
+.reviews__rail:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: var(--radius-lg);
 }
 
-.review {
+/* The scrollbar is hidden and the reason is not decoration: this strip sits on
+   a near-black page and a browser's default light scrollbar under it reads as
+   a rendering fault rather than as a control. The overhanging card says the
+   rail moves, the wheel and the drag both work, and the keyboard has the
+   focusable region above. Nothing here is reachable only through the bar. */
+.reviews__rail {
+  scrollbar-width: none;
+}
+
+.reviews__rail::-webkit-scrollbar {
+  display: none;
+}
+
+.reviews__track {
+  display: flex;
+  gap: var(--space-6);
   margin: 0;
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--line);
+  padding: 0;
+  list-style: none;
+  /* So the last card's trailing space exists and it does not sit flush against
+     the edge of the scrollable area at the end of the drag. */
+  padding-inline-end: var(--page-gutter);
+}
+
+.reviews__slide {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  /* Wide enough for a readable measure, narrow enough that a second card is
+     always partly on screen at 1440. min() rather than a breakpoint: on a
+     375px phone this is 84vw, which leaves a visible sliver of the next card
+     without the quote inside it turning into four-word lines. */
+  width: min(84vw, 21rem);
+}
+
+/* ---- One card ------------------------------------------------------------
+   Uniform height across the rail, set by the tallest quote in it, because
+   stretch on the flex items is what makes seven cards read as a row of the
+   same object rather than a skyline. The attribution is pushed to the bottom
+   by the quote's auto margin, so it sits on one line across every card
+   whatever the length of the words above it. */
+.review {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0;
+  /* A floor as well as the content's own height. Without it a rail of short
+     reviews collapses to three lines and a name, which reads as a caption
+     rather than as something somebody sat down and wrote. */
+  min-height: 26rem;
+  padding: var(--space-6);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+}
+
+/* The sprite that holds the star. Out of the flow entirely: it defines the
+   shape and draws nothing itself. */
+.reviews__sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Five stars, in the accent, on their own line above the quote. They took the
+   place of a monogram in a box, which was one letter of somebody's name doing
+   an impression of a profile photograph. A rating is a fact about the review;
+   an initial was decoration standing in for a face that does not exist. */
+.review__rating {
+  display: flex;
+  gap: 3px;
+  margin: 0;
+  color: var(--accent);
+}
+
+/* crispEdges is the whole point. The star is drawn on a nine by nine grid of
+   whole squares, and letting the browser antialias it would round every corner
+   into a grey smudge and turn a pixel star into a small bad star. Off, each
+   square is a square, which is what every other mark on this site is made of. */
+.review__star {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  shape-rendering: crispEdges;
 }
 
 .review__quote {
-  margin: 0;
+  margin: var(--space-6) 0 0;
+  /* Takes the slack, which is what pins the attribution to the bottom. */
+  flex: 1;
 }
 
-/* The largest text in the section, on purpose: a website visitor reading this
-   band is reading someone else's words, not the studio's, and the quote
-   should look like the point rather than like body copy that happens to sit
-   in a box. Snug rather than tight leading, because unlike a heading this is
-   several lines of a sentence someone is meant to actually read. */
+/* Body size, not display size. It was --text-xl, which was right when four
+   quotes were the section and is wrong now: at 21rem wide that set eight-word
+   lines, and a card is a thing you scan before deciding to read it. The quote
+   is still the largest thing on the card and no longer the largest on the
+   page.
+
+   CLAMPED TO EIGHT LINES, and one review is the reason. Brenna's is ninety
+   words, four times the length of the shortest, and because the cards share a
+   height it was setting the height for all seven: the rail came out 430px tall
+   with six cards two thirds empty and the section 1075px, which is no shorter
+   than the grid this replaced and defeats the entire point of it.
+
+   Ten lines, which is generous, and it is generous on purpose: the cards are
+   meant to be tall enough to read a whole review in without the rail turning
+   into a strip of headlines. The clamp caps height rather than reserving it,
+   so the row is as tall as the longest quote still standing and only the two
+   longest reviews are cut at all. */
 .review__quote p {
   margin: 0;
-  font-size: var(--text-xl);
-  line-height: var(--leading-snug);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
   color: var(--ink);
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 10;
+  line-clamp: 10;
+  overflow: hidden;
 }
 
-/* Small and quiet, deliberately the opposite emphasis of the quote above it.
-   Baseline-aligned so the name and the date read as one line of attribution
-   rather than a name with a date stacked awkwardly underneath. */
 .review__who {
   margin-top: var(--space-6);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-2) var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+
+.review__author {
+  display: block;
+  font-style: normal;
   font-size: var(--text-sm);
-  color: var(--ink-faint);
-}
-
-.review__date {
-  color: var(--ink-faint);
-}
-
-.reviews__source {
-  margin-top: var(--space-12);
-  font-size: var(--text-sm);
-  color: var(--ink-faint);
-}
-
-.reviews__source a {
-  color: var(--ink-muted);
-  text-decoration-color: var(--line-strong);
-  text-underline-offset: 0.25em;
-  transition: color var(--dur-fast) var(--ease),
-              text-decoration-color var(--dur-fast) var(--ease);
-}
-
-.reviews__source a:hover {
+  font-weight: var(--weight-medium);
   color: var(--ink);
-  text-decoration-color: var(--accent);
+}
+
+/* Which business, or what the job was. Not a date: "4 August 2026" tells a
+   reader nothing about whether this review is about someone like them.
+
+   THE HEIGHT IS RESERVED WHETHER OR NOT THERE IS ANYTHING IN IT, and that is
+   what makes the names line up along the bottom of the rail. Three reviewers
+   left a name and no business, and on their cards the name was dropping a line
+   to fill the gap, so five names sat on one baseline and three sat lower.
+
+   min-height rather than a non-breaking space, which would be a fake word read
+   out loud by a screen reader. em rather than lh, because lh is younger than
+   the browsers this build targets; 1em of this element at its own line-height
+   is the same number by a longer road. */
+.review__subject {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+  line-height: var(--leading-body);
+
+  /* EXACTLY one line, never none and never two. min-height alone fixed the
+     empty ones and missed the opposite case: "Nevitt Construction, and a
+     custom eBay tool" wrapped to two lines at card width and pushed that one
+     name 25px above the other six, which is the same crooked row the reserved
+     height was added to prevent, arrived at from the other direction.
+
+     A fixed height plus nowrap makes the row one line whatever is in it. The
+     ellipsis is the safety net for a subject somebody writes too long later;
+     the right fix when it appears is to shorten the words in reviews.js, and
+     seeing them cut off is what prompts that. */
+  height: calc(1em * var(--leading-body));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  color: var(--ink-faint);
 }

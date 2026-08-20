@@ -108,6 +108,13 @@
   color: var(--ink);
 }
 
+/* EXPECTED IN `npm run check`. Every .post__ selector paired with a .guide__
+   one below is unused today, because no blog post yet has a list, a table or a
+   figure in it and every guide does. They are not dead code: they are the
+   blog's half of a pair, and deleting them means the next post with a table in
+   it silently loses the styling the guides have had all along. If the check
+   ever reports a .post__ selector whose .guide__ twin is gone too, that one is
+   genuinely dead. */
 .guide__list,
 .post__list,
 .service__list {

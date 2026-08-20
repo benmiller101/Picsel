@@ -1,0 +1,94 @@
+# ---- _headers — the response headers Cloudflare adds to every page ---------
+#
+# Read by Cloudflare at deploy, alongside wrangler.jsonc. Cloudflare consumes
+# this file rather than serving it, so it never appears at picsel.co.uk/_headers
+# and does not belong in .assetsignore.
+#
+# Format: a path pattern on its own line, then one indented `Name: value` per
+# header. Later rules do not merge with earlier ones, so the site-wide block
+# below carries everything that applies everywhere.
+#
+# WHY THIS FILE EXISTS AT ALL. Before it, the site was served with no security
+# headers of any kind: no framing rule, no sniffing rule, no referrer rule, no
+# transport rule, and nothing at all constraining the three third parties the
+# pages load from. Every one of the headers below is a single line that closes
+# a class of problem, and none of them cost a byte of page weight.
+
+/*
+  # ---- What may run, and where it may come from -------------------------
+  #
+  # Enforced, and deliberately narrow. Everything here was checked against
+  # every built page before it was written down:
+  #
+  #   frame-ancestors  Nobody may put this site in an iframe. That is the
+  #                    modern X-Frame-Options and it is the one that browsers
+  #                    actually honour on subframes. Picsel has no embed use.
+  #   base-uri         A <base> tag can silently repoint every relative URL on
+  #                    a page. Nothing here uses one, so nothing may add one.
+  #   object-src       No <object>, <embed> or applet, ever. Legacy plugin
+  #                    surface, zero use on this site.
+  #   form-action      The one form on the site posts to Web3Forms. That is
+  #                    the only address any form here may submit to.
+  #
+  # These four cannot break a page that does not already do the thing they
+  # forbid, and no page here does. So they are enforced from day one rather
+  # than watched.
+  Content-Security-Policy: frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self' https://api.web3forms.com
+
+  # ---- The full policy, watching rather than blocking --------------------
+  #
+  # Same policy as above plus every source directive, reported to the browser
+  # console instead of enforced. It is written from an actual audit of the
+  # built pages: there is not one inline <script> anywhere on the site, the
+  # only scripts are same-origin plus the Cloudflare beacon, and the only
+  # third-party origins are the two font providers.
+  #
+  # THE PLAN FOR THIS LINE. Deploy, then open the console on the homepage,
+  # /prices, /contact and one guide, and look for CSP violation reports. If a
+  # week passes with none, rename this header to Content-Security-Policy,
+  # delete the four-directive line above, and the site is done.
+  #
+  # style-src carries 'unsafe-inline' and that is not laziness. There are six
+  # `style="--card-ratio: ..."` attributes on /work, each one handing a card
+  # its own aspect ratio, and inline style ATTRIBUTES are what that directive
+  # governs. There is no inline <style> block anywhere and no inline script at
+  # all, which is where the risk actually lives. Removing the six attributes
+  # would let this drop to 'self'; until then, saying so here is better than
+  # a policy nobody can explain.
+  #
+  # connect-src names hq.picsel.co.uk because hq-beacon.js sends its two
+  # counts there with navigator.sendBeacon, and cloudflareinsights.com because
+  # that is where the analytics beacon posts.
+  #
+  # Google is not in this policy at all, and that is recent. Lexend and
+  # Pixelify Sans are Open Font Licence and now served from this origin, so
+  # fonts.googleapis.com and fonts.gstatic.com came out of style-src and
+  # font-src along with the requests. Typekit stays: its licence forbids
+  # self-hosting the wordmark faces, so use.typekit.net serves the stylesheet
+  # and p.typekit.net serves the files it names.
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://use.typekit.net; font-src 'self' https://use.typekit.net https://p.typekit.net; img-src 'self' data:; connect-src 'self' https://hq.picsel.co.uk https://api.web3forms.com https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self' https://api.web3forms.com
+
+  # ---- Transport ---------------------------------------------------------
+  #
+  # A year of HSTS, subdomains included. After the first visit the browser
+  # refuses to speak to picsel.co.uk over plain HTTP at all, which closes the
+  # gap between typing the address and the redirect arriving.
+  #
+  # `preload` is deliberately NOT here. It is a one-way door: getting a domain
+  # off the preload list takes months, and it would apply to every subdomain
+  # including hq. Worth doing eventually, and only once hq is settled.
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+  # A .webp served with a wrong content type should fail, not be guessed at.
+  # Sniffing is how a file that is not a script ends up being run as one.
+  X-Content-Type-Options: nosniff
+
+  # Full URL to our own pages, origin only to anyone else. So a visitor who
+  # clicks through from /guides/builder-website-cost/ to a client's real site
+  # hands them "picsel.co.uk", not which guide the reader was on.
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Nothing on this site asks for a camera, a microphone or a location, so
+  # nothing on this site is allowed to ask. Denies it to third-party frames
+  # too, which is most of the point.
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=()

@@ -86,8 +86,13 @@ function organization() {
        Still conditional. If socialProfiles is ever emptied, the key disappears
        rather than rendering as [], because an empty sameAs claims the business
        was checked and has no profiles, which is a different and worse thing to
-       say than nothing. */
-    ...(SITE.socialProfiles.length ? { sameAs: SITE.socialProfiles } : {}),
+       say than nothing.
+
+       Mapped to .href because the entries carry a network name and a handle
+       too, for the footer to draw. sameAs takes URLs and only URLs. */
+    ...(SITE.socialProfiles.length
+      ? { sameAs: SITE.socialProfiles.map((profile) => profile.href) }
+      : {}),
   };
 }
 
