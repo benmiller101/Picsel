@@ -12,6 +12,7 @@
     "shots": "node tools/capture-shots.js",
     "fonts": "node tools/fetch-fonts.js",
     "photo": "node tools/convert-photo.js",
+    "og": "node tools/export-og-card.js",
     "backdrop": "node tools/export-backdrop.js",
     "backdrop:video": "node tools/export-backdrop-video.js"
   },
