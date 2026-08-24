@@ -11,9 +11,19 @@
    There is no server behind this site. The form posts to Web3Forms, which
    receives it and emails it on; contact.js in the site root upgrades that to an
    inline send so nobody is thrown off the page. With JavaScript off the same
-   form still submits as an ordinary HTML post and lands on /contact/sent/. */
+   form still submits as an ordinary HTML post and lands on /contact/sent/.
 
-import { SITE, SHOW_PRICING, absoluteUrl } from '../../site.config.js';
+   THE FORM IS ONE FORM IN THREE FIELDSETS, AND THAT IS THE WHOLE TRICK. Six
+   fields in one column is a wall, and a wall is where somebody reading this
+   between jobs stops. So enquiry-steps.js shows one fieldset at a time: what
+   you need, then the job, then how to reach you. It is the same shape of
+   enhancement as the inline send. Nothing is added to the markup for it and
+   nothing is taken away — the script hides two of the three fieldsets and
+   unhides the controls that move between them, and if it never runs, all
+   three are on screen at once and the form is the plain HTML form it always
+   was. There is still one <form>, one action and one POST. */
+
+import { SITE, absoluteUrl } from '../../site.config.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs } from '../templates/schema.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
@@ -80,24 +90,103 @@ const DIRECT = `        <div class="contact-direct">
           </dl>
         </div>`;
 
-/* ---- The enquiry select ---------------------------------------------------
-   The plan's four options, written the way the person filling the form would
-   say them rather than the way a services page lists them. Someone who wants to
-   be found on Google does not think of it as "SEO & GEO" — that is our word for
+/* ---- Step one: what do you need? ------------------------------------------
+   The four options, written the way the person filling the form would say them
+   rather than the way a services page lists them. Someone who wants to be
+   found on Google does not think of it as "SEO & GEO" — that is our word for
    it, and a form is a bad place to make someone translate.
 
    The `value` keeps the short internal word, so the email that arrives is
-   scannable; the label is what the visitor reads. */
+   scannable; the label is what the visitor reads.
+
+   Radios, not buttons, and that is not a detail. Restyled as cards they look
+   like the four big tappable things the step wants, while the browser keeps
+   doing the work: arrow keys move between them, `required` on the group is
+   real validation, and the answer is in the POST without a line of script. A
+   row of <button>s would mean hand-rolling all three, and would leave anyone
+   without JavaScript with no way to answer the first question at all.
+
+   Each one carries a second line. The four labels alone read as a taxonomy of
+   our services; the notes are there to let somebody recognise their own
+   situation in one of them rather than work out which word we would use. */
 const NEEDS = [
-  { value: 'Website', label: 'A new website' },
-  { value: 'Search', label: 'Getting found on Google' },
-  { value: 'Automation', label: 'A tool to save me time' },
-  { value: 'Other', label: 'Something else' },
+  {
+    value: 'Website',
+    label: 'A new website',
+    note: 'Built from scratch, or replacing one that&rsquo;s letting you down.',
+    /* The tailored second step. Asking "what&rsquo;s the job?" of someone who
+       has just said they want to be found on Google gets you "I want to be
+       found on Google" back. Asking what they want to be found for gets you
+       something worth quoting from. */
+    prompt: 'What does your business do, and what should the site do for it?',
+    hint: 'A couple of lines is plenty. A link to your current site helps if you have one.',
+  },
+  {
+    value: 'Search',
+    label: 'Getting found on Google',
+    note: 'Maps, search results, and what AI assistants say about you.',
+    prompt: 'What do you want to be found for, and where?',
+    hint: 'The jobs you want more of, and the towns you cover.',
+  },
+  {
+    value: 'Automation',
+    label: 'A tool to save me time',
+    note: 'Quotes, bookings, paperwork: whatever you do by hand every week.',
+    prompt: 'What keeps eating your time?',
+    hint: 'How you do it now is the useful part, however clunky.',
+  },
+  {
+    value: 'Other',
+    label: 'Something else',
+    note: 'Not sure which of these it is. Tell us anyway.',
+    prompt: 'What&rsquo;s on your mind?',
+    hint: 'A couple of lines is plenty.',
+  },
 ];
 
-const NEED_OPTIONS = NEEDS.map(
-  ({ value, label }) => `                <option value="${escapeHtml(value)}">${escapeHtml(label)}</option>`,
+/* What step two says before anybody has answered step one, and what it says
+   for good with JavaScript off. Every tailored variant above ships hidden and
+   is revealed by enquiry-steps.js; this one ships visible, so the field is
+   never unlabelled. */
+const NEED_FALLBACK = {
+  prompt: 'What&rsquo;s the job?',
+  hint: 'A couple of lines is plenty.',
+};
+
+const NEED_CARDS = NEEDS.map(
+  ({ value, label, note }, index) => `                <label class="enquiry-option">
+                  <input class="enquiry-option__input"
+                         type="radio"
+                         id="enquiry-need-${index + 1}"
+                         name="need"
+                         value="${escapeHtml(value)}"
+                         required />
+                  <span class="enquiry-option__body">
+                    <span class="enquiry-option__label">${escapeHtml(label)}</span>
+                    <span class="enquiry-option__note">${note}</span>
+                  </span>
+                </label>`,
 ).join('\n');
+
+/* One <span> per answer, all but the fallback shipped hidden. The script
+   swaps which is visible; it never writes the words itself, so the copy lives
+   here beside the option it belongs to rather than in a string table in a
+   different file. */
+const NEED_PROMPTS = [
+  `                <span class="enquiry-prompt" data-need="">${NEED_FALLBACK.prompt}</span>`,
+  ...NEEDS.map(
+    ({ value, prompt }) =>
+      `                <span class="enquiry-prompt" data-need="${escapeHtml(value)}" hidden>${prompt}</span>`,
+  ),
+].join('\n');
+
+const NEED_HINTS = [
+  `                <span class="enquiry-prompt" data-need="">${NEED_FALLBACK.hint}</span>`,
+  ...NEEDS.map(
+    ({ value, hint }) =>
+      `                <span class="enquiry-prompt" data-need="${escapeHtml(value)}" hidden>${hint}</span>`,
+  ),
+].join('\n');
 
 /* ---- Where the enquiry came from ------------------------------------------
    The measurement rules ask for this because an AI-driven enquiry does not
@@ -139,12 +228,20 @@ function renderForm() {
   return `        <section class="enquiry" id="enquiry" aria-labelledby="enquiry-heading">
           <h2 class="enquiry__heading" id="enquiry-heading">Or send us the details</h2>
           <p class="enquiry__lede">
-            Tell us what your business does and what you want the site to do. We&rsquo;ll come back
-            with what&rsquo;s involved and what it would cost.${
-              SHOW_PRICING
-                ? ' If you&rsquo;d rather see the numbers first, they&rsquo;re on the <a href="/prices/">prices page</a>.'
-                : ''
-            }
+            <!-- Three questions, not three screens. The form only splits into
+                 steps when enquiry-steps.js runs, so a lede that promised
+                 screens would be describing something half the sentence's
+                 readers cannot see. Three questions is true either way.
+
+                 THE LINK TO /prices/ THAT USED TO END THIS SENTENCE HAS GONE,
+                 AND IT SHOULD NOT COME BACK. It was a way off the page, sat
+                 one line above the first question, on the one page whose only
+                 job is getting the form filled in. Anyone who wants the
+                 numbers before enquiring has already passed Prices in the nav
+                 and in the footer; anyone who has got this far is here to
+                 send something. -->
+            Answer three questions and we&rsquo;ll come back with what&rsquo;s involved and what
+            it would cost.
           </p>
 
           <form class="enquiry-form"
@@ -167,82 +264,153 @@ function renderForm() {
               <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" />
             </label>
 
-            <div class="field">
-              <label class="field__label" for="enquiry-name">Your name</label>
-              <input class="field__input"
-                     id="enquiry-name"
-                     name="name"
-                     type="text"
-                     autocomplete="name"
-                     required />
-            </div>
+            <!-- The progress trail, and the way back to anything already
+                 answered. Shipped hidden: without enquiry-steps.js there are
+                 no steps to be part of the way through, so a trail claiming
+                 otherwise would be furniture that lies. A real <ol>, because
+                 three numbered stages in a fixed order is a list, and each
+                 stage is a <button> rather than an anchor because it changes
+                 what is on screen instead of going anywhere. -->
+            <ol class="enquiry-steps" id="enquiry-steps" hidden>
+              <li class="enquiry-steps__item">
+                <button class="enquiry-steps__step" type="button" data-goto="1" disabled>
+                  <span class="enquiry-steps__num" aria-hidden="true">1</span>
+                  <span class="enquiry-steps__name">What you need</span>
+                </button>
+              </li>
+              <li class="enquiry-steps__item">
+                <button class="enquiry-steps__step" type="button" data-goto="2" disabled>
+                  <span class="enquiry-steps__num" aria-hidden="true">2</span>
+                  <span class="enquiry-steps__name">The job</span>
+                </button>
+              </li>
+              <li class="enquiry-steps__item">
+                <button class="enquiry-steps__step" type="button" data-goto="3" disabled>
+                  <span class="enquiry-steps__num" aria-hidden="true">3</span>
+                  <span class="enquiry-steps__name">Your details</span>
+                </button>
+              </li>
+            </ol>
 
-            <div class="field">
-              <label class="field__label" for="enquiry-email">Email</label>
-              <input class="field__input"
-                     id="enquiry-email"
-                     name="email"
-                     type="email"
-                     autocomplete="email"
-                     required />
-            </div>
+            <!-- ONE FORM, THREE FIELDSETS. Not three forms, and not three
+                 pages. The send stays a single POST, so nothing about the
+                 inline send below has to know that stepping exists, and with
+                 JavaScript off all three fieldsets are simply on screen at
+                 once and the page behaves exactly as it did before any of
+                 this was added. A fieldset with a legend is also already the
+                 markup for "these fields belong to one question", which is
+                 what a step is. -->
+            <fieldset class="enquiry-step" data-step="1">
+              <legend class="enquiry-step__legend" tabindex="-1">
+                <span class="visually-hidden">Step 1 of 3. </span>What do you need?
+              </legend>
 
-            <div class="field">
-              <label class="field__label" for="enquiry-phone">
-                Phone <span class="field__optional">optional</span>
-              </label>
-              <!-- type="tel" so a phone shows the number keypad. inputmode is
-                   belt and braces for the browsers that ignore it. -->
-              <input class="field__input"
-                     id="enquiry-phone"
-                     name="phone"
-                     type="tel"
-                     inputmode="tel"
-                     autocomplete="tel"
-                     aria-describedby="enquiry-phone-hint" />
-              <p class="field__hint" id="enquiry-phone-hint">Worth adding if you&rsquo;d rather we rang you.</p>
-            </div>
+              <div class="enquiry-options">
+${NEED_CARDS}
+              </div>
 
-            <div class="field">
-              <label class="field__label" for="enquiry-need">What do you need?</label>
-              <select class="field__input field__select" id="enquiry-need" name="need" required>
-                <!-- An empty value, plus required on the select, is what makes
-                     the browser treat this prompt as "nothing chosen yet"
-                     rather than as an answer. -->
-                <option value="" selected disabled>Choose one</option>
-${NEED_OPTIONS}
-              </select>
-            </div>
+              <div class="enquiry-step__foot">
+                <button class="btn btn--secondary" type="button" data-next hidden>Continue</button>
+              </div>
+            </fieldset>
 
-            <div class="field">
-              <label class="field__label" for="enquiry-source">
-                How did you hear about us? <span class="field__optional">optional</span>
-              </label>
-              <select class="field__input field__select" id="enquiry-source" name="source">
+            <fieldset class="enquiry-step" data-step="2">
+              <legend class="enquiry-step__legend" tabindex="-1">
+                <span class="visually-hidden">Step 2 of 3. </span>Tell us about the job
+              </legend>
+
+              <div class="field">
+                <!-- Five labels in one, four of them hidden. The script shows
+                     the one matching step 1; the empty data-need is the
+                     fallback, and it is the visible one in the markup so the
+                     field is never unlabelled. -->
+                <label class="field__label" for="enquiry-message">
+${NEED_PROMPTS}
+                </label>
+                <!-- Deliberately NOT required. The message is the field most
+                     likely to make somebody reading this in a van decide it
+                     can wait until later, and later never comes. A name, an
+                     email and "a new website" is already an enquiry worth
+                     ringing back. -->
+                <textarea class="field__input field__textarea"
+                          id="enquiry-message"
+                          name="message"
+                          rows="6"
+                          aria-describedby="enquiry-message-hint"></textarea>
+                <p class="field__hint" id="enquiry-message-hint">
+${NEED_HINTS}
+                </p>
+              </div>
+
+              <div class="enquiry-step__foot">
+                <button class="enquiry-back" type="button" data-back hidden>Back</button>
+                <!-- One button, two labels. Empty box and it offers to skip;
+                     start typing and it becomes Continue. A separate Skip
+                     button beside a Continue button that did the same thing
+                     would be two controls for one action. -->
+                <button class="btn btn--secondary" type="button" data-next data-empty-label="Skip this" hidden>Continue</button>
+              </div>
+            </fieldset>
+
+            <fieldset class="enquiry-step" data-step="3">
+              <legend class="enquiry-step__legend" tabindex="-1">
+                <span class="visually-hidden">Step 3 of 3. </span>How do we reach you?
+              </legend>
+
+              <div class="field">
+                <label class="field__label" for="enquiry-name">Your name</label>
+                <input class="field__input"
+                       id="enquiry-name"
+                       name="name"
+                       type="text"
+                       autocomplete="name"
+                       required />
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="enquiry-email">Email</label>
+                <input class="field__input"
+                       id="enquiry-email"
+                       name="email"
+                       type="email"
+                       autocomplete="email"
+                       required />
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="enquiry-phone">
+                  Phone <span class="field__optional">optional</span>
+                </label>
+                <!-- type="tel" so a phone shows the number keypad. inputmode is
+                     belt and braces for the browsers that ignore it. -->
+                <input class="field__input"
+                       id="enquiry-phone"
+                       name="phone"
+                       type="tel"
+                       inputmode="tel"
+                       autocomplete="tel"
+                       aria-describedby="enquiry-phone-hint" />
+                <p class="field__hint" id="enquiry-phone-hint">Worth adding if you&rsquo;d rather we rang you.</p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="enquiry-source">
+                  How did you hear about us? <span class="field__optional">optional</span>
+                </label>
+                <select class="field__input field__select" id="enquiry-source" name="source">
 ${SOURCE_OPTIONS}
-              </select>
-            </div>
+                </select>
+              </div>
 
-            <div class="field">
-              <label class="field__label" for="enquiry-message">What&rsquo;s the job?</label>
-              <textarea class="field__input field__textarea"
-                        id="enquiry-message"
-                        name="message"
-                        rows="6"
-                        aria-describedby="enquiry-message-hint"
-                        required></textarea>
-              <!-- Deliberately not repeating the instruction above the form.
-                   It said what to write; saying it again under the box is the
-                   same sentence twice on one screen. -->
-              <p class="field__hint" id="enquiry-message-hint">A couple of lines is plenty.</p>
-            </div>
+              <div class="enquiry-step__foot">
+                <button class="enquiry-back" type="button" data-back hidden>Back</button>
+                <button class="btn btn--primary" type="submit">Send enquiry</button>
+              </div>
 
-            <div class="enquiry-form__foot">
-              <button class="btn btn--primary" type="submit">Send enquiry</button>
               <p class="enquiry-form__privacy">
                 We use these details to reply to you and nothing else.
               </p>
-            </div>
+            </fieldset>
 
             <!-- Where the inline result appears once JavaScript takes the send
                  over. role="status" announces it without interrupting whatever

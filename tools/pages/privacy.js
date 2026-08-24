@@ -36,12 +36,21 @@
    the same breadcrumbs pattern, the same reliance on site.config.js for every
    fact that could otherwise drift out of sync with the page it is describing.
 
-   THE ANALYTICS WORDING IS DELIBERATE. SITE.analytics.tokenIsPlaceholder is
-   still true at the time this page is written, so the Cloudflare beacon does
-   not render and no visit is currently being counted. The paragraph below is
-   worded so it stays true either way: it describes what counting a visit
-   would involve rather than asserting that one is happening right now. When
-   the real token is pasted in, nothing here needs to change. */
+   THE ANALYTICS WORDING IS DELIBERATE, AND IT HAS CHANGED ONCE ALREADY. It
+   used to describe what counting a visit *would* involve, because the
+   Cloudflare token was a placeholder and nothing was being counted. Both
+   counters are live now and the section says so outright.
+
+   The cookie claim survives Google Analytics only because of how the tag is
+   configured in tools/templates/page.js: consent mode denies every storage
+   type before the config call runs, and the config sets client_storage to
+   none, so no _ga cookie is ever written. THAT CONFIGURATION IS WHAT THIS
+   PAGE IS PROMISING. Anyone who removes those lines, or pastes the plain
+   three-line snippet from the GA4 setup screen over the top of them, breaks a
+   published privacy policy and lands the site the wrong side of PECR at the
+   same time. The wording here names the storage decision instead of hiding
+   behind a bare "no cookies", so a reader who knows what GA4 normally does
+   has something to check rather than a claim to disbelieve. */
 
 import { SITE } from '../../site.config.js';
 import { escapeHtml } from '../templates/page.js';
@@ -122,9 +131,18 @@ const SECTIONS = [
     paragraphs: [
       'Nothing on this site sets a cookie: not us, not Cloudflare, not Adobe and not Google. ' +
         'That&rsquo;s the plain reason there&rsquo;s no banner, because there&rsquo;s nothing ' +
-        'to accept. Any counting of visits happens through Cloudflare Web Analytics, which ' +
-        'works without cookies and without collecting anything that identifies you personally. ' +
-        'The site&rsquo;s hosted on Cloudflare too, so their servers see your IP address the ' +
+        'to accept.',
+      /* The claim above is only true because of how the tag is configured, so
+         the sentence that follows has to say so. A reader who knows what GA4
+         normally does will not believe a bare "no cookies" on a page that also
+         admits to running it. */
+      'Two things count visits here. Cloudflare Web Analytics works without cookies by ' +
+        'design. Google Analytics normally doesn&rsquo;t, so we&rsquo;ve set it up to store ' +
+        'nothing on your device: no cookie, nothing kept between one visit and the next. It ' +
+        'costs us the ability to tell a returning visitor from a new one. We&rsquo;d rather ' +
+        'lose that than put a banner in front of you. Google still sees your IP address when ' +
+        'the tag loads, the same way it does when the page fetches its lettering.',
+      'The site&rsquo;s hosted on Cloudflare too, so their servers see your IP address the ' +
         'same way Adobe&rsquo;s and Google&rsquo;s do.',
     ],
   },
@@ -159,11 +177,12 @@ const MAIN = `    <article class="section guide">
       <div class="wrap guide__inner">
         <p class="guide__answer">
           This site doesn&rsquo;t set cookies, so there&rsquo;s nothing to consent to and no
-          banner asking you to accept anything. Two things do leave your browser. Every page
+          banner asking you to accept anything. Three things do leave your browser. Every page
           fetches its lettering from Adobe and Google, which means both of them see your IP
-          address, and an enquiry reaches Ben&rsquo;s inbox through Web3Forms, the company that
-          relays the form. Nobody else reads it, we never sell it or pass it on, and you can
-          ask for a copy or ask us to delete it whenever you like.
+          address. Visits are counted by Cloudflare and by Google Analytics, both set up to
+          store nothing on your device. And an enquiry reaches Ben&rsquo;s inbox through
+          Web3Forms, the company that relays the form. Nobody else reads it, we never sell it
+          or pass it on, and you can ask for a copy or ask us to delete it whenever you like.
         </p>
 
 ${renderArticleSections(SECTIONS, 'guide')}

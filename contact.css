@@ -15,7 +15,7 @@
 
    From the desktop breakpoint the two sit side by side, details narrower. They
    are not equal halves — one is three lines and a phone number, the other is
-   five fields — and giving them matching columns would leave the left one
+   three steps of it — and giving them matching columns would leave the left one
    stranded in white space. */
 /* No padding above: the head's own bottom padding is the whole gap. Stacking
    both section paddings left nearly a screen of empty near-black between "Get
@@ -157,8 +157,9 @@
   color: var(--ink);
 }
 
-/* Marking the optional field rather than starring the required ones. Four of
-   the five are required, so asterisks everywhere would be noise around the one
+/* Marking the optional fields rather than starring the required ones. Only the
+   name and the email are compulsory now, but they are also the two nobody
+   needs telling about, so asterisks everywhere would be noise around the one
    piece of information that is actually useful. */
 .field__optional {
   font-size: var(--text-xs);
@@ -227,6 +228,284 @@
   color: var(--ink-faint);
 }
 
+/* ---- The three steps ------------------------------------------------------
+   THIS RULE IS LOAD-BEARING AND IT LOOKS LIKE HOUSEKEEPING. The user-agent's
+   `[hidden] { display: none }` is a UA-origin rule, and CSS resolves origin
+   before specificity, so any author-origin `display` beats it. `.btn` in
+   site.css sets `display: inline-flex`, which means the Back and Continue
+   buttons would be on screen with JavaScript off despite shipping hidden —
+   two controls that lead nowhere sitting under a form that does not step.
+   Same reasoning, same fix, as .sticky-cta[hidden] in site.css. */
+.enquiry-form [hidden] {
+  display: none;
+}
+
+/* A fieldset is the right element and it brings a hundred years of browser
+   defaults with it: a border, its own padding, a minimum width that ignores
+   the grid it is sitting in. All of it goes.
+
+   Laid out with margins between children rather than a grid, because a legend
+   is not an ordinary child — browsers render it against the border box and
+   its behaviour inside a grid or flex container still differs between them.
+   Margins work the same everywhere. */
+.enquiry-step {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.enquiry-step > * + * {
+  margin-top: var(--space-6);
+}
+
+.enquiry-step__legend {
+  padding: 0;
+  font-size: var(--text-lg);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+/* The reveal. One short fade and rise as a step arrives, and nothing else on
+   the form moves: enough to say "this replaced that" to somebody who tapped a
+   card and is now looking at a different question, without turning a form into
+   a slideshow. */
+@media (prefers-reduced-motion: no-preference) {
+  .enquiry-form.is-stepped .enquiry-step:not([hidden]) {
+    animation: enquiry-step-in var(--dur-base) var(--ease) both;
+  }
+}
+
+@keyframes enquiry-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+
+/* ---- The trail ------------------------------------------------------------
+   Where you are, and the way back to anything already answered. Never a way
+   forward: enquiry-steps.js leaves the steps you have not reached disabled, so
+   this cannot be used to jump past a question.
+
+   Shipped hidden in the markup, so none of this applies until the script that
+   makes the steps real has run. */
+.enquiry-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.enquiry-steps__step {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  /* Under the 44px tap minimum on purpose, and the only control on the site
+     allowed to be. It is a shortcut back to something already answered, never
+     the way forward, and every step it can reach is also reachable with the
+     Back button below, which is full size. Sizing three of these to 44px would
+     put a row of buttons the height of the submit across the top of the form
+     and make the trail compete with the question. */
+  min-height: 2rem;
+  padding: 0;
+  border: 0;
+  background: none;
+
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.enquiry-steps__step[disabled] {
+  cursor: default;
+}
+
+.enquiry-steps__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font-size: var(--text-xs);
+  transition: border-color var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease);
+}
+
+.enquiry-steps__step.is-current {
+  color: var(--ink);
+}
+
+.enquiry-steps__step.is-current .enquiry-steps__num {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* Answered, and still reachable. Ink rather than the accent, because the
+   accent marks one thing at a time and on this form it marks where you are. */
+.enquiry-steps__step.is-done {
+  color: var(--ink);
+}
+
+.enquiry-steps__step.is-done .enquiry-steps__num {
+  border-color: var(--line-strong);
+}
+
+.enquiry-steps__step.is-done:hover .enquiry-steps__num {
+  border-color: var(--ink);
+}
+
+/* At 375px the three names and their numbers run to two cramped lines. The
+   names go, the numbers stay, and the names are hidden the accessible way
+   rather than with display:none, so a screen reader still says "What you need"
+   instead of reading out a bare 1. */
+@media (max-width: 26rem) {
+  .enquiry-steps__name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* ---- Step one's cards -----------------------------------------------------
+   Four radios that do not look like radios. The input is still there, still
+   focusable and still doing the validation; it is moved off the visual layer
+   and the label's body is what gets drawn.
+
+   Everything below hangs off :checked and :focus-visible on the input via the
+   sibling combinator rather than :has() on the label. Same result, and it
+   works in every browser that will ever load this page. */
+.enquiry-options {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.enquiry-option {
+  display: block;
+  position: relative;
+  cursor: pointer;
+}
+
+.enquiry-option__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.enquiry-option__body {
+  display: grid;
+  gap: var(--space-1);
+  /* Room down the left for the dot below. */
+  padding: var(--space-4) var(--space-4) var(--space-4) var(--space-12);
+  min-height: var(--tap-min);
+
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  transition: border-color var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease);
+}
+
+/* The dot. Drawn rather than left to the native control, because a native
+   radio on a dark page is coloured by the operating system and this one has to
+   agree with the accent the rest of the form uses. */
+.enquiry-option__body::before {
+  content: '';
+  position: absolute;
+  left: var(--space-4);
+  top: calc(var(--space-4) + 0.25rem);
+  width: 1.1rem;
+  height: 1.1rem;
+
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  transition: border-color var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease);
+}
+
+.enquiry-option:hover .enquiry-option__body {
+  border-color: var(--line-strong);
+}
+
+.enquiry-option__input:checked + .enquiry-option__body {
+  border-color: var(--accent);
+}
+
+/* An inset shadow rather than a nested element: the filled centre is the same
+   circle, shrunk from the edge inwards. */
+.enquiry-option__input:checked + .enquiry-option__body::before {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 0.28rem var(--accent);
+}
+
+/* base.css puts the focus ring on the input itself, and here the input is a
+   1px sliver behind the card, so the ring would land on nothing anyone can
+   see. It is moved onto the card instead. The values are copied from the
+   accessibility floor in base.css rather than tokenised, because that rule is
+   written in literals too and inventing a token here would leave the site with
+   one ring described two ways. */
+.enquiry-option__input:focus-visible + .enquiry-option__body {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.enquiry-option__label {
+  font-size: var(--text-base);
+  color: var(--ink);
+}
+
+.enquiry-option__note {
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
+
+/* ---- Moving on ------------------------------------------------------------ */
+
+.enquiry-step__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+
+/* Back is not a third button style, it is the absence of one. site.css allows
+   exactly two, on the grounds that a third is usually a page asking for too
+   much at once, and this agrees with it: Back is a plain word with a tap
+   target around it, deliberately quieter than anything that moves you on. */
+.enquiry-back {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+  padding: 0;
+  border: 0;
+  background: none;
+
+  font-size: var(--text-base);
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.enquiry-back:hover {
+  color: var(--ink);
+}
+
 /* ---- The honeypot ---------------------------------------------------------
    Taken off-screen rather than hidden with display:none. Two reasons: the
    crawlers this is meant to catch check for display:none and skip the field,
@@ -244,13 +523,9 @@
 
 /* ---- Submit --------------------------------------------------------------- */
 
-.enquiry-form__foot {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-4) var(--space-6);
-}
-
+/* The submit button's row is .enquiry-step__foot now, shared with the Back and
+   Continue rows above it, so the one this file used to keep for it alone has
+   gone. Three feet described identically was three chances to change two. */
 .enquiry-form__privacy {
   font-size: var(--text-sm);
   color: var(--ink-faint);

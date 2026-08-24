@@ -299,12 +299,54 @@ const FOOTER_YEAR = new Date().getFullYear();
 
    Not rendered while the token is a placeholder. A beacon pointing at no
    property is a request every visitor pays for and nobody reads. */
-function renderAnalytics() {
+function renderCloudflareAnalytics() {
   if (SITE.analytics.tokenIsPlaceholder) return '';
   return (
     '  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" ' +
     `data-cf-beacon='{"token": "${escapeHtml(SITE.analytics.cloudflareToken)}"}'></script>\n`
   );
+}
+
+/* Google Analytics 4, deliberately cookieless.
+
+   THE ORDER OF THESE THREE CALLS IS LOAD-BEARING. The consent default has to
+   be pushed onto the dataLayer before the config call, because gtag applies
+   whatever consent state it holds at the moment a config runs and does not
+   retroactively withdraw storage it has already written. Move the default
+   below the config and the first page view of every visit writes a _ga cookie
+   before the denial arrives, which is precisely the outcome this is here to
+   prevent. `client_storage: 'none'` on the config is the second lock on the
+   same door: consent mode governs Google's own storage, that governs gtag's.
+
+   Written out here rather than pasted from the GA4 setup screen, which hands
+   you the three-line snippet with no consent call in it at all.
+
+   The script tag is `async` and everything below it runs from the dataLayer
+   queue, so nothing here waits on the network. If gtag.js never loads, the
+   pushes pile up in an array nobody reads and the page is unaffected.
+
+   See site.config.js for what this configuration costs in data quality. */
+function renderGoogleAnalytics() {
+  if (SITE.analytics.googleIdIsPlaceholder) return '';
+  const id = escapeHtml(SITE.analytics.googleMeasurementId);
+  return `  <script async src="https://www.googletagmanager.com/gtag/js?id=${id}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: 'denied',
+    });
+    gtag('js', new Date());
+    gtag('config', '${id}', { client_storage: 'none' });
+  </script>
+`;
+}
+
+function renderAnalytics() {
+  return `${renderCloudflareAnalytics()}${renderGoogleAnalytics()}`;
 }
 
 /**

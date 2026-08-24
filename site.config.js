@@ -194,14 +194,40 @@ export const SITE = {
      it changes everywhere; do not soften it in one place. */
   responsePromise: 'Send an enquiry on a weekday and you will hear back the same day.',
 
-  /* Cloudflare Web Analytics. Cookie free, so there is nothing to consent to
-     and no banner: that is why it was chosen over GA4, not a happy accident.
-     The token is not a secret. It identifies the site, it is visible in the
-     page source of every site that uses it, and it grants no access to
-     anything. Paste it from Cloudflare, Analytics and Logs, Web Analytics. */
+  /* Two counters, and the reason there are two is the whole point of this
+     block.
+
+     Cloudflare Web Analytics is cookie free. That is why it was chosen first,
+     not a happy accident, and it stays as the baseline that keeps working if
+     anything about the Google tag ever has to come out.
+
+     Google Analytics runs alongside it in a cookieless configuration: consent
+     mode defaults every storage type to denied and the config sets
+     client_storage to none, so gtag never writes the _ga cookie it would
+     normally set on the first page. That is not a nicety. The privacy page
+     says in a heading that nothing here sets a cookie and there is therefore
+     no banner, and a standard GA4 tag would make both halves of that sentence
+     false and put the site the wrong side of PECR at the same time. What is
+     lost is returning visitor identification: without storage there is nothing
+     to recognise anyone by, so every visit counts as a new one and the users
+     number is really a visits number. Session and engagement figures are
+     affected the same way. Read them knowing that.
+
+     If that trade ever stops being worth it, the honest fix is a consent
+     banner and a rewritten privacy page, not quietly turning storage back on.
+
+     Neither identifier is a secret. Both identify the site, both are visible
+     in the page source of every site that uses them, and neither grants access
+     to anything. The Cloudflare token comes from Cloudflare, Analytics and
+     Logs, Web Analytics; the measurement ID from the GA4 property's data
+     stream. */
   analytics: {
     cloudflareToken: 'c188a5b33e2f48fe83bab3a27266377d',
     tokenIsPlaceholder: false,
+    /* Same placeholder discipline as the token above: a tag pointing at no
+       property is a request every visitor pays for and nobody reads. */
+    googleMeasurementId: 'G-RLXTVQ5PED',
+    googleIdIsPlaceholder: false,
   },
 
   /* ---- Picsel HQ call and enquiry counting --------------------------------

@@ -151,11 +151,12 @@
       <div class="wrap guide__inner">
         <p class="guide__answer">
           This site doesn&rsquo;t set cookies, so there&rsquo;s nothing to consent to and no
-          banner asking you to accept anything. Two things do leave your browser. Every page
+          banner asking you to accept anything. Three things do leave your browser. Every page
           fetches its lettering from Adobe and Google, which means both of them see your IP
-          address, and an enquiry reaches Ben&rsquo;s inbox through Web3Forms, the company that
-          relays the form. Nobody else reads it, we never sell it or pass it on, and you can
-          ask for a copy or ask us to delete it whenever you like.
+          address. Visits are counted by Cloudflare and by Google Analytics, both set up to
+          store nothing on your device. And an enquiry reaches Ben&rsquo;s inbox through
+          Web3Forms, the company that relays the form. Nobody else reads it, we never sell it
+          or pass it on, and you can ask for a copy or ask us to delete it whenever you like.
         </p>
         <section class="guide__section">
           <h2>If you send us an enquiry</h2>
@@ -176,7 +177,9 @@
         </section>
         <section class="guide__section">
           <h2>No cookies, so no banner</h2>
-          <p>Nothing on this site sets a cookie: not us, not Cloudflare, not Adobe and not Google. That&rsquo;s the plain reason there&rsquo;s no banner, because there&rsquo;s nothing to accept. Any counting of visits happens through Cloudflare Web Analytics, which works without cookies and without collecting anything that identifies you personally. The site&rsquo;s hosted on Cloudflare too, so their servers see your IP address the same way Adobe&rsquo;s and Google&rsquo;s do.</p>
+          <p>Nothing on this site sets a cookie: not us, not Cloudflare, not Adobe and not Google. That&rsquo;s the plain reason there&rsquo;s no banner, because there&rsquo;s nothing to accept.</p>
+          <p>Two things count visits here. Cloudflare Web Analytics works without cookies by design. Google Analytics normally doesn&rsquo;t, so we&rsquo;ve set it up to store nothing on your device: no cookie, nothing kept between one visit and the next. It costs us the ability to tell a returning visitor from a new one. We&rsquo;d rather lose that than put a banner in front of you. Google still sees your IP address when the tag loads, the same way it does when the page fetches its lettering.</p>
+          <p>The site&rsquo;s hosted on Cloudflare too, so their servers see your IP address the same way Adobe&rsquo;s and Google&rsquo;s do.</p>
         </section>
         <section class="guide__section">
           <h2>Ask for a copy, or ask us to delete it</h2>
@@ -271,6 +274,19 @@
           data-hq-key="3c83b56ef65096f927cf8bb5fdf0e8b9"
           data-hq-host="picsel.co.uk"></script>
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "c188a5b33e2f48fe83bab3a27266377d"}'></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RLXTVQ5PED"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: 'denied',
+    });
+    gtag('js', new Date());
+    gtag('config', 'G-RLXTVQ5PED', { client_storage: 'none' });
+  </script>
   <script type="module" src="/page-blob.js"></script>
 </body>
 </html>

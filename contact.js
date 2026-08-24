@@ -15,6 +15,12 @@
    arrived, reaches the counter. */
 import { reportEnquiry } from './hq-beacon.js';
 
+/* The other half of the enhancement: the same form, shown one step at a time.
+   It is imported rather than loaded separately so the two cannot get out of
+   order — the submit handler below has to know whether stepping is on before
+   it decides who validates. */
+import { initEnquirySteps } from './enquiry-steps.js';
+
 const form = document.getElementById('enquiry-form');
 const status = document.getElementById('enquiry-status');
 
@@ -24,14 +30,39 @@ if (form && status) {
   const button = form.querySelector('button[type="submit"]');
   const buttonLabel = button ? button.textContent : '';
 
+  /* null when the stepped markup is not there, which is the signal to leave
+     validation to the browser exactly as this file always did. */
+  const steps = initEnquirySteps(form);
+
   form.addEventListener('submit', async (event) => {
-    /* Let the browser have first refusal. checkValidity() reports whether the
-       required fields are filled and the email looks like one; when it fails we
-       do not preventDefault, so the browser shows its own message on the
-       offending field. Those messages are translated into the visitor's
-       language and announced by screen readers, which a hand-rolled set of
-       error strings would not be. */
-    if (!form.checkValidity()) return;
+    /* Two ways to reach the same answer, and which one runs depends on whether
+       the form is stepped.
+
+       Unstepped, the browser has first refusal: checkValidity() reports
+       whether the required fields are filled and the email looks like one, and
+       when it fails we do not preventDefault, so the browser shows its own
+       message on the offending field.
+
+       Stepped, the required fields on the steps you are not looking at are
+       hidden, and a browser cannot show a message on a field it cannot focus.
+       So enquiry-steps.js walks the steps, brings the first bad one into view
+       and asks the browser to complain there. Either way the message the
+       visitor reads is the browser's own: translated into their language and
+       announced by screen readers, which a hand-rolled set of error strings
+       would not be.
+
+       The stepped branch preventDefaults on failure and the unstepped one does
+       not, and that difference is deliberate. Stepping sets form.noValidate,
+       so without preventDefault an invalid form would post to Web3Forms with
+       fields missing. */
+    if (steps) {
+      if (!steps.firstInvalidStep()) {
+        event.preventDefault();
+        return;
+      }
+    } else if (!form.checkValidity()) {
+      return;
+    }
 
     event.preventDefault();
 
@@ -78,6 +109,10 @@ if (form && status) {
            working one. */
         reportEnquiry();
         form.reset();
+        /* Order matters by a hair: reset first, so nothing is left in the
+           fields, then take the steps off screen so the empty form is not
+           sitting under the thank-you looking like a second go. */
+        if (steps) steps.complete();
         setStatus('Thanks, that’s arrived. We’ll come back to you.', 'ok');
       } else {
         /* Deliberately not showing the API's own message. It is written for a
