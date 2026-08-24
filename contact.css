@@ -266,22 +266,23 @@
   color: var(--ink);
 }
 
-/* The reveal. One short fade and rise as a step arrives, and nothing else on
-   the form moves: enough to say "this replaced that" to somebody who tapped a
-   card and is now looking at a different question, without turning a form into
-   a slideshow. */
-@media (prefers-reduced-motion: no-preference) {
-  .enquiry-form.is-stepped .enquiry-step:not([hidden]) {
-    animation: enquiry-step-in var(--dur-base) var(--ease) both;
-  }
-}
+/* THERE IS DELIBERATELY NO REVEAL ANIMATION HERE, AND IT SHOULD NOT COME BACK.
+   A step used to fade and rise as it arrived. Two things were wrong with it.
 
-@keyframes enquiry-step-in {
-  from {
-    opacity: 0;
-    transform: translateY(0.5rem);
-  }
-}
+   It restarted on every reveal, Back and a jump from the trail included, so
+   moving between steps at any speed read as flicker rather than as motion.
+   The step change is already obvious without it: the entire question on screen
+   has been replaced.
+
+   And it was written with `both`, whose `forwards` half left the finished
+   animation's identity transform applied to the visible step for as long as it
+   was on screen. A transform is not free. It promotes the element to its own
+   composited layer, and a discarded layer texture after a tab has been in the
+   background is a known way for an element to be present, correctly styled and
+   simply not drawn.
+
+   Section 6 of CLAUDE.md asks that motion serve the subject. A form does not
+   need a slideshow, so this is a removal rather than a slower fade. */
 
 /* ---- The trail ------------------------------------------------------------
    Where you are, and the way back to anything already answered. Never a way
