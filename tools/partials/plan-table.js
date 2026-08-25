@@ -6,9 +6,13 @@
    data, not markup: a { caption, head, rows } object that drops into a
    `blocks` array as { table: buildPlanTable(...) }.
 
-   NULL WHEN THE PRICES ARE OFF, rather than a table of blanks. The caller
-   filters it out of the blocks array, so with SHOW_PRICING false the section
-   simply has no table in it. See site.config.js for what that flag covers.
+   NULL WHEN THE PRICES ARE OFF, rather than a table of blanks. Nothing filters
+   that null out of a blocks array, and renderBlock would throw if a
+   { table: null } block ever reached it, which is correct: the only caller,
+   blog.js, gates the whole section that contains this block behind its own
+   SHOW_PRICING ternary, so with the prices off that branch, and this table
+   inside it, is never built at all. See site.config.js for what that flag
+   covers.
 
    THE BUILD FEE IS IN THE CAPTION AND NOT IN A COLUMN, and that is the same
    structural decision pricing.js makes: one build fee for every plan, stated

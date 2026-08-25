@@ -78,7 +78,9 @@ function renderContents(prefix, sections) {
 
   return `      <nav class="${prefix}__rail-contents" aria-label="On this page">
         <p class="${prefix}__rail-label">On this page</p>
-        <ol class="${prefix}__rail-list">
+        <!-- role="list" because list-style: none strips list semantics in Safari
+             with VoiceOver, so the ol would otherwise announce as plain text. -->
+        <ol class="${prefix}__rail-list" role="list">
 ${items}
         </ol>
       </nav>`;
