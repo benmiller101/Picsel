@@ -27,6 +27,7 @@
 import { SHOW_PRICING, absoluteUrl } from '../../site.config.js';
 import { PROJECTS } from '../../projects.js';
 import { PLANS, BUILD_FEE, money } from '../../pricing.js';
+import { LANORA_REVIEWS } from '../../client-results.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs, blogPosting, blogNode } from '../templates/schema.js';
 import { renderArticleSections } from '../partials/article-sections.js';
@@ -346,15 +347,14 @@ const POSTS = [
           },
       {
         h2: 'What that has produced so far',
-        paragraphs: [
-          'One number worth reporting. Lanora House went from 18 Google reviews to 36 in two ' +
-            'months. It stands at 38 today, averaging five stars.',
-          'Be clear about which half of the work that is. A website does not collect reviews. ' +
-            'Somebody asking, at the right moment, every time, does, and that is the monthly ' +
-            'plan rather than the build. The site is where people land once the reviews have ' +
-            'done their job.',
-          'You can check it, which is the point of quoting it. The reviews are on their Google ' +
-            'listing with dates against them.',
+        blocks: [
+          /* The one number in this post big enough to see from across the
+             room, and the only one that has earned it: it is a client's public
+             review count, dated in client-results.js and checkable on their
+             listing by anybody who doubts it. */
+          { p: `<strong class="post__stat">${LANORA_REVIEWS.before} to ${LANORA_REVIEWS.after} Google reviews in ${LANORA_REVIEWS.months} months</strong>` },
+          { p: `${LANORA_REVIEWS.client} stands at ${LANORA_REVIEWS.today} today, averaging ${LANORA_REVIEWS.rating}. You can check it, which is the point of quoting it: the reviews are on their Google listing with dates against them.` },
+          { p: 'A website does not collect reviews. Somebody asking, at the right moment, every time, does, and that is the monthly plan rather than the build. The site is where people land once the reviews have done their job.' },
         ],
       },
     ],

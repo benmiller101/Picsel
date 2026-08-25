@@ -832,3 +832,30 @@
   min-height: 44px;
   line-height: 44px;
 }
+
+/* ---- One number, at display size ------------------------------------------
+   Not a stat row. CLAUDE.md bans those and is right to: three giant numbers
+   with vague labels under a hero is the single most recognisable thing a
+   generated page does. This is one number, it is a client's public review
+   count, and the sentence under it tells you where to go and check it.
+
+   A <strong> rather than a <p class>, because copy inside an article may carry
+   only a, em, strong and abbr and the build enforces it. That constraint
+   picked the element and the element is the right one anyway: it is the
+   strongest statement in the section, which is what strong means.
+
+   .guide__stat stays paired with .post__stat even though no guide uses it
+   yet, per the pairing policy above (.guide__list): the pairs are the
+   blog's half of a shared style, not dead code, and `npm run check` naming
+   .guide__stat as unused is expected, not a failure. */
+.post__stat,
+.guide__stat {
+  display: block;
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-light);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  max-width: 18ch;
+  margin-bottom: var(--space-4);
+}
