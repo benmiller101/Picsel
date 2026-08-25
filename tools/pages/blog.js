@@ -30,6 +30,7 @@ import { PLANS, BUILD_FEE, money } from '../../pricing.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs, blogPosting, blogNode } from '../templates/schema.js';
 import { renderArticleSections } from '../partials/article-sections.js';
+import { renderArticleRail } from '../partials/article-rail.js';
 import { renderContactBand } from '../partials/contact-band.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { countWord } from '../templates/words.js';
@@ -415,12 +416,18 @@ function renderPost(post) {
 
 ${action}
 
+        <div class="post__cols">
+          <div class="post__col">
 ${sections}
 
         <aside class="post__close">
           <p>${escapeHtml(post.close.line)}</p>
           <a class="post__close-link" href="${escapeHtml(post.close.href)}">${escapeHtml(post.close.cta)}</a>
         </aside>
+          </div>
+
+${renderArticleRail({ prefix: 'post', sections: post.sections })}
+        </div>
       </div>
     </article>`;
 

@@ -33,6 +33,7 @@ import { PLANS, BUILD_FEE, money } from '../../pricing.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs } from '../templates/schema.js';
 import { renderArticleSections } from '../partials/article-sections.js';
+import { renderArticleRail } from '../partials/article-rail.js';
 import { renderContactBand } from '../partials/contact-band.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
@@ -1132,11 +1133,17 @@ ${guide.also
 
 ${intro}${action}
 
+        <div class="guide__cols">
+          <div class="guide__col">
 ${sections}
 
 ${also}
 
 ${trades}${plan}
+          </div>
+
+${renderArticleRail({ prefix: 'guide', sections: guide.sections })}
+        </div>
       </div>
     </article>`;
 
