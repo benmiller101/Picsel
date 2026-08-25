@@ -88,7 +88,9 @@ ${items}
    this audience actually does, the response promise underneath it because it
    is the one thing that makes an email feel worth sending, and both read from
    site.config.js so the rail cannot promise something the contact page does
-   not. */
+   not. The card is deliberately only these two things: an enquiry link would be
+   the third prompt to the same destination on a page that already opens with one
+   and closes with another, so it does not earn this column. */
 function renderContactCard(prefix) {
   return `      <div class="${prefix}__rail-card">
         <p class="${prefix}__rail-label">Talk to a person</p>
@@ -96,7 +98,6 @@ function renderContactCard(prefix) {
           <a href="${escapeHtml(SITE.contact.phoneHref)}">${escapeHtml(SITE.contact.phoneDisplay)}</a>
         </p>
         <p class="${prefix}__rail-promise">${escapeHtml(SITE.responsePromise)}</p>
-        <a class="${prefix}__rail-link" href="/contact/#enquiry">Send an enquiry</a>
       </div>`;
 }
 

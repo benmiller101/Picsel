@@ -828,21 +828,6 @@
   color: var(--ink-faint);
 }
 
-.guide__rail-link,
-.post__rail-link {
-  display: inline-block;
-  margin-top: var(--space-4);
-  font-size: var(--text-sm);
-  color: var(--ink);
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
-  text-decoration-color: var(--accent);
-  /* A standalone control, so it gets a real tap target rather than the
-     line-height of its own text. */
-  min-height: 44px;
-  line-height: 44px;
-}
-
 /* ---- One number, at display size ------------------------------------------
    Not a stat row. CLAUDE.md bans those and is right to: three giant numbers
    with vague labels under a hero is the single most recognisable thing a
