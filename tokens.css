@@ -208,6 +208,25 @@
   --page-max: 72rem;
   --measure: 38rem;
 
+  /* ---- The article shell ------------------------------------------------
+     The guides and the posts read wider and larger than the rest of the site,
+     and these three are why they can without restyling the other 21 pages.
+
+     --article-measure is 40rem rather than the 38rem everything else uses,
+     and it moves WITH --article-text rather than instead of it. Measured on
+     the rendered page by counting line boxes: the old 38rem at 17px runs at a
+     mean of 60 characters a line, which is already inside the 55 to 65 band
+     long-form wants. Raising the type to 18px alone would drop that to 57;
+     widening to 40rem at the same time holds it at 60. Change one of the two
+     and the line length moves. They are a pair.
+
+     --article-rail is the column beside the text. 16rem, which at the 64rem
+     breakpoint leaves 40 + 3 + 16 = 59rem inside a 59rem content box with the
+     gutters off, and that is the tightest the layout ever gets. */
+  --article-measure: 40rem;
+  --article-text: 1.125rem;
+  --article-rail: 16rem;
+
   /* The nav floats over the page rather than sitting in the document flow, so
      it takes up no space and content would otherwise start underneath it.
      Named here because base.css needs it to reserve the gap, and the two must
