@@ -1,7 +1,35 @@
 # Article layout and the components the articles were missing
 
 **Date:** 2026-08-25
-**Status:** approved
+**Status:** built
+
+## Corrections made during the build
+
+Recorded here rather than left for someone to discover, because in each case this document
+said something the code does not do.
+
+**article-sections.js did need changing.** This spec said it needed none. A contents rail needs
+anchor targets and the headings carried no ids, so the slug function landed there and both the
+rail and the headings call it.
+
+**The measure did not move to 40rem.** It is 38rem. The wider value was applied to the column but
+`.guide__section` still capped at 38rem, and the narrower cap wins, so the change never reached
+the text. Rather than widen the sections, the measure was held: the rendered line length at 18px
+and 38rem was measured at 60 to 67 characters, which is inside the band this spec set out to
+defend, and widening would have pushed past it. The type went up, the measure held.
+
+**The CTA gap is 241px, not 180px.** The 180 figure was an estimate and it was wrong. The gap was
+three copies of `--section-y`; removing the band's margin removes exactly one. 241px is two
+section paddings, which is the site's standard gap between any two adjacent sections, so the band
+now sits at the same rhythm as every other section boundary rather than at an exception.
+
+**The second spacing clause was overruled.** This spec also asked for the article's padding-bottom
+to be removed when a band follows. That needs `:has()`, and `contact.css` records a deliberate
+preference against it. Overruled, with the reasoning above.
+
+**The rail's contact card carries no enquiry link.** Removed under CLAUDE.md's closing rule: the
+short post was asking for contact six times inside one article, twice with the same words to the
+same destination.
 
 ## What this is
 
