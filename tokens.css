@@ -230,8 +230,12 @@
      two already agree, or it silently does nothing.
 
      --article-rail is the column beside the text. 16rem, which at the 64rem
-     breakpoint leaves 40 + 3 + 16 = 59rem inside a 59rem content box with the
-     gutters off, and that is the tightest the layout ever gets. */
+     breakpoint needs 38 + 3 + 16 = 57rem inside a 59rem content box with the
+     gutters off, leaving about 2rem of slack rather than an exact fit, and
+     that is the tightest it gets. The slack matters at exactly 1024px: a
+     scrollbar there takes a few pixels off the content box, and the reading
+     column is declared minmax(0, ...) rather than a fixed width, so it is the
+     column that gives, not the rail. */
   --article-measure: 38rem;
   --article-text: 1.125rem;
   --article-rail: 16rem;
