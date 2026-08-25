@@ -1,7 +1,7 @@
 # Article layout and the components the articles were missing
 
 **Date:** 2026-08-25
-**Status:** awaiting approval
+**Status:** approved
 
 ## What this is
 
