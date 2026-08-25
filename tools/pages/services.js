@@ -396,7 +396,7 @@ const SERVICES = [
     description:
       SHOW_PRICING
         ? `Monthly work to get you found on Google and named by AI assistants. The Growth plan, ${money(GROWTH.openingMonthly)} a month for three months then ${money(GROWTH.monthly)}, with a lead guarantee on it.`
-        : 'Monthly work to get you found on Google and named by AI assistants. It is the Growth plan, and your build fee comes back if it misses five enquiries.',
+        : 'Monthly work to get you found on Google and named by AI assistants. It is the Growth plan, and part of your build fee comes back if it misses five enquiries.',
     indexLine: SHOW_PRICING
       ? `Monthly content, reviews, listings and the technical work behind being named in an AI answer. The Growth plan, ${money(GROWTH.openingMonthly)} a month for the first ${GROWTH.openingMonths} months and ${money(GROWTH.monthly)} after.`
       : 'Monthly content, reviews, listings and the technical work behind being named in an AI answer. The Growth plan, with the lead guarantee on it.',
@@ -519,8 +519,11 @@ const SERVICES = [
             q: 'What if it does not bring me any work?',
             a:
               'On Growth, if the site and your Google Business Profile do not bring you five ' +
-              'genuine customer enquiries in four months, your build fee comes back as cash or ' +
-              `credit, your choice. ${QUOTE_LINE}`,
+              'genuine customer enquiries in four months, you get part of the build fee back ' +
+              /* Careful on purpose: GUARANTEE.cash (pricing.js) is part of the build fee and
+                 GUARANTEE.credit is the whole of it, so an unpriced sentence has to say "part"
+                 for the cash option or it promises more than the terms give. */
+              `in cash, or the whole of it as credit, your choice. ${QUOTE_LINE}`,
           }]),
       {
         q: 'Will you work for a competitor of mine?',

@@ -212,18 +212,27 @@
      The guides and the posts read wider and larger than the rest of the site,
      and these three are why they can without restyling the other 21 pages.
 
-     --article-measure is 40rem rather than the 38rem everything else uses,
-     and it moves WITH --article-text rather than instead of it. Measured on
-     the rendered page by counting line boxes: the old 38rem at 17px runs at a
-     mean of 60 characters a line, which is already inside the 55 to 65 band
-     long-form wants. Raising the type to 18px alone would drop that to 57;
-     widening to 40rem at the same time holds it at 60. Change one of the two
-     and the line length moves. They are a pair.
+     --article-measure holds at 38rem, the same cap as --measure everywhere
+     else. The type went up to 18px on its own; measured on the rendered page
+     by counting line boxes, that runs 60 to 67 characters a line, which is
+     inside the 55 to 65 band long-form wants (the top of that range, but
+     inside it). The token is still named separately from --measure, not
+     because it currently differs, but so the articles can move independently
+     later without dragging the other 21 pages with them. Until that happens,
+     though, .guide__section and .post__section cap at --measure too, because
+     they are shared with /privacy and /about, which are not part of this
+     widened set. The sections sit nested inside .guide__col / .post__col, so
+     the narrower of the two caps wins. Move --article-measure alone and
+     nothing changes on screen: --measure is still capping the text at 38rem
+     underneath it. That mismatch shipped once already and produced a 32px
+     hairline overhang between .guide__also and .guide__plan; any future
+     change to this token has to move --measure with it, or check that the
+     two already agree, or it silently does nothing.
 
      --article-rail is the column beside the text. 16rem, which at the 64rem
      breakpoint leaves 40 + 3 + 16 = 59rem inside a 59rem content box with the
      gutters off, and that is the tightest the layout ever gets. */
-  --article-measure: 40rem;
+  --article-measure: 38rem;
   --article-text: 1.125rem;
   --article-rail: 16rem;
 

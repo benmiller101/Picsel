@@ -806,8 +806,16 @@
   line-height: var(--leading-snug);
 }
 
+/* The anchor is the whole point of the card, and now the only thing in the
+   rail carrying the tap floor: .guide__rail-link / .post__rail-link, which
+   used to supply min-height: 44px, was removed. Without this the link is
+   about 27px tall on a phone. See .contact-band__phone in site.css, which
+   does the same thing for the same reason. */
 .guide__rail-phone a,
 .post__rail-phone a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
   color: var(--ink);
   text-decoration: none;
 }
