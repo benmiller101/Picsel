@@ -253,6 +253,17 @@ export const EXTRAS = [
       `The ${money(400)} minimum is not a sales floor: below it the ads do not run often enough ` +
       'to work, and we would rather turn the job down than take money for something that will ' +
       'not.',
+    /* Same offer with both figures taken out: the management fee and the ad
+       spend minimum sit in the same two sentences, so a page reading `body`
+       under SHOW_PRICING false was printing both after the price above it had
+       already been hidden. `body` stays as it was, word for word, so the
+       priced page does not change. */
+    bodyNoPrice:
+      'For when you need the phone ringing this week and cannot wait a quarter for the search ' +
+      'work to take. You pay Google directly, from your own card on your own account, so the ' +
+      'budget is yours and you can see every penny of it. We tell you what we charge to manage ' +
+      'it and what Google needs as a minimum budget for the ads to run properly, before you ' +
+      'commit to anything.',
   },
   {
     name: 'Custom apps',

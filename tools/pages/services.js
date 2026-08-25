@@ -454,8 +454,16 @@ const SERVICES = [
       {
         h2: 'When you cannot wait a quarter',
         layout: 'split',
+        /* Was gating the price and then concatenating ADS.body straight
+           after it, and ADS.body names both the £129 fee and the £400 ad
+           spend minimum in full sentences of its own. The ternary hid the
+           price and the very next thing on the page put it back. Both figures
+           now come from pricing.js's ADS.body / ADS.bodyNoPrice pair, so
+           there is nowhere left for the price to reappear from. */
         paragraphs: [
-          (SHOW_PRICING ? `Google Ads, ${ADS.price.toLowerCase()}. ` : 'Google Ads. ') + ADS.body,
+          (SHOW_PRICING
+            ? `Google Ads, ${ADS.price.toLowerCase()}. ${ADS.body}`
+            : `Google Ads. ${ADS.bodyNoPrice}`),
         ],
       },
       {
@@ -521,13 +529,25 @@ const SERVICES = [
           'miles around it, we will not take on another plumber there while you are a client. A ' +
           'different trade in the same patch is fine.',
       },
-      {
-        q: 'Do you take a cut of my ad budget?',
-        a:
-          'No. You pay Google directly, from your own card on your own account, so the budget ' +
-          `is yours and you can see every penny of it. The ${money(129)} a month covers the work ` +
-          'of running the ads, nothing else.',
-      },
+      /* Was ungated: this FAQ answer named the £129 management fee directly
+         with no SHOW_PRICING check, and the faqs array feeds both the visible
+         accordion and the FAQPage JSON-LD, so the figure reached the page
+         twice. */
+      ...(SHOW_PRICING
+        ? [{
+            q: 'Do you take a cut of my ad budget?',
+            a:
+              'No. You pay Google directly, from your own card on your own account, so the budget ' +
+              `is yours and you can see every penny of it. The ${money(129)} a month covers the work ` +
+              'of running the ads, nothing else.',
+          }]
+        : [{
+            q: 'Do you take a cut of my ad budget?',
+            a:
+              'No. You pay Google directly, from your own card on your own account, so the budget ' +
+              'is yours and you can see every penny of it. What we charge to manage the ads is ' +
+              'separate and covers our work, nothing else.',
+          }]),
       RESPONSE_PROMISE_FAQ,
     ],
     offers: SHOW_PRICING
