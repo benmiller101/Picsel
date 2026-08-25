@@ -3,6 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: 'denied',
+    });
+  </script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-53FD4PM9');</script>
   <meta name="color-scheme" content="dark" />
   <meta name="theme-color" content="#0a0a0a" />
   <title>What happens to your details | Picsel</title>
@@ -116,6 +131,9 @@
   </script>
 </head>
 <body>
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-53FD4PM9"
+          title="Google Tag Manager"
+          height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <a class="skip-link" href="#main">Skip to content</a>
   <canvas class="backdrop" aria-hidden="true"></canvas>
   <div class="nav-sentinel" aria-hidden="true"></div>
@@ -152,8 +170,8 @@
         <p class="guide__answer">
           This site doesn&rsquo;t set cookies, so there&rsquo;s nothing to consent to and no
           banner asking you to accept anything. Three things do leave your browser. Every page
-          fetches its lettering from Adobe and Google, which means both of them see your IP
-          address. Visits are counted by Cloudflare and by Google Analytics, both set up to
+          fetches the logo lettering from Adobe, which means Adobe sees your IP address.
+          Visits are counted by Cloudflare and by Google Analytics, both set up to
           store nothing on your device. And an enquiry reaches Ben&rsquo;s inbox through
           Web3Forms, the company that relays the form. Nobody else reads it, we never sell it
           or pass it on, and you can ask for a copy or ask us to delete it whenever you like.
@@ -172,13 +190,13 @@
         </section>
         <section class="guide__section">
           <h2>Where the lettering comes from</h2>
-          <p>The type you&rsquo;re reading is served by Adobe and by Google, not by us, so opening any page here sends your IP address to both of them before the words appear. That happens whether or not you get as far as the form. It&rsquo;s the same request your browser makes to any website that uses hosted fonts, and neither company sets a cookie doing it or sends us anything that would tell us who you are.</p>
-          <p>We can&rsquo;t avoid it by keeping copies of the files on our own server. The licence for the Adobe typefaces, the ones in the Picsel logo, doesn&rsquo;t allow that. If you&rsquo;d rather they didn&rsquo;t see you, a browser extension that blocks third-party fonts will stop the request. The site still reads fine without them.</p>
+          <p>Nearly all of it comes off our own server. The lettering in the Picsel logo doesn&rsquo;t. That&rsquo;s served by Adobe, so opening any page here sends your IP address to Adobe before the words appear, whether or not you get as far as the form. It&rsquo;s the same request your browser makes to any site that uses hosted fonts, and Adobe doesn&rsquo;t set a cookie doing it or send us anything that would tell us who you are.</p>
+          <p>The reading type used to come from Google the same way. It doesn&rsquo;t now: those files sit on this server, so that request has gone. We can&rsquo;t do the same with the Adobe faces, because the licence for them doesn&rsquo;t allow it. If you&rsquo;d rather Adobe didn&rsquo;t see you, a browser extension that blocks third-party fonts will stop the request. The site still reads fine without them.</p>
         </section>
         <section class="guide__section">
           <h2>No cookies, so no banner</h2>
           <p>Nothing on this site sets a cookie: not us, not Cloudflare, not Adobe and not Google. That&rsquo;s the plain reason there&rsquo;s no banner, because there&rsquo;s nothing to accept.</p>
-          <p>Two things count visits here. Cloudflare Web Analytics works without cookies by design. Google Analytics normally doesn&rsquo;t, so we&rsquo;ve set it up to store nothing on your device: no cookie, nothing kept between one visit and the next. It costs us the ability to tell a returning visitor from a new one. We&rsquo;d rather lose that than put a banner in front of you. Google still sees your IP address when the tag loads, the same way it does when the page fetches its lettering.</p>
+          <p>Two things count visits here. Cloudflare Web Analytics works without cookies by design. Google Analytics normally doesn&rsquo;t, so we&rsquo;ve set it up to store nothing on your device: no cookie, nothing kept between one visit and the next. It costs us the ability to tell a returning visitor from a new one. We&rsquo;d rather lose that than put a banner in front of you. Google still sees your IP address when the tag loads, and the tag reaches the page through Google Tag Manager, which is the same company and stores nothing on your device either.</p>
           <p>The site&rsquo;s hosted on Cloudflare too, so their servers see your IP address the same way Adobe&rsquo;s and Google&rsquo;s do.</p>
         </section>
         <section class="guide__section">
@@ -278,12 +296,6 @@
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('consent', 'default', {
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied',
-      analytics_storage: 'denied',
-    });
     gtag('js', new Date());
     gtag('config', 'G-RLXTVQ5PED', { client_storage: 'none' });
   </script>

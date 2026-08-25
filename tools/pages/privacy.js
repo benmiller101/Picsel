@@ -1,6 +1,6 @@
 /* ---- privacy.js — /privacy --------------------------------------------------
    Written to be short, because the truth is short: one form, one company that
-   relays it, one inbox, two font hosts, no cookies, no tracking beyond a
+   relays it, one inbox, one font host, no cookies, no tracking beyond a
    cookie-free visit count. A privacy policy padded out with clauses that do
    not apply to a one-man studio would be a worse page than a shorter,
    accurate one.
@@ -15,22 +15,40 @@
    reflected here, or this paragraph starts lying again.
 
    THE FOUR THIRD PARTIES ARE ALL NAMED ON PURPOSE. Web3Forms relays the form,
-   Cloudflare hosts the site and would count the visits, and every single page
-   fetches its typefaces from Adobe and from Google, which hands both of them
-   the reader's IP address before the page has finished painting. A policy that
-   named the first two and not the second two was describing a different site
-   from the one the reader was on. Self-hosting the Adobe faces is not the way
-   out of the disclosure: the licence forbids it, and instructions-picsel-site.md
-   says so in as many words.
+   Cloudflare hosts the site and counts the visits, Adobe serves the wordmark
+   faces, and Google runs the tag that counts visits a second time. Each one
+   gets the reader's IP address, three of them before the page has finished
+   painting. A policy that named some of them was describing a different site
+   from the one the reader was on.
 
-   The cookie claim was re-checked against reality rather than carried over on
-   trust, because adding two more third parties to the page is exactly the kind
-   of change that quietly falsifies it. Every response from use.typekit.net,
-   p.typekit.net, fonts.googleapis.com and fonts.gstatic.com, stylesheets and
-   font files both, comes back with no Set-Cookie header at all. So "nothing
-   sets a cookie" is still exactly true and stays, now stated as covering the
-   other companies too rather than only Picsel's own code. Re-run that check
-   before adding any third host.
+   WHY GOOGLE IS NAMED HAS CHANGED, AND THE PAGE HAD NOT CAUGHT UP. It used to
+   be named as a font host, because Lexend and Pixelify Sans were fetched from
+   fonts.googleapis.com. Both faces are Open Font Licence, both now come off
+   this origin, and tools/fetch-fonts.js is what moved them. So the sentence
+   saying the lettering comes from Adobe AND Google outlived the request it was
+   describing: it stayed on the page for weeks naming a company the reader's
+   browser no longer spoke to for that reason. Google belongs on this page for
+   analytics and the tag manager instead, which is where it is now.
+
+   The Adobe half of that sentence stays, and self-hosting is not the way out
+   of it: the licence for those faces forbids it, and instructions-picsel-site.md
+   says so in as many words. Check the built pages, not this comment, before
+   trusting either half again.
+
+   The cookie claim is re-checked against reality rather than carried over on
+   trust, because a new third party on the page is exactly the kind of change
+   that quietly falsifies it. Every response from use.typekit.net and
+   p.typekit.net, stylesheets and font files both, and every response from
+   www.googletagmanager.com, which now means gtm.js, gtag.js and the ns.html
+   frame, comes back with no Set-Cookie header at all. So "nothing sets a
+   cookie" is still exactly true and stays, stated as covering the other
+   companies rather than only Picsel's own code.
+
+   RE-RUN THAT CHECK BEFORE ADDING ANY HOST, and note that for Google it is
+   only half the check. GA4 writes its cookie from JavaScript, not from a
+   Set-Cookie header, so a clean response proves nothing on its own. The other
+   half is the consent default and client_storage in tools/templates/page.js,
+   described below.
 
    Follows the shape of contact.js, the page whose form this policy describes:
    the same breadcrumbs pattern, the same reliance on site.config.js for every
@@ -115,15 +133,17 @@ const SECTIONS = [
   {
     h2: 'Where the lettering comes from',
     paragraphs: [
-      'The type you&rsquo;re reading is served by Adobe and by Google, not by us, so opening ' +
-        'any page here sends your IP address to both of them before the words appear. That ' +
-        'happens whether or not you get as far as the form. It&rsquo;s the same request your ' +
-        'browser makes to any website that uses hosted fonts, and neither company sets a ' +
-        'cookie doing it or sends us anything that would tell us who you are.',
-      'We can&rsquo;t avoid it by keeping copies of the files on our own server. The licence ' +
-        'for the Adobe typefaces, the ones in the Picsel logo, doesn&rsquo;t allow that. If ' +
-        'you&rsquo;d rather they didn&rsquo;t see you, a browser extension that blocks ' +
-        'third-party fonts will stop the request. The site still reads fine without them.',
+      'Nearly all of it comes off our own server. The lettering in the Picsel logo ' +
+        'doesn&rsquo;t. That&rsquo;s served by Adobe, so opening any page here sends your IP ' +
+        'address to Adobe before the words appear, whether or not you get as far as the form. ' +
+        'It&rsquo;s the same request your browser makes to any site that uses hosted fonts, ' +
+        'and Adobe doesn&rsquo;t set a cookie doing it or send us anything that would tell us ' +
+        'who you are.',
+      'The reading type used to come from Google the same way. It doesn&rsquo;t now: those ' +
+        'files sit on this server, so that request has gone. We can&rsquo;t do the same with ' +
+        'the Adobe faces, because the licence for them doesn&rsquo;t allow it. If you&rsquo;d ' +
+        'rather Adobe didn&rsquo;t see you, a browser extension that blocks third-party fonts ' +
+        'will stop the request. The site still reads fine without them.',
     ],
   },
   {
@@ -141,7 +161,8 @@ const SECTIONS = [
         'nothing on your device: no cookie, nothing kept between one visit and the next. It ' +
         'costs us the ability to tell a returning visitor from a new one. We&rsquo;d rather ' +
         'lose that than put a banner in front of you. Google still sees your IP address when ' +
-        'the tag loads, the same way it does when the page fetches its lettering.',
+        'the tag loads, and the tag reaches the page through Google Tag Manager, which is the ' +
+        'same company and stores nothing on your device either.',
       'The site&rsquo;s hosted on Cloudflare too, so their servers see your IP address the ' +
         'same way Adobe&rsquo;s and Google&rsquo;s do.',
     ],
@@ -178,8 +199,8 @@ const MAIN = `    <article class="section guide">
         <p class="guide__answer">
           This site doesn&rsquo;t set cookies, so there&rsquo;s nothing to consent to and no
           banner asking you to accept anything. Three things do leave your browser. Every page
-          fetches its lettering from Adobe and Google, which means both of them see your IP
-          address. Visits are counted by Cloudflare and by Google Analytics, both set up to
+          fetches the logo lettering from Adobe, which means Adobe sees your IP address.
+          Visits are counted by Cloudflare and by Google Analytics, both set up to
           store nothing on your device. And an enquiry reaches Ben&rsquo;s inbox through
           Web3Forms, the company that relays the form. Nobody else reads it, we never sell it
           or pass it on, and you can ask for a copy or ask us to delete it whenever you like.

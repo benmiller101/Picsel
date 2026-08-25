@@ -228,6 +228,25 @@ export const SITE = {
        property is a request every visitor pays for and nobody reads. */
     googleMeasurementId: 'G-RLXTVQ5PED',
     googleIdIsPlaceholder: false,
+
+    /* Google Tag Manager, the container the two lines above do not cover.
+
+       It exists so a tag can be added, changed or pulled without a deploy:
+       conversion tracking, a Search Console verification, whatever comes next.
+       That convenience is also the risk, because a tag added in the GTM
+       console is a script added to this site by someone who has not read the
+       privacy page. THE COOKIELESS RULE STILL APPLIES. The consent default
+       that page.js writes into the head is above the container script on
+       purpose, so anything GTM fires inherits denied storage rather than
+       setting a cookie the privacy page says does not exist. If a tag ever
+       genuinely needs storage, the honest fix is the same one named above: a
+       consent banner and a rewritten privacy page.
+
+       Not a secret, same as the two identifiers above. It names the container
+       and grants access to nothing. Copied from the GTM workspace's install
+       screen. */
+    googleTagManagerId: 'GTM-53FD4PM9',
+    gtmIdIsPlaceholder: false,
   },
 
   /* ---- Picsel HQ call and enquiry counting --------------------------------

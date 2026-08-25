@@ -102,6 +102,73 @@ function normalisePath(path = '/') {
   return trimmed === '' ? '/' : trimmed;
 }
 
+/* ---- Google Tag Manager, and the consent state it inherits ----------------
+
+   TWO SNIPPETS, AND THE ORDER OF THE FIRST TWO THINGS IN THE HEAD IS
+   LOAD-BEARING. The consent default is pushed onto the dataLayer before the
+   container script is written, because GTM applies whatever consent state it
+   holds at the moment a tag fires and does not retroactively withdraw storage
+   a tag has already written. Put the container above the default and the first
+   tag of every visit can set a cookie before the denial arrives, which is
+   exactly what the privacy page promises does not happen.
+
+   The default is rendered once, in the head, and both Google tags read it: the
+   container here and the GA4 config at the end of the body. It used to live
+   inside the GA block, which was fine while GA was the only thing on the
+   dataLayer and wrong the moment a container loaded above it.
+
+   See site.config.js for what this configuration costs in data quality, and
+   for why a tag that needs real storage is a privacy-page change rather than a
+   GTM console change. */
+function renderConsentDefault() {
+  if (SITE.analytics.googleIdIsPlaceholder && SITE.analytics.gtmIdIsPlaceholder) return '';
+  return `  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: 'denied',
+    });
+  </script>
+`;
+}
+
+/* The container itself, kept as Google ships it apart from the id, which comes
+   from site.config.js so the container is named in one place. High in the head,
+   which is what GTM asks for and what stops a tag missing the start of a
+   session; the tag it injects is `async`, so nothing on the page waits for it.
+   If it never loads, the pushes pile up in an array nobody reads and the page
+   is unaffected.
+
+   Not rendered while the id is a placeholder. A container pointing at nothing
+   is a request every visitor pays for and nobody reads. */
+function renderGoogleTagManager() {
+  if (SITE.analytics.gtmIdIsPlaceholder) return '';
+  const id = escapeHtml(SITE.analytics.googleTagManagerId);
+  return `  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','${id}');</script>
+`;
+}
+
+/* The no-JavaScript half of the pair, and it has to be the first thing inside
+   <body> rather than anywhere else, because that is where GTM looks for it.
+   Hidden from sighted visitors by the inline style Google ships, and given a
+   title, which Google's copy-paste snippet omits: without one a screen reader
+   meets an unlabelled frame on every page of the site. */
+function renderGoogleTagManagerNoscript() {
+  if (SITE.analytics.gtmIdIsPlaceholder) return '';
+  const id = escapeHtml(SITE.analytics.googleTagManagerId);
+  return `  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=${id}"
+          title="Google Tag Manager"
+          height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+`;
+}
+
 /* ---- Head -----------------------------------------------------------------
    Title, description, canonical, Open Graph and Twitter cards, plus the font
    links. Every page gets the full set; none of it is optional.
@@ -121,6 +188,11 @@ function renderHead({ title, description, path, ogType, ogImage, styles, extraHe
 
   return `  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Google's tags start here, and the consent default sits above the
+       container because that order is what keeps the site cookieless. Neither
+       of these blocks the page. See the two functions in this file. -->
+${renderConsentDefault()}${renderGoogleTagManager()}
 
   <!-- The site is dark-only. color-scheme tells the browser so, which makes it
        render scrollbars, form fields and other built-in controls dark to match
@@ -309,13 +381,13 @@ function renderCloudflareAnalytics() {
 
 /* Google Analytics 4, deliberately cookieless.
 
-   THE ORDER OF THESE THREE CALLS IS LOAD-BEARING. The consent default has to
-   be pushed onto the dataLayer before the config call, because gtag applies
-   whatever consent state it holds at the moment a config runs and does not
-   retroactively withdraw storage it has already written. Move the default
-   below the config and the first page view of every visit writes a _ga cookie
-   before the denial arrives, which is precisely the outcome this is here to
-   prevent. `client_storage: 'none'` on the config is the second lock on the
+   THE CONSENT DEFAULT THIS DEPENDS ON IS NOT IN THIS FUNCTION. It is pushed
+   in the head by renderConsentDefault, above the tag manager container, and
+   that placement is load-bearing: gtag applies whatever consent state it holds
+   at the moment a config runs and does not retroactively withdraw storage it
+   has already written. Take the head snippet away and the first page view of
+   every visit writes a _ga cookie, which is precisely the outcome this is here
+   to prevent. `client_storage: 'none'` on the config is the second lock on the
    same door: consent mode governs Google's own storage, that governs gtag's.
 
    Written out here rather than pasted from the GA4 setup screen, which hands
@@ -333,12 +405,6 @@ function renderGoogleAnalytics() {
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('consent', 'default', {
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied',
-      analytics_storage: 'denied',
-    });
     gtag('js', new Date());
     gtag('config', '${id}', { client_storage: 'none' });
   </script>
@@ -391,7 +457,7 @@ export function renderPage(page) {
 ${renderHead({ title, description, path, ogType, ogImage, styles, extraHead, schema: renderSchema(page) })}
 </head>
 <body${bodyClass ? ` class="${escapeHtml(bodyClass)}"` : ''}>
-  <a class="skip-link" href="#main">Skip to content</a>
+${renderGoogleTagManagerNoscript()}  <a class="skip-link" href="#main">Skip to content</a>
 
   <!-- The site-wide dot field: a fixed sheet behind every page, drawn by
        backdrop.js and parallaxing at a third of the scroll speed. Decoration

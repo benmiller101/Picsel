@@ -39,9 +39,21 @@
   #
   # Same policy as above plus every source directive, reported to the browser
   # console instead of enforced. It is written from an actual audit of the
-  # built pages: there is not one inline <script> anywhere on the site, the
-  # only scripts are same-origin plus the Cloudflare beacon, and the only
-  # third-party origins are the two font providers.
+  # built pages: the only scripts are same-origin plus the Cloudflare beacon
+  # and Google's two tags, and the only third-party origins are Typekit,
+  # Cloudflare and Google.
+  #
+  # script-src carries 'unsafe-inline' and www.googletagmanager.com because of
+  # those two Google tags. The consent default, the tag manager container and
+  # the GA4 config are inline blocks in the head and the foot of every page, and
+  # they have to be inline: the consent default is worthless if it arrives after
+  # a network round trip, which is the whole reason it is written above the
+  # container rather than pasted from Google's setup screen. A nonce is the
+  # honest fix and it needs a header this file cannot generate per request,
+  # since these are static files with a static header. So this is written down
+  # rather than pretended away. The Google origin also serves gtm.js, gtag.js
+  # and, for a visitor with no JavaScript, the ns.html frame, which is what
+  # frame-src below is for.
   #
   # THE PLAN FOR THIS LINE. Deploy, then open the console on the homepage,
   # /prices, /contact and one guide, and look for CSP violation reports. If a
@@ -51,14 +63,15 @@
   # style-src carries 'unsafe-inline' and that is not laziness. There are six
   # `style="--card-ratio: ..."` attributes on /work, each one handing a card
   # its own aspect ratio, and inline style ATTRIBUTES are what that directive
-  # governs. There is no inline <style> block anywhere and no inline script at
-  # all, which is where the risk actually lives. Removing the six attributes
-  # would let this drop to 'self'; until then, saying so here is better than
-  # a policy nobody can explain.
+  # governs. There is no inline <style> block anywhere. Removing the six
+  # attributes would let this drop to 'self'; until then, saying so here is
+  # better than a policy nobody can explain.
   #
   # connect-src names hq.picsel.co.uk because hq-beacon.js sends its two
-  # counts there with navigator.sendBeacon, and cloudflareinsights.com because
-  # that is where the analytics beacon posts.
+  # counts there with navigator.sendBeacon, cloudflareinsights.com because that
+  # is where the analytics beacon posts, and the two Google collection hosts
+  # because that is where GA4 sends a page view from. img-src takes the same
+  # two: GA falls back to a pixel when a browser will not let it post.
   #
   # Google is not in this policy at all, and that is recent. Lexend and
   # Pixelify Sans are Open Font Licence and now served from this origin, so
@@ -66,7 +79,7 @@
   # font-src along with the requests. Typekit stays: its licence forbids
   # self-hosting the wordmark faces, so use.typekit.net serves the stylesheet
   # and p.typekit.net serves the files it names.
-  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://use.typekit.net; font-src 'self' https://use.typekit.net https://p.typekit.net; img-src 'self' data:; connect-src 'self' https://hq.picsel.co.uk https://api.web3forms.com https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self' https://api.web3forms.com
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://use.typekit.net; font-src 'self' https://use.typekit.net https://p.typekit.net; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com; connect-src 'self' https://hq.picsel.co.uk https://api.web3forms.com https://cloudflareinsights.com https://www.google-analytics.com https://region1.google-analytics.com; frame-src https://www.googletagmanager.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self' https://api.web3forms.com
 
   # ---- Transport ---------------------------------------------------------
   #
