@@ -352,7 +352,10 @@ const POSTS = [
              room, and the only one that has earned it: it is a client's public
              review count, dated in client-results.js and checkable on their
              listing by anybody who doubts it. */
-          { p: `<strong class="post__stat">${LANORA_REVIEWS.before} to ${LANORA_REVIEWS.after} Google reviews in ${LANORA_REVIEWS.months} months</strong>` },
+          /* before/after/today are the datum being reported and stay as digits;
+             months is a duration inside a sentence, so it goes through countWord
+             per the rule in words.js. Do not normalise these to match each other. */
+          { p: `<strong class="post__stat">${LANORA_REVIEWS.before} to ${LANORA_REVIEWS.after} Google reviews in ${countWord(LANORA_REVIEWS.months)} months</strong>` },
           { p: `${LANORA_REVIEWS.client} stands at ${LANORA_REVIEWS.today} today, averaging ${LANORA_REVIEWS.rating}. You can check it, which is the point of quoting it: the reviews are on their Google listing with dates against them.` },
           { p: 'A website does not collect reviews. Somebody asking, at the right moment, every time, does, and that is the monthly plan rather than the build. The site is where people land once the reviews have done their job.' },
         ],
