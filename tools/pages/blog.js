@@ -281,16 +281,25 @@ const POSTS = [
     sections: [
       {
         h2: 'Where three thousand pounds goes',
-        paragraphs: [
-          'The quote is usually honest and the work behind it is real. It is just that most ' +
-            'of it is not work on your website.',
-          'There is an account manager whose job is to be the person you ring. There is a ' +
-            'discovery workshop, which is a meeting about what you do for a living. There are ' +
-            'three rounds of design on a site with five pages on it, because the process was ' +
-            'written for clients who have a marketing department to satisfy. And underneath ' +
-            'all of it there is an office, the people in it, and the software they run.',
-          'It is a process built for a different kind of customer, sold to you at what it ' +
-            'costs to run.',
+        /* Moved from `paragraphs` to `blocks` so the list can sit between the
+           two framing sentences. The legacy shape renders its list after every
+           paragraph, which would put the closing line above the thing it is
+           closing.
+
+           A LIST AND NOT A BAR. A proportion bar needs a number against each of
+           these four and no such split exists, here or anywhere. The rule at
+           the top of this file is that a post carries a figure only if a
+           stranger could check it, and four invented percentages to fill a
+           chart is precisely what that is there to stop. */
+        blocks: [
+          { p: 'The quote is usually honest and the work behind it is real. It is just that most of it is not work on your website.' },
+          { list: [
+            'An account manager, whose job is to be the person you ring.',
+            'A discovery workshop, which is a meeting about what you do for a living.',
+            'Three rounds of design, on a site with five pages on it.',
+            'An office, the people in it, and the software they run.',
+          ] },
+          { p: 'The design rounds are the tell. Three of them is a process written for a client with a marketing department to satisfy, and you are being sold it at what it costs to run.' },
         ],
       },
       {
