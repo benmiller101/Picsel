@@ -65,6 +65,26 @@ const GROWTH = PLANS[2];
                the same service page this guide already links to from its
                body copy, so the two reinforce one destination rather than
                offering a second. See renderGuide for where it lands. */
+/* The index lists every guide, trade pages included, so that a spoke is never
+   an orphan reachable only from the hub.
+
+   ITS META DESCRIPTION COUNTS THEM, AND THE COUNT IS NOW DERIVED. It used to
+   say "five questions" as a literal, with a build check to catch the day that
+   stopped being true. The check fired on the first trade page, exactly as
+   intended, and then the fix was going to be somebody typing a new number that
+   would go stale again at the next page. So the sentence counts the list
+   instead. A number nobody types is a number nobody has to remember.
+
+   Written as a word rather than a digit because it is prose, and "Plain
+   answers to 6 questions" reads like a spreadsheet. Past twelve it falls back
+   to the digit, which is the point where a word stops helping anyway. */
+const COUNT_WORDS = [
+  'no', 'one', 'two', 'three', 'four', 'five', 'six',
+  'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve',
+];
+
+const countWord = (n) => COUNT_WORDS[n] ?? String(n);
+
 const GUIDES = [
   {
     slug: 'what-a-trades-website-needs',
@@ -729,7 +749,7 @@ const TRADE_COST_PAGES = [
                   + `${money(PLANS[0].monthly)} a month for hosting and security, `
                   + `${money(PLANS[1].monthly)} a month if you want changes made for you, or `
                   + `${money(PLANS[2].openingMonthly)} a month for the first `
-                  + `${PLANS[2].openingMonths} months and ${money(PLANS[2].monthly)} after that `
+                  + `${countWord(PLANS[2].openingMonths)} months and ${money(PLANS[2].monthly)} after that `
                   + 'if you want us actively working on getting you found. Numbers on the '
                   + '<a href="/prices/">prices page</a>.',
               }]
@@ -1255,26 +1275,6 @@ const GUIDES_INDEX_TRAIL = [
   { name: 'Home', path: '/' },
   { name: 'Guides', path: '/guides/' },
 ];
-
-/* The index lists every guide, trade pages included, so that a spoke is never
-   an orphan reachable only from the hub.
-
-   ITS META DESCRIPTION COUNTS THEM, AND THE COUNT IS NOW DERIVED. It used to
-   say "five questions" as a literal, with a build check to catch the day that
-   stopped being true. The check fired on the first trade page, exactly as
-   intended, and then the fix was going to be somebody typing a new number that
-   would go stale again at the next page. So the sentence counts the list
-   instead. A number nobody types is a number nobody has to remember.
-
-   Written as a word rather than a digit because it is prose, and "Plain
-   answers to 6 questions" reads like a spreadsheet. Past twelve it falls back
-   to the digit, which is the point where a word stops helping anyway. */
-const COUNT_WORDS = [
-  'no', 'one', 'two', 'three', 'four', 'five', 'six',
-  'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve',
-];
-
-const countWord = (n) => COUNT_WORDS[n] ?? String(n);
 
 const INDEX_DESCRIPTION =
   `Plain answers to ${countWord(ALL_GUIDES.length)} questions tradespeople actually ask about `

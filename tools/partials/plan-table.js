@@ -17,6 +17,7 @@
    to prevent. */
 
 import { PLANS, BUILD_FEE, BUILD_WHAT, money } from '../../pricing.js';
+import { countWord } from '../templates/words.js';
 
 /**
  * @param {object}  options
@@ -33,9 +34,12 @@ export function buildPlanTable({ showPricing }) {
       plan.name,
       /* Growth opens at a lower rate for its first months. The opening figure
          never appears without the rate it becomes: written as a bare number it
-         reads as the price, and the reader finds out otherwise in month four. */
+         reads as the price, and the reader finds out otherwise in month four.
+         The month count is a word rather than a digit because it is prose, not
+         data: words.js's rule is that a small count in body copy is spelled
+         out, and only the money itself stays in digits. */
       plan.openingMonthly
-        ? `${money(plan.openingMonthly)} for ${plan.openingMonths} months, then ${money(plan.monthly)}`
+        ? `${money(plan.openingMonthly)} for ${countWord(plan.openingMonths)} months, then ${money(plan.monthly)}`
         : money(plan.monthly),
       plan.summary,
       plan.term,
