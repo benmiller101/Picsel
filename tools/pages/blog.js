@@ -35,12 +35,11 @@ import { renderContactBand } from '../partials/contact-band.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { countWord } from '../templates/words.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
+import { buildPlanTable } from '../partials/plan-table.js';
 
 /* Read rather than retyped, so a post can never quote a price the prices page
    does not. Same reason guides.js does it. */
 const ONLINE = PLANS[0];
-const MANAGED = PLANS[1];
-const GROWTH = PLANS[2];
 
 /* "9 August 2026" from "2026-08-09". Midday UTC rather than midnight so a
    machine an hour behind does not render the day before, and the formatter is
@@ -126,7 +125,7 @@ const PLUMBER_TABLE = {
           'Picsel',
           money(BUILD_FEE),
           `${money(ONLINE.monthly)}`,
-          '£839',
+          money(BUILD_FEE + ONLINE.monthly * 36),
           'Domain and content, not the template',
         ]]
       : []),
@@ -160,7 +159,8 @@ const POSTS = [
           { table: PLUMBER_TABLE },
           { p: 'The three year column is the build plus thirty six months of running it. Wix Core at £16 a month for three years, plus a domain, is about £600. A freelance build at £500 to £1,500 plus £10 a month hosting and a domain lands between £900 and £1,900. An agency build plus £30 a month for hosting and maintenance comes to £3,100 to £11,100. Checkatrade at £60 to £150 a month is £2,160 to £5,400 over the same three years.' },
           ...(SHOW_PRICING
-            ? [{ p: `Mine is ${money(BUILD_FEE)} to build, then ${money(ONLINE.monthly)} a month. Over three years that’s £839.` }]
+            ? [{ p: `Mine is ${money(BUILD_FEE)} to build, then ${money(ONLINE.monthly)} a month. `
+                 + `Over three years that’s ${money(BUILD_FEE + ONLINE.monthly * 36)}.` }]
             : []),
         ],
       },
@@ -315,21 +315,11 @@ const POSTS = [
       SHOW_PRICING
         ? {
             h2: 'What I charge, and what is in it',
-            paragraphs: [
-              `${money(BUILD_FEE)} to build it, whichever plan you pick. Then ` +
-                `${money(ONLINE.monthly)} a month on ${ONLINE.name} to host it and keep it ` +
-                `online, ${money(MANAGED.monthly)} on ${MANAGED.name}, which adds somebody ` +
-                `looking after it so you never touch it, or ${money(GROWTH.openingMonthly)} a ` +
-                `month for the first ${GROWTH.openingMonths} months and ` +
-                `${money(GROWTH.monthly)} after on ${GROWTH.name}, which buys active work every ` +
-                'month rather than a site sitting still.',
-              'One build fee rather than three is deliberate. Three would invite you to compare ' +
-                'them, and the moment you do, the cheap plan reads as the cheap build. It is ' +
-                'the same build every time.',
-              'The figures matter less than where they are. They are on the website, so you can ' +
-                'hold them against anyone else before you pick up the phone. Most of this trade ' +
-                'still makes you ring to find out. If you want a straight price for your own ' +
-                'job, <a href="/contact/">get in touch</a> and I will give you one on the phone.',
+            blocks: [
+              { p: `${money(BUILD_FEE)} to build it, whichever plan you pick. Then one of these every month.` },
+              { table: buildPlanTable({ showPricing: SHOW_PRICING }) },
+              { p: 'One build fee rather than three is deliberate. Three would invite you to compare them, and the moment you do, the cheap plan reads as the cheap build. It is the same build every time.' },
+              { p: 'The figures matter less than where they are. They are on the website, so you can hold them against anyone else before you pick up the phone. Most of this trade still makes you ring to find out. If you want a straight price for your own job, <a href="/contact/">get in touch</a> and I will give you one on the phone.' },
             ],
           }
         : {

@@ -719,12 +719,25 @@ const TRADE_COST_PAGES = [
              comparable first year totals. Before it, it would be a chart of
              numbers the reader has not met yet. */
           { figure: { svg: 'builder-website-cost-comparison.svg', prefix: 'cc' } },
-          {
-            p: 'Picsel sits in the third row. £299 to build, then £15 a month for hosting and '
-              + 'security, £29 a month if you want changes made for you, or £99 a month for the '
-              + 'first three months and £179 after that if you want us actively working on '
-              + 'getting you found. Numbers on the <a href="/prices/">prices page</a>.',
-          },
+          /* Was five hardcoded figures and no gate, which made this and the
+             paragraph further down the only Picsel prices on the site that
+             survived SHOW_PRICING going false. Both now read from pricing.js
+             and both disappear with everything else. */
+          ...(SHOW_PRICING
+            ? [{
+                p: `Picsel sits in the third row. ${money(BUILD_FEE)} to build, then `
+                  + `${money(PLANS[0].monthly)} a month for hosting and security, `
+                  + `${money(PLANS[1].monthly)} a month if you want changes made for you, or `
+                  + `${money(PLANS[2].openingMonthly)} a month for the first `
+                  + `${PLANS[2].openingMonths} months and ${money(PLANS[2].monthly)} after that `
+                  + 'if you want us actively working on getting you found. Numbers on the '
+                  + '<a href="/prices/">prices page</a>.',
+              }]
+            : [{
+                p: 'Picsel sits in the third row. I am rebuilding my plans, so there is no '
+                  + 'price list here to hold anyone against. <a href="/contact/">Send me the '
+                  + 'details</a> and I will give you a figure for your own job.',
+              }]),
         ],
       },
 
@@ -834,12 +847,23 @@ const TRADE_COST_PAGES = [
       {
         h2: 'If you want it done for you',
         blocks: [
+          ...(SHOW_PRICING
+            ? [{
+                p: `Picsel builds websites for building firms anywhere in the UK. ${money(BUILD_FEE)} to build, `
+                  + `then from ${money(PLANS[0].monthly)} a month, and live in days.`,
+              }]
+            : [{
+                p: 'Picsel builds websites for building firms anywhere in the UK. I am rebuilding '
+                  + 'my plans, so there is no price list here to hold anyone against. '
+                  + '<a href="/contact/">Send me the details</a> and I will give you a figure for '
+                  + 'your own job.',
+              }]),
           {
-            p: 'Picsel builds websites for building firms anywhere in the UK. £299 to build, '
-              + 'then from £15 a month, and live in days.',
-          },
-          {
-            p: 'Call Ben on <a href="tel:+447456809049">07456 809049</a> or '
+            /* Read from site.config.js rather than typed. This was the last
+               hardcoded phone number in the source, and a number written into
+               a page separately from the one the footer shows is two numbers
+               that agree until somebody changes one of them. */
+            p: `Call Ben on <a href="${escapeHtml(SITE.contact.phoneHref)}">${escapeHtml(SITE.contact.phoneDisplay)}</a> or `
               + '<a href="/contact/">send a message</a>. Have a look at '
               + '<a href="/work/nevitt-construction/">A Nevitt Construction</a>, a family firm '
               + 'going since 1975.',

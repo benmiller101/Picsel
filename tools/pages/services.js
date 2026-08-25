@@ -409,7 +409,7 @@ const SERVICES = [
         'is also the only plan that carries the lead guarantee, which is set out in full below.'
       : 'Monthly work to get you found on Google and named when somebody asks an assistant for ' +
         'a tradesperson. It is the Growth plan, the top of the ladder, and the only one that ' +
-        'carries the lead guarantee, which is set out in full below.',
+        `carries the lead guarantee. ${QUOTE_LINE}`,
     sections: [
       {
         h2: 'What happens every month',
@@ -424,10 +424,17 @@ const SERVICES = [
         ],
         list: GROWTH.includes,
       },
-      {
-        h2: 'The lead guarantee',
-        paragraphs: [GUARANTEE.promise, ...GUARANTEE.terms],
-      },
+      /* Was ungated: GUARANTEE.promise and GUARANTEE.terms name the £299 build
+         fee and the £149 cash figure directly, and this section ran on every
+         build regardless of SHOW_PRICING. The whole section drops out with
+         the prices, rather than trying to describe a cash-or-credit refund
+         with no figure attached to it. */
+      ...(SHOW_PRICING
+        ? [{
+            h2: 'The lead guarantee',
+            paragraphs: [GUARANTEE.promise, ...GUARANTEE.terms],
+          }]
+        : []),
       {
         h2: 'One trade per patch',
         layout: 'split',
@@ -488,14 +495,25 @@ const SERVICES = [
           'you are consistent and easy to quote, which is what decides whether you are in the ' +
           'answer or not.',
       },
-      {
-        q: 'What if it does not bring me any work?',
-        a:
-          'On Growth, if the site and your Google Business Profile do not bring you five ' +
-          `genuine customer enquiries in four months, you choose: ${money(GUARANTEE.cash)} of ` +
-          `the build fee back in cash, or the full ${money(GUARANTEE.credit)} as credit against ` +
-          'your monthly fee. A payout also ends the twelve month term on thirty days notice.',
-      },
+      /* Was ungated: both guarantee figures named directly in an FAQ answer,
+         which is the same bug as the section above and the reason this whole
+         page needed a second pass rather than the one the brief scoped. */
+      ...(SHOW_PRICING
+        ? [{
+            q: 'What if it does not bring me any work?',
+            a:
+              'On Growth, if the site and your Google Business Profile do not bring you five ' +
+              `genuine customer enquiries in four months, you choose: ${money(GUARANTEE.cash)} of ` +
+              `the build fee back in cash, or the full ${money(GUARANTEE.credit)} as credit against ` +
+              'your monthly fee. A payout also ends the twelve month term on thirty days notice.',
+          }]
+        : [{
+            q: 'What if it does not bring me any work?',
+            a:
+              'On Growth, if the site and your Google Business Profile do not bring you five ' +
+              'genuine customer enquiries in four months, your build fee comes back as cash or ' +
+              `credit, your choice. ${QUOTE_LINE}`,
+          }]),
       {
         q: 'Will you work for a competitor of mine?',
         a:
