@@ -37,6 +37,7 @@ import { renderArticleRail } from '../partials/article-rail.js';
 import { renderContactBand } from '../partials/contact-band.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
+import { countWord } from '../templates/words.js';
 
 /* Referenced by the price guide so the figure it quotes is the figure on
    /prices. A guide that says "from £15" while the prices page says £19 is worse
@@ -76,14 +77,8 @@ const GROWTH = PLANS[2];
    instead. A number nobody types is a number nobody has to remember.
 
    Written as a word rather than a digit because it is prose, and "Plain
-   answers to 6 questions" reads like a spreadsheet. Past twelve it falls back
-   to the digit, which is the point where a word stops helping anyway. */
-const COUNT_WORDS = [
-  'no', 'one', 'two', 'three', 'four', 'five', 'six',
-  'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve',
-];
-
-const countWord = (n) => COUNT_WORDS[n] ?? String(n);
+   answers to 6 questions" reads like a spreadsheet. countWord and its list of
+   words live in ../templates/words.js, shared with the rest of the site. */
 
 const GUIDES = [
   {

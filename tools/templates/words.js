@@ -6,18 +6,22 @@
 
    This lives in one place because two pages needed the same list and each had
    started keeping its own. Two copies of a lookup table are two tables that
-   will eventually disagree. */
+   will eventually disagree.
+
+   Runs to twelve, not further: past that a word stops helping and "answers to
+   6 questions" reads like a spreadsheet either way, so anything past twelve
+   falls back to the digit. */
 
 const COUNT_WORDS = [
-  'no', 'one', 'two', 'three', 'four', 'five',
-  'six', 'seven', 'eight', 'nine', 'ten',
+  'no', 'one', 'two', 'three', 'four', 'five', 'six',
+  'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve',
 ];
 
 /**
  * @param {number} n
  * @param {object} [options]
  * @param {boolean} [options.capitalise] For the start of a sentence.
- * @returns {string} The number as a word up to ten, then as digits.
+ * @returns {string} The number as a word up to twelve, then as digits.
  */
 export function countWord(n, { capitalise = false } = {}) {
   const word = COUNT_WORDS[n] ?? String(n);
