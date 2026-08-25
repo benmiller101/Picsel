@@ -178,7 +178,7 @@ function renderBlock(block, prefix) {
 export function sectionSlug(h2) {
   return String(h2)
     .toLowerCase()
-    .replace(/[‘’ʼ]/g, '')
+    .replace(/[’'ʼ]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 }

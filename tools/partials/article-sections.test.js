@@ -14,13 +14,22 @@ test('a plain heading becomes a lowercase hyphenated slug', () => {
 });
 
 test('a curly apostrophe is removed rather than becoming a hyphen', () => {
-  assert.equal(sectionSlug('What pages does a plumber’s website actually need?'),
+  assert.equal(sectionSlug('What pages does a plumber' + String.fromCharCode(0x2019) + 's website actually need?'),
     'what-pages-does-a-plumbers-website-actually-need');
 });
 
 test('curly quotes and a question mark do not leave trailing hyphens', () => {
-  assert.equal(sectionSlug('How do you show up for “emergency plumber” searches?'),
+  assert.equal(sectionSlug('How do you show up for "emergency plumber" searches?'),
     'how-do-you-show-up-for-emergency-plumber-searches');
+});
+
+test('a straight apostrophe is removed, the same as a curly one', () => {
+  /* privacy.js has a heading with a straight apostrophe in it, so this is a
+     real page' + String.fromCharCode(0x2019) + 's anchor and not a hypothetical. Both quote characters have to
+     vanish rather than collapse to a hyphen, or the same heading slugs two
+     different ways depending on which apostrophe someone typed. */
+  assert.equal(sectionSlug('What we don' + String.fromCharCode(0x0027) + 't do with it'), 'what-we-dont-do-with-it');
+  assert.equal(sectionSlug("What we don" + String.fromCharCode(0x0027) + "t do with it"), 'what-we-dont-do-with-it');
 });
 
 test('two identical headings on one page get distinct slugs', () => {
