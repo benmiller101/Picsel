@@ -117,6 +117,16 @@
   color: var(--ink);
 }
 
+/* The headings carry anchor ids that the contents rail links to. The nav
+   floats over the page rather than sitting in the flow, so without this the
+   browser scrolls a heading to y=0 and the nav covers it. scroll-margin-top is
+   the browser's own fix. The value matches the sticky rail's own top offset
+   so the two cannot drift apart. */
+.guide__section h2,
+.post__section h2 {
+  scroll-margin-top: calc(var(--nav-height) + var(--space-8));
+}
+
 /* EXPECTED IN `npm run check`, and the list is shorter than it was. The
    plumber cost post has a table in it, so .post__table and .post__table-wrap
    are live selectors now and the check no longer names them. This comment was
