@@ -1040,8 +1040,19 @@
    The closing band on the homepage, the work index and every project page. One
    sentence, one button, and the number itself — the two ways this audience
    actually makes contact, side by side. */
+/* THE MARGIN IS GONE AND THAT IS THE FIX, not a tightening of taste.
+
+   .contact-band is not a .section, so it re-implemented the section rhythm
+   with its own margin-top rather than inheriting it. The section above it
+   already ends with --section-y of padding, and the band then added the same
+   value again as margin and a third time as its own padding-top. Removing the
+   margin removes one of those three copies, so the doubling is gone and the
+   band now sits at the site's standard section rhythm, measured at 525px from
+   the last paragraph of an article to the band's heading before this change.
+
+   The border-top is what separates the band from the section above it. That
+   was always the job the margin looked like it was doing. */
 .contact-band {
-  margin-top: var(--section-y);
   padding-block: var(--section-y);
   border-top: 1px solid var(--line);
 }
