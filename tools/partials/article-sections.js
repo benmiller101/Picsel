@@ -164,6 +164,41 @@ function renderBlock(block, prefix) {
   );
 }
 
+/* ---- Heading anchors ------------------------------------------------------
+   The contents rail links to these and the h2s carry them, and the two are
+   generated in different files. So the slug is computed in exactly one place
+   and both readers call it, the same rule PLUMBER_Q follows for the questions
+   themselves. A rail whose links scroll nowhere is the kind of break that no
+   test notices and every reader does.
+
+   The curly apostrophe is deleted rather than replaced, so "plumber's" gives
+   "plumbers" and not "plumber-s". Everything else that is not a letter or a
+   digit collapses to a single hyphen, and the trailing hyphen a question mark
+   would otherwise leave is trimmed. */
+export function sectionSlug(h2) {
+  return String(h2)
+    .toLowerCase()
+    .replace(/[‘’ʼ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+/* One slug per section, in document order, de-duplicated.
+
+   Two sections on one page can legitimately share a heading, and two elements
+   cannot share an id. The second occurrence gets a numeric suffix rather than
+   the two silently colliding, which would send both rail links to whichever
+   one the browser found first. */
+export function sectionSlugs(sections) {
+  const seen = new Map();
+  return sections.map((section) => {
+    const base = sectionSlug(section.h2);
+    const count = (seen.get(base) || 0) + 1;
+    seen.set(base, count);
+    return count === 1 ? base : `${base}-${count}`;
+  });
+}
+
 /**
  * Render the h2-and-body run of a guide or a post.
  *
@@ -173,8 +208,10 @@ function renderBlock(block, prefix) {
  * @returns {string} Markup for the whole run, sections separated by a blank line.
  */
 export function renderArticleSections(sections, prefix) {
+  const slugs = sectionSlugs(sections);
+
   return sections
-    .map((section) => {
+    .map((section, index) => {
       let body;
 
       if (section.blocks) {
@@ -190,7 +227,7 @@ export function renderArticleSections(sections, prefix) {
       }
 
       return `        <section class="${prefix}__section">
-          <h2>${escapeHtml(section.h2)}</h2>
+          <h2 id="${escapeHtml(slugs[index])}">${escapeHtml(section.h2)}</h2>
 ${body}
         </section>`;
     })
