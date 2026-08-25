@@ -269,8 +269,8 @@ const POSTS = [
   {
     slug: 'why-trades-websites-cost-so-much',
     date: '2026-08-09',
-    headline: 'Why trades websites cost so much',
-    title: 'Why trades websites cost so much | Picsel',
+    headline: 'Why a plumber gets quoted £3,000 for a five page website',
+    title: 'Why a five page website is quoted at £3,000 | Picsel',
     description: SHOW_PRICING
       ? 'Where the money goes in a three thousand pound website quote, what a trades website ' +
         'actually has to do, and what I charge instead. With one real number.'
