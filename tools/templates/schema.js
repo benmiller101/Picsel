@@ -55,6 +55,19 @@ function organization() {
     founder: { '@type': 'Person', name: SITE.contact.person },
     image: absoluteUrl('/assets/brand/ben-laptop-1440.webp'),
 
+    /* The designer's horizontal lockup, the same file the footer draws on every
+       page. `image` above is a photograph of the person and answers a different
+       question, so a crawler given only that one has been shown a man at a
+       laptop and told it is the mark of the business.
+
+       An ImageObject rather than a bare URL. Both are valid, and the object is
+       the form Google's own Organization documentation uses, so it is the one
+       that will still be right if a width or a caption ever has to go in. */
+    logo: {
+      '@type': 'ImageObject',
+      url: absoluteUrl('/assets/brand/picsel-lockup-horizontal.svg'),
+    },
+
     /* Country, not AdministrativeArea. This used to name a county, which told a
        crawler the business was a Cornwall business and was the machine-readable
        half of a claim now removed from every page. The whole country is both

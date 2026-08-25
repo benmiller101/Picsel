@@ -24,7 +24,7 @@
    three. There was no way to state it that was both flattering and true, so it
    is not stated. */
 
-import { SHOW_PRICING } from '../../site.config.js';
+import { SHOW_PRICING, absoluteUrl } from '../../site.config.js';
 import { PROJECTS } from '../../projects.js';
 import { PLANS, BUILD_FEE, money } from '../../pricing.js';
 import { escapeHtml } from '../templates/page.js';
@@ -78,7 +78,192 @@ function longDate(iso) {
                  standfirst. Always points at /contact/#enquiry: a post has no
                  service page of its own to reinforce, so it goes straight at
                  the enquiry form instead. */
+/* ---- The plumber cost post's headings -------------------------------------
+   THE HOUSE STYLE BANS QUESTION HEADINGS AND THIS PAGE IS THE EXCEPTION, on
+   purpose and for one page type only. A cost page is read by somebody who
+   arrived having typed the question, and by an assistant looking for the
+   question to quote. Every h2 here is therefore the question, and the first
+   sentence under it is the answer with no run-up.
+
+   Declared up here rather than inline because four of the six are also the
+   FAQPage node, and "the schema questions match the rendered headings word for
+   word" is a promise no amount of care survives if the two are typed twice.
+   One constant, both readers.
+
+   The curly apostrophe and the curly quotes are literal characters rather than
+   entities because these strings are escaped on the way into the h2, the way
+   guides.js already writes one. An &rsquo; here would print as &rsquo;. */
+const PLUMBER_Q = {
+  cost: 'How much does a plumber’s website cost in 2026?',
+  diy: 'Is it cheaper to build it yourself?',
+  pages: 'What pages does a plumber’s website actually need?',
+  gasSafe: 'Where should the Gas Safe logo go?',
+  emergency: 'How do you show up for “emergency plumber” searches?',
+  running: 'What does it cost to keep a website running?',
+};
+
+/* The comparison table. Its own constant because the Picsel row is conditional
+   and a five row literal with a spread in the middle of it is unreadable.
+
+   THE LAST COLUMN IS THE HONEST ONE AND IT COST ME THE NEATEST ANSWER. Every
+   other route on this table gets a one word answer in it. Mine does not,
+   because pricing.js says what happens when a client leaves: the site comes
+   down, and the domain, content, photos and reviews go with them. Writing
+   "Yes" in my own row would read better and would contradict the terms
+   published on /prices, which is the one contradiction this site cannot
+   afford. So the row says what the terms say. */
+const PLUMBER_TABLE = {
+  caption: 'Three year totals, worked from the sources named in this post.',
+  head: ['Route', 'Upfront', 'Monthly', 'Three years', 'Yours at the end?'],
+  rows: [
+    ['Yourself, on Wix Core', '£0', '£16', 'About £600', 'Your content, not the site'],
+    ['Freelancer, one off', '£500 to £1,500', 'About £10', '£900 to £1,900', 'Yes'],
+    ['Small agency', '£2,000 to £10,000', 'About £30', '£3,100 to £11,100', 'Yes'],
+    ['Checkatrade, no website', '£0', '£60 to £150', '£2,160 to £5,400', 'No, nothing'],
+    ...(SHOW_PRICING
+      ? [[
+          'Picsel',
+          money(BUILD_FEE),
+          `${money(ONLINE.monthly)}`,
+          '£839',
+          'Domain and content, not the template',
+        ]]
+      : []),
+  ],
+};
+
 const POSTS = [
+  {
+    slug: 'plumber-website-cost-2026',
+    date: '2026-08-25',
+    headline: 'What a plumber’s website costs in 2026',
+    title: 'Plumber website cost 2026: £9 a month to £10,000 | Picsel',
+    description:
+      'Wix from £9 a month, £500 to £1,500 from a freelancer, £2,000 up from an agency. '
+      + 'Worked three year totals for each route, and what you own if you stop.',
+    standfirst: SHOW_PRICING
+      ? 'A plumber’s website in 2026 runs from £9 a month building it yourself on Wix, '
+        + 'through £500 to £1,500 for a one off freelance build, to £2,000 and up from an '
+        + `agency. I charge ${money(BUILD_FEE)} to build it, then ${money(ONLINE.monthly)} a month.`
+      : 'A plumber’s website in 2026 runs from £9 a month building it yourself on Wix, '
+        + 'through £500 to £1,500 for a one off freelance build, to £2,000 and up from an '
+        + 'agency. Here is where every one of those figures comes from.',
+    sections: [
+      {
+        h2: PLUMBER_Q.cost,
+        blocks: [
+          { p: 'Between nothing and ten thousand pounds. The gap is almost entirely about who does the work.' },
+          { p: 'Doing it yourself starts lowest. Wix UK is £9 a month on Light, £16 on Core, £25 on Business and £119 on Business Elite, all on annual billing. Pay monthly instead and it costs 16 to 28% more. Squarespace runs £12 to £79 a month: Core is £17 and takes 5% of digital product revenue, Plus is £29 and takes 1%, and physical product sales carry nothing since the 2026 restructure. Both sets of figures are Expertsure’s 2026 pricing guides.' },
+          { p: 'Pay somebody and it steps up hard. A UK freelance web designer charges £25 to £120 an hour, or £500 to £1,500 for a basic five page site. A small specialist agency wants £2,000 to £10,000 for a business website. Expertsure’s 2026 website cost guide again.' },
+          { p: 'Checkatrade publish their own cost guide, and their numbers are the highest of the lot. Full website design: £495 to £15,000, average £7,747.50. A WordPress build: £400 to £7,000, average £3,700. A one off custom build: £2,500 to £10,000, average £6,250. Those are Checkatrade’s published averages rather than fresh 2026 data: their table was last updated in May 2024.' },
+          { table: PLUMBER_TABLE },
+          { p: 'The three year column is the build plus thirty six months of running it. Wix Core at £16 a month for three years, plus a domain, is about £600. A freelance build at £500 to £1,500 plus £10 a month hosting and a domain lands between £900 and £1,900. An agency build plus £30 a month for hosting and maintenance comes to £3,100 to £11,100. Checkatrade at £60 to £150 a month is £2,160 to £5,400 over the same three years.' },
+          ...(SHOW_PRICING
+            ? [{ p: `Mine is ${money(BUILD_FEE)} to build, then ${money(ONLINE.monthly)} a month. Over three years that’s £839.` }]
+            : []),
+        ],
+      },
+      {
+        h2: PLUMBER_Q.diy,
+        blocks: [
+          { p: 'In year one, yes, and by a long way. Expertsure put a realistic do it yourself year at £240 to £360, including a domain and a business email. Nothing else on this page is close.' },
+          { p: 'After that it depends what your evenings are worth. Wix gets you a site in a weekend and a finished site in about six. The photographs still have to be taken. The service pages still have to be written. And the words that win an emergency call out aren’t the words a plumber uses talking to another plumber.' },
+          { p: 'There’s a second cost that only shows up in year three. Build it on Wix and it stays on Wix. Move later and you rebuild, because the pages don’t travel. That’s the last column of the table, and the one everybody skips.' },
+          { p: 'Build it yourself if you’d enjoy it. Plenty of plumbers do. Pay somebody if you’d rather be fixing boilers. The real comparison there is £9 a month against your Saturdays.' },
+        ],
+      },
+      {
+        h2: PLUMBER_Q.pages,
+        blocks: [
+          { p: 'One page for every job you want ringing in, plus one for every town you cover.' },
+          { p: 'Boiler repair gets its own page. So does emergency call out. Not bullet points on a services page: whole pages, with their own heading and words. A page per job type is what ranks, because somebody typing &ldquo;boiler not firing up&rdquo; wants a page about boilers not firing up, and the ninth item in a list isn’t one.' },
+          { p: 'The rest is short. Who you are, with a photograph of you rather than a stock shot of somebody beside a van. What you charge, or how you charge. Your reviews. Your phone number where a thumb reaches it.' },
+          { p: 'That’s five or six pages of real writing, and it’s the half everybody underestimates.' },
+        ],
+      },
+      {
+        h2: PLUMBER_Q.gasSafe,
+        blocks: [
+          { p: 'In the header or the footer, next to your phone number.' },
+          { p: 'Write the registration number out as text in the footer of every page, and on your about page as well. Customers check it. The ones who check are about to ring you, so make it a two second job rather than a hunt.' },
+          { p: 'Google’s quality raters like seeing it too. A registration number a stranger can look up is exactly the kind of checkable claim their guidelines ask for.' },
+          { p: 'It costs nothing. It takes ten minutes. Most plumber sites still bury it on a page nobody opens.' },
+        ],
+      },
+      {
+        h2: PLUMBER_Q.emergency,
+        blocks: [
+          { p: 'One page per town, with the town name in the h1, the title tag and the first paragraph.' },
+          { p: '&ldquo;Emergency plumber [your town]&rdquo; is the search that pays. Whoever types it has water coming through a ceiling and will ring the first number that looks local and looks open. Nobody browses.' },
+          { p: 'So give every town you cover a page of its own. [your town] goes in the h1, in the title tag and in the first sentence. Once in each. Not stuffed in twelve times, which reads badly and stopped working years ago. Then write normally about the work you do there.' },
+          { p: 'BrightLocal’s Local Consumer Review Survey 2026 asked 1,002 consumers in the US: 97% read reviews before choosing a local business, and the share using AI tools to find one went from 6% to 45% in a year. It’s a US survey, so take it as direction rather than gospel. The direction is that more people ask a machine now, and a machine reads your town pages the way a search engine does.' },
+        ],
+      },
+      {
+        h2: PLUMBER_Q.running,
+        blocks: [
+          { p: 'A domain from £8 a year, hosting between £4 and £80 a month for a site this size, and about £50 a year for an SSL certificate if your host doesn’t bundle it. Those are Checkatrade’s figures.' },
+          { p: 'Most trades sites sit at the bottom of that range. £4 to £10 a month is normal.' },
+          { p: 'Then there’s the running cost nobody counts, which is Checkatrade itself. SwiftLead’s 2026 breakdown puts membership at roughly £60 to £150 a month depending on trade and region. Three years of that is £2,160 to £5,400, and you own nothing at the end. Stop paying and the leads stop the same week.' },
+          SHOW_PRICING
+            ? { p: `I do it the other way round: <a href="/prices/">${money(BUILD_FEE)} to build, then ${money(ONLINE.monthly)} a month</a>. Stop paying me and the site comes down, but the domain, the content, the photos and the reviews are yours, sent over inside seven days, free. That’s written on the prices page because it’s the thing this trade gets burned on.` }
+            : { p: 'Whatever you end up paying, ask what happens if you stop. Who holds the domain, who holds the content, and whether the site comes down or comes with you. A quote that won’t break into those three answers is hiding at least one of them.' },
+        ],
+      },
+    ],
+    /* Four of the six headings, word for word from PLUMBER_Q, with the answers
+       tightened to the length an assistant will actually read out. The two left
+       out are the ones whose answers only make sense with the table or the
+       placeholder town in front of you. */
+    faqs: [
+      {
+        q: PLUMBER_Q.cost,
+        a: 'Anything from £9 a month doing it yourself on Wix, to £500 to £1,500 for a one off '
+          + 'freelance build, to £2,000 to £10,000 from a small agency. Checkatrade’s own cost '
+          + 'guide puts a full website design at £495 to £15,000, average £7,747.50, though that '
+          + 'table was last updated in May 2024.',
+      },
+      {
+        q: PLUMBER_Q.diy,
+        a: 'In year one, yes. A realistic do it yourself year is £240 to £360 including a domain '
+          + 'and a business email, on Expertsure’s 2026 figures. The costs that follow are your '
+          + 'own time, and the fact that a site built on Wix stays on Wix if you ever move.',
+      },
+      {
+        q: PLUMBER_Q.gasSafe,
+        a: 'In the header or the footer, next to your phone number, with the registration number '
+          + 'written out as text in the footer of every page and again on your about page. '
+          + 'Customers check it, and Google’s quality raters look for exactly that kind of '
+          + 'verifiable claim.',
+      },
+      {
+        q: PLUMBER_Q.running,
+        a: 'A domain from £8 a year, hosting from £4 to £80 a month for a small site, and about '
+          + '£50 a year for an SSL certificate if it is not bundled with the hosting. Those are '
+          + 'Checkatrade’s figures. Most trades sites sit at the bottom of the hosting range.',
+      },
+    ],
+    close: SHOW_PRICING
+      ? {
+          href: '/prices/',
+          line:
+            'Every plan is written down, including what happens if you leave: '
+            + `${money(BUILD_FEE)} to build, then from ${money(ONLINE.monthly)} a month.`,
+          cta: 'See the prices',
+        }
+      : {
+          href: '/guides/how-much-a-trades-website-costs/',
+          line:
+            'The same question answered without me selling you anything, for trades other than '
+            + 'plumbing too.',
+          cta: 'Read the guide',
+        },
+    action: {
+      href: '/contact/#enquiry',
+      line: 'Every figure above is somebody else’s. Yours depends on how many towns you want.',
+      cta: 'Send an enquiry',
+    },
+  },
   {
     slug: 'why-trades-websites-cost-so-much',
     date: '2026-08-09',
@@ -255,6 +440,21 @@ ${sections}
         path: `/blog/${post.slug}/`,
         datePublished: post.date,
       }),
+      /* Only the posts that are written as questions carry one, which so far
+         means the cost post. The questions come from the same constant the h2s
+         are rendered from, so the node cannot quote a question the page does
+         not ask. */
+      ...(post.faqs
+        ? [{
+            '@type': 'FAQPage',
+            '@id': `${absoluteUrl(`/blog/${post.slug}/`)}#faq`,
+            mainEntity: post.faqs.map(({ q, a }) => ({
+              '@type': 'Question',
+              name: q,
+              acceptedAnswer: { '@type': 'Answer', text: a },
+            })),
+          }]
+        : []),
       breadcrumbs(trail),
     ],
     content: [
