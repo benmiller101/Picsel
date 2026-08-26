@@ -38,10 +38,14 @@
 }
 
 /* The articles are the only pages with three columns, so they are the only
-   pages that need more than --page-max. Scoped to the two long-form prefixes
-   rather than changing .wrap, which every other page uses. */
-.guide__inner,
-.post__inner {
+   pages that need more than --page-max. Gated on --wide rather than on the
+   guide__ / post__ prefix: /privacy and /about render with class="wrap
+   guide__inner" too, sharing the prefix without sharing the three-column
+   shell, and a prefix is therefore not a safe thing to key a page's width on.
+   renderGuide and renderPost add the modifier; privacy.js and about.js do
+   not, so they keep the wrap's own width. */
+.guide__inner--wide,
+.post__inner--wide {
   max-width: var(--article-page-max);
 }
 

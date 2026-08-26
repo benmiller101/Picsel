@@ -414,7 +414,7 @@ function renderPost(post) {
   const content = `${renderBreadcrumbs(trail)}
 
     <article class="section post">
-      <div class="wrap post__inner">
+      <div class="wrap post__inner post__inner--wide">
         <div class="post__cols">
 ${renderArticleRailLeft({
     prefix: 'post',

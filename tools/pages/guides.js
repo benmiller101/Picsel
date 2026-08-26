@@ -1197,7 +1197,7 @@ ${guide.also
   const content = `${renderBreadcrumbs(trail)}
 
     <article class="section guide">
-      <div class="wrap guide__inner">
+      <div class="wrap guide__inner guide__inner--wide">
         <div class="guide__cols">
 ${renderArticleRailLeft({
     prefix: 'guide',
