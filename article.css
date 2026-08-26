@@ -894,10 +894,36 @@
    styled but are not among the eight pages this plan widens, and their type
    stays at 17px. The .__col wrapper exists only on the real eight, so putting
    the width on it confines the change to exactly those pages. */
+/* margin-inline: auto centres the column below the three-column breakpoint.
+   Above it the grid track is exactly --article-measure wide already (see the
+   reading-column track above), so the column fills its track and centring
+   has nothing to do; below it .guide__cols is a plain block and the column
+   was the one thing in the stack with a cap and no centring, left-pinned in
+   a box up to 1151px wide with the leftover space stacked entirely on the
+   right. Below the breakpoint there is nothing beside the text, so the space
+   belongs on both sides rather than all on one. The rails get the same
+   treatment just below, so the whole stack reads as one centred column
+   rather than a centred body with left-pinned furniture. */
 .guide__col,
 .post__col {
   max-width: var(--article-measure);
+  margin-inline: auto;
   font-size: var(--article-text);
+}
+
+/* The rails have no cap of their own below the breakpoint (their grid track
+   supplies one above it), so without this they span the full width of
+   .guide__inner while the reading column above sits centred at 42rem: a
+   headline, a contents list and a contact card noticeably wider than the
+   text they belong beside, with the rail-card's top border in particular
+   drawing a line wider than everything under it. Capped and centred to the
+   same measure as the column, the whole stack (rail, column, rail) shares
+   one width and reads as a single centred piece of furniture rather than
+   three different ones. */
+.guide__rail,
+.post__rail {
+  max-width: var(--article-measure);
+  margin-inline: auto;
 }
 
 /* ---- The rail trip wires ---------------------------------------------------
