@@ -786,8 +786,36 @@
 
 .guide__rail--quiet,
 .post__rail--quiet {
-  opacity: 0.45;
   transform: scale(0.92);
+}
+
+/* Opacity used to sit here, on the rail itself. It moved onto each child
+   below because opacity on an ancestor cannot be escaped: it applies to the
+   whole subtree, so a highlighted contents entry inside a dimmed rail would
+   be dimmed straight through it, and the highlight would vanish exactly when
+   the rail dims, which is exactly when the reader most needs to see where
+   they are. Listing every piece of furniture here and dimming each one
+   individually gets the same quiet look back, with one exemption below for
+   the entry that marks the current section. */
+.guide__rail--quiet .guide__headline,
+.guide__rail--quiet .guide__meta,
+.guide__rail--quiet .guide__rail-label,
+.guide__rail--quiet .guide__rail-list a,
+.guide__rail--quiet .guide__rail-card,
+.post__rail--quiet .post__headline,
+.post__rail--quiet .post__meta,
+.post__rail--quiet .post__rail-label,
+.post__rail--quiet .post__rail-list a,
+.post__rail--quiet .post__rail-card {
+  opacity: 0.45;
+}
+
+/* The exemption. article-rails.js marks the current contents entry with
+   aria-current, and that entry stays bright even while the rest of the rail
+   is dimmed, or the whole feature would be invisible whenever it matters. */
+.guide__rail--quiet .guide__rail-list a[aria-current="true"],
+.post__rail--quiet .post__rail-list a[aria-current="true"] {
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -889,8 +917,17 @@
   margin-top: var(--space-3);
 }
 
+/* display: block rather than the anchor's default inline, because a
+   border-left on an inline element runs along the baseline of each wrapped
+   line rather than drawing one clean bar down the left of the entry. The
+   transparent border is deliberate too: every entry reserves the same 2px on
+   its left from the start, so nothing in the list shifts sideways by that
+   2px the moment article-rails.js marks one of them current. */
 .guide__rail-list a,
 .post__rail-list a {
+  display: block;
+  border-left: 2px solid transparent;
+  padding-left: var(--space-3);
   color: var(--ink-muted);
   text-decoration: none;
 }
@@ -903,6 +940,15 @@
   text-decoration: underline;
   text-underline-offset: 0.2em;
   text-decoration-color: var(--accent);
+}
+
+/* The section the reader is currently in, set by article-rails.js. The
+   border fills the space every entry already reserves, so this is a colour
+   change and nothing moves. */
+.guide__rail-list a[aria-current="true"],
+.post__rail-list a[aria-current="true"] {
+  border-left-color: var(--accent);
+  color: var(--ink);
 }
 
 .guide__rail-card,
