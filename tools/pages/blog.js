@@ -31,7 +31,7 @@ import { LANORA_REVIEWS } from '../../client-results.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs, blogPosting, blogNode } from '../templates/schema.js';
 import { renderArticleSections } from '../partials/article-sections.js';
-import { renderArticleRail } from '../partials/article-rail.js';
+import { renderArticleRailLeft, renderArticleRailRight } from '../partials/article-rail.js';
 import { renderContactBand } from '../partials/contact-band.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { countWord } from '../templates/words.js';
@@ -409,17 +409,20 @@ function renderPost(post) {
 
     <article class="section post">
       <div class="wrap post__inner">
-        <h1 class="post__headline">${escapeHtml(post.headline)}</h1>
-        <p class="post__meta">
-          <time datetime="${escapeHtml(post.date)}">${escapeHtml(longDate(post.date))}</time>
-        </p>
+        <div class="post__cols">
+${renderArticleRailLeft({
+    prefix: 'post',
+    sections: post.sections,
+    headline: post.headline,
+    date: post.date,
+    longDate: longDate(post.date),
+  })}
 
+          <div class="post__col">
         <p class="post__standfirst">${escapeHtml(post.standfirst)}</p>
 
 ${action}
 
-        <div class="post__cols">
-          <div class="post__col">
 ${sections}
 
         <aside class="post__close">
@@ -428,7 +431,7 @@ ${sections}
         </aside>
           </div>
 
-${renderArticleRail({ prefix: 'post', sections: post.sections })}
+${renderArticleRailRight({ prefix: 'post' })}
         </div>
       </div>
     </article>`;

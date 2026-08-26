@@ -33,7 +33,7 @@ import { PLANS, BUILD_FEE, money } from '../../pricing.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs } from '../templates/schema.js';
 import { renderArticleSections } from '../partials/article-sections.js';
-import { renderArticleRail } from '../partials/article-rail.js';
+import { renderArticleRailLeft, renderArticleRailRight } from '../partials/article-rail.js';
 import { renderContactBand } from '../partials/contact-band.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
@@ -1166,14 +1166,18 @@ ${guide.also
 
     <article class="section guide">
       <div class="wrap guide__inner">
-        <h1 class="guide__question">${escapeHtml(guide.question)}</h1>
+        <div class="guide__cols">
+${renderArticleRailLeft({
+    prefix: 'guide',
+    sections: guide.sections,
+    headline: guide.question,
+  })}
 
+          <div class="guide__col">
         <p class="guide__answer">${escapeHtml(guide.answer)}</p>
 
 ${intro}${action}
 
-        <div class="guide__cols">
-          <div class="guide__col">
 ${sections}
 
 ${also}
@@ -1181,7 +1185,7 @@ ${also}
 ${trades}${plan}
           </div>
 
-${renderArticleRail({ prefix: 'guide', sections: guide.sections })}
+${renderArticleRailRight({ prefix: 'guide' })}
         </div>
       </div>
     </article>`;
