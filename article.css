@@ -832,16 +832,30 @@
 .guide__rail--quiet .guide__headline,
 .guide__rail--quiet .guide__meta,
 .guide__rail--quiet .guide__rail-label,
-.guide__rail--quiet .guide__rail-list a,
-.guide__rail--quiet .guide__rail-phone a,
 .guide__rail--quiet .guide__rail-promise,
 .post__rail--quiet .post__headline,
 .post__rail--quiet .post__meta,
 .post__rail--quiet .post__rail-label,
-.post__rail--quiet .post__rail-list a,
-.post__rail--quiet .post__rail-phone a,
 .post__rail--quiet .post__rail-promise {
   opacity: 0.45;
+}
+
+/* The contents entries and the phone link get a higher quiet floor than the
+   rest of the rail, because they are the two things in it meant to be used
+   rather than glanced at, and a reader spends the whole article at this
+   opacity, not a glance. At 0.45, --ink-muted (the contents links' colour,
+   72% white) over --bg computes to roughly 2.8:1 and would fail CLAUDE.md's
+   AA requirement for the entire read. 0.7 clears it: --ink-muted at 0.7
+   computes to roughly 5.4:1, and --ink (the phone link's colour, opaque
+   white) at 0.7 computes to roughly 9.7:1. The headline, metadata and
+   promise stay at 0.45: they were the dimmer elements in the original
+   design, and raising the links rather than lowering them keeps that
+   hierarchy intact instead of flattening it. */
+.guide__rail--quiet .guide__rail-list a,
+.guide__rail--quiet .guide__rail-phone a,
+.post__rail--quiet .post__rail-list a,
+.post__rail--quiet .post__rail-phone a {
+  opacity: 0.7;
 }
 
 /* The exemption. article-rails.js marks the current contents entry with
@@ -856,10 +870,10 @@
    outline as readily as its text, and both rails are position: sticky, so
    tabbing to a contents link or the phone link mid-article does not scroll
    it into view and does not brighten the rail around it: the focus ring
-   would render at 0.45 opacity, under the 3:1 WCAG 1.4.11 needs for a
-   non-text indicator. A focus ring is the one thing that must never be
-   quiet, so both link groups stay at full opacity while focused, whatever
-   the rail's own state. */
+   would render at the links' own quiet opacity (0.7, see above), under the
+   3:1 WCAG 1.4.11 needs for a non-text indicator. A focus ring is the one
+   thing that must never be quiet, so both link groups stay at full opacity
+   while focused, whatever the rail's own state. */
 .guide__rail--quiet .guide__rail-list a:focus-visible,
 .guide__rail--quiet .guide__rail-phone a:focus-visible,
 .post__rail--quiet .post__rail-list a:focus-visible,
