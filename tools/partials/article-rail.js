@@ -63,6 +63,18 @@ export function railVariant(wordCount) {
   return wordCount >= RAIL_CONTENTS_THRESHOLD ? 'contents' : 'contact';
 }
 
+/* Words a minute. The conventional figure, and precise enough for a label whose
+   only job is to set an expectation before somebody commits to reading.
+
+   Rounded up, with a floor of one. A guide of ninety words is a minute's
+   reading in every sense that matters, and "0 min read" is the kind of detail
+   that makes a reader distrust everything else on the page. */
+const WORDS_A_MINUTE = 200;
+
+export function readingMinutes(sections) {
+  return Math.max(1, Math.ceil(articleWordCount(sections) / WORDS_A_MINUTE));
+}
+
 /* A real <nav> with a name, not a styled list. A reader on a screen reader
    gets it in the landmarks list and can jump to it, which is most of why a
    contents list is worth having at all. */
@@ -104,21 +116,44 @@ function renderContactCard(prefix) {
 }
 
 /**
- * The rail beside an article.
+ * The left rail: what this page is. Title, when it was written, how long it
+ * takes, and on a long article the contents.
  *
- * @param {object} options
- * @param {string} options.prefix    'guide' or 'post'.
- * @param {object[]} options.sections The same array passed to renderArticleSections.
- * @returns {string} Markup for one <aside>, with no page-level wrapper.
+ * THE H1 LIVES HERE NOW, and that is the point of this pass. It used to sit
+ * above the grid, spanning the reading column with nothing beside it, which is
+ * why the top of every article read as a left column against an empty right
+ * half however good the rest of the page was.
+ *
+ * date and longDate are optional: a guide is a standing answer that gets
+ * edited, and stamping it with a date would either go stale or claim a
+ * freshness nobody is maintaining. Only a post is a dated piece of writing, so
+ * the Written pair is omitted entirely rather than rendered empty when there
+ * is nothing to put in it.
  */
-export function renderArticleRail({ prefix, sections }) {
-  const variant = railVariant(articleWordCount(sections));
+export function renderArticleRailLeft({ prefix, sections, headline, date, longDate }) {
+  const contents = railVariant(articleWordCount(sections)) === 'contents'
+    ? `\n${renderContents(prefix, sections)}`
+    : '';
 
-  const body = variant === 'contents'
-    ? renderContents(prefix, sections)
-    : renderContactCard(prefix);
+  const written = date && longDate
+    ? `\n        <dt>Written</dt>\n        <dd><time datetime="${escapeHtml(date)}">${escapeHtml(longDate)}</time></dd>`
+    : '';
 
-  return `    <aside class="${prefix}__rail ${prefix}__rail--${variant}">
-${body}
+  return `    <aside class="${prefix}__rail ${prefix}__rail--left">
+      <h1 class="${prefix}__headline">${escapeHtml(headline)}</h1>
+      <dl class="${prefix}__meta">${written}
+        <dt>Length</dt>
+        <dd>${readingMinutes(sections)} min read</dd>
+      </dl>${contents}
+    </aside>`;
+}
+
+/**
+ * The right rail: what to do about it. One phone number and the promise that
+ * goes with it, and nothing else, for the reason recorded on renderContactCard.
+ */
+export function renderArticleRailRight({ prefix }) {
+  return `    <aside class="${prefix}__rail ${prefix}__rail--right">
+${renderContactCard(prefix)}
     </aside>`;
 }
