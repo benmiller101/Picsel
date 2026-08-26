@@ -1,8 +1,60 @@
 # Three columns, a scroll-driven hierarchy, and seven diagrams
 
 **Date:** 2026-08-26
-**Status:** approved
+**Status:** built
 **Supersedes parts of:** `docs/specs/2026-08-25-article-layout-design.md`
+
+## Corrections made during the build
+
+Recorded here rather than left for someone to discover, because in each case this document
+said something the code does not do. `tokens.css` documents at length what happens when a
+number in one place is silently contradicted by a number in another; this section exists so
+that this document is not the place where that happens.
+
+**The measure moved to 42rem, not 38rem.** This spec called 38rem "the one number that has
+already been argued about twice" and said it does not move. The owner asked for a larger
+column anyway, was shown what it would cost in line length, and chose it: 42rem at 18px
+measures 67 characters a line, not the 61 this spec defends. The reasoning that held the
+measure at 38rem in the first pass no longer applies to this one.
+
+**The rails cap at 24rem, not 20rem.** Part of the same request: use more of the screen. The
+ratio the rails scale at is unchanged, only the cap moved, from 14 to 20rem to 14 to 24rem.
+
+**The article wrap is 102rem, not 90rem.** Same request again: the wrap widened to match the
+wider rails, on the same reasoning `tokens.css` now carries for `--article-page-max`.
+
+**Three columns start at 79rem, not 64rem.** At 64rem the grid starved the reading column: the
+two rails, capped at their own maximum, claimed their width first and left the column at
+208px, 21 characters a line, on a 1024px viewport, exactly the failure `--article-measure-min`
+exists to stop. The shipped breakpoint is derived rather than chosen: the reading column's
+floor, plus two rails at their own floor, plus two column gaps, plus 32px of slack to cover a
+classic (non-overlay) scrollbar on Windows and Linux Chrome, which the `width` media feature
+counts against a viewport the grid never actually gets. See `article.css` for the full
+arithmetic.
+
+**Every article gets a contents list, not only the ones over the length this spec implied.**
+The owner asked for it on every article, and the reasoning that limited it to long articles
+had already been invalidated by the rail becoming permanent: a contents list used to be the
+rail's only reason to exist on a short guide, so a two-screen guide was not judged to need one.
+Once the rail carries a title, a date and a reading time regardless, the list costs nothing
+structural on top of that. See `article-rail.js` for the full reasoning and git history for the
+threshold this replaced.
+
+**The `what-is-geo` diagram does not show an assistant naming one business, because the guide
+does not say that.** This spec's own drawing brief, below, describes the diagram as "an
+assistant naming one business." The guide's copy says an assistant returns "two or three
+names," and the diagram was drawn to match the guide rather than this spec: it shows three
+short rows, one of them highlighted as the reader's own business, not one. This document was
+wrong; the diagram and the guide agree with each other, and this correction is here so a future
+reader trusts them over the sentence below that they contradict.
+
+**The full-bleed figure rejection, under "A note on what was considered and rejected" below,
+still holds and is recorded accurately.** A figure promoted to a grid child so it could span all
+three columns full bleed was considered and rejected because the rails are sticky and occupy the
+full vertical extent of the page, so a full-bleed figure collides with them regardless of where
+it sits in the document. That reasoning was not overtaken by anything that shipped: the portrait
+diagrams did not solve the collision, they removed the reason to want the full-bleed layout at
+all, which is what the text below already says.
 
 ## What this is
 
@@ -26,7 +78,8 @@ scroll on the diagrams, which is not wanted.
 The reading column keeps its width and its line length. Everything around it moves.
 
 - Three columns, centred, in a wider article wrap.
-- The left rail carries the title, the date, the reading time and, on a long article, the contents.
+- The left rail carries the title, the date, the reading time and the contents, on every article
+  regardless of length. See Corrections above.
 - The right rail carries the contact card.
 - Both rails are visually secondary while the body is being read, and each comes forward at the end
   of the page where it is the most useful thing on screen.
@@ -37,29 +90,33 @@ The reading column keeps its width and its line length. Everything around it mov
 
 ```
 grid-template-columns:
-  minmax(14rem, 20rem)                /* left  */
-  minmax(0, var(--article-measure))    /* 38rem */
-  minmax(14rem, 20rem);                /* right */
+  minmax(14rem, 24rem)                /* left  */
+  minmax(0, var(--article-measure))    /* 42rem */
+  minmax(14rem, 24rem);                /* right */
 column-gap: var(--space-12);
 justify-content: center;
 ```
 
-inside an article wrap of 90rem rather than the site's 72rem.
+inside an article wrap of 102rem rather than the site's 72rem. See Corrections above: the rails,
+the measure and the wrap all moved from the figures first drafted here.
 
 **The rails are equal, which is what makes the reading column genuinely centred** rather than
 merely less left. That was the ask, and it is the reason this is not the asymmetric shape of the
 reference that inspired it.
 
-**They cap at 20rem.** Ben asked not to be afraid of the screen width, and up to about 1400px this
+**They cap at 24rem.** Ben asked not to be afraid of the screen width, and up to about 1400px this
 uses it. Past that the rails stop growing and the whole thing centres, because a title 600px from
 the paragraph it belongs to has stopped being a title and become a separate column of text.
 
-**The measure does not move.** 38rem at 18px was measured at 61 characters a line, and it is the one
-number in this design that has already been argued about twice. Everything else adapts around it.
+**The measure is 42rem, widened from the 38rem this section originally set out to defend.** At
+18px that measures 67 characters a line. The owner asked for a larger column, was shown the cost
+in line length, and chose it anyway: see Corrections above. Everything else adapts around it.
 
-Below 64rem this collapses to one column in document order: title block, body, contact. The contents
-list is dropped on a phone rather than stacked, for the same reason as before, which is that a
-contents list rendered after the content it indexes is worse than no contents list.
+Below 79rem this collapses to one column in document order: title block, body, contact. The
+breakpoint is not 64rem, the width the layout above would suggest: see Corrections above for why
+it is derived from the column and rail floors rather than chosen by eye. The contents list is
+dropped on a phone rather than stacked, for the same reason as before, which is that a contents
+list rendered after the content it indexes is worse than no contents list.
 
 ## The head moves inside the grid
 
@@ -137,7 +194,8 @@ The seven, each encoding something true from the guide it sits in:
    work, showing which part a cheap site leaves out. Deliberately not another cost range chart, since
    the builder guide has one and two would read as a template.
 4. **what-is-geo**: the same question asked twice, a results page of ten links against an assistant
-   naming one business.
+   returning two or three names. See Corrections above: this brief originally said "naming one
+   business," which is not what the guide argues, and the diagram was drawn to match the guide.
 5. **how-to-get-more-google-reviews**: when to ask, against a job's timeline, because the guide says
    timing matters more than wording.
 6. **builder-website-cost**, redrawn: the four cost routes as portrait rows rather than a wide bar
@@ -146,15 +204,16 @@ The seven, each encoding something true from the guide it sits in:
 
 ## What this does not change
 
-The reading measure, the 18px type, the 61 character line, the price table, the lists, the display
-stat, the heading anchors, the `scroll-margin-top`, the copy, and the blackout gating. All of that
-stands from the first pass.
+The 18px type, the price table, the lists, the display stat, the heading anchors, the
+`scroll-margin-top`, the copy, and the blackout gating. All of that stands from the first pass.
+The reading measure is not in this list any more: see Corrections above, it moved from 38rem to
+42rem during the build, so it is not something this pass left untouched.
 
 ## Risks
 
 The rails are the whole design now, so a thin rail is a worse problem than it was. The left rail has
 a title, a date and a reading time, which is enough; the right rail has a phone number and a promise,
-which was already judged thin once. If it still looks thin against a 20rem column, the answer is
+which was already judged thin once. If it still looks thin against a 24rem column, the answer is
 content, not padding.
 
 Seven diagrams is the largest single piece of authoring in this project so far, and a diagram that
