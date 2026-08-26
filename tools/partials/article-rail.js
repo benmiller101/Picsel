@@ -4,18 +4,16 @@
    reads as a broken template rather than restraint. This is what goes in that
    space.
 
-   TWO OCCUPANTS, CHOSEN BY LENGTH, AND THE LENGTH IS COUNTED RATHER THAN
-   DECLARED. A contents list is worth the column on an article you have to
-   scroll five times to read. On a two screen guide it lists seven headings the
-   reader can already see and never scrolls far enough to earn the position it
-   is holding, so those get a contact card instead.
-
-   Measured on the built pages on 25 August 2026: two articles at 1,020 and
-   1,107 words, six between 422 and 479. The threshold sits in the gap with
-   room on both sides, and it is read off the section data at build time so a
-   guide that grows past it gains a contents list without anybody remembering
-   to turn one on. That is the whole reason this is a function and not a field
-   on each page.
+   THE LEFT RAIL ALWAYS CARRIES A CONTENTS LIST NOW. It used to be chosen by
+   length, on the reasoning that a contents list on a two screen guide only
+   indexes headings the reader can already see, and never earns the column it
+   occupies. That reasoning held while the rail existed only to carry the
+   contents. It stopped holding once the rail became permanent, earned by the
+   title, the date and the reading time on its own: contents cost nothing
+   structural on top of that. And article-rails.js now highlights the current
+   entry as the reader scrolls, which makes the list a position indicator as
+   well as a set of jump links, useful on a short page too. See git history
+   for the word count threshold this replaced.
 
    NO PAGE-LEVEL WRAPPER, the same contract plan-cards.js keeps: this is
    dropped inside an existing .__inner, so a <section> or a .wrap of its own
@@ -25,16 +23,12 @@ import { SITE } from '../../site.config.js';
 import { escapeHtml } from '../templates/page.js';
 import { sectionSlugs } from './article-sections.js';
 
-/* Between 479 and 1,020, the two numbers it has to separate. Written as a
-   named export so the test can assert it still sits in that gap rather than
-   hardcoding the same figure twice. */
-export const RAIL_CONTENTS_THRESHOLD = 700;
-
-/* Words in the body, which is what decides whether a contents list is worth
-   the column. Counts every string a reader actually reads: paragraphs, list
-   items and table cells, across both the `blocks` shape and the older
-   `paragraphs`/`list` one, because six of the eight articles still use the
-   latter and would otherwise count as empty. */
+/* Words in the body. Still used for readingMinutes below, even though it no
+   longer decides whether the rail carries a contents list. Counts every
+   string a reader actually reads: paragraphs, list items and table cells,
+   across both the `blocks` shape and the older `paragraphs`/`list` one,
+   because six of the eight articles still use the latter and would
+   otherwise count as empty. */
 export function articleWordCount(sections) {
   const strings = [];
 
@@ -57,10 +51,6 @@ export function articleWordCount(sections) {
     .trim()
     .split(/\s+/)
     .filter(Boolean).length;
-}
-
-export function railVariant(wordCount) {
-  return wordCount >= RAIL_CONTENTS_THRESHOLD ? 'contents' : 'contact';
 }
 
 /* Words a minute. The conventional figure, and precise enough for a label whose
@@ -131,9 +121,7 @@ function renderContactCard(prefix) {
  * is nothing to put in it.
  */
 export function renderArticleRailLeft({ prefix, sections, headline, date, longDate }) {
-  const contents = railVariant(articleWordCount(sections)) === 'contents'
-    ? `\n${renderContents(prefix, sections)}`
-    : '';
+  const contents = `\n${renderContents(prefix, sections)}`;
 
   const written = date && longDate
     ? `\n        <dt>Written</dt>\n        <dd><time datetime="${escapeHtml(date)}">${escapeHtml(longDate)}</time></dd>`
