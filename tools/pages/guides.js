@@ -206,11 +206,15 @@ const GUIDES = [
     sections: [
       {
         h2: 'Check it is actually verified',
-        paragraphs: [
-          'An unverified profile can exist, look complete, and never appear in the map results. ' +
-            'Sign in and look for the verification badge or a prompt to verify. If Google asks ' +
-            'for a video verification, do it properly: a continuous clip showing your van, your ' +
-            'tools and your paperwork, without cutting.',
+        blocks: [
+          { figure: { svg: 'google-profile-checks.svg', prefix: 'gbp' } },
+          {
+            p:
+              'An unverified profile can exist, look complete, and never appear in the map ' +
+              'results. Sign in and look for the verification badge or a prompt to verify. If ' +
+              'Google asks for a video verification, do it properly: a continuous clip showing ' +
+              'your van, your tools and your paperwork, without cutting.',
+          },
         ],
       },
       {
