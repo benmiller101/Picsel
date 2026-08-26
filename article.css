@@ -683,8 +683,18 @@
   margin-top: 0;
 }
 
-/* Written and Length, as a definition list because that is what they are: two
-   labels and their values. The label is the quiet half. */
+/* Written, as a definition list because that is what a label and a date are.
+   Only a post carries this: a guide has no date to pair with a label, so it
+   renders no <dl> at all rather than one holding a single orphan value. See
+   article-rail.js for why Length is not in this list any more.
+
+   .guide__meta WILL BE NAMED BY `npm run check` FROM NOW ON, permanently,
+   the same way .guide__rail--quiet already is: no guide has a date, so no
+   guide ever renders this element, and no future guide will either. It stays
+   paired with .post__meta rather than being split into a post-only rule,
+   for the same reason the other guide__/post__ pairs in this file stay
+   paired when only one twin is live: they are one shared style for one
+   shape of page, not two rules that happen to look alike. */
 .guide__meta,
 .post__meta {
   margin: var(--space-6) 0 0;
@@ -703,6 +713,24 @@
 .post__meta dd {
   margin: 0;
   color: var(--ink-muted);
+}
+
+/* The reading time. It used to be the Length row of the dl above, and the
+   label came out under CLAUDE.md's closing rule: "2 min read" already says
+   what it is, so a dt reading "Length" beside it was not earning its place.
+   It moved out of the list rather than leaving the label out and the value
+   in, because <dl><dd>2 min read</dd></dl> is a definition value with no
+   term. Rendered on both page types, list or no list. */
+.guide__rail-read,
+.post__rail-read {
+  margin-top: var(--space-6);
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+}
+
+.guide__meta + .guide__rail-read,
+.post__meta + .post__rail-read {
+  margin-top: var(--space-2);
 }
 
 /* ---- The three column shell ------------------------------------------------
@@ -832,11 +860,9 @@
 .guide__rail--quiet .guide__headline,
 .guide__rail--quiet .guide__meta,
 .guide__rail--quiet .guide__rail-label,
-.guide__rail--quiet .guide__rail-promise,
 .post__rail--quiet .post__headline,
 .post__rail--quiet .post__meta,
-.post__rail--quiet .post__rail-label,
-.post__rail--quiet .post__rail-promise {
+.post__rail--quiet .post__rail-label {
   opacity: 0.45;
 }
 
@@ -847,15 +873,30 @@
    72% white) over --bg computes to roughly 2.8:1 and would fail CLAUDE.md's
    AA requirement for the entire read. 0.7 clears it: --ink-muted at 0.7
    computes to roughly 5.4:1, and --ink (the phone link's colour, opaque
-   white) at 0.7 computes to roughly 9.7:1. The headline, metadata and
-   promise stay at 0.45: they were the dimmer elements in the original
-   design, and raising the links rather than lowering them keeps that
-   hierarchy intact instead of flattening it. */
+   white) at 0.7 computes to roughly 9.7:1. The headline and metadata stay at
+   0.45: they were the dimmer elements in the original design, and raising
+   the links rather than lowering them keeps that hierarchy intact instead
+   of flattening it. */
 .guide__rail--quiet .guide__rail-list a,
 .guide__rail--quiet .guide__rail-phone a,
 .post__rail--quiet .post__rail-list a,
 .post__rail--quiet .post__rail-phone a {
   opacity: 0.7;
+}
+
+/* The promise is not dimmed at all in the quiet state, unlike the rest of
+   the left-hand furniture above. It was left at the same 0.45 as the
+   headline, and --ink-faint (its colour, 52% white, dimmer than the links'
+   72%) at 0.45 over --bg computes to roughly 2:1, which fails AA for the
+   whole time a reader spends with the rail quiet, not for a glance. It is
+   real copy a reader may want while deciding whether to get in touch, so it
+   does not get the same pass as furniture that is only ever glanced at.
+   --ink-faint at full opacity already computes to roughly 5.7:1, clearing
+   AA for --text-sm with room to spare, so the fix is to leave it there
+   rather than invent a third opacity step. */
+.guide__rail--quiet .guide__rail-promise,
+.post__rail--quiet .post__rail-promise {
+  opacity: 1;
 }
 
 /* The exemption. article-rails.js marks the current contents entry with

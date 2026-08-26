@@ -116,12 +116,17 @@ test('neither rail brings a page level wrapper', () => {
   }
 });
 
-test('a guide with no date shows the reading time and no empty Written row', () => {
+test('a guide with no date shows the reading time and renders no dl at all', () => {
   /* Guides carry no date on purpose: a standing answer that gets edited would
      either go stale or claim a freshness nobody maintains. Only the posts are
-     dated pieces of writing. */
+     dated pieces of writing. Length used to be the dl's other row; it is its
+     own element now (see article-rail.js), so a guide with nothing left to
+     put in the list renders no <dl> at all rather than one holding a single
+     orphan value, which would otherwise be an empty <dd> in the first column
+     of the list's grid. */
   const html = renderArticleRailLeft({ prefix: 'guide', sections: SHORT, headline: 'What is GEO?' });
   assert.match(html, /min read/);
   assert.equal(html.includes('Written'), false);
+  assert.equal(html.includes('<dl'), false, 'a guide renders no dl at all');
   assert.equal(/<dd>\s*<\/dd>/.test(html), false, 'no empty definition value');
 });

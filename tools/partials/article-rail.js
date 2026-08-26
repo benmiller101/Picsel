@@ -123,16 +123,27 @@ function renderContactCard(prefix) {
 export function renderArticleRailLeft({ prefix, sections, headline, date, longDate }) {
   const contents = `\n${renderContents(prefix, sections)}`;
 
+  /* Length used to sit in this list as a Written/Length pair, and the label
+     came out under CLAUDE.md's closing rule: "2 min read" already says what
+     it is, a definition list entry does not add anything a plain sentence
+     would not. Deleting the dt alone would leave <dl><dd>2 min read</dd></dl>
+     on a guide, a value with no term, which is a conformance error and would
+     land in the first column of the list's auto 1fr grid. So the reading
+     time moves out of the list entirely, onto its own line, on both page
+     types. A post still needs the list, because Written is a date on its
+     own and a bare date is genuinely ambiguous without a label. A guide has
+     no date to pair with anything, so it gets no <dl> at all rather than one
+     holding a single orphan value. */
   const written = date && longDate
-    ? `\n        <dt>Written</dt>\n        <dd><time datetime="${escapeHtml(date)}">${escapeHtml(longDate)}</time></dd>`
+    ? `\n      <dl class="${prefix}__meta">
+        <dt>Written</dt>
+        <dd><time datetime="${escapeHtml(date)}">${escapeHtml(longDate)}</time></dd>
+      </dl>`
     : '';
 
   return `    <aside class="${prefix}__rail ${prefix}__rail--left">
-      <h1 class="${prefix}__headline">${escapeHtml(headline)}</h1>
-      <dl class="${prefix}__meta">${written}
-        <dt>Length</dt>
-        <dd>${readingMinutes(sections)} min read</dd>
-      </dl>${contents}
+      <h1 class="${prefix}__headline">${escapeHtml(headline)}</h1>${written}
+      <p class="${prefix}__rail-read">${readingMinutes(sections)} min read</p>${contents}
     </aside>`;
 }
 
