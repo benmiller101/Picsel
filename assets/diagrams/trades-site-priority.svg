@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 940" role="img"
+     aria-labelledby="waTitle waDesc" font-family="var(--font-body, 'Lexend', ui-sans-serif, system-ui, sans-serif)">
+  <title id="waTitle">The six things a tradesperson's website needs, in priority order</title>
+  <desc id="waDesc">A phone shaped wireframe, divided top to bottom into five sections in the order this guide argues for. One, phone number. Two, jobs you do, in their words. Three, your own photos. Four, reviews. Five, towns you cover. Below the phone, a sixth, dashed box labelled what you can leave off, listing four things struck through: a slider that moves on its own, a blog nobody's posted to since 2021, a quote form with fourteen fields, and a live chat nobody's behind.</desc>
+
+  <rect width="680" height="940" fill="var(--bg, #0a0a0a)"/>
+
+  <text x="40" y="54" fill="var(--ink, #ffffff)" font-size="32" font-weight="500">The site, top to bottom</text>
+  <text x="40" y="86" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="24">In the order this guide argues for</text>
+
+  <rect x="60" y="120" width="260" height="560" rx="36" fill="var(--bg-raised, #131313)" stroke="var(--line-strong, rgba(255,255,255,0.22))" stroke-width="2"/>
+  <rect x="160" y="136" width="40" height="6" rx="3" fill="var(--line-strong, rgba(255,255,255,0.22))"/>
+
+  <g>
+    <rect x="76" y="160" width="228" height="96" fill="var(--accent, #f7861f)"/>
+    <rect x="76" y="256" width="228" height="96" fill="none"/>
+    <rect x="76" y="352" width="228" height="96" fill="none"/>
+    <rect x="76" y="448" width="228" height="96" fill="none"/>
+    <rect x="76" y="544" width="228" height="96" fill="none"/>
+  </g>
+
+  <g stroke="var(--line, rgba(255,255,255,0.12))" stroke-width="1">
+    <line x1="76" y1="256" x2="304" y2="256"/>
+    <line x1="76" y1="352" x2="304" y2="352"/>
+    <line x1="76" y1="448" x2="304" y2="448"/>
+    <line x1="76" y1="544" x2="304" y2="544"/>
+  </g>
+
+  <g font-size="34" font-weight="500" text-anchor="middle">
+    <text x="190" y="220" fill="var(--accent-ink, #0a0a0a)">1</text>
+    <text x="190" y="316" fill="var(--ink-muted, rgba(255,255,255,0.72))">2</text>
+    <text x="190" y="412" fill="var(--ink-muted, rgba(255,255,255,0.72))">3</text>
+    <text x="190" y="508" fill="var(--ink-muted, rgba(255,255,255,0.72))">4</text>
+    <text x="190" y="604" fill="var(--ink-muted, rgba(255,255,255,0.72))">5</text>
+  </g>
+
+  <g stroke="var(--line-strong, rgba(255,255,255,0.22))" stroke-width="1">
+    <line x1="320" y1="208" x2="340" y2="208"/>
+    <line x1="320" y1="304" x2="340" y2="304"/>
+    <line x1="320" y1="400" x2="340" y2="400"/>
+    <line x1="320" y1="496" x2="340" y2="496"/>
+    <line x1="320" y1="592" x2="340" y2="592"/>
+  </g>
+
+  <g font-size="26" font-weight="500" fill="var(--ink, #ffffff)">
+    <text x="344" y="217">Phone number</text>
+    <text x="344" y="313">Jobs you do</text>
+    <text x="344" y="409">Your own photos</text>
+    <text x="344" y="505">Reviews</text>
+    <text x="344" y="601">Towns you cover</text>
+  </g>
+
+  <rect x="60" y="712" width="560" height="210" rx="16" fill="none" stroke="var(--line, rgba(255,255,255,0.12))" stroke-width="2" stroke-dasharray="6 6"/>
+  <text x="84" y="748" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="26" font-weight="500">What you can leave off</text>
+
+  <g font-size="24" fill="var(--ink-faint, rgba(255,255,255,0.52))" text-decoration="line-through">
+    <text x="84" y="786">A slider that moves on its own</text>
+    <text x="84" y="820">A blog nobody's posted to since 2021</text>
+    <text x="84" y="854">A quote form with fourteen fields</text>
+    <text x="84" y="888">A live chat nobody's behind</text>
+  </g>
+</svg>

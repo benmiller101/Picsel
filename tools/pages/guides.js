@@ -100,11 +100,16 @@ const GUIDES = [
     sections: [
       {
         h2: 'The phone number, where a thumb can reach it',
-        paragraphs: [
-          'Most people who land on your site are on a phone, standing in the room that needs ' +
-            'doing, and they want to ring you. If they have to scroll to find the number, some ' +
-            'of them ring the next firm instead. Put it at the top, make it a link that dials, ' +
-            'and put it in the footer as well for anyone who has read the whole page.',
+        blocks: [
+          { figure: { svg: 'trades-site-priority.svg', prefix: 'wa' } },
+          {
+            p:
+              'Most people who land on your site are on a phone, standing in the room that ' +
+              'needs doing, and they want to ring you. If they have to scroll to find the ' +
+              'number, some of them ring the next firm instead. Put it at the top, make it a ' +
+              'link that dials, and put it in the footer as well for anyone who has read the ' +
+              'whole page.',
+          },
         ],
       },
       {

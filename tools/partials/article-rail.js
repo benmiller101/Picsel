@@ -171,7 +171,11 @@ export function renderArticleSentinelTop(prefix) {
 }
 
 export function renderArticleSentinelEnd(prefix) {
-  return `        <!-- Trip wire: the end of the reading column. -->
+  return `        <!-- Trip wire: the end of the reading column. This must remain the
+             true last child of the reading column: the rail fade decides "near
+             the end of the article" by watching when this sentinel leaves the
+             screen, there is no tunable margin behind it, and anything placed
+             after it silently drifts the fade timing. -->
         <div class="${prefix}__sentinel ${prefix}__sentinel--end" aria-hidden="true"></div>`;
 }
 
