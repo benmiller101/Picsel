@@ -784,8 +784,17 @@
   transform-origin: top left;
 }
 
-.guide__rail--quiet,
-.post__rail--quiet {
+/* Scale is left-rail only. The left rail holds the title, the date and the
+   contents, competing with the body for attention, and the shrink is the
+   hierarchy cue the owner asked for. The right rail holds the contact card's
+   only control, the phone link, which carries min-height: var(--tap-min)
+   (44px) precisely because it is the one thing on the page a reader might
+   tap: 44 times 0.92 is 40.5, so a transform there would render the link at
+   41px, under the 44px floor CLAUDE.md sets, because a transform shrinks the
+   rendered box after layout rather than feeding back into it. The right rail
+   still dims with opacity below, just without the scale. */
+.guide__rail--left.guide__rail--quiet,
+.post__rail--left.post__rail--quiet {
   transform: scale(0.92);
 }
 

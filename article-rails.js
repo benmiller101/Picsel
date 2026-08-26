@@ -21,8 +21,9 @@
    full contrast, rather than a page of furniture dimmed by a half-loaded
    enhancement. That is the correct failure, not a bug to work around.
 
-   BELOW 64rem THIS DOES NOTHING. The rails only exist as rails above that
-   width; below it they stack into the reading order and there is nothing to
+   BELOW 77rem THIS DOES NOTHING. The rails only exist as rails above that
+   width, the same width article.css needs for the three-column layout
+   itself; below it they stack into the reading order and there is nothing to
    fade. matchMedia gates the whole file on it, and the listener re-checks on
    change so a window dragged across the breakpoint, or a tablet rotated
    through it, cannot leave a rail stuck mid-fade on a layout that no longer
@@ -47,20 +48,14 @@
    actually crossed the band, which happens whenever the page runs out of
    scroll before the last heading reaches it.
 
-   THE HIGHLIGHT HAS ITS OWN WIDTH QUERY, and it is not WIDE_QUERY below.
-   WIDE_QUERY is 64rem, which is where the rails start to fade; it is not
-   where the contents list is visible. article.css hides .guide__rail-contents
-   / .post__rail-contents below 77rem, the width the three-column layout
-   itself needs (see the comment on that layout in article.css) because a
-   contents list stacked after the content it indexes is worse than none.
-   Between 64rem and 77rem the rail already fades, but there is no contents
-   list sitting in it to highlight, so a highlight gated on WIDE_QUERY alone
-   would mark links nobody can see. CONTENTS_QUERY matches article.css's own
-   breakpoint instead. */
+   THE HIGHLIGHT USES THE SAME QUERY AS THE FADE. Both the rails and the
+   contents list they hold only exist above 77rem, the width the three-column
+   layout itself needs (see the comment on that layout in article.css), so
+   there is no width at which one is visible and the other is not. A single
+   query answers both questions. */
 
 const QUIET_SUFFIX = '--quiet';
-const WIDE_QUERY = matchMedia('(min-width: 64rem)');
-const CONTENTS_QUERY = matchMedia('(min-width: 77rem)');
+const RAILS_QUERY = matchMedia('(min-width: 77rem)');
 
 /* The band a heading has to cross to become the current section. Close to
    the top of the viewport rather than the middle: the reader's eye is near
@@ -112,10 +107,10 @@ ready(function () {
      result from fighting each other: whichever sentinel fired last is not
      what decides, this function's priority order is.
 
-     A no-op below CONTENTS_QUERY: the sentinels that feed atTop and atEnd
-     keep running down to WIDE_QUERY's 64rem, well below the width the
-     contents list itself is visible, so this still gets called at widths
-     where there is nothing to mark. highlightOn is what stops it writing. */
+     highlightOn is the guard rather than a width check: enable() and
+     enableHighlight() are called together from sync(), but enableHighlight()
+     can still no-op on an article with no contents list, and this function
+     has to stay safe to call from the sentinel callbacks regardless. */
   function applyCurrent() {
     if (!highlightOn) return;
 
@@ -206,31 +201,17 @@ ready(function () {
     links.forEach((link) => link.removeAttribute('aria-current'));
   }
 
-  function syncQuiet() {
-    if (WIDE_QUERY.matches) enable();
-    else disable();
-    /* A width change can cross both queries in one jump (a window dragged
-       from a phone width straight to a wide desktop, say), and the two
-       change events can arrive in either order. Re-checking the highlight
-       here as well as from CONTENTS_QUERY's own listener means whichever
-       fires first, the highlight still ends up correct rather than stuck
-       off because it was evaluated before enable() had created the rail's
-       own observer. */
-    syncHighlight();
+  function sync() {
+    if (RAILS_QUERY.matches) {
+      enable();
+      enableHighlight();
+    } else {
+      // disable() also tears down the highlight, since neither has anything
+      // to watch once the rails are gone.
+      disable();
+    }
   }
 
-  /* CONTENTS_QUERY is only meaningful once the rail exists at all, which
-     WIDE_QUERY already guarantees at every width it can match (77rem implies
-     64rem). If the rail itself is gone, disable() has already cleared
-     everything and there is nothing here to turn on. */
-  function syncHighlight() {
-    if (!observer) return;
-    if (CONTENTS_QUERY.matches) enableHighlight();
-    else disableHighlight();
-  }
-
-  syncQuiet();
-  syncHighlight();
-  WIDE_QUERY.addEventListener('change', syncQuiet);
-  CONTENTS_QUERY.addEventListener('change', syncHighlight);
+  sync();
+  RAILS_QUERY.addEventListener('change', sync);
 });
