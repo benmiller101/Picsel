@@ -709,6 +709,20 @@
     margin-top: 0;
   }
 
+  /* The breakout above assumed empty space to the right of the reading column.
+     The rail now occupies that space, and the available room is exactly zero, so
+     the figure is held to the column at this breakpoint and the diagram scrolls
+     inside its own box instead. Same bargain the tables above make, and the base
+     .guide__figure:not(.guide__figure--pair) rule already provides the overflow-x
+     that makes it work. Holding to the column is a compromise, not ideal. The
+     ideal is a figure spanning the whole grid including both rails, which needs
+     the figure as a direct grid child rather than nested inside the column.
+     That is a renderer change and not this fix. */
+  .guide__figure,
+  .post__figure {
+    width: 100%;
+  }
+
   /* Sticky, and only for the contents variant. The contact card has nothing to
      follow the reader for.
 
