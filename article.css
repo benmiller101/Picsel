@@ -804,6 +804,21 @@
   font-size: var(--article-text);
 }
 
+/* ---- The rail trip wires ---------------------------------------------------
+   .guide__sentinel and .post__sentinel are empty, so they take no height of
+   their own, but the * + * rule above still counts them as a sibling: without
+   this the top sentinel would give the standfirst a margin-top it does not
+   get today, and the end sentinel would tack an extra gap onto the bottom of
+   the column. Zeroing the sentinel and whatever immediately follows it keeps
+   the two trip wires article-rails.js watches invisible to the rhythm as well
+   as to the eye. */
+.guide__sentinel,
+.guide__col > .guide__sentinel + *,
+.post__sentinel,
+.post__col > .post__sentinel + * {
+  margin-top: 0;
+}
+
 /* ---- The rail's own furniture --------------------------------------------- */
 .guide__rail-label,
 .post__rail-label {

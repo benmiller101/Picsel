@@ -33,7 +33,13 @@ import { PLANS, BUILD_FEE, money } from '../../pricing.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs } from '../templates/schema.js';
 import { renderArticleSections } from '../partials/article-sections.js';
-import { renderArticleRailLeft, renderArticleRailRight } from '../partials/article-rail.js';
+import {
+  renderArticleRailLeft,
+  renderArticleRailRight,
+  renderArticleSentinelTop,
+  renderArticleSentinelEnd,
+  ARTICLE_RAILS_SCRIPT,
+} from '../partials/article-rail.js';
 import { renderContactBand } from '../partials/contact-band.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
@@ -1174,6 +1180,7 @@ ${renderArticleRailLeft({
   })}
 
           <div class="guide__col">
+${renderArticleSentinelTop('guide')}
         <p class="guide__answer">${escapeHtml(guide.answer)}</p>
 
 ${intro}${action}
@@ -1183,6 +1190,7 @@ ${sections}
 ${also}
 
 ${trades}${plan}
+${renderArticleSentinelEnd('guide')}
           </div>
 
 ${renderArticleRailRight({ prefix: 'guide' })}
@@ -1195,6 +1203,7 @@ ${renderArticleRailRight({ prefix: 'guide' })}
     title: guide.title,
     description: guide.description,
     styles: ['/article.css'],
+    extraScripts: ARTICLE_RAILS_SCRIPT,
     schemaExtra: [
       /* An Article node only where a guide asks for one. The five original
          guides are a question and its answer and nothing else, and describing

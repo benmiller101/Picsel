@@ -31,7 +31,13 @@ import { LANORA_REVIEWS } from '../../client-results.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs, blogPosting, blogNode } from '../templates/schema.js';
 import { renderArticleSections } from '../partials/article-sections.js';
-import { renderArticleRailLeft, renderArticleRailRight } from '../partials/article-rail.js';
+import {
+  renderArticleRailLeft,
+  renderArticleRailRight,
+  renderArticleSentinelTop,
+  renderArticleSentinelEnd,
+  ARTICLE_RAILS_SCRIPT,
+} from '../partials/article-rail.js';
 import { renderContactBand } from '../partials/contact-band.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { countWord } from '../templates/words.js';
@@ -419,6 +425,7 @@ ${renderArticleRailLeft({
   })}
 
           <div class="post__col">
+${renderArticleSentinelTop('post')}
         <p class="post__standfirst">${escapeHtml(post.standfirst)}</p>
 
 ${action}
@@ -429,6 +436,7 @@ ${sections}
           <p>${escapeHtml(post.close.line)}</p>
           <a class="post__close-link" href="${escapeHtml(post.close.href)}">${escapeHtml(post.close.cta)}</a>
         </aside>
+${renderArticleSentinelEnd('post')}
           </div>
 
 ${renderArticleRailRight({ prefix: 'post' })}
@@ -441,6 +449,7 @@ ${renderArticleRailRight({ prefix: 'post' })}
     title: post.title,
     description: post.description,
     styles: ['/article.css'],
+    extraScripts: ARTICLE_RAILS_SCRIPT,
     /* The one page type on the site that is not a website page. Every other
        route is a standing page of the studio's; a post is a dated piece of
        writing, and og:type is where a share card is told which it has got. */

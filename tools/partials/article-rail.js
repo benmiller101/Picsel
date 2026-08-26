@@ -157,3 +157,25 @@ export function renderArticleRailRight({ prefix }) {
 ${renderContactCard(prefix)}
     </aside>`;
 }
+
+/* ---- The trip wires article-rails.js watches -------------------------------
+   Empty and aria-hidden, exactly like .nav-sentinel in page.js: nothing to
+   see and nothing to say, so nothing for a screen reader to stop at. One
+   opens the reading column, one closes it, and article-rails.js asks only
+   whether each is still on screen. See article-rails.js for what that
+   answers and article.css for the margin-top reset that keeps an empty div
+   from adding a gap of its own to the column it sits in. */
+export function renderArticleSentinelTop(prefix) {
+  return `        <!-- Trip wire: the top of the reading column. -->
+        <div class="${prefix}__sentinel ${prefix}__sentinel--top" aria-hidden="true"></div>`;
+}
+
+export function renderArticleSentinelEnd(prefix) {
+  return `        <!-- Trip wire: the end of the reading column. -->
+        <div class="${prefix}__sentinel ${prefix}__sentinel--end" aria-hidden="true"></div>`;
+}
+
+/* The script that answers what the two trip wires above are for. A module
+   purely for consistency with the site's other body scripts; it imports
+   nothing itself. Deferred by default, so it never blocks the page. */
+export const ARTICLE_RAILS_SCRIPT = '  <script type="module" src="/article-rails.js"></script>';
