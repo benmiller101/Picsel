@@ -984,7 +984,7 @@
    reading-column track above), so the column fills its track and centring
    has nothing to do; below it .guide__cols is a plain block and the column
    was the one thing in the stack with a cap and no centring, left-pinned in
-   a box up to 1151px wide with the leftover space stacked entirely on the
+   a box up to 1183px wide with the leftover space stacked entirely on the
    right. Below the breakpoint there is nothing beside the text, so the space
    belongs on both sides rather than all on one. The rails get the same
    treatment just below, so the whole stack reads as one centred column
