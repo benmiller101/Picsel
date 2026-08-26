@@ -448,9 +448,16 @@
    same one every train timetable makes.
 
    The floor is set from the smallest type in the diagrams: at 44rem the 13
-   unit axis labels render just over 10 pixels, and the 21 unit title over 16. */
-.guide__figure:not(.guide__figure--pair) {
+   unit axis labels render just over 10 pixels, and the 21 unit title over 16.
+
+   The treatment matches .guide__figure--pair img deliberately, so the two kinds
+   of figure read as the same component. The border sits on the scroll container
+   so it stays put while the diagram moves beneath it. */
+.guide__figure:not(.guide__figure--pair),
+.post__figure:not(.post__figure--pair) {
   overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
 }
 
 .guide__figure svg {
