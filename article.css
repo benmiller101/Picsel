@@ -721,7 +721,15 @@
    The state is set by article-rails.js adding a class. With no JavaScript both
    rails render in their bright state, which is the correct failure: a reader
    with a broken script sees a title and a phone number at full contrast rather
-   than a page of dimmed furniture. */
+   than a page of dimmed furniture.
+
+   .guide__rail--quiet and .post__rail--quiet will always be named by `npm run
+   check` as unused, permanently, and that is expected rather than a failure.
+   check.js scans the built HTML for class names, and these two are never in
+   it: article-rails.js writes them at runtime, after the page a scan reads has
+   already been generated. Deleting them on the strength of that scan would not
+   remove dead code, it would silently turn the whole quiet/bright hierarchy
+   off. */
 .guide__rail,
 .post__rail {
   margin-top: var(--space-8);
