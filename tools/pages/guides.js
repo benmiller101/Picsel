@@ -530,10 +530,14 @@ const GUIDES = [
       },
       {
         h2: 'The timing matters more than the wording',
-        paragraphs: [
-          'The moment is when the job is finished, they are happy with it, and you are standing ' +
-            'in front of them. A day later they are back at work and it is gone. Ask then, ' +
-            'while your phone is in your hand, and offer to send the link there and then.',
+        blocks: [
+          {
+            p: 'The moment is when the job is finished, they are happy with it, and you are ' +
+              'standing in front of them. A day later they are back at work and it is gone. Ask ' +
+              'then, while your phone is in your hand, and offer to send the link there and ' +
+              'then.',
+          },
+          { figure: { svg: 'review-ask-timing.svg', prefix: 'rev' } },
         ],
       },
       {
