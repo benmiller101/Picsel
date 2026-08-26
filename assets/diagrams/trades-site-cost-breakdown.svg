@@ -25,8 +25,8 @@
   <text x="44" y="542" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="24" letter-spacing="0.08em">ONGOING, OR NOTHING</text>
 
   <!-- What a cheap quote leaves out -->
-  <rect x="20" y="642" width="640" height="180" rx="16" fill="var(--bg-raised, #131313)" stroke="var(--accent, #f7861f)" stroke-width="3"/>
-  <text x="44" y="680" fill="var(--accent, #f7861f)" font-size="26" font-weight="500">What a cheap quote usually misses</text>
+  <rect x="20" y="642" width="640" height="180" rx="16" fill="var(--bg-raised, #131313)" stroke="var(--chart-accent, #f7861f)" stroke-width="3"/>
+  <text x="44" y="680" fill="var(--chart-accent, #f7861f)" font-size="26" font-weight="500">What a cheap quote usually misses</text>
   <text x="44" y="720" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="24" text-decoration="line-through">Getting found, nearly always missing</text>
   <text x="44" y="754" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="24">Running it, sometimes missing too</text>
 </svg>

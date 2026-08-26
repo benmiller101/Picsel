@@ -48,11 +48,14 @@
   <text x="364" y="672" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="24">Or</text>
 
   <!-- Branch 2: their own site -->
-  <rect x="20" y="684" width="640" height="200" rx="16" fill="var(--bg-raised, #131313)" stroke="var(--accent, #f7861f)" stroke-width="3"/>
+  <rect x="20" y="684" width="640" height="200" rx="16" fill="var(--bg-raised, #131313)" stroke="var(--chart-accent, #f7861f)" stroke-width="3"/>
   <text x="44" y="724" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="24">
     <tspan x="44" dy="0">They find your own site. Twenty finished</tspan>
     <tspan x="44" dy="30">extensions, real reviews, and a firm</tspan>
     <tspan x="44" dy="30">trading since 1975.</tspan>
   </text>
-  <text x="44" y="838" fill="var(--accent, #f7861f)" font-size="28" font-weight="600">They ring you.</text>
+  <text x="44" y="838" fill="var(--chart-emphasis, #ffd500)" font-size="28" font-weight="600">They ring you.</text>
+
+  <text x="660" y="892" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="24"
+        text-anchor="end" letter-spacing="0.04em">picsel.co.uk</text>
 </svg>
