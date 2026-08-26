@@ -706,7 +706,7 @@
 }
 
 /* ---- The three column shell ------------------------------------------------
-   Below 77rem this is one column, stacked left rail then reading column then
+   Below 79rem this is one column, stacked left rail then reading column then
    right rail: what this is, then the thing itself, then what to do about it.
    That is also the tab order.
 
@@ -720,19 +720,29 @@
   margin-top: var(--space-8);
 }
 
-/* The breakpoint is derived, not chosen by eye: the reading column's floor
-   (--article-measure-min, 608px) plus two rails at their own floor
-   (--article-rail-min, 14rem each, 448px) plus two 48px column gaps is
-   1152px of content, which needs a 1232px viewport once the 40px gutters
-   either side are counted. 77rem is 1232px. Below it three columns are not
-   attempted, not because they look worse narrower, but because they cannot
-   fit at any setting: the column would either starve again or the rails
-   would be squeezed under their own stated minimum. The middle three
-   media queries below (this one, the rail sticky behaviour, and the rail
-   headline size) all gate the same three-column companion layout and move
-   together, so a stacked page never ends up with a sticky or enlarged rail
-   floating over content that is not actually beside it. */
-@media (min-width: 77rem) {
+/* The breakpoint is derived, not chosen by eye, and then given slack: the
+   reading column's floor (--article-measure-min, 608px) plus two rails at
+   their own floor (--article-rail-min, 14rem each, 448px) plus two 48px
+   column gaps is 1152px of content, which needs a 1232px viewport once the
+   40px gutters either side are counted. That exact fit is 77rem, and it is
+   not what ships: the `width` media feature is measured against the
+   viewport including a classic (non-overlay) scrollbar, while the grid gets
+   a content box with that scrollbar's width already removed. On Windows and
+   Linux Chrome that gap is real, so a window that just clears 77rem can still
+   hand the grid a content box short of its definite minimum, and a grid
+   track never shrinks below one: the row overflows and the page scrolls
+   sideways. 79rem (1264px) adds 32px of slack, comfortably more than a
+   scrollbar takes, to cover it. A previous pass reserved this same slack for
+   this same reason and the sentence recording it was deleted; this restores
+   it. Below the breakpoint three columns are not attempted, not because they
+   look worse narrower, but because they cannot fit at any setting: the
+   column would either starve again or the rails would be squeezed under
+   their own stated minimum. The middle three media queries below (this one,
+   the rail sticky behaviour, and the rail headline size) all gate the same
+   three-column companion layout and move together, so a stacked page never
+   ends up with a sticky or enlarged rail floating over content that is not
+   actually beside it. */
+@media (min-width: 79rem) {
   .guide__cols,
   .post__cols {
     display: grid;
@@ -841,7 +851,7 @@
      the hierarchy, they simply do not watch it change. */
 }
 
-@media (min-width: 77rem) {
+@media (min-width: 79rem) {
   .guide__rail,
   .post__rail {
     margin-top: 0;
@@ -852,7 +862,7 @@
   }
 }
 
-@media (max-width: 76.999rem) {
+@media (max-width: 78.999rem) {
   /* Below the breakpoint the contents list is dropped rather than stacked, for
      the reason recorded on the contents renderer: a contents list that appears
      after the content it indexes is worse than none. The rest of the left rail
@@ -863,7 +873,7 @@
   }
 }
 
-@media (min-width: 77rem) {
+@media (min-width: 79rem) {
   .guide__rail--left .guide__headline,
   .post__rail--left .post__headline {
     font-size: var(--text-2xl);

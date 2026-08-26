@@ -21,7 +21,7 @@
    full contrast, rather than a page of furniture dimmed by a half-loaded
    enhancement. That is the correct failure, not a bug to work around.
 
-   BELOW 77rem THIS DOES NOTHING. The rails only exist as rails above that
+   BELOW 79rem THIS DOES NOTHING. The rails only exist as rails above that
    width, the same width article.css needs for the three-column layout
    itself; below it they stack into the reading order and there is nothing to
    fade. matchMedia gates the whole file on it, and the listener re-checks on
@@ -49,13 +49,13 @@
    scroll before the last heading reaches it.
 
    THE HIGHLIGHT USES THE SAME QUERY AS THE FADE. Both the rails and the
-   contents list they hold only exist above 77rem, the width the three-column
+   contents list they hold only exist above 79rem, the width the three-column
    layout itself needs (see the comment on that layout in article.css), so
    there is no width at which one is visible and the other is not. A single
    query answers both questions. */
 
 const QUIET_SUFFIX = '--quiet';
-const RAILS_QUERY = matchMedia('(min-width: 77rem)');
+const RAILS_QUERY = matchMedia('(min-width: 79rem)');
 
 /* The band a heading has to cross to become the current section. Close to
    the top of the viewport rather than the middle: the reader's eye is near
