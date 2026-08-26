@@ -819,17 +819,28 @@
    the rail dims, which is exactly when the reader most needs to see where
    they are. Listing every piece of furniture here and dimming each one
    individually gets the same quiet look back, with one exemption below for
-   the entry that marks the current section. */
+   the entry that marks the current section.
+
+   The right rail's card is listed by its two text children rather than by
+   .guide__rail-card itself, for the same reason: .guide__rail-card is an
+   ancestor of the phone link, and an ancestor's opacity cannot be undone by
+   a descendant's own opacity, whatever value that descendant sets. Dimming
+   .guide__rail-phone a directly, rather than the card that wraps it, is what
+   lets the focus-visible exemption below actually restore it to full
+   opacity. .guide__rail-label already covers the card's "Talk to a person"
+   label, being shared with the contents label in the left rail. */
 .guide__rail--quiet .guide__headline,
 .guide__rail--quiet .guide__meta,
 .guide__rail--quiet .guide__rail-label,
 .guide__rail--quiet .guide__rail-list a,
-.guide__rail--quiet .guide__rail-card,
+.guide__rail--quiet .guide__rail-phone a,
+.guide__rail--quiet .guide__rail-promise,
 .post__rail--quiet .post__headline,
 .post__rail--quiet .post__meta,
 .post__rail--quiet .post__rail-label,
 .post__rail--quiet .post__rail-list a,
-.post__rail--quiet .post__rail-card {
+.post__rail--quiet .post__rail-phone a,
+.post__rail--quiet .post__rail-promise {
   opacity: 0.45;
 }
 
@@ -838,6 +849,21 @@
    is dimmed, or the whole feature would be invisible whenever it matters. */
 .guide__rail--quiet .guide__rail-list a[aria-current="true"],
 .post__rail--quiet .post__rail-list a[aria-current="true"] {
+  opacity: 1;
+}
+
+/* A second exemption, for a different reason. Opacity dims an element's
+   outline as readily as its text, and both rails are position: sticky, so
+   tabbing to a contents link or the phone link mid-article does not scroll
+   it into view and does not brighten the rail around it: the focus ring
+   would render at 0.45 opacity, under the 3:1 WCAG 1.4.11 needs for a
+   non-text indicator. A focus ring is the one thing that must never be
+   quiet, so both link groups stay at full opacity while focused, whatever
+   the rail's own state. */
+.guide__rail--quiet .guide__rail-list a:focus-visible,
+.guide__rail--quiet .guide__rail-phone a:focus-visible,
+.post__rail--quiet .post__rail-list a:focus-visible,
+.post__rail--quiet .post__rail-phone a:focus-visible {
   opacity: 1;
 }
 
