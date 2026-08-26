@@ -412,11 +412,16 @@ const GUIDES = [
     sections: [
       {
         h2: 'What changed',
-        paragraphs: [
-          'Someone who needed a plumber used to type it into Google and pick from a list of ' +
-            'links. A growing number now ask an assistant instead, in a full sentence, and get ' +
-            'back two or three names with a reason attached. There is no page of ten blue links ' +
-            'in that conversation. You are either one of the names or you are not in it.',
+        blocks: [
+          {
+            p:
+              'Someone who needed a plumber used to type it into Google and pick from a list of ' +
+              'links. A growing number now ask an assistant instead, in a full sentence, and ' +
+              'get back two or three names with a reason attached. There is no page of ten ' +
+              'blue links in that conversation. You are either one of the names or you are not ' +
+              'in it.',
+          },
+          { figure: { svg: 'geo-question-twice.svg', prefix: 'geo' } },
         ],
       },
       {
