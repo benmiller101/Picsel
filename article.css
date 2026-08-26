@@ -462,6 +462,14 @@
 .post__figure:not(.post__figure--pair) {
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
+  /* Every diagram SVG paints its own opaque square backplate filling its
+     whole viewBox, so without this the drawing covers the card's border and
+     radius and the rounded corner renders square. overflow: hidden is safe
+     here only because these diagrams are portrait and verified not to
+     scroll at any width; a scrolling figure and this rule cannot both exist,
+     and would have to be reconsidered together if one ever needs to scroll
+     again. */
+  overflow: hidden;
 }
 
 .guide__figure svg {
