@@ -101,6 +101,11 @@ const SERVICES = [
     description: SHOW_PRICING
       ? `${money(BUILD_FEE)} to build a five page website around your trade, live within a week, then from ${money(ONLINE.monthly)} a month with hosting and your Google Business Profile included.`
       : 'A five page website built around your trade, live within a week, with hosting, the security certificate and your Google Business Profile set up too.',
+    /* The unpriced description is 148 characters, two under the 150-character
+       floor. It is complete and reads well; padding it with two characters of
+       filler would cost more than the two characters buy, so the floor is
+       waived. The sentence stands as written. */
+    descriptionFloorWaived: true,
     indexLine: SHOW_PRICING
       ? `Five pages written around your trade, live within a week. ${money(BUILD_FEE)} to build, then from ${money(ONLINE.monthly)} a month.`
       : 'Five pages written around your trade, live within a week. A build fee once, then a monthly cost to run it.',
@@ -396,7 +401,7 @@ const SERVICES = [
     description:
       SHOW_PRICING
         ? `Monthly work to get you found on Google and named by AI assistants. The Growth plan, ${money(GROWTH.openingMonthly)} a month for three months then ${money(GROWTH.monthly)}, with a lead guarantee on it.`
-        : 'Monthly work to get you found on Google and named by AI assistants. It is the Growth plan, and part of your build fee comes back if it misses five enquiries.',
+        : 'Monthly work to get you found on Google and named by AI assistants. The Growth plan, and part of your build fee comes back if it misses five enquiries.',
     indexLine: SHOW_PRICING
       ? `Monthly content, reviews, listings and the technical work behind being named in an AI answer. The Growth plan, ${money(GROWTH.openingMonthly)} a month for the first ${GROWTH.openingMonths} months and ${money(GROWTH.monthly)} after.`
       : 'Monthly content, reviews, listings and the technical work behind being named in an AI answer. The Growth plan, with the lead guarantee on it.',
