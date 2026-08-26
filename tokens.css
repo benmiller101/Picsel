@@ -227,18 +227,24 @@
      underneath it. That mismatch shipped once already and produced a 32px
      hairline overhang between .guide__also and .guide__plan; any future
      change to this token has to move --measure with it, or check that the
-     two already agree, or it silently does nothing.
-
-     --article-rail is the column beside the text. 16rem, which at the 64rem
-     breakpoint needs 38 + 3 + 16 = 57rem inside a 59rem content box with the
-     gutters off, leaving about 2rem of slack rather than an exact fit, and
-     that is the tightest it gets. The slack matters at exactly 1024px: a
-     scrollbar there takes a few pixels off the content box, and the reading
-     column is declared minmax(0, ...) rather than a fixed width, so it is the
-     column that gives, not the rail. */
+     two already agree, or it silently does nothing. */
   --article-measure: 38rem;
   --article-text: 1.125rem;
-  --article-rail: 16rem;
+
+  /* The article wrap is wider than the site's 72rem because it now carries
+     three columns rather than one. 90rem at the widest, and the rails are what
+     grow into it: the reading column is fixed at --article-measure, so a wider
+     page means more room for the title and the contact, never a longer line.
+
+     THE RAILS STOP AT 20rem AND THAT IS DELIBERATE. Up to about 1400px this
+     uses the screen, which is what was asked for. Past that they cap and the
+     whole thing centres, because a title six hundred pixels from the paragraph
+     it belongs to has stopped being a title and become a second column of
+     text. --article-rail-min keeps them wide enough for a headline to break
+     sensibly at the breakpoint. */
+  --article-page-max: 90rem;
+  --article-rail-min: 14rem;
+  --article-rail-max: 20rem;
 
   /* The nav floats over the page rather than sitting in the document flow, so
      it takes up no space and content would otherwise start underneath it.

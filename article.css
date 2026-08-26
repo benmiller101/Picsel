@@ -37,14 +37,22 @@
   margin-top: var(--space-8);
 }
 
-.guide__question,
+/* The articles are the only pages with three columns, so they are the only
+   pages that need more than --page-max. Scoped to the two long-form prefixes
+   rather than changing .wrap, which every other page uses. */
+.guide__inner,
+.post__inner {
+  max-width: var(--article-page-max);
+}
+
+.guide__headline,
 .post__headline,
 .service__title {
   max-width: 24ch;
 }
 
 @media (min-width: 48rem) {
-  .guide__question,
+  .guide__headline,
   .post__headline,
   .service__title {
     max-width: 30ch;
@@ -425,37 +433,16 @@
   padding-right: var(--space-6);
 }
 
-/* A figure runs wider than the prose, out to 56rem, and stops there rather
-   than at the wrap's full 72rem: a diagram as wide as the page pulls the eye
-   out of the column it was reading and makes the paragraph after it feel like
-   a different article.
-
-   The 100vw term is what keeps it inside the viewport on the way down. The
-   section it sits in is only 38rem, so the figure is deliberately overflowing
-   its own parent to the right; without that cap it would overflow the page
-   too, and the whole article would scroll sideways. */
+/* The diagrams are drawn portrait to fit the reading column, so there is no
+   breakout and no scroll. See the spec for the reasoning; this rule is just
+   the margin and the card border that both figure kinds share. */
 .guide__figure,
 .post__figure {
-  max-width: none;
-  width: min(56rem, calc(100vw - var(--page-gutter) * 2));
   margin: var(--space-6) 0;
 }
 
-/* THE DIAGRAM GETS A FLOOR AND SCROLLS BELOW IT, which is the honest answer to
-   a 900 unit chart on a 375 pixel phone. Scaled to fit, its labels land at 4.6
-   pixels and the diagram is decoration. Held at 44rem it stays readable and
-   the reader swipes, which is the same bargain the table above makes and the
-   same one every train timetable makes.
-
-   The floor is set from the smallest type in the diagrams: at 44rem the 13
-   unit axis labels render just over 10 pixels, and the 21 unit title over 16.
-
-   The treatment matches .guide__figure--pair img deliberately, so the two kinds
-   of figure read as the same component. The border sits on the scroll container
-   so it stays put while the diagram moves beneath it. */
 .guide__figure:not(.guide__figure--pair),
 .post__figure:not(.post__figure--pair) {
-  overflow-x: auto;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
 }
@@ -463,7 +450,6 @@
 .guide__figure svg {
   display: block;
   width: 100%;
-  min-width: 44rem;
   height: auto;
 }
 
@@ -650,18 +636,15 @@
   max-width: var(--measure);
 }
 
-/* ---- The date ---------------------------------------------------------------
+/* ---- The date, on the index -------------------------------------------------
    A post says when it was written and a guide does not, which is most of the
-   difference between them. Small, quiet, and directly under the headline where
-   a reader decides whether it is still worth reading. */
-.post__meta,
+   difference between them. The article's own date moved into the left rail's
+   meta list with the rest of its head; this is the index's copy, which stays
+   a plain line above the title. */
 .post-index__date {
   font-size: var(--text-xs);
   color: var(--ink-faint);
   letter-spacing: 0.02em;
-}
-
-.post-index__date {
   margin-bottom: var(--space-2);
 }
 
@@ -671,23 +654,34 @@
   margin-top: 0;
 }
 
-/* On the post the order is the other way round, and the same drift happens to
-   the date instead: the section rule above gives everything in the column a
-   2rem gap, which left the date floating halfway between the headline and the
-   standfirst and belonging to neither. It belongs to the headline, so it sits
-   the same short distance below it as it does above the title on the index. */
-.post__inner > .post__headline + .post__meta {
-  margin-top: var(--space-2);
+/* Written and Length, as a definition list because that is what they are: two
+   labels and their values. The label is the quiet half. */
+.guide__meta,
+.post__meta {
+  margin: var(--space-6) 0 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
 }
 
-/* ---- The two column shell -------------------------------------------------
-   Below 64rem this is one column and the rail falls underneath the article,
-   which is the right way round: a contents list that renders after the content
-   it indexes is worse than no contents list, so on a phone the contents
-   variant is hidden rather than moved. The contact card stays, because a phone
-   number under an article is useful at any width.
+.guide__meta dt,
+.post__meta dt {
+  color: var(--ink-faint);
+}
 
-   align-items: start is load-bearing. Without it the rail stretches to the
+.guide__meta dd,
+.post__meta dd {
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+/* ---- The three column shell ------------------------------------------------
+   Below 64rem this is one column, stacked left rail then reading column then
+   right rail: what this is, then the thing itself, then what to do about it.
+   That is also the tab order.
+
+   align-items: start is load-bearing. Without it the rails stretch to the
    height of the article and `position: sticky` inside a full height box has
    nothing to stick against, so the sticky element simply sits at the top and
    never moves. That is the single easiest way to build this and have it
@@ -697,48 +691,66 @@
   margin-top: var(--space-8);
 }
 
-.guide__rail,
-.post__rail {
-  margin-top: var(--space-8);
-}
-
 @media (min-width: 64rem) {
   .guide__cols,
   .post__cols {
     display: grid;
-    grid-template-columns: minmax(0, var(--article-measure)) var(--article-rail);
+    grid-template-columns:
+      minmax(var(--article-rail-min), var(--article-rail-max))
+      minmax(0, var(--article-measure))
+      minmax(var(--article-rail-min), var(--article-rail-max));
     column-gap: var(--space-12);
+    /* Equal rails are what make the reading column genuinely centred rather
+       than merely less left, which was the ask. justify-content centres the
+       whole row once the rails hit their cap. */
+    justify-content: center;
     align-items: start;
   }
+}
 
+/* ---- The rails, and their two states --------------------------------------
+   Both rails are secondary while the body is being read, and each comes
+   forward where it is the most useful thing on the page: the title at the top,
+   the contact at the end.
+
+   THE SIZE CHANGE IS A TRANSFORM AND NOT A FONT SIZE. Scaling type would
+   re-wrap a headline while somebody is reading past it, which is a worse
+   distraction than the effect is worth. transform does not reflow, and the
+   origin is the top so the block does not appear to drift.
+
+   The state is set by article-rails.js adding a class. With no JavaScript both
+   rails render in their bright state, which is the correct failure: a reader
+   with a broken script sees a title and a phone number at full contrast rather
+   than a page of dimmed furniture. */
+.guide__rail,
+.post__rail {
+  margin-top: var(--space-8);
+  transition:
+    opacity var(--dur-base) var(--ease),
+    transform var(--dur-base) var(--ease);
+  transform-origin: top left;
+}
+
+.guide__rail--quiet,
+.post__rail--quiet {
+  opacity: 0.45;
+  transform: scale(0.92);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guide__rail,
+  .post__rail {
+    transition: none;
+  }
+
+  /* The end states still apply. Somebody who asked for less motion still gets
+     the hierarchy, they simply do not watch it change. */
+}
+
+@media (min-width: 64rem) {
   .guide__rail,
   .post__rail {
     margin-top: 0;
-  }
-
-  /* The breakout above assumed empty space to the right of the reading column.
-     The rail now occupies that space, and the available room is exactly zero, so
-     the figure is held to the column at this breakpoint and the diagram scrolls
-     inside its own box instead. Same bargain the tables above make, and the base
-     .guide__figure:not(.guide__figure--pair) rule already provides the overflow-x
-     that makes it work. Holding to the column is a compromise, not ideal. The
-     ideal is a figure spanning the whole grid including both rails, which needs
-     the figure as a direct grid child rather than nested inside the column.
-     That is a renderer change and not this fix. */
-  .guide__figure,
-  .post__figure {
-    width: 100%;
-  }
-
-  /* Sticky, and only for the contents variant. The contact card has nothing to
-     follow the reader for.
-
-     top clears the floating nav, which sits over the page rather than in the
-     flow. max-height plus its own overflow is what stops a long contents list
-     running off the bottom of a short laptop screen with no way to reach the
-     last item. */
-  .guide__rail--contents,
-  .post__rail--contents {
     position: sticky;
     top: calc(var(--nav-height) + var(--space-8));
     max-height: calc(100svh - var(--nav-height) - var(--space-16));
@@ -746,13 +758,23 @@
   }
 }
 
-/* Below the breakpoint the contents list is hidden rather than stacked. See
-   the note above: it would otherwise index content the reader has already
-   scrolled past to reach it. */
 @media (max-width: 63.999rem) {
-  .guide__rail--contents,
-  .post__rail--contents {
+  /* Below the breakpoint the contents list is dropped rather than stacked, for
+     the reason recorded on the contents renderer: a contents list that appears
+     after the content it indexes is worse than none. The rest of the left rail
+     is the title, so it stays. */
+  .guide__rail-contents,
+  .post__rail-contents {
     display: none;
+  }
+}
+
+@media (min-width: 64rem) {
+  .guide__rail--left .guide__headline,
+  .post__rail--left .post__headline {
+    font-size: var(--text-2xl);
+    line-height: var(--leading-tight);
+    max-width: none;
   }
 }
 
