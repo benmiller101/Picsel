@@ -968,10 +968,11 @@
 
 /* ---- Long-form body size --------------------------------------------------
    17px is the site's body size and it is right on a page somebody scans. These
-   two page types are read rather than scanned, and 18px with the wider measure
-   holds the same 60 characters a line at a size that is easier at arm's length
-   in a workshop. Scoped to the article prefixes on purpose: --text-base is read
-   by all 29 pages.
+   two page types are read rather than scanned, and 18px with the 42rem measure
+   yields about 67 characters a line, past the 55 to 65 band the brief asked for
+   but the choice the owner made with the cost shown to him, at a size easier at
+   arm's length in a workshop. Scoped to the article prefixes on purpose:
+   --text-base is read by all 29 pages.
 
    The width lives here too rather than on .guide__section / .post__section:
    those selectors are shared with /privacy and /about, which are article
