@@ -312,16 +312,24 @@ const GUIDES = [
     sections: [
       {
         h2: 'What you are actually paying for',
-        paragraphs: [
-          'Three separate things get bundled into one number and it is worth pulling them ' +
-            'apart. There is the build, which happens once. There is the running of it, which ' +
-            'is hosting, the security certificate and keeping the thing online. And there is ' +
-            'the work to get you found, which is ongoing or it is nothing.',
-          'A cheap quote nearly always means the third one is missing, and sometimes the ' +
-            'second. That is fine if you know it. It is not fine if you find out in a year when ' +
-            'the site has been offline for a fortnight and nobody noticed. There is a longer ' +
-            'account of where the money in a typical agency quote actually goes in <a ' +
-            'href="/blog/why-trades-websites-cost-so-much/">why trades websites cost so much</a>.',
+        blocks: [
+          {
+            p:
+              'Three separate things get bundled into one number and it is worth pulling them ' +
+              'apart. There is the build, which happens once. There is the running of it, which ' +
+              'is hosting, the security certificate and keeping the thing online. And there is ' +
+              'the work to get you found, which is ongoing or it is nothing.',
+          },
+          { figure: { svg: 'trades-site-cost-breakdown.svg', prefix: 'hmc' } },
+          {
+            p:
+              'A cheap quote nearly always means the third one is missing, and sometimes the ' +
+              'second. That is fine if you know it. It is not fine if you find out in a year ' +
+              'when the site has been offline for a fortnight and nobody noticed. There is a ' +
+              'longer account of where the money in a typical agency quote actually goes in <a ' +
+              'href="/blog/why-trades-websites-cost-so-much/">why trades websites cost so ' +
+              'much</a>.',
+          },
         ],
       },
       {
