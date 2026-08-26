@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 860" role="img"
      aria-labelledby="ccTitle ccDesc" font-family="var(--font-body, 'Lexend', ui-sans-serif, system-ui, sans-serif)">
-  <title id="ccTitle">What a builder's website costs in the first year</title>
-  <desc id="ccDesc">Four rows, each a route to a building firm's website, ranked by first year cost: build fee plus twelve months of any monthly charge, as a range rather than an average. A template you build yourself costs £180 to £360, plus your own weekend. A freelancer one off build costs £500 to £1,500. A small studio that builds the site and looks after it costs £180 to £1,750. An agency costs £3,000 to £10,000 or more, plus a retainer.</desc>
+  <title id="ccTitle">What a builder’s website costs in the first year</title>
+  <desc id="ccDesc">Four rows, each a route to a building firm’s website, ranked by first year cost: build fee plus twelve months of any monthly charge, as a range rather than an average, shown as a bar under each figure. A template you build yourself costs £180 to £360, plus your own weekend. A freelancer one off build costs £500 to £1,500. A small studio that builds the site and looks after it costs £180 to £1,750. An agency costs £3,000 to £10,000 or more, plus a retainer: its bar is cut off with an arrowhead rather than drawn to length, because £10,000 would run off the canvas.</desc>
 
   <rect width="680" height="860" fill="var(--bg, #0a0a0a)"/>
 
@@ -21,7 +21,7 @@
   <text x="44" y="374" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="26" font-weight="600">£500 to £1,500</text>
   <rect x="118" y="390" width="148" height="14" rx="4" fill="var(--ink-faint, rgba(255,255,255,0.52))"/>
 
-  <!-- Row 3: small studio, looked after (Picsel's own row) -->
+  <!-- Row 3: small studio, looked after (Picsel’s own row) -->
   <rect x="20" y="470" width="640" height="150" rx="16" fill="var(--bg-raised, #131313)" stroke="var(--chart-accent, #f7861f)" stroke-width="3"/>
   <text x="44" y="510" fill="var(--ink, #ffffff)" font-size="28" font-weight="600">Small studio, looked after</text>
   <text x="44" y="544" fill="var(--ink, #ffffff)" font-size="26" font-weight="600">£180 to £1,750</text>

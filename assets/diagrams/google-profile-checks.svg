@@ -89,7 +89,7 @@
   <rect x="20" y="820" width="640" height="170" rx="16" fill="var(--bg-raised, #131313)" stroke="var(--chart-accent, #f7861f)" stroke-width="3"/>
   <text x="44" y="858" fill="var(--chart-accent, #f7861f)" font-size="26" font-weight="500">Still not showing, all four checked?</text>
   <text x="44" y="896" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="24">
-    <tspan x="44" dy="0">Results move with distance: you won't</tspan>
+    <tspan x="44" dy="0">Results move with distance: you won’t</tspan>
     <tspan x="44" dy="32">rank twenty miles out like at home.</tspan>
     <tspan x="44" dy="32">No amount of work changes that.</tspan>
   </text>

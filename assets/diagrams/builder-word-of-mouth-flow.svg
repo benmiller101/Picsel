@@ -24,7 +24,7 @@
   <rect x="20" y="246" width="640" height="170" rx="12" fill="var(--bg-raised, #131313)" stroke="var(--line, rgba(255,255,255,0.12))" stroke-width="2"/>
   <text x="340" y="286" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="24" text-anchor="middle">
     <tspan x="340" dy="0">They have your name and nothing else,</tspan>
-    <tspan x="340" dy="34">and they&#8217;re about to let a stranger work</tspan>
+    <tspan x="340" dy="34">and they’re about to let a stranger work</tspan>
     <tspan x="340" dy="34">on their house for four months.</tspan>
     <tspan x="340" dy="34">So they look you up.</tspan>
   </text>
@@ -44,7 +44,12 @@
     <tspan x="44" dy="30">competes with people who did not earn it.</tspan>
   </text>
 
-  <line x1="340" y1="652" x2="340" y2="684" stroke="var(--line-strong, rgba(255,255,255,0.22))" stroke-width="2" marker-end="url(#arw)"/>
+  <!-- No arrowhead here, unlike the connectors above it: this line joins two
+       alternatives, not a step that follows from the one before it. An
+       arrow running out of branch one into branch two would read as a
+       sequence, which the guide's own copy does not argue. "Either" above
+       and "Or" here are what mark this as a fork instead. -->
+  <line x1="340" y1="652" x2="340" y2="684" stroke="var(--line-strong, rgba(255,255,255,0.22))" stroke-width="2"/>
   <text x="364" y="672" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="24">Or</text>
 
   <!-- Branch 2: their own site -->

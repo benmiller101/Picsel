@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 940" role="img"
      aria-labelledby="waTitle waDesc" font-family="var(--font-body, 'Lexend', ui-sans-serif, system-ui, sans-serif)">
-  <title id="waTitle">The six things a tradesperson's website needs, in priority order</title>
-  <desc id="waDesc">A phone shaped wireframe, divided top to bottom into five sections in the order this guide argues for. One, phone number. Two, jobs you do, in their words. Three, your own photos. Four, reviews. Five, towns you cover. Below the phone, a sixth, dashed box labelled what you can leave off, listing four things struck through: a slider that moves on its own, a blog nobody's posted to since 2021, a quote form with fourteen fields, and a live chat nobody's behind.</desc>
+  <title id="waTitle">The five things a tradesperson’s website needs, in priority order</title>
+  <desc id="waDesc">A phone shaped wireframe, divided top to bottom into five sections in the order this guide argues for. One, phone number. Two, jobs you do, in their words. Three, your own photos. Four, reviews. Five, towns you cover. Below the phone, a sixth, dashed box labelled what you can leave off, listing four things struck through: a slider that moves on its own, a blog nobody’s posted to since 2021, a quote form with fourteen fields, and a live chat nobody’s behind.</desc>
 
   <rect width="680" height="940" fill="var(--bg, #0a0a0a)"/>
 
@@ -55,8 +55,8 @@
 
   <g font-size="24" fill="var(--ink-faint, rgba(255,255,255,0.52))" text-decoration="line-through">
     <text x="84" y="786">A slider that moves on its own</text>
-    <text x="84" y="820">A blog nobody's posted to since 2021</text>
+    <text x="84" y="820">A blog nobody’s posted to since 2021</text>
     <text x="84" y="854">A quote form with fourteen fields</text>
-    <text x="84" y="888">A live chat nobody's behind</text>
+    <text x="84" y="888">A live chat nobody’s behind</text>
   </g>
 </svg>

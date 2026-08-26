@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 1030" role="img"
      aria-labelledby="geoTitle geoDesc" font-family="var(--font-body, 'Lexend', ui-sans-serif, system-ui, sans-serif)">
   <title id="geoTitle">The same question, asked the old way and the new</title>
-  <desc id="geoDesc">Two panels, stacked. Top: typing a plumber search into Google returns a page of ten links, numbered one to ten. A dividing line notes that a growing number now ask an assistant instead. Bottom: asking an assistant the same question in a full sentence returns two or three names with a reason attached, shown as three short rows, one of them highlighted as you. The diagram ends on the guide's point: you are either one of the names or you are not in it.</desc>
+  <desc id="geoDesc">Two panels, stacked. Top: typing a plumber search into Google returns a page of ten links, numbered one to ten. A dividing line notes that a growing number now ask an assistant instead. Bottom: asking an assistant the same question in a full sentence returns two or three names with a reason attached, shown as three short rows, one of them highlighted as you. The diagram ends on the guide’s point: you are either one of the names or you are not in it.</desc>
 
   <rect width="680" height="1030" fill="var(--bg, #0a0a0a)"/>
 
@@ -44,20 +44,20 @@
   <text x="20" y="575" fill="var(--ink, #ffffff)" font-size="28" font-weight="500">Asks an assistant</text>
   <text x="20" y="600" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="24">In a full sentence</text>
 
-  <rect x="20" y="624" width="600" height="54" rx="27" fill="var(--bg-raised, #131313)" stroke="var(--line, rgba(255,255,255,0.12))" stroke-width="2"/>
-  <text x="44" y="657" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="24">Who's a good plumber near me?</text>
+  <rect x="20" y="624" width="640" height="54" rx="27" fill="var(--bg-raised, #131313)" stroke="var(--line, rgba(255,255,255,0.12))" stroke-width="2"/>
+  <text x="44" y="657" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="24">Who’s a good plumber near me?</text>
 
   <text x="340" y="716" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="24" text-anchor="middle">Two or three names, with a reason attached</text>
 
-  <rect x="20" y="738" width="600" height="50" rx="10" fill="var(--bg-raised, #131313)" stroke="var(--line, rgba(255,255,255,0.12))" stroke-width="2"/>
-  <text x="320" y="769" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="24" text-anchor="middle">A name, with a reason</text>
+  <rect x="20" y="738" width="640" height="50" rx="10" fill="var(--bg-raised, #131313)" stroke="var(--line, rgba(255,255,255,0.12))" stroke-width="2"/>
+  <text x="340" y="769" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="24" text-anchor="middle">A name, with a reason</text>
 
-  <rect x="20" y="804" width="600" height="50" rx="10" fill="var(--bg-raised, #131313)" stroke="var(--line, rgba(255,255,255,0.12))" stroke-width="2"/>
-  <text x="320" y="835" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="24" text-anchor="middle">A name, with a reason</text>
+  <rect x="20" y="804" width="640" height="50" rx="10" fill="var(--bg-raised, #131313)" stroke="var(--line, rgba(255,255,255,0.12))" stroke-width="2"/>
+  <text x="340" y="835" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="24" text-anchor="middle">A name, with a reason</text>
 
-  <rect x="20" y="870" width="600" height="50" rx="10" fill="var(--bg-raised, #131313)" stroke="var(--chart-accent, #f7861f)" stroke-width="3"/>
-  <text x="320" y="901" fill="var(--chart-accent, #f7861f)" font-size="24" font-weight="500" text-anchor="middle">You, with a reason</text>
+  <rect x="20" y="870" width="640" height="50" rx="10" fill="var(--bg-raised, #131313)" stroke="var(--chart-accent, #f7861f)" stroke-width="3"/>
+  <text x="340" y="901" fill="var(--chart-accent, #f7861f)" font-size="24" font-weight="500" text-anchor="middle">You, with a reason</text>
 
-  <text x="340" y="972" fill="var(--ink, #ffffff)" font-size="26" font-weight="500" text-anchor="middle">You're one of the names,</text>
-  <text x="340" y="1006" fill="var(--ink, #ffffff)" font-size="26" font-weight="500" text-anchor="middle">or you're not in it.</text>
+  <text x="340" y="972" fill="var(--ink, #ffffff)" font-size="26" font-weight="500" text-anchor="middle">You’re one of the names,</text>
+  <text x="340" y="1006" fill="var(--ink, #ffffff)" font-size="26" font-weight="500" text-anchor="middle">or you’re not in it.</text>
 </svg>
