@@ -212,39 +212,66 @@
      The guides and the posts read wider and larger than the rest of the site,
      and these three are why they can without restyling the other 21 pages.
 
-     --article-measure holds at 38rem, the same cap as --measure everywhere
-     else. The type went up to 18px on its own; measured on the rendered page
-     by counting line boxes, that runs 60 to 67 characters a line, which is
-     inside the 55 to 65 band long-form wants (the top of that range, but
-     inside it). The token is still named separately from --measure, not
-     because it currently differs, but so the articles can move independently
-     later without dragging the other 21 pages with them. Until that happens,
-     though, .guide__section and .post__section cap at --measure too, because
+     --article-measure was 38rem, the same cap as --measure everywhere else,
+     and at 1999px wide the owner saw it in a preview: 72% of his screen used,
+     280px dead on each side, a 608px column at a mean of 61 characters a line.
+     He asked for more space either side and a larger reading column. Shown
+     what that costs in line length, he chose the middle option: 42rem here,
+     which comes out at a mean of 67 characters a line. That is past the 55 to
+     65 band long-form usually wants, on purpose and on his instruction. Do not
+     pull it back toward that band; 67 is the number he picked, not a mistake
+     to correct.
+
+     The token is still named separately from --measure, so the articles can
+     move independently without dragging the other 21 pages with them.
+     .guide__section and .post__section still cap at --measure too, because
      they are shared with /privacy and /about, which are not part of this
-     widened set. The sections sit nested inside .guide__col / .post__col, so
-     the narrower of the two caps wins. Move --article-measure alone and
-     nothing changes on screen: --measure is still capping the text at 38rem
-     underneath it. That mismatch shipped once already and produced a 32px
-     hairline overhang between .guide__also and .guide__plan; any future
-     change to this token has to move --measure with it, or check that the
-     two already agree, or it silently does nothing. */
-  --article-measure: 38rem;
+     widened set and must stay at 38rem. The sections sit nested inside
+     .guide__col / .post__col, so without a further rule the narrower of the
+     two caps would win and moving --article-measure alone would do nothing:
+     --measure would still be capping the text at 38rem underneath it. That
+     exact mismatch shipped once already and produced a 32px hairline overhang
+     between .guide__also and .guide__plan. The fix lives further down this
+     sheet: .guide__col .guide__section and .post__col .post__section (and the
+     other rules inside a column that used the same --measure cap) are
+     released to max-width: none, so the column becomes the only cap once one
+     exists, while the bare .guide__section / .post__section rule stays at
+     --measure for the two pages with no column around it. Any future change
+     to --article-measure has to be checked against that release rule, or it
+     silently does nothing again. */
+  --article-measure: 42rem;
+
+  /* --article-measure-min is the reading column's floor in the three column
+     grid below. Without it the column's own minmax() bottomed out at 0, and
+     CSS Grid's track sizing gives space to whichever tracks hit their cap
+     first: the two rails, at 14rem each, claimed their space before the
+     column got a look at what was left. Measured on the unfloored layout at
+     38rem: a 1024px viewport left the column 208px wide, 21 characters a
+     line. 38rem is the floor because it is what the column measured before
+     the owner asked for it wider, and it is the width below which three
+     columns should not be attempted at all rather than squeezed. See the
+     breakpoint below, which is derived from this floor. */
+  --article-measure-min: 38rem;
   --article-text: 1.125rem;
 
   /* The article wrap is wider than the site's 72rem because it now carries
-     three columns rather than one. 90rem at the widest, and the rails are what
-     grow into it: the reading column is fixed at --article-measure, so a wider
-     page means more room for the title and the contact, never a longer line.
+     three columns rather than one. 102rem at the widest, and the rails are
+     what grow into it: the reading column is fixed at --article-measure, so a
+     wider page means more room for the title and the contact, never a longer
+     line. box-sizing is border-box site-wide, so this figure includes the
+     gutters either side: 672px column + 384px rail + 384px rail + two 48px
+     gaps is 1536px, which needs 1632px (102rem) of box to sit in, not 96rem.
 
-     THE RAILS STOP AT 20rem AND THAT IS DELIBERATE. Up to about 1400px this
-     uses the screen, which is what was asked for. Past that they cap and the
-     whole thing centres, because a title six hundred pixels from the paragraph
-     it belongs to has stopped being a title and become a second column of
-     text. --article-rail-min keeps them wide enough for a headline to break
-     sensibly at the breakpoint. */
-  --article-page-max: 90rem;
+     THE RAILS STOP AT 24rem AND THAT IS DELIBERATE. Widened from 20rem to
+     match the larger column the owner asked for, at the same ratio, but they
+     still cap: past the point where the page itself is capped at 102rem the
+     whole thing centres, because a title six hundred pixels from the
+     paragraph it belongs to has stopped being a title and become a second
+     column of text. --article-rail-min keeps them wide enough for a headline
+     to break sensibly at the breakpoint. */
+  --article-page-max: 102rem;
   --article-rail-min: 14rem;
-  --article-rail-max: 20rem;
+  --article-rail-max: 24rem;
 
   /* The nav floats over the page rather than sitting in the document flow, so
      it takes up no space and content would otherwise start underneath it.

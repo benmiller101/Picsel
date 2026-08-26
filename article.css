@@ -111,6 +111,23 @@
   max-width: var(--measure);
 }
 
+/* Inside an article column the column is the cap, so the section (and the
+   other elements below that used to share this same --measure cap) does not
+   need its own and must not have a narrower one. This rule exists because the
+   opposite arrangement shipped once: --article-measure was raised, the
+   section kept the narrower --measure, the narrower cap won, and the change
+   did nothing while the build stayed green. /privacy and /about use
+   .guide__section with no column around it, so the base rule above stays for
+   them. */
+.guide__col .guide__section,
+.post__col .post__section,
+.guide__col .guide__action,
+.post__col .post__action,
+.guide__col .guide__plan,
+.post__col .post__close {
+  max-width: none;
+}
+
 .guide__section > * + *,
 .post__section > * + *,
 .service__section > * + * {
@@ -677,7 +694,7 @@
 }
 
 /* ---- The three column shell ------------------------------------------------
-   Below 64rem this is one column, stacked left rail then reading column then
+   Below 77rem this is one column, stacked left rail then reading column then
    right rail: what this is, then the thing itself, then what to do about it.
    That is also the tab order.
 
@@ -691,13 +708,33 @@
   margin-top: var(--space-8);
 }
 
-@media (min-width: 64rem) {
+/* The breakpoint is derived, not chosen by eye: the reading column's floor
+   (--article-measure-min, 608px) plus two rails at their own floor
+   (--article-rail-min, 14rem each, 448px) plus two 48px column gaps is
+   1152px of content, which needs a 1232px viewport once the 40px gutters
+   either side are counted. 77rem is 1232px. Below it three columns are not
+   attempted, not because they look worse narrower, but because they cannot
+   fit at any setting: the column would either starve again or the rails
+   would be squeezed under their own stated minimum. The middle three
+   media queries below (this one, the rail sticky behaviour, and the rail
+   headline size) all gate the same three-column companion layout and move
+   together, so a stacked page never ends up with a sticky or enlarged rail
+   floating over content that is not actually beside it. */
+@media (min-width: 77rem) {
   .guide__cols,
   .post__cols {
     display: grid;
+    /* The reading column carries a floor (--article-measure-min) as well as
+       its usual cap. Without one, the unbounded-below minmax(0, ...) let
+       CSS Grid's track sizing give space to whichever track hit its own cap
+       first when the row was too narrow for everyone's preference: the two
+       rail tracks, capped at a smaller --article-rail-max, claimed their
+       full width before the reading column got a share, so at 1024px the
+       column measured 208px, 21 characters a line. The floor stops the
+       column from ever being the one that loses that contest. */
     grid-template-columns:
       minmax(var(--article-rail-min), var(--article-rail-max))
-      minmax(0, var(--article-measure))
+      minmax(var(--article-measure-min), var(--article-measure))
       minmax(var(--article-rail-min), var(--article-rail-max));
     column-gap: var(--space-12);
     /* Equal rails are what make the reading column genuinely centred rather
@@ -755,7 +792,7 @@
      the hierarchy, they simply do not watch it change. */
 }
 
-@media (min-width: 64rem) {
+@media (min-width: 77rem) {
   .guide__rail,
   .post__rail {
     margin-top: 0;
@@ -766,7 +803,7 @@
   }
 }
 
-@media (max-width: 63.999rem) {
+@media (max-width: 76.999rem) {
   /* Below the breakpoint the contents list is dropped rather than stacked, for
      the reason recorded on the contents renderer: a contents list that appears
      after the content it indexes is worse than none. The rest of the left rail
@@ -777,7 +814,7 @@
   }
 }
 
-@media (min-width: 64rem) {
+@media (min-width: 77rem) {
   .guide__rail--left .guide__headline,
   .post__rail--left .post__headline {
     font-size: var(--text-2xl);
