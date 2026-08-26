@@ -1032,6 +1032,9 @@ ${faqs}
     path,
     title: service.title,
     description: service.description,
+    /* The waiver is declared on the service and consumed on the page. They are
+       different objects, so the flag must be copied explicitly. */
+    descriptionFloorWaived: service.descriptionFloorWaived,
     /* reviews.css only loads on the two pages that actually carry a quote,
        same reasoning as home.js only loading hero.css on the homepage: a
        stylesheet with nothing to style on a page is dead weight on it.
