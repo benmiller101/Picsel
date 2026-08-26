@@ -8,7 +8,7 @@
 
    The hole this guards: if a copy edit over-lengths an unpriced description
    without testing the blackout build, the ceiling error will break the
-   `SHOW_PRICING = false` build at the worst possible moment — when somebody is
+   `SHOW_PRICING = false` build at the worst possible moment, when somebody is
    trying to pull prices off the site in a hurry. This test catches it
    immediately, every time the source changes. */
 

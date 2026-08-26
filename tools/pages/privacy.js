@@ -86,7 +86,7 @@ const PRIVACY_TRAIL = [
 ];
 
 /* Reuses the 'guide' class prefix rather than inventing a fourth one. article.css
-   already styles .guide__section, .guide__inner and .guide__question for
+   already styles .guide__section, .guide__inner and .guide__headline for
    exactly this shape of page: a heading, an opening answer set off with the
    accent rule, and a run of h2 sections underneath. A privacy policy is
    long-form reading in the same sense a guide is, so it gets the same sheet

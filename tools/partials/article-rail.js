@@ -141,10 +141,18 @@ export function renderArticleRailLeft({ prefix, sections, headline, date, longDa
       </dl>`
     : '';
 
-  return `    <aside class="${prefix}__rail ${prefix}__rail--left">
+  /* <header>, not <aside>: an aside is for content tangentially related to
+     its surroundings, and an article's own title is not tangential to the
+     article. This used to be an aside, which left the <article> with no
+     heading in its main flow. Nothing styles or queries the bare aside
+     element for this rail: article.css and article-rails.js both key off
+     the class names, never the tag, so this is safe to change on its own.
+     The right rail below stays an aside, since a phone number and a promise
+     genuinely are tangential to the thing being read. */
+  return `    <header class="${prefix}__rail ${prefix}__rail--left">
       <h1 class="${prefix}__headline">${escapeHtml(headline)}</h1>${written}
       <p class="${prefix}__rail-read">${readingMinutes(sections)} min read</p>${contents}
-    </aside>`;
+    </header>`;
 }
 
 /**

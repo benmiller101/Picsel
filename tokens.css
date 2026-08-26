@@ -260,7 +260,9 @@
      wider page means more room for the title and the contact, never a longer
      line. box-sizing is border-box site-wide, so this figure includes the
      gutters either side: 672px column + 384px rail + 384px rail + two 48px
-     gaps is 1536px, which needs 1632px (102rem) of box to sit in, not 96rem.
+     gaps is 1536px, plus two --page-gutter, which caps at 2.5rem (40px) each,
+     is 1616px of box to sit in, not 96rem. 102rem (1632px) leaves 16px to
+     spare rather than landing exactly on the arithmetic.
 
      THE RAILS STOP AT 24rem AND THAT IS DELIBERATE. Widened from 20rem to
      match the larger column the owner asked for, at the same ratio, but they
