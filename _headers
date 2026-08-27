@@ -20,12 +20,15 @@
   # Enforced, and deliberately narrow. Everything here was checked against
   # every built page before it was written down:
   #
-  #   frame-ancestors  Only picsel.co.uk itself and benwmiller.co.uk may put
-  #                    this site in an iframe. That is the modern
-  #                    X-Frame-Options and it is the one that browsers
+  #   frame-ancestors  Only picsel.co.uk itself, benwmiller.co.uk and a local
+  #                    dev server may put this site in an iframe. That is the
+  #                    modern X-Frame-Options and it is the one that browsers
   #                    actually honour on subframes. The portfolio is listed
   #                    because its Picsel case study embeds a live preview of
-  #                    this site; nothing else may frame it.
+  #                    this site, and localhost so that preview can be seen
+  #                    before it is deployed. Nothing else may frame it. A page
+  #                    opened straight off disk cannot be listed at all: its
+  #                    origin is 'null', so preview over http://localhost.
   #   base-uri         A <base> tag can silently repoint every relative URL on
   #                    a page. Nothing here uses one, so nothing may add one.
   #   object-src       No <object>, <embed> or applet, ever. Legacy plugin
@@ -36,7 +39,7 @@
   # These four cannot break a page that does not already do the thing they
   # forbid, and no page here does. So they are enforced from day one rather
   # than watched.
-  Content-Security-Policy: frame-ancestors 'self' https://benwmiller.co.uk https://www.benwmiller.co.uk; base-uri 'self'; object-src 'none'; form-action 'self' https://api.web3forms.com
+  Content-Security-Policy: frame-ancestors 'self' https://benwmiller.co.uk https://www.benwmiller.co.uk http://localhost:* http://127.0.0.1:*; base-uri 'self'; object-src 'none'; form-action 'self' https://api.web3forms.com
 
   # ---- The full policy, watching rather than blocking --------------------
   #
@@ -82,7 +85,7 @@
   # font-src along with the requests. Typekit stays: its licence forbids
   # self-hosting the wordmark faces, so use.typekit.net serves the stylesheet
   # and p.typekit.net serves the files it names.
-  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://use.typekit.net; font-src 'self' https://use.typekit.net https://p.typekit.net; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com; connect-src 'self' https://hq.picsel.co.uk https://api.web3forms.com https://cloudflareinsights.com https://www.google-analytics.com https://region1.google-analytics.com; frame-src https://www.googletagmanager.com; frame-ancestors 'self' https://benwmiller.co.uk https://www.benwmiller.co.uk; base-uri 'self'; object-src 'none'; form-action 'self' https://api.web3forms.com
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://use.typekit.net; font-src 'self' https://use.typekit.net https://p.typekit.net; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com; connect-src 'self' https://hq.picsel.co.uk https://api.web3forms.com https://cloudflareinsights.com https://www.google-analytics.com https://region1.google-analytics.com; frame-src https://www.googletagmanager.com; frame-ancestors 'self' https://benwmiller.co.uk https://www.benwmiller.co.uk http://localhost:* http://127.0.0.1:*; base-uri 'self'; object-src 'none'; form-action 'self' https://api.web3forms.com
 
   # ---- Transport ---------------------------------------------------------
   #
