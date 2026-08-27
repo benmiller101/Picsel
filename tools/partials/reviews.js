@@ -31,7 +31,7 @@ import { escapeHtml } from '../templates/page.js';
 /* ---- The star ------------------------------------------------------------
    Drawn on a nine by nine grid and kept in the source AS that grid, because
    the alternative is forty path coordinates that nobody can read, let alone
-   adjust. buildStarPath() turns it into a path once, at build time.
+   adjust. buildPixelPath() turns it into a path once, at build time.
 
    PIXELS RATHER THAN A SMOOTH STAR, because everything else on this site is
    already made of them: the wordmark, the dot field behind every page, the
@@ -53,7 +53,7 @@ const STAR_GRID = [
    commands rather than nine. Runs, not cells, is the difference between a
    240-byte path and a 900-byte one, on a shape that appears five times a card
    and seven cards a page. */
-function buildStarPath(grid) {
+function buildPixelPath(grid) {
   const parts = [];
 
   grid.forEach((row, y) => {
@@ -73,8 +73,44 @@ function buildStarPath(grid) {
   return parts.join('');
 }
 
-const STAR_PATH = buildStarPath(STAR_GRID);
+const STAR_PATH = buildPixelPath(STAR_GRID);
 const STAR_ID = 'picsel-star';
+
+/* The arrow on the two cycle buttons, drawn on the same nine by nine grid as
+   the star and by the same function. A stock chevron glyph next to a pixel
+   star would be the one mark in this section that came from a different
+   drawing, and the buttons sit two inches from five of those stars.
+
+   One shape, not two: the back button is this arrow flipped in CSS. */
+const ARROW_GRID = [
+  '..#......',
+  '..##.....',
+  '..###....',
+  '..####...',
+  '..#####..',
+  '..####...',
+  '..###....',
+  '..##.....',
+  '..#......',
+];
+
+const ARROW_PATH = buildPixelPath(ARROW_GRID);
+const ARROW_ID = 'picsel-arrow';
+
+/* Below three reviews there is nothing to cycle through worth the controls:
+   two cards both on screen at once, and a pair of buttons that move a rail
+   which is already showing everything it has. The service and project pages
+   that carry one quote never see them. */
+const MIN_TO_CYCLE = 3;
+
+/* Asked for by the section rather than by the page, which is the only way
+   seven pages get this without seven edits and without one of them being
+   forgotten. `defer` is the same promise every enhancement on this site makes:
+   it waits for the page to be parsed and never blocks it from appearing, and
+   with the file missing or blocked the rail is a scrolling strip and every
+   review is still in the HTML. */
+const REVIEW_SCRIPT = `
+      <script defer src="/reviews-cycle.js"></script>`;
 
 /* Defined once per page and pointed at five times per card. Inline rather than
    a file so the CSP's img-src is not involved and so the stars take
@@ -82,6 +118,7 @@ const STAR_ID = 'picsel-star';
    seven cards' worth of the same forty rectangles. */
 const STAR_SPRITE = `      <svg class="reviews__sprite" aria-hidden="true" focusable="false" width="0" height="0">
         <symbol id="${STAR_ID}" viewBox="0 0 9 9"><path d="${STAR_PATH}" /></symbol>
+        <symbol id="${ARROW_ID}" viewBox="0 0 9 9"><path d="${ARROW_PATH}" /></symbol>
       </svg>`;
 
 /**
@@ -174,14 +211,52 @@ ${renderStars(review.rating)}
   const profileLink = REVIEWS_URL_IS_PLACEHOLDER
     ? ''
     : `
-          <a class="section-head__link" href="${escapeHtml(SITE.reviewsUrl)}">Read them on Google</a>`;
+            <a class="section-head__link" href="${escapeHtml(SITE.reviewsUrl)}">Read them on Google</a>`;
+
+  /* ---- The two buttons -------------------------------------------------
+     THE CUT-OFF CARD WAS NOT ENOUGH, and the section is better for admitting
+     it. A sliced card does say "there is more this way", and on a trackpad or
+     a phone that is all anybody needs. On a mouse it is a strip you can see
+     more of and cannot reach: no wheel does anything sideways, the scrollbar
+     is hidden because a light one on a near-black page reads as a fault, and
+     the drag that works on glass does not work on a desktop pointer. Seven
+     reviews, four of them unreachable without a keyboard.
+
+     So the buttons are the fix for the case the affordance never covered, and
+     nothing else about the rail changes: the first card still lines up with
+     the heading, and a card is still sliced by the right edge of the screen.
+
+     RENDERED HIDDEN AND UNHIDDEN BY THE SCRIPT. Without reviews-cycle.js the
+     rail is a plain scrolling strip and these two would be dead controls
+     sitting under the heading, which is worse than no controls. They appear
+     when the thing they drive exists.
+
+     The counter reads "01 / 07" for the same reason the work wheel's does: a
+     reader who has cycled twice should be able to see how much is left
+     without counting cards. aria-hidden because the buttons carry their own
+     names and the live region below announces the position in words. */
+  const controls =
+    ordered.length >= MIN_TO_CYCLE
+      ? `
+            <div class="reviews__cycle" data-review-cycle hidden>
+              <p class="reviews__counter" aria-hidden="true"><span data-review-count>01</span> / ${String(ordered.length).padStart(2, '0')}</p>
+              <button class="reviews__step reviews__step--back" type="button" data-review-step="-1" aria-label="Previous review">
+                <svg class="reviews__arrow" viewBox="0 0 9 9" aria-hidden="true" focusable="false"><use href="#${ARROW_ID}" /></svg>
+              </button>
+              <button class="reviews__step" type="button" data-review-step="1" aria-label="Next review">
+                <svg class="reviews__arrow" viewBox="0 0 9 9" aria-hidden="true" focusable="false"><use href="#${ARROW_ID}" /></svg>
+              </button>
+            </div>`
+      : '';
 
   return `    <section class="reviews" aria-labelledby="${escapeHtml(headingId)}">
 ${STAR_SPRITE}
 
       <div class="wrap">
         <div class="section-head reviews__head">
-          <h2 class="section-head__title" id="${escapeHtml(headingId)}">${escapeHtml(heading)}</h2>${profileLink}
+          <h2 class="section-head__title" id="${escapeHtml(headingId)}">${escapeHtml(heading)}</h2>
+          <div class="reviews__tools">${controls}${profileLink}
+          </div>
         </div>
       </div>
 
@@ -190,5 +265,12 @@ ${STAR_SPRITE}
 ${cards}
         </ul>
       </div>
+
+      <!-- Empty until the script cycles a card in. A screen reader gets the
+           position and the name in words, because the counter beside the
+           buttons is a picture of that fact and the cards themselves are all
+           still in the page whichever one is on top. -->
+      <p class="visually-hidden" aria-live="polite" data-review-live></p>
+${REVIEW_SCRIPT}
     </section>`;
 }

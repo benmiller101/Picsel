@@ -262,11 +262,14 @@
     <section class="reviews" aria-labelledby="lanora-house-reviews-heading">
       <svg class="reviews__sprite" aria-hidden="true" focusable="false" width="0" height="0">
         <symbol id="picsel-star" viewBox="0 0 9 9"><path d="M4 0h1v1h-1zM4 1h1v1h-1zM3 2h3v1h-3zM0 3h9v1h-9zM1 4h7v1h-7zM2 5h5v1h-5zM2 6h2v1h-2zM5 6h2v1h-2zM1 7h2v1h-2zM6 7h2v1h-2zM1 8h1v1h-1zM7 8h1v1h-1z" /></symbol>
+        <symbol id="picsel-arrow" viewBox="0 0 9 9"><path d="M2 0h1v1h-1zM2 1h2v1h-2zM2 2h3v1h-3zM2 3h4v1h-4zM2 4h5v1h-5zM2 5h4v1h-4zM2 6h3v1h-3zM2 7h2v1h-2zM2 8h1v1h-1z" /></symbol>
       </svg>
       <div class="wrap">
         <div class="section-head reviews__head">
           <h2 class="section-head__title" id="lanora-house-reviews-heading">In their own words</h2>
-          <a class="section-head__link" href="https://g.page/r/CYTJdsdHkyi_EBM">Read them on Google</a>
+          <div class="reviews__tools">
+            <a class="section-head__link" href="https://g.page/r/CYTJdsdHkyi_EBM">Read them on Google</a>
+          </div>
         </div>
       </div>
       <div class="reviews__rail" tabindex="0" role="group" aria-label="1 reviews, scroll sideways to read them">
@@ -288,6 +291,8 @@
             </li>
         </ul>
       </div>
+      <p class="visually-hidden" aria-live="polite" data-review-live></p>
+      <script defer src="/reviews-cycle.js"></script>
     </section>
     <section class="contact-band" aria-labelledby="contact-band-heading">
       <div class="wrap contact-band__inner">

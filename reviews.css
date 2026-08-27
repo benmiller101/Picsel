@@ -255,3 +255,157 @@
 
   color: var(--ink-faint);
 }
+
+/* ---- The cycle buttons ---------------------------------------------------
+   Under the heading, opposite it, on the same line as the link to the Google
+   profile. They are the desktop route through the rail: the sliced card tells
+   everybody there is more sideways and only a trackpad, a touchscreen or the
+   arrow keys could act on it. A mouse had nothing.
+
+   Both are hidden in the markup and unhidden by reviews-cycle.js. A pair of
+   buttons that do nothing is worse than no buttons, so they arrive with the
+   script that drives them or they do not arrive. */
+.reviews__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.reviews__cycle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.reviews__cycle[hidden] {
+  display: none;
+}
+
+/* tabular-nums so "01 / 07" does not jog sideways as the first digit changes,
+   which on a counter sitting still next to two buttons is the only movement
+   in the corner of the page and reads as a wobble. */
+.reviews__counter {
+  margin: 0;
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-faint);
+}
+
+/* The same raised surface and hairline as the card it moves, at tap size.
+   No fill, no glow: this is a control on a page whose one accent colour is
+   spoken for by the primary button. */
+.reviews__step {
+  display: grid;
+  place-items: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--bg-raised);
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+
+.reviews__step:hover {
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+
+/* crispEdges for the same reason the star has it: the arrow is drawn on a
+   nine by nine grid of whole squares and antialiasing rounds every one of
+   them into a grey smudge. */
+.reviews__arrow {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+  shape-rendering: crispEdges;
+}
+
+/* One arrow in the sprite, pointing right, and the back button is it flipped.
+   Two grids for two directions is two things to keep in step. */
+.reviews__step--back .reviews__arrow {
+  transform: scaleX(-1);
+}
+
+/* ---- Cycling mode --------------------------------------------------------
+   Added by reviews-cycle.js. The rail stops scrolling and the cards are placed
+   by transform instead, each one a slot further right than the last, so the
+   order can wrap: the card that leaves on the left is put back on the far
+   right while it is off screen and out of sight, which is what makes the list
+   loop rather than end.
+
+   The blur is the point of the whole thing and it is the work wheel's blur,
+   arrived at the same way. The card in front is sharp and every card behind it
+   is further out of focus, so a reader's eye has one place to be. It moves
+   with the cycle: the card taking the front position comes into focus as it
+   arrives, the one leaving goes soft. */
+.reviews.is-cycling .reviews__rail {
+  overflow: hidden;
+  scroll-snap-type: none;
+  /* Vertical scrolling still belongs to the page. Horizontal is ours, which
+     is what lets the drag below work on a phone without fighting the browser
+     for the gesture. */
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.reviews.is-cycling .reviews__rail.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+/* Height comes from the script, measured off the rail in its flex layout
+   before the cards are lifted out of the flow. The fallback matches the card's
+   own floor so nothing collapses in the frame before that measurement. */
+.reviews.is-cycling .reviews__track {
+  display: block;
+  position: relative;
+  height: var(--track-h, 26rem);
+  padding-inline-end: 0;
+}
+
+/* --d is the card's slot, in cards: 0 is the front, 1 is the one behind it,
+   -1 is the one that has just left and is parked off the left edge waiting to
+   come round again. The percentage is of the card's own width, so the slots
+   stay right at every screen size without the script measuring anything. */
+.reviews.is-cycling .reviews__slide {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  height: 100%;
+  transform: translate3d(calc(var(--d, 0) * (100% + var(--space-6)) + var(--drag, 0px)), 0, 0);
+  filter: blur(var(--card-blur, 0px)) brightness(var(--card-bright, 1));
+  opacity: var(--card-op, 1);
+  transition: transform var(--cycle-ms, 520ms) var(--ease),
+              filter var(--cycle-ms, 520ms) var(--ease),
+              opacity var(--cycle-ms, 520ms) var(--ease);
+}
+
+/* Two cases where a card must not animate to where it is going.
+
+   is-wrapping is the loop's seam: a card jumping from the far right slot back
+   to the parked slot on the left would otherwise fly across the whole rail
+   through every other card. Both of those positions are off screen, so the
+   jump is invisible and the loop has no visible end.
+
+   is-dragging is the finger: while somebody is holding a card, it goes where
+   their finger is and not where an ease says it should be a third of a second
+   from now. */
+.reviews.is-cycling .reviews__slide.is-wrapping,
+.reviews.is-cycling .reviews__rail.is-dragging .reviews__slide {
+  transition: none;
+}
+
+/* Anybody who has asked for less motion still gets the buttons and the blur,
+   because both are how the section is read rather than decoration on it. What
+   goes is the travel: the next card is simply there. */
+@media (prefers-reduced-motion: reduce) {
+  .reviews.is-cycling .reviews__slide {
+    transition: none;
+  }
+}
