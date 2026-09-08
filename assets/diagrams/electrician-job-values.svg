@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 820" role="img"
+     aria-labelledby="jvTitle jvDesc" font-family="var(--font-body, 'Lexend', ui-sans-serif, system-ui, sans-serif)">
+  <title id="jvTitle">Five electrical jobs, split by how the customer arrives</title>
+  <desc id="jvDesc">Two groups. The first is work where the customer rings within minutes: an emergency call-out at £150 to £400, and a landlord chasing an electrical installation condition report at £120 to £250. What that customer needs from the site is the phone number and the town, above the fold. The second group is work the customer reads about first, sometimes for a fortnight: a consumer unit change at £350 to £600, an electric vehicle charger installation at £800 to £1,200, and a full rewire at £2,500 to £11,000. What that customer needs is a page about that one job, with your own photographs on it. A single page headed Services is being asked to serve both groups at once.</desc>
+
+  <rect width="680" height="820" fill="var(--bg, #0a0a0a)"/>
+
+  <text x="20" y="54" fill="var(--ink, #ffffff)" font-size="32" font-weight="500">Five jobs, two customers</text>
+  <text x="20" y="86" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="24">Sorted by how they arrive, not by what they pay</text>
+
+  <!-- Group one: the urgent half -->
+  <rect x="20" y="120" width="640" height="232" rx="14" fill="var(--bg-raised, #131313)" stroke="var(--line, rgba(255,255,255,0.12))" stroke-width="2"/>
+  <text x="44" y="164" fill="var(--ink, #ffffff)" font-size="28" font-weight="600">They ring you within minutes</text>
+
+  <text x="44" y="216" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="26">Emergency call-out</text>
+  <text x="636" y="216" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="26" font-weight="600" text-anchor="end">£150 to £400</text>
+
+  <text x="44" y="260" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="26">Landlord chasing an EICR</text>
+  <text x="636" y="260" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="26" font-weight="600" text-anchor="end">£120 to £250</text>
+
+  <text x="44" y="322" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="24">They need the number and the town, above the fold.</text>
+
+  <!-- Group two: the researched half -->
+  <rect x="20" y="376" width="640" height="322" rx="16" fill="var(--bg-raised, #131313)" stroke="var(--chart-accent, #f7861f)" stroke-width="3"/>
+  <text x="44" y="420" fill="var(--ink, #ffffff)" font-size="28" font-weight="600">They read you first, for a fortnight</text>
+
+  <text x="44" y="472" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="26">Consumer unit change</text>
+  <text x="636" y="472" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="26" font-weight="600" text-anchor="end">£350 to £600</text>
+
+  <text x="44" y="516" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="26">EV charger install</text>
+  <text x="636" y="516" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="26" font-weight="600" text-anchor="end">£800 to £1,200</text>
+
+  <text x="44" y="560" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="26">Full rewire</text>
+  <text x="636" y="560" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="26" font-weight="600" text-anchor="end">£2,500 to £11,000</text>
+
+  <text x="44" y="622" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="24">
+    <tspan x="44" dy="0">They need a page about that one job,</tspan>
+    <tspan x="44" dy="30">with your own photographs on it.</tspan>
+  </text>
+
+  <text x="20" y="754" fill="var(--chart-emphasis, #ffd500)" font-size="28" font-weight="600">One page headed “Services” is serving both.</text>
+
+  <text x="660" y="792" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="24"
+        text-anchor="end" letter-spacing="0.04em">picsel.co.uk</text>
+</svg>

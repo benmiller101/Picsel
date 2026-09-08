@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 880" role="img"
+     aria-labelledby="eicrTitle eicrDesc" font-family="var(--font-body, 'Lexend', ui-sans-serif, system-ui, sans-serif)">
+  <title id="eicrTitle">The five year cycle behind a landlord’s electrical certificate</title>
+  <desc id="eicrDesc">Flow diagram. A landlord has an electrical installation condition report carried out, costing £120 to £250. If the report comes back unsatisfactory, the landlord has 28 days to have the work put right, which is a second job for the same electrician. Five years then pass. The report is due again by law, and the same landlord starts searching again. The maximum civil penalty for a breach of the electrical safety standards rose to £40,000 on 1 November 2025.</desc>
+
+  <rect width="680" height="880" fill="var(--bg, #0a0a0a)"/>
+
+  <defs>
+    <marker id="arw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--line-strong, rgba(255,255,255,0.22))"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="54" fill="var(--ink, #ffffff)" font-size="32" font-weight="500">The landlord comes back</text>
+  <text x="20" y="86" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="24">Why an EICR page is worth more than it charges</text>
+
+  <!-- Step one -->
+  <rect x="20" y="120" width="640" height="100" rx="12" fill="var(--bg-raised, #131313)" stroke="var(--line, rgba(255,255,255,0.12))" stroke-width="2"/>
+  <text x="340" y="162" fill="var(--ink, #ffffff)" font-size="26" font-weight="600" text-anchor="middle">EICR carried out</text>
+  <text x="340" y="196" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="24" text-anchor="middle">£120 to £250</text>
+
+  <line x1="340" y1="220" x2="340" y2="252" stroke="var(--line-strong, rgba(255,255,255,0.22))" stroke-width="2" marker-end="url(#arw)"/>
+
+  <!-- The branch. Dashed, because it is the case that may not happen, and it
+       is the one that pays twice when it does. -->
+  <rect x="20" y="256" width="640" height="160" rx="14" fill="none" stroke="var(--line, rgba(255,255,255,0.12))" stroke-width="2" stroke-dasharray="6 6"/>
+  <text x="44" y="300" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="24">
+    <tspan x="44" dy="0">If it comes back unsatisfactory, the landlord</tspan>
+    <tspan x="44" dy="30">has 28 days to put the work right.</tspan>
+  </text>
+  <text x="44" y="390" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="24">A second job, same customer, same week.</text>
+
+  <line x1="340" y1="416" x2="340" y2="448" stroke="var(--line-strong, rgba(255,255,255,0.22))" stroke-width="2" marker-end="url(#arw)"/>
+
+  <!-- Step two -->
+  <rect x="20" y="452" width="640" height="100" rx="12" fill="var(--bg-raised, #131313)" stroke="var(--line, rgba(255,255,255,0.12))" stroke-width="2"/>
+  <text x="340" y="510" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="26" text-anchor="middle">Five years pass</text>
+
+  <line x1="340" y1="552" x2="340" y2="584" stroke="var(--line-strong, rgba(255,255,255,0.22))" stroke-width="2" marker-end="url(#arw)"/>
+
+  <!-- Step three -->
+  <rect x="20" y="588" width="640" height="160" rx="16" fill="var(--bg-raised, #131313)" stroke="var(--chart-accent, #f7861f)" stroke-width="3"/>
+  <text x="44" y="632" fill="var(--ink-muted, rgba(255,255,255,0.72))" font-size="24">
+    <tspan x="44" dy="0">Due again, by law. The same landlord</tspan>
+    <tspan x="44" dy="30">is searching for an electrician again.</tspan>
+  </text>
+  <text x="44" y="722" fill="var(--chart-emphasis, #ffd500)" font-size="28" font-weight="600">Be the page they found last time.</text>
+
+  <text x="20" y="800" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="24">
+    <tspan x="20" dy="0">Maximum penalty for a breach rose to £40,000</tspan>
+    <tspan x="20" dy="30">on 1 November 2025.</tspan>
+  </text>
+
+  <text x="660" y="852" fill="var(--ink-faint, rgba(255,255,255,0.52))" font-size="24"
+        text-anchor="end" letter-spacing="0.04em">picsel.co.uk</text>
+</svg>

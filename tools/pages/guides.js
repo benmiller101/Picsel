@@ -991,6 +991,292 @@ const TRADE_COST_PAGES = [
       },
     ],
   },
+
+  {
+    slug: 'electrician-website-cost',
+    trade: 'Electricians',
+    summary:
+      'What an electrical firm pays, and why five jobs at five prices are five pages rather than one list headed Services.',
+
+    question: "How much does an electrician's website cost?",
+    title: "How much does an electrician's website cost? UK, 2026",
+    description:
+      'Around £500 to £2,000 as a one off, or £15 to £120 a month. What each price buys '
+      + 'an electrician, and why EICR and EV charger work want their own pages.',
+
+    /* NO article.image, and the omission is the honest one. The builder page
+       opens its Article node with a shot of a real client site, because there
+       is a building firm on /work to show. There is no electrical firm on
+       /work, and borrowing a construction screenshot to stand in for one would
+       be a picture of somebody else's trade doing the job of evidence. The
+       Article node is correct without it. */
+    article: {},
+
+    /* The five under "Common questions" are the FAQ, and the H1 is the
+       article's headline rather than a sixth question. Same as the builder
+       page above. */
+    faqFromAlso: true,
+    alsoHeading: 'Common questions',
+
+    answer:
+      'Between £500 and £2,000 as a one off for a small electrical firm, or £15 to £120 a month '
+      + 'if it is built and looked after on a subscription. An agency will quote £3,000 upwards. '
+      + 'For an electrician the money goes further on a page per job than on a better design.',
+
+    intro: [
+      'For scale: an EICR on a rented flat is £120 to £250, and a full rewire on a three bedroom '
+      + 'house averages about £5,500. The website costs less than one rewire and it works on '
+      + 'every job you quote for, not one.',
+    ],
+
+    sections: [
+      {
+        h2: 'The going rate, and what sits behind it',
+        blocks: [
+          {
+            p: 'More website companies chase electrical work than chase most trades. So the entry '
+              + 'prices you see advertised are lower than a builder gets quoted, and the gap '
+              + 'between the cheapest and the dearest is wider.',
+          },
+          {
+            table: {
+              caption: 'What a small electrical firm pays, by who builds it',
+              head: ['What you buy', 'Typical UK cost'],
+              rows: [
+                ['Template site you build yourself', '£15 to £30 a month, plus your weekend'],
+                ['Trade specialist, one off build', '£250 to £800, then £10 to £30 a month'],
+                ['Small studio, built and maintained', '£15 to £120 a month, sometimes with a build fee'],
+                ['General designer or agency', '£1,500 to £5,000, plus a retainer'],
+              ],
+            },
+          },
+          ...(SHOW_PRICING
+            ? [{
+                p: `Picsel sits in the third row. ${money(BUILD_FEE)} to build, then `
+                  + `${money(PLANS[0].monthly)} a month for hosting and security, `
+                  + `${money(PLANS[1].monthly)} a month if you want changes made for you, or `
+                  + `${money(PLANS[2].openingMonthly)} a month for the first `
+                  + `${countWord(PLANS[2].openingMonths)} months and ${money(PLANS[2].monthly)} after that `
+                  + 'if you want us actively working on getting you found. Numbers on the '
+                  + '<a href="/prices/">prices page</a>.',
+              }]
+            : [{
+                p: 'Picsel sits in the third row. I am rebuilding my plans, so there is no '
+                  + 'price list here to hold anyone against. <a href="/contact/">Send me the '
+                  + 'details</a> and I will give you a figure for your own job.',
+              }]),
+          {
+            p: 'What separates one row from the next is who writes it, whether anyone worked out '
+              + 'which searches you can win before a word went down, whose photographs are on it, '
+              + 'and what happens to it afterwards. That much holds for every trade and is set '
+              + 'out in <a href="/guides/how-much-a-trades-website-costs/">what a trades website '
+              + 'should cost</a>. The rest of this page is the part that is only true of '
+              + 'electricians.',
+          },
+        ],
+      },
+
+      {
+        h2: 'Five jobs, five prices, one page doing all of it',
+        blocks: [
+          {
+            p: 'A builder sells one thing at £48,000. An electrician sells five things between '
+              + '£120 and £11,000, to five people in five different moods.',
+          },
+          { figure: { svg: 'electrician-job-values.svg', prefix: 'jv' } },
+          {
+            p: '<strong>Half of them are not reading.</strong> The emergency call-out, and the '
+              + 'landlord who has just been told their certificate has expired, want a number and '
+              + 'confirmation that you cover their town. If those two facts are not on the first '
+              + 'screen of a phone they are gone, and no amount of good writing further down gets '
+              + 'them back.',
+          },
+          {
+            p: '<strong>The other half read everything.</strong> Somebody pricing an EV charger '
+              + 'or a rewire will look at four electricians over a fortnight, and they are '
+              + 'looking for a reason to rule you out. One page headed &ldquo;Services&rdquo; '
+              + 'with eleven bullet points under it hands them one.',
+          },
+          {
+            p: 'So the fix is not a better homepage. It is a page each for the jobs worth having: '
+              + 'rewires, consumer units, EICRs, EV chargers, and whatever else you want more of. '
+              + 'Each one names the job the way a customer says it, says roughly what it costs, '
+              + 'and shows two photographs of you doing it. That is also the only version of the '
+              + 'site with a chance of ranking, because &ldquo;electrician&rdquo; is unwinnable '
+              + 'and &ldquo;EICR [your town]&rdquo; is not.',
+          },
+        ],
+      },
+
+      {
+        h2: 'The landlord is on a clock',
+        blocks: [
+          {
+            p: 'Every private landlord in England has to have the fixed wiring inspected and '
+              + 'tested at least every five years and give the report to the tenant. That is not '
+              + 'a service you have to talk anyone into. It is a date in somebody else&rsquo;s '
+              + 'diary, and when it comes round they open Google.',
+          },
+          { figure: { svg: 'electrician-eicr-cycle.svg', prefix: 'ec' } },
+          {
+            p: 'The pressure behind it went up recently. The maximum civil penalty for breaching '
+              + 'the electrical safety standards rose from £30,000 to £40,000 per breach on 1 '
+              + 'November 2025 under the Renters&rsquo; Rights Act 2025, and councils now have a '
+              + 'firmer duty to serve a remedial notice when a report comes back unsatisfactory, '
+              + 'with 28 days to put the work right.',
+          },
+          {
+            p: 'Which is why an EICR page earns more than the £120 to £250 written on it. The job '
+              + 'repeats on a five year cycle, the customer often owns more than one property, '
+              + 'and an unsatisfactory report turns into remedial work the same week. Most '
+              + 'electrician websites have all of that buried in a list. A page of its own, '
+              + 'naming the towns you cover, is the best page on the site.',
+          },
+        ],
+      },
+
+      {
+        h2: 'The EV charger enquiry is a slow one',
+        blocks: [
+          {
+            p: 'A home charger is around £1,000 installed, £800 to £1,200 depending on the unit '
+              + 'and the cable run. There are 1.88 million electric vehicles on UK roads now, and '
+              + 'that is forecast to pass 8 million by 2030. It is the one part of the work that '
+              + 'is growing on its own.',
+          },
+          {
+            p: 'It also behaves nothing like the rest of your enquiries. Nobody rings about a '
+              + 'charger at nine at night. They read three companies&rsquo; pages, get two '
+              + 'quotes, ask a question about their fuse board, and come back a week later. A '
+              + 'page that only works on the first visit is the wrong shape for that.',
+          },
+          {
+            p: 'What survives a second reading is the dull detail: what the survey involves, '
+              + 'whether the consumer unit is likely to need doing as well, how long you are on '
+              + 'site, what the grant does and does not cover, and a photograph of a finished '
+              + 'installation on a house that looks like theirs. Write it once and it answers the '
+              + 'same five questions for everyone who asks them.',
+          },
+        ],
+      },
+
+      {
+        h2: 'What the £249 package costs in year three',
+        blocks: [
+          {
+            p: 'The cheap builds are usually real and some of them are fine. They recover the '
+              + 'money later, so the figure worth working out is the three year one rather than '
+              + 'the one on the advert. Three things decide it.',
+          },
+          {
+            p: '<strong>What year two looks like.</strong> A £249 build that goes to £10 a month '
+              + 'afterwards is honest value. A £99 build tied to £49 a month for five years is a '
+              + '£3,039 website advertised as a £99 one.',
+          },
+          {
+            p: '<strong>Who the domain is registered to.</strong> If it is in their name and you '
+              + 'leave, you lose the address and any ranking attached to it. Ask to be listed as '
+              + 'the registrant. If the answer takes more than one sentence, that is the answer.',
+          },
+          {
+            p: '<strong>What a change costs.</strong> You will add a service, drop a service and '
+              + 'change your number at least once. Find out now whether that is included or '
+              + 'whether it is £75 and a fortnight.',
+          },
+        ],
+      },
+
+      {
+        h2: 'Questions worth asking before you pay anyone',
+        blocks: [
+          {
+            orderedList: [
+              'Will the domain be registered in my name?',
+              'What do I pay in year two, and in year three?',
+              'Which searches are you building this to win?',
+              'Do EICRs and EV chargers get pages of their own, or bullet points?',
+              'Can I see a site you built for an electrician, live?',
+            ],
+          },
+          {
+            p: 'A vague answer to the fourth one tells you it is a template with your name in it.',
+          },
+        ],
+      },
+
+      {
+        h2: 'If you want it done for you',
+        blocks: [
+          ...(SHOW_PRICING
+            ? [{
+                p: `Picsel builds websites for electricians anywhere in the UK. ${money(BUILD_FEE)} to build, `
+                  + `then from ${money(PLANS[0].monthly)} a month, and live in days.`,
+              }]
+            : [{
+                p: 'Picsel builds websites for electricians anywhere in the UK. I am rebuilding '
+                  + 'my plans, so there is no price list here to hold anyone against. '
+                  + '<a href="/contact/">Send me the details</a> and I will give you a figure for '
+                  + 'your own job.',
+              }]),
+          {
+            p: `Call Ben on <a href="${escapeHtml(SITE.contact.phoneHref)}">${escapeHtml(SITE.contact.phoneDisplay)}</a> or `
+              + '<a href="/contact/">send a message</a>. Have the photographs ready and the whole '
+              + 'thing moves quickly.',
+          },
+          {
+            p: 'What is included is on the '
+              + '<a href="/services/websites-for-tradespeople/">websites for tradespeople</a> '
+              + 'page.',
+          },
+        ],
+      },
+    ],
+
+    also: [
+      {
+        q: 'Do I need my NICEIC or NAPIT registration on the website?',
+        a:
+          'Yes, and in the header rather than the footer. It is the one thing on the page a '
+          + 'homeowner can go and check independently, and a landlord about to accept a '
+          + 'certificate looks for it before anything else. Put the scheme mark where it is '
+          + 'visible without scrolling, and name the scheme in words as well, because a logo on '
+          + 'its own is not searchable.',
+      },
+      {
+        q: 'Will a website get me emergency call-outs?',
+        a:
+          'Some, but your Google Business Profile does more of that work than the site does. '
+          + 'Emergency searches are mostly answered from the map, so the profile has to be '
+          + 'verified, in the right category and showing your hours. What the website adds is the '
+          + 'second look, when somebody has three numbers and is deciding which one to try first.',
+      },
+      {
+        q: 'Most of my work comes from builders and letting agents. Is a site worth it?',
+        a:
+          'It changes what those relationships are worth rather than replacing them. A letting '
+          + 'agent with forty properties checks you are still registered before sending you the '
+          + 'next EICR, and a builder passes your number to a client who then looks you up. In '
+          + 'both cases somebody is checking, and what they find decides whether the work keeps '
+          + 'coming.',
+      },
+      {
+        q: 'Should I put prices on my website?',
+        a:
+          'Put ranges on the jobs that have them, like an EICR or a consumer unit change, and say '
+          + 'plainly that a rewire needs looking at first. It costs you the calls you were going '
+          + 'to lose anyway and saves the ones where the customer was never going to pay what you '
+          + 'charge. Naming a range also puts you in the answer when somebody asks an assistant '
+          + 'what an EICR costs in your town.',
+      },
+      {
+        q: 'How long does an electrician website take to build?',
+        a:
+          'Days rather than months, if whoever is building it is organised. What holds it up is '
+          + 'photographs. Consumer units, boards, chargers and finished jobs off your own phone '
+          + 'are the whole hold-up, and thirty of them is plenty.',
+      },
+    ],
+  },
 ];
 
 /* A trade entry, as an ordinary guide record.
@@ -1311,7 +1597,7 @@ const GUIDES_INDEX_TRAIL = [
 ];
 
 const INDEX_DESCRIPTION =
-  `Plain answers to ${countWord(ALL_GUIDES.length)} questions tradespeople actually ask about `
+  `Plain answers to ${countWord(ALL_GUIDES.length)} questions tradespeople really ask about `
   + 'websites, Google Business Profiles, reviews and what any of it should cost. No sales pitch.';
 
 export const GUIDES_INDEX_PAGE = {
