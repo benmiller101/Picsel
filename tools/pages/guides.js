@@ -29,7 +29,7 @@
    the edit is wrong. */
 
 import { SITE, SHOW_PRICING, absoluteUrl } from '../../site.config.js';
-import { PLANS, BUILD_FEE, money } from '../../pricing.js';
+import { PLANS, BUILD_FEE, RESCUE, money } from '../../pricing.js';
 import { escapeHtml } from '../templates/page.js';
 import { breadcrumbs } from '../templates/schema.js';
 import { renderArticleSections } from '../partials/article-sections.js';
@@ -49,7 +49,7 @@ import { countWord } from '../templates/words.js';
    /prices. A guide that says "from £15" while the prices page says £19 is worse
    than a guide that names no number at all. */
 const ONLINE = PLANS[0];
-const GROWTH = PLANS[2];
+const LOCAL = PLANS[2];
 
 /* FIELD REFERENCE
      slug      URL segment under /guides/. Permanent.
@@ -290,7 +290,8 @@ const GUIDES = [
       href: '/prices/#extras',
       line:
         'If yours is wrong, unverified or has stopped showing, we do a one off Google Profile ' +
-        'Rescue for £89, and it comes off the build fee if you have a site from us afterwards.',
+        `Rescue for ${money(RESCUE.price)}, and it comes off the build fee if you have a site ` +
+        'from us afterwards.',
     },
     action: {
       href: '/services/google-business-profile/',
@@ -492,11 +493,11 @@ const GUIDES = [
       },
     ],
     plan: {
-      id: 'growth',
+      id: 'local',
       line:
-        'The schema, the listings and the monthly content this needs are the Growth plan, ' +
-        `at ${money(GROWTH.openingMonthly)} a month for the first ${GROWTH.openingMonths} ` +
-        `months and ${money(GROWTH.monthly)} after.`,
+        'Search and AI search setup comes with every build. The Local plan, at ' +
+        `${money(LOCAL.monthly)} a month, then checks every quarter how AI search sees you and ` +
+        'refreshes a page off the back of it.',
     },
     action: {
       href: '/services/search-and-ai-visibility/',
@@ -595,11 +596,11 @@ const GUIDES = [
       },
     ],
     plan: {
-      id: 'growth',
+      id: 'local',
       line:
-        'Asking for reviews and replying to them is part of the Growth plan, at ' +
-        `${money(GROWTH.openingMonthly)} a month for the first ${GROWTH.openingMonths} months ` +
-        `and ${money(GROWTH.monthly)} after, if you would rather it was somebody else\'s job.`,
+        'Every build comes with a pack of review cards. On the Local plan, at ' +
+        `${money(LOCAL.monthly)} a month, we reply to every review within a week and top the ` +
+        'cards up when you run low, if you would rather that part was somebody else\'s job.',
     },
     action: {
       href: '/services/search-and-ai-visibility/',
@@ -775,9 +776,8 @@ const TRADE_COST_PAGES = [
                 p: `Picsel sits in the third row. ${money(BUILD_FEE)} to build, then `
                   + `${money(PLANS[0].monthly)} a month for hosting and security, `
                   + `${money(PLANS[1].monthly)} a month if you want changes made for you, or `
-                  + `${money(PLANS[2].openingMonthly)} a month for the first `
-                  + `${countWord(PLANS[2].openingMonths)} months and ${money(PLANS[2].monthly)} after that `
-                  + 'if you want us actively working on getting you found. Numbers on the '
+                  + `${money(PLANS[2].monthly)} a month if you want us working on your Google `
+                  + 'profile and reviews every week. Numbers on the '
                   + '<a href="/prices/">prices page</a>.',
               }]
             : [{
@@ -1055,9 +1055,8 @@ const TRADE_COST_PAGES = [
                 p: `Picsel sits in the third row. ${money(BUILD_FEE)} to build, then `
                   + `${money(PLANS[0].monthly)} a month for hosting and security, `
                   + `${money(PLANS[1].monthly)} a month if you want changes made for you, or `
-                  + `${money(PLANS[2].openingMonthly)} a month for the first `
-                  + `${countWord(PLANS[2].openingMonths)} months and ${money(PLANS[2].monthly)} after that `
-                  + 'if you want us actively working on getting you found. Numbers on the '
+                  + `${money(PLANS[2].monthly)} a month if you want us working on your Google `
+                  + 'profile and reviews every week. Numbers on the '
                   + '<a href="/prices/">prices page</a>.',
               }]
             : [{

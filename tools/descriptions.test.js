@@ -76,12 +76,14 @@ test('unpriced descriptions do not exceed the ceiling (155 chars)', () => {
 
   /* Assert the expected number was found. If a page file is deleted or
      refactored, this count will drop and the test will flag it. Found:
-     home.js (1), services.js (4), blog.js (1), not-found.js (1) = 7
-     services.js also has the index page description (1), so total = 8. */
+     home.js (1), services.js (3), blog.js (1), not-found.js (1) = 6
+     services.js also has the index page description (1), so total = 7.
+     Custom tools dropped out in October 2026: it has no published price, so
+     its description no longer needs an unpriced twin. */
   assert.equal(
     allDescriptions.length,
-    8,
-    `Expected 8 unpriced descriptions, found ${allDescriptions.length}`
+    7,
+    `Expected 7 unpriced descriptions, found ${allDescriptions.length}`
   );
 
   /* Assert none exceed the ceiling. */

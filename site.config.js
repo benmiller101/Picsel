@@ -84,47 +84,6 @@ export const SITE = {
     'Picsel builds websites for tradespeople anywhere in the UK, gets them found on Google ' +
     'and in AI search, and keeps them there.',
 
-  /* ---- The exclusivity promise --------------------------------------------
-     Written once, here, because it is the one sentence on this site that is a
-     CONTRACTUAL promise rather than a description, and it was wrong in two
-     ways when it was loose in the page copy.
-
-     What it said: "One client per trade, per town", with no conditions.
-
-     What is actually true:
-       1. The unit is a PATCH, not a town. The contract says a town plus roughly
-          eight miles. "Town" is narrower than what is being promised, which
-          undersells it and, worse, means the printed words and the signed words
-          disagree.
-       2. It only applies on GROWTH, where there is active visibility work to
-          protect. A £15 Online client is not being promised that Picsel will
-          turn away their competitor, and the business decided deliberately not
-          to make that promise.
-
-     THE RULE: the promise never appears without the Growth condition attached.
-     tools/build.js checks every rendered page for it and fails the build if a
-     page prints one without the other, because this is exactly the kind of line
-     that gets shortened to fit a space and becomes a claim nobody meant. */
-  exclusivity: {
-    full:
-      '<strong>One trade per patch.</strong> On our Growth plan, if we are working for a plumber ' +
-      'in your patch, your town and roughly eight miles around it, we will not take on another ' +
-      'plumber there while you are a client. A different trade in the same patch is fine.',
-    /* When the patch is held and when it is let go. Added with the 12 August
-       card, and it is the half a competitor's client cares about: a promise
-       with no stated end is either forever, which is not what is being
-       offered, or undefined, which is worse. Thirty days is long enough to
-       change your mind about leaving and short enough that a patch is not sat
-       on by somebody who has gone. */
-    duration:
-      'The patch is held for as long as you are on Growth, and frees up thirty days after you ' +
-      'stop.',
-    /* For the places a full paragraph will not fit. Still carries the
-       condition, because a short version that drops it is the failure this
-       whole block exists to prevent. */
-    short: 'One trade per patch on our Growth plan',
-  },
-
   /* Real profiles only. An invented or dead profile in sameAs is worse than no
      sameAs at all. These three are live, and naming them here is what ties the
      accounts and the site together as one entity for a search engine or an

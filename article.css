@@ -273,7 +273,7 @@
 }
 
 /* A list of peers, read across rather than down. Auto-fit rather than a fixed
-   count so the four monthly Growth items and the four kinds of custom tool
+   count so the four Local plan items and the four kinds of custom tool
    both land tidily without either page stating a column count that would be
    wrong the moment somebody adds a fifth item to pricing.js.
 

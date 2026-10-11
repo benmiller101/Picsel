@@ -98,8 +98,7 @@ const INTRO = `    <section class="section intro">
       <div class="wrap intro__inner">
         <p class="eyebrow">Websites for trades</p>
         <p class="lede intro__statement">
-          Websites and Google visibility for tradespeople. ${SITE.exclusivity.short}, so we
-          never work for your competitor. ${PRICE_LINE}
+          Websites and Google visibility for tradespeople. ${PRICE_LINE}
         </p>
         <!-- The first thing on the site anybody can act on, and until August
              2026 there was nothing to act on until the very bottom of the
@@ -124,15 +123,14 @@ const INTRO = `    <section class="section intro">
              it is padding, and a reader clocks the rhythm before the content.
              Two of them, then a full stop, then the third as its own sentence.
 
-             "No lock-in" was also true and stopped being true on 12 August
-             2026, when Growth went onto a twelve month term. The claim is now
-             scoped to the two plans it still covers rather than dropped: a
-             rolling contract is the thing this audience has been burned on and
-             it is worth saying, but only about the plans that have one. -->
+             Every plan is rolling. Local has a three month minimum first, and
+             the sentence says so rather than claiming "no lock-in" for a plan
+             that has a minimum term. -->
         <p class="intro__support measure">
           We build fast, honest websites for tradespeople anywhere in the UK, get you found on
-          Google and in AI search, and keep you there. No jargon, and two of the three plans you
-          can cancel any time. You are not signing an agency retainer.
+          Google and in AI search, and keep you there. No jargon, and every plan is rolling on
+          thirty days notice, after a three month minimum on Local. You are not signing an
+          agency retainer.
         </p>
       </div>
     </section>`;
@@ -152,10 +150,7 @@ const WORK = renderWorkRing(FEATURED_PROJECTS);
 /* ---- What Picsel does -----------------------------------------------------
    A plain list, not a sales section. Each line says what the thing is and what
    it gets you, in the words the audience would use — "the free listing that
-   decides whether you show up in the map results", not "GBP optimisation".
-
-   The exclusivity note is last because it is the only genuinely unusual thing
-   here, and because it is a promise rather than a service. */
+   decides whether you show up in the map results", not "GBP optimisation". */
 const SERVICES = `    <section class="section services" aria-labelledby="services-heading">
       <div class="wrap services__inner">
         <div class="services__intro">
@@ -203,18 +198,6 @@ ${SERVICES_BLOB}
             </dd>
           </div>
         </dl>
-
-        <!-- The full form of the promise, from site.config.js, which is the
-             only place it is written. The old version named the town as the
-             unit and attached no plan to it, and was wrong on both counts: the
-             contract says a patch, and the promise is made on Growth only. The
-             old wording is described rather than quoted, because a comment
-             ships to the browser and a loose promise in one is still a loose
-             promise on the page. Read SITE.exclusivity before touching a word
-             of this. -->
-        <p class="services__exclusive measure">
-          ${SITE.exclusivity.full} You are not paying us to help your competitor catch up.
-        </p>
       </div>
     </section>`;
 
@@ -255,10 +238,11 @@ const QUESTIONS = [
        whatever they guess, and "ring and ask" is a worse answer than a number
        but a much better one than silence. */
     a: SHOW_PRICING
-      ? `${money(BUILD_FEE)} to build it, whichever plan you pick, and then from ` +
-        `${FROM_MONTHLY} a month, which covers the hosting, the security and the Google ` +
-        'listing. Two larger plans add monthly changes and active search work. Every price is ' +
-        'on the prices page, including what each one does not cover.'
+      ? `${money(BUILD_FEE)} to build it, whichever plan you pick, with your Google listing ` +
+        `set up as part of the build. Then from ${FROM_MONTHLY} a month, which covers the ` +
+        'hosting and the security. Two larger plans add monthly changes and weekly work on ' +
+        'your Google profile and reviews. Every price is on the prices page, including what ' +
+        'each one does not cover.'
       : 'There is no price list on the site at the moment. Ring or send a message with what ' +
         'you need and you will get a figure the same day, and what it covers in writing.',
   },

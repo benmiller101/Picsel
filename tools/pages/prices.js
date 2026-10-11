@@ -9,23 +9,23 @@
         with the plans instead and a reader compares three build fees that do
         not exist, then reads the cheap plan as the cheap build. Stating one
         fixed fee removes a decision from the sale rather than adding one.
-     2. THE RESCUE, at £89, framed as the way in for somebody who is not ready
-        to buy a website. It comes off the build fee later, which turns a one
-        off job into a deposit.
-     3. THE PLANS, as a ladder, with the try-Growth offer attached underneath
-        by renderPlanCards. That offer is the most commercially important
-        sentence on the page and it is why it is not in a footer.
+     2. THE RESCUE, framed as the way in for somebody who is not ready to buy
+        a website. It comes off the build fee later, which turns a one off job
+        into a deposit.
+     3. THE PLANS, as a ladder. Local's five places and three month minimum
+        are on its card, beside the price.
      4. PROOF. Three sites these plans have built, at addresses a reader can
         open in another tab. This is the page where somebody decides whether to
         believe the numbers, and three live sites settle it faster than copy.
-     5. THE ANNUAL OPTION, then what Growth commits to, then the four questions
-        this audience will not ask on a call.
+     5. THE ANNUAL OPTION, then the four questions this audience will not ask
+        on a call.
      6. THE EXTRAS LAST, and quiet. The hourly rate has to be published,
         because charging by the hour without naming the rate is how a small
-        bill becomes an argument. It must not sit near Growth: an advertised
+        bill becomes an argument. It must not sit beside the plans: an advertised
         hourly rate invites a reader to price a monthly plan by the hour, which
         is an argument with a spreadsheet that does not know what the monthly
-        work is.
+        work is. The build extras, the pause and the referral credit sit
+        here too.
 
    WHY THERE ARE PRICES ON THE SITE AT ALL. The social bios have always led
    with "from £15 a month" while the site named no number, which is a
@@ -41,10 +41,11 @@ import { SITE, absoluteUrl } from '../../site.config.js';
 import {
   PLANS,
   EXTRAS,
-  GUARANTEE,
   BUILD_FEE,
   BUILD_LINE,
   BUILD_WHAT,
+  BUILD_INCLUDES,
+  PROPOSAL_LINE,
   RESCUE,
   ANNUAL,
   PAUSE,
@@ -59,7 +60,7 @@ import { SHOT_SIZES, shotSrcset } from '../templates/images.js';
 import { breadcrumbs, ORG_ID } from '../templates/schema.js';
 import { renderBreadcrumbs } from '../partials/breadcrumbs.js';
 import { renderContactBand } from '../partials/contact-band.js';
-import { renderPlanCards, renderGrowthCommitments } from '../partials/plan-cards.js';
+import { renderPlanCards } from '../partials/plan-cards.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
 
 /* Declared once, ahead of everything below that reads it, so the visible nav
@@ -77,8 +78,9 @@ const PRICES_TRAIL = [
    version buried £299 in a sentence set at body size and then explained it
    twice underneath, which is the wrong shape for a page most of this audience
    opens on a phone with a job on. The figure is now display size and the one
-   accent-coloured thing above the fold, and everything that was prose is four
-   points a reader can take in without reading them in order.
+   accent-coloured thing above the fold, and everything that was prose is a
+   few points a reader can take in without reading them in order. The second
+   point is what the fee buys, from BUILD_INCLUDES, as one sentence.
 
    THE FOUR SERVICE LINKS THAT USED TO BE HERE moved to the foot of the page,
    as DETAIL_LINE. They are worth keeping, because a page that names four
@@ -86,6 +88,15 @@ const PRICES_TRAIL = [
    paragraph in a header that already had too many. Somebody who wants to know
    what the money buys in detail wants it after the prices, not instead of
    them. */
+/* BUILD_INCLUDES as one sentence: "It covers a, b, c and d." The list is
+   kept as a list in pricing.js so the websites service page can show it as
+   bullets; here it is one line among the points. */
+function buildIncludesSentence() {
+  const items = BUILD_INCLUDES.map((item) => item.charAt(0).toLowerCase() + item.slice(1));
+  const last = items.pop();
+  return `It covers ${items.join(', ')} and ${last}`;
+}
+
 const HEAD = `    <section class="section prices-head">
       <div class="wrap page-head">
         <div class="page-head__text">
@@ -99,9 +110,10 @@ const HEAD = `    <section class="section prices-head">
 
           <ul class="prices-head__points">
             <li>One build fee, the same on all three plans</li>
+            <li>${escapeHtml(buildIncludesSentence())}</li>
             <li>Then from ${money(PLANS[0].monthly)} a month, and you pick how much we do</li>
             <li>Every price here is the price, with no setup fee behind it</li>
-            <li>Two of the three you can cancel any time</li>
+            <li>Every plan is rolling on thirty days notice, after a three month minimum on Local</li>
           </ul>
 
           <p class="prices-head__note">
@@ -152,9 +164,7 @@ const RESCUE_SECTION = `    <section class="section rescue" id="rescue" aria-lab
       </div>
     </section>`;
 
-/* ---- C and D. The plans, and the try-Growth offer --------------------------
-   renderPlanCards draws both. The offer is attached to the cards by the
-   partial rather than placed by this page, so the two cannot come adrift. */
+/* ---- C. The plans ---------------------------------------------------------- */
 const PLAN_SECTION = `    <section class="section plans-full" aria-labelledby="plans-full-heading">
       <div class="wrap">
         <h2 class="visually-hidden" id="plans-full-heading">The three plans</h2>
@@ -167,7 +177,7 @@ ${renderPlanCards()}
    The only band on this page with pictures in it, and the reason it earns them
    is that this is the page where a reader is deciding whether to believe the
    numbers. A tradesperson who has been quoted four figures by an agency reads
-   "£299 to build" as either a bargain or a warning, and no amount of copy
+   "£499 to build" as either a bargain or a warning, and no amount of copy
    settles which. Three sites that exist, at addresses they can open in another
    tab, with the plan each one runs on named underneath, settles it in about
    four seconds.
@@ -296,7 +306,7 @@ ${renderFaq({
 const EXTRAS_SECTION = `    <section class="section extras" id="extras" aria-labelledby="extras-heading">
       <div class="wrap">
         <div class="section-head">
-          <h2 class="section-head__title" id="extras-heading">Other things we do</h2>
+          <h2 class="section-head__title" id="extras-heading">Extras, and other things we do</h2>
         </div>
 
         <dl class="extras__list">
@@ -315,11 +325,9 @@ ${EXTRAS.map(
    One Service node per plan, each carrying its own monthly Offer, plus the
    single build fee as an Offer on the page's own node. The build fee is not
    repeated onto each plan for the same reason it is not printed on each card:
-   there is one of it.
-
-   Growth's Offer states £179, the rate a client pays from month four onward,
-   with the opening rate as a second Offer beside it. Putting £99 in as the
-   price would describe a plan that costs that forever, which is not the offer.
+   there is one of it. The rescue and the two priced build extras sit beside
+   it. Google Ads and custom tools have no Offer, because they have no
+   published price.
 
    No aggregateRating and no review count. There are none, and the standard way
    this markup goes wrong is inventing them. */
@@ -345,23 +353,6 @@ const PLAN_SCHEMA = PLANS.map((plan) => ({
         billingIncrement: 1,
       },
     },
-    ...(plan.openingMonthly
-      ? [
-          {
-            '@type': 'Offer',
-            name: `${plan.name}, first ${plan.openingMonths} months`,
-            price: String(plan.openingMonthly),
-            priceCurrency: 'GBP',
-            priceSpecification: {
-              '@type': 'UnitPriceSpecification',
-              price: String(plan.openingMonthly),
-              priceCurrency: 'GBP',
-              unitCode: 'MON',
-              billingIncrement: 1,
-            },
-          },
-        ]
-      : []),
   ],
 }));
 
@@ -378,13 +369,22 @@ const PAGE_OFFERS = [
     price: String(RESCUE.price),
     priceCurrency: 'GBP',
   },
+  /* The extras that carry a single figure. Read from the same EXTRAS entries
+     the visible list renders, so the schema price and the page price are one
+     number. */
+  ...EXTRAS.filter((extra) => extra.offer).map((extra) => ({
+    '@type': 'Offer',
+    name: extra.offer,
+    price: String(extra.amount),
+    priceCurrency: 'GBP',
+  })),
 ];
 
 export const PRICES_PAGE = {
   path: '/prices/',
   title: 'Website prices for tradespeople | Picsel',
   description:
-    `${money(BUILD_FEE)} to build, then from ${money(PLANS[0].monthly)} a month. Three plans, what each one covers, and the answers on pausing, leaving and who owns what. No lock-in on two of them.`,
+    `${money(BUILD_FEE)} to build, then from ${money(PLANS[0].monthly)} a month. Three rolling plans, what each one covers, the extras, and straight answers on pausing, leaving and who owns what.`,
   schemaExtra: [
     {
       '@type': 'Service',
@@ -421,13 +421,12 @@ export const PRICES_PAGE = {
        those figures paid for. */
     BUILT_SECTION,
     ANNUAL_SECTION,
-    renderGrowthCommitments(),
     FAQ_SECTION,
     EXTRAS_SECTION,
     DETAIL_LINE,
     renderContactBand({
       heading: 'Not sure which one?',
-      body: `Ring and describe the job. We&rsquo;ll tell you which plan fits and, if none of them do, we&rsquo;ll say that too. ${escapeHtml(GUARANTEE.proposal)}`,
+      body: `Ring and describe the job. We&rsquo;ll tell you which plan fits and, if none of them do, we&rsquo;ll say that too. ${escapeHtml(PROPOSAL_LINE)}`,
     }),
   ].join('\n\n'),
 };

@@ -711,11 +711,6 @@
     grid-template-columns: 2fr 3fr;
     gap: var(--space-16);
   }
-
-  /* The closing promise spans both columns and sits below the pair. */
-  .services__exclusive {
-    grid-column: 1 / -1;
-  }
 }
 
 .services__intro > * + * {
@@ -744,26 +739,6 @@
 .services__item dd {
   margin: var(--space-2) 0 0;
   max-width: var(--measure);
-}
-
-/* The promise is not a fifth service. It used to carry the same hairline as
-   .services__item above, which on desktop reads as a closing note under two
-   columns, and on mobile reads as item five under a sentence that says there
-   are four. Same markup, opposite meaning, purely because the single column
-   put it in the list's rhythm.
-
-   So it gets a rule down the side in the accent rather than across the top in
-   the line colour. The eye sorts it as a different kind of thing before it
-   reads a word of it, at every width. */
-.services__exclusive {
-  margin-top: var(--space-12);
-  padding: var(--space-1) 0 var(--space-1) var(--space-6);
-  border-left: 2px solid var(--accent);
-}
-
-.services__exclusive strong {
-  color: var(--ink);
-  font-weight: var(--weight-medium);
 }
 
 /* ---- Common questions ----------------------------------------------------
@@ -995,7 +970,7 @@
 }
 
 /* The one accent on this band, and it marks the one thing the band exists to
-   say. Tabular figures so £15, £29 and £179 line up down the row rather than
+   say. Tabular figures so £15, £39 and £89 line up down the row rather than
    drifting by the width of a 1. */
 .plan-rail__amount {
   font-size: var(--text-2xl);
@@ -1005,16 +980,6 @@
 
 .plan-rail__period {
   font-size: var(--text-sm);
-}
-
-/* Growth has two rates, an opening one and the one after it, so its price is
-   three spans where the other two are two. The second period span takes a full
-   row rather than trailing off the end of the line, which keeps "then £179 a
-   month" readable instead of orphaned. Online and Managed never match this,
-   having only one period span each. */
-.plan-rail__period + .plan-rail__period,
-.plan-card__period + .plan-card__period {
-  flex-basis: 100%;
 }
 
 /* The build fee, above the three columns rather than repeated inside them.

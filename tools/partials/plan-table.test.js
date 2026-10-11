@@ -10,7 +10,6 @@ import assert from 'node:assert/strict';
 
 import { buildPlanTable } from './plan-table.js';
 import { PLANS, BUILD_FEE, money } from '../../pricing.js';
-import { countWord } from '../templates/words.js';
 
 test('with pricing hidden the table does not exist at all', () => {
   assert.equal(buildPlanTable({ showPricing: false }), null);
@@ -40,23 +39,12 @@ test('the build fee is stated once, in the caption, not per row', () => {
     'no per-plan build fee column');
 });
 
-test('the opening rate is shown with its term rather than as a bare number', () => {
-  const growth = PLANS.find((plan) => plan.openingMonthly);
+test('a minimum term is shown in the row of the plan that has one', () => {
+  /* Local's three month minimum is the term most likely to be dropped from a
+     short table, and the one a reader most needs before they ring. */
   const table = buildPlanTable({ showPricing: true });
-  const row = table.rows.find((r) => r[0] === growth.name).join(' ');
-  assert.equal(row.includes(money(growth.openingMonthly)), true);
-  assert.equal(row.includes(money(growth.monthly)), true,
-    'the opening rate must never appear without the rate it becomes');
-});
-
-test('a month count is spelled as a word, while money stays in digits', () => {
-  /* words.js: small counts are words in body copy, digits are for data like a
-     price. The Growth row carries both in one cell, so it is the one place the
-     two rules meet and the easiest place to get wrong. */
-  const growth = PLANS.find((plan) => plan.openingMonthly);
-  const row = buildPlanTable({ showPricing: true }).rows.find((r) => r[0] === growth.name).join(' ');
-  assert.equal(/\bfor \d+ months\b/.test(row), false, 'month count must not be a digit');
-  assert.equal(row.includes(`for ${countWord(growth.openingMonths)} months`), true);
+  const local = table.rows.find((r) => r[0] === 'Local').join(' ');
+  assert.equal(/three month minimum/i.test(local), true);
 });
 
 test('no cell carries an em dash', () => {

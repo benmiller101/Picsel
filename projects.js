@@ -41,7 +41,7 @@ import { SHOW_PRICING } from './site.config.js';
                         or null where it is not one of the three. It is not a
                         new claim: every one of these was already stated in
                         that project's own `related` sentence, which links to
-                        /prices/#online or /prices/#growth in words a reader
+                        /prices/#online or /prices/#local in words a reader
                         can see. This field is the same fact in a form a page
                         can read, added so /prices can show what its own prices
                         have actually bought without a template parsing an
@@ -124,7 +124,7 @@ export const PROJECTS = [
     location: 'Hayle, Cornwall',
     featured: true,
     tags: ['Website', 'SEO'],
-    plan: 'growth',
+    plan: 'local',
     blurb:
       'A site for a family-run building contractor in Hayle, built with SEO, covering ' +
       'everything from single-storey extensions to full design-and-build new homes. The work ' +
@@ -135,7 +135,8 @@ export const PROJECTS = [
       'The search side of this build is the same GEO work covered in ' +
       '<a href="/guides/what-is-geo/">what GEO is and why it matters for trades</a>' +
       (SHOW_PRICING
-        ? ', and it is included on the <a href="/prices/#growth">Growth plan</a>.'
+        ? ', and the quarterly AI visibility check on the <a href="/prices/#local">Local ' +
+          'plan</a> keeps it current.'
         : '.'),
     // Chosen over the two unused variants on disk (see mockups/brief.md)
     // because it shows the desktop, tablet and phone together, which is the
@@ -184,7 +185,7 @@ export const PROJECTS = [
     location: 'Hayle, Cornwall',
     featured: true,
     tags: ['Website', 'SEO'],
-    plan: 'growth',
+    plan: 'local',
     blurb:
       'A licensed house clearance and cleaning firm working across Cornwall and the South ' +
       'West, with the SEO work included to bring enquiries in. The site sets out the full ' +
@@ -197,7 +198,7 @@ export const PROJECTS = [
       'right moment, which is exactly what <a href="/guides/how-to-get-more-google-reviews/">how ' +
       'to get more Google reviews</a> sets out.' +
       planNote(
-        'That ongoing work is part of the <a href="/prices/#growth">Growth plan</a>.',
+        'Replying to those reviews is part of the <a href="/prices/#local">Local plan</a>.',
       ),
   },
   {

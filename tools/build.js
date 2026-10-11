@@ -222,7 +222,7 @@ async function build() {
     /* Rendered now but deliberately NOT written yet — see below. */
     const html = renderPage(page);
     errors.push(...findStrayContactDetails(html, page.path));
-    errors.push(...findLooseExclusivityClaim(html, page.path));
+    errors.push(...findRetiredOffers(html, page.path));
     errors.push(...findLocationClaims(html, page.path));
     errors.push(...findUnescapedCopy(html, page.path));
 
@@ -392,29 +392,29 @@ function findStrayContactDetails(html, path) {
   return errors;
 }
 
-/* ---- The exclusivity promise ----------------------------------------------
-   One trade per patch is a contractual promise and it applies on the Growth
-   plan only. Printed without that condition it becomes a promise the business
-   has explicitly decided not to make, to every customer including the £15 one.
+/* ---- Offers that no longer exist ------------------------------------------
+   The October 2026 card retired the Growth plan, the lead guarantee and the
+   one trade per patch promise. Each of them was a commitment with real terms,
+   so a stray sentence left in a guide or an FAQ is not out-of-date copy, it is
+   a promise the business has stopped making, printed where a customer can
+   quote it back.
 
-   That is not a hypothetical failure. The site carried "One client per trade,
-   per town" with no conditions on it for months, in two places, and it was
-   wrong in two different ways at once: the contract says a patch rather than a
-   town, and it was never offered to everyone.
+   "Guaranteed" is on the list as a word in its own right: the site does not
+   use it, in any sense. This runs over the whole rendered page, comments and
+   JSON-LD included, because an assistant reads all of it. */
+const RETIRED_OFFERS = [
+  { pattern: /\bGrowth\b/, what: 'the Growth plan' },
+  { pattern: /guarantee/i, what: 'the lead guarantee, or the word "guaranteed"' },
+  { pattern: /per patch|your patch|exclusivity/i, what: 'the one trade per patch promise' },
+  { pattern: /founding client/i, what: 'the founding client offer' },
+];
 
-   The wording lives in SITE.exclusivity so there is one copy of it. This check
-   is the other half: a page may not mention the patch promise unless the word
-   Growth is on the same page. It catches the specific way this goes wrong,
-   which is somebody shortening the sentence to fit a card. */
-function findLooseExclusivityClaim(html, path) {
-  if (!/per patch/i.test(html)) return [];
-  if (/\bGrowth\b/.test(html)) return [];
-
-  return [
-    `${path} states the one-trade-per-patch promise without naming the Growth plan. That ` +
-      'promise is Growth-only. Use SITE.exclusivity.full or SITE.exclusivity.short, both of ' +
-      'which carry the condition.',
-  ];
+function findRetiredOffers(html, path) {
+  return RETIRED_OFFERS.filter(({ pattern }) => pattern.test(html)).map(
+    ({ pattern, what }) =>
+      `${path} mentions ${what} (matched ${pattern}), which came off the price card in ` +
+      'October 2026.',
+  );
 }
 
 /* ---- Location claims ------------------------------------------------------
@@ -1011,11 +1011,9 @@ ${BUILD_LINE}
 
 ${PLANS.map(
   (plan) =>
-    `- ${plan.name}: ${money(plan.monthly)} a month${
-      plan.openingMonthly
-        ? ` (${money(plan.openingMonthly)} for the first ${plan.openingMonths} months)`
-        : ''
-    }, ${plan.term.toLowerCase()}. ${plan.summary}`,
+    `- ${plan.name}: ${money(plan.monthly)} a month, ${plan.term.toLowerCase()}${
+      plan.places ? `, ${plan.places} places only` : ''
+    }. ${plan.summary}`,
 ).join('\n')}
 
 The ${money(BUILD_FEE)} build fee is the same on all three. Full prices, including what each plan
@@ -1041,7 +1039,6 @@ none to make. Anything stated here can be checked against the live sites.
 - Search work, both Google and AI assistants
 - Google Business Profile setup and upkeep
 - Custom automation tools for repetitive office work
-- ${SITE.exclusivity.short}
 
 ${COST_SECTION}## Work
 

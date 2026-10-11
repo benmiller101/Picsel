@@ -12,10 +12,8 @@
 
    WHERE THE FACTS COME FROM. Nothing on these pages is typed twice. The plans,
    the includes, the excludes, the extras and their prices are read from
-   pricing.js; the exclusivity promise and the guarantee come from
-   site.config.js and pricing.js in their own words, because both are terms
-   rather than descriptions. If a claim is not in one of those files, it is not
-   on these pages.
+   pricing.js. If a claim is not in that file or site.config.js, it is not on
+   these pages.
 
    THE LINK RULE, which is the one the site was actually failing. Every content
    page has to link to its money page from body copy, not only from a nav. Each
@@ -30,7 +28,7 @@
    guide and from the homepage's route through both. */
 
 import { SITE, SHOW_PRICING, absoluteUrl } from '../../site.config.js';
-import { PLANS, EXTRAS, GUARANTEE, BUILD_FEE, RESCUE, money } from '../../pricing.js';
+import { PLANS, EXTRAS, BUILD_FEE, BUILD_INCLUDES, RESCUE, PRICED_INDIVIDUALLY, money } from '../../pricing.js';
 import { reviewsForService } from '../../reviews.js';
 import { getProjectBySlug } from '../../projects.js';
 import { escapeHtml } from '../templates/page.js';
@@ -43,13 +41,12 @@ import { renderReviews } from '../partials/reviews.js';
 import { renderPlanCards } from '../partials/plan-cards.js';
 import { PAGE_BLOB, PAGE_BLOB_SCRIPT } from '../partials/page-blob.js';
 
-const [ONLINE, MANAGED, GROWTH] = PLANS;
+const [ONLINE, MANAGED, LOCAL] = PLANS;
 
 /* Found by name rather than by index. EXTRAS is a list somebody will reorder
    one day, and a page that quotes EXTRAS[0] would silently start describing
    Google Ads as a profile rescue. */
 const ADS = EXTRAS.find((extra) => extra.name === 'Google Ads');
-const TOOLS = EXTRAS.find((extra) => extra.name === 'Custom apps');
 
 /* Every service page carries this as its last FAQ, word for word. It lives
    here once so the four pages cannot drift into four different phrasings of
@@ -99,7 +96,7 @@ const SERVICES = [
     slug: 'websites-for-tradespeople',
     title: 'Websites for tradespeople, live within a week',
     description: SHOW_PRICING
-      ? `${money(BUILD_FEE)} to build a five page website around your trade, live within a week, then from ${money(ONLINE.monthly)} a month with hosting and your Google Business Profile included.`
+      ? `${money(BUILD_FEE)} to build a website around your trade, with your Google Business Profile set up, live within a week. Then from ${money(ONLINE.monthly)} a month for hosting and security.`
       : 'A five page website built around your trade, live within a week, with hosting, the security certificate and your Google Business Profile set up too.',
     /* The unpriced description is 148 characters, two under the 150-character
        floor. It is complete and reads well; padding it with two characters of
@@ -107,14 +104,14 @@ const SERVICES = [
        waived. The sentence stands as written. */
     descriptionFloorWaived: true,
     indexLine: SHOW_PRICING
-      ? `Five pages written around your trade, live within a week. ${money(BUILD_FEE)} to build, then from ${money(ONLINE.monthly)} a month.`
+      ? `A homepage plus up to five pages, written around your trade and live within a week. ${money(BUILD_FEE)} to build, then from ${money(ONLINE.monthly)} a month.`
       : 'Five pages written around your trade, live within a week. A build fee once, then a monthly cost to run it.',
     serviceType: 'Website design and build',
     lead: SHOW_PRICING
-      ? `Websites for tradespeople, five pages, live within a week. ${money(BUILD_FEE)} to ` +
-        'build, whichever plan you pick, and then from ' +
-        `${money(ONLINE.monthly)} a month, which covers hosting, security and SSL, and your ` +
-        'Google Business Profile set up properly at launch.'
+      ? 'Websites for tradespeople, a homepage plus up to five pages, live within a week. ' +
+        `${money(BUILD_FEE)} to build, whichever plan you pick, with your Google Business ` +
+        `Profile set up and pointed at the site. Then from ${money(ONLINE.monthly)} a month, ` +
+        'which covers hosting, security and SSL, and keeps the site working.'
       : 'Websites for tradespeople, five pages, live within a week. The smallest plan, Online, ' +
         'covers hosting, security and SSL, and your Google Business Profile set up properly at ' +
         'launch.',
@@ -126,7 +123,7 @@ const SERVICES = [
             'starts with the same build, so the only thing the plan changes is how much of the ' +
             'ongoing work we do afterwards.',
         ],
-        list: ONLINE.includes,
+        list: BUILD_INCLUDES,
         after: [
           'If you want to check that list against what a trades site actually needs, <a ' +
             'href="/guides/what-a-trades-website-needs/">what a tradesperson\'s website needs</a> ' +
@@ -154,11 +151,13 @@ const SERVICES = [
            the search work, stay in words above and below them. */
         h2: 'The three plans',
         paragraphs: [
-          'Online is the site. Managed is the site with someone looking after it. Growth is the ' +
-            'site, looked after, with monthly work behind it to get you found. Each one contains ' +
-            'the one before it, so nothing is lost by starting at the bottom.',
-          'Growth is the only plan carrying the lead guarantee. What that work is week to week is ' +
-            'set out on <a href="/services/search-and-ai-visibility/">search and AI visibility</a>.',
+          'Online keeps the site running. Managed is the site with someone looking after it. ' +
+            'Local is the site, looked after, with weekly work on your Google profile and your ' +
+            'reviews. Each one contains the one before it, so nothing is lost by starting at the ' +
+            'bottom.',
+          'Local has five places and a three month minimum, and the other two are rolling from ' +
+            'the start. What the Local work is week to week is set out on <a ' +
+            'href="/services/search-and-ai-visibility/">search and AI visibility</a>.',
           /* The three cards under this heading are the only thing on the page
              that carried a figure, and the paragraphs above them describe the
              ladder without one, which is why the section survives the blackout
@@ -177,7 +176,7 @@ const SERVICES = [
         layout: 'split',
         paragraphs: [
           'About a week, once we have your logo, your photos and the list of jobs you want on ' +
-            'the site. Managed and Growth take the same time to build, because the build itself ' +
+            'the site. Managed and Local take the same time to build, because the build itself ' +
             'does not change between plans.',
         ],
       },
@@ -201,7 +200,7 @@ const SERVICES = [
         h2: 'The Google side comes with it',
         layout: 'split',
         paragraphs: [
-          'Your Google Business Profile is set up at launch on every plan, because for most ' +
+          'Your Google Business Profile is set up as part of every build, because for most ' +
             'trades it brings more calls than the website does. If yours already exists and has ' +
             'stopped showing, that is a separate job and it is on the <a ' +
             'href="/services/google-business-profile/">Google Business Profile</a> page.',
@@ -219,7 +218,7 @@ const SERVICES = [
         q: 'How long until the site is live?',
         a:
           'About a week for Online, once we have your logo, your photos and the jobs you want ' +
-          'listed. Managed and Growth take the same time, since the build does not change.',
+          'listed. Managed and Local take the same time, since the build does not change.',
       },
       {
         q: 'How many pages does a tradesman website need?',
@@ -237,8 +236,9 @@ const SERVICES = [
         q: 'Can I move between plans later?',
         a:
           'Yes, in either direction. Moving up adds what the next plan includes. Moving down ' +
-          'means losing what the higher plan covered, so dropping from Growth loses the monthly ' +
-          'content, the review generation and the AI search work.',
+          'means losing what the higher plan covered, so dropping from Local loses the weekly ' +
+          'profile posts, the review replies and the quarterly AI visibility check. Local has a ' +
+          'three month minimum before you can move down.',
       },
       RESPONSE_PROMISE_FAQ,
     ],
@@ -276,22 +276,22 @@ const SERVICES = [
     title: 'Google Business Profile setup and management',
     description:
       SHOW_PRICING
-        ? `We claim, verify and fill in your Google Business Profile: categories, services, photos and reviews. ${money(89)} one off, or set up at launch with any website.`
+        ? `We claim, verify and fill in your Google Business Profile: categories, services, photos and reviews. ${money(RESCUE.price)} one off, or set up at launch with any website.`
         : 'We claim, verify and fill in your Google Business Profile: categories, services, photos and reviews. A one off job, or set up at launch with any website.',
     indexLine: SHOW_PRICING
-      ? `Claimed, verified and filled in properly, with a plan for reviews. ${money(89)} as a one off, or set up at launch with any website.`
+      ? `Claimed, verified and filled in properly, with a plan for reviews. ${money(RESCUE.price)} as a one off, or set up at launch with any website.`
       : 'Claimed, verified and filled in properly, with a plan for reviews. A one off job, or set up at launch with any website.',
     serviceType: 'Google Business Profile management',
     lead: SHOW_PRICING
       ? 'Your Google Business Profile claimed, verified and filled in properly: categories, ' +
         'services, photos, questions and answers, and a plan to get you more reviews. ' +
-        `${money(89)} as a one off. If you take a website later, the ${money(89)} comes off it.`
+        `${money(RESCUE.price)} as a one off. If you take a website later, the ${money(RESCUE.price)} comes off it.`
       : 'Your Google Business Profile claimed, verified and filled in properly: categories, ' +
         'services, photos, questions and answers, and a plan to get you more reviews. A one off ' +
         'job, and if you take a website from us later it comes off the build fee.',
     sections: [
       {
-        h2: SHOW_PRICING ? `What the ${money(89)} covers` : 'What the job covers',
+        h2: SHOW_PRICING ? `What the ${money(RESCUE.price)} covers` : 'What the job covers',
         /* RESCUE.body ends by naming the fee, so the last sentence is dropped
            rather than the whole paragraph: everything before it is a list of
            work and none of it depends on the number. */
@@ -319,14 +319,14 @@ const SERVICES = [
         layout: 'split',
         paragraphs: [
           (SHOW_PRICING
-            ? `On Online, ${money(ONLINE.monthly)} a month after the ${money(BUILD_FEE)} build ` +
-              'fee, the profile is set up properly at launch as part of the job. On Managed, ' +
+            ? `The ${money(BUILD_FEE)} build fee sets the profile up properly and points it at ` +
+              'the site, whichever plan you pick. On Managed, ' +
               `${money(MANAGED.monthly)} a month, we then keep it active with a monthly post `
-            : 'On Online, the smallest plan, the profile is set up properly at launch as part ' +
-              'of the job. On Managed we then keep it active with a monthly post ') +
+            : 'Every build sets the profile up properly and points it at the site, whichever ' +
+              'plan you pick. On Managed we then keep it active with a monthly post ') +
             'and fresh photos, which is the difference between a listing that exists and one ' +
-            'that is working. Both are on the <a href="/services/websites-for-tradespeople/">' +
-            'websites for tradespeople</a> page.',
+            'that is working. On Local it gets a post every week. All three plans are on the <a ' +
+            'href="/services/websites-for-tradespeople/">websites for tradespeople</a> page.',
         ],
       },
       {
@@ -347,9 +347,10 @@ const SERVICES = [
           'Ask every customer in person on the day the job finishes, and hand them a short link ' +
             'straight to your review page. That is the whole method, and <a ' +
             'href="/guides/how-to-get-more-google-reviews/">how to get more Google reviews</a> ' +
-            'covers what stops it working. If you would rather it was somebody else\'s job, ' +
-            'review generation runs monthly on the Growth plan' +
-            (SHOW_PRICING ? ` at ${money(GROWTH.monthly)} a month.` : '.'),
+            'covers what stops it working. If you would rather some of it was somebody else\'s ' +
+            'job, the Local plan replies to every review within a week and keeps you stocked ' +
+            'with review cards' +
+            (SHOW_PRICING ? `, at ${money(LOCAL.monthly)} a month.` : '.'),
         ],
       },
     ],
@@ -369,17 +370,17 @@ const SERVICES = [
       },
       {
         q: SHOW_PRICING
-          ? `Does the ${money(89)} come off a website?`
+          ? `Does the ${money(RESCUE.price)} come off a website?`
           : 'Does the profile fee come off a website?',
         a: SHOW_PRICING
-          ? 'Yes. If you take a website from us afterwards, the ' + `${money(89)} comes off it.`
+          ? 'Yes. If you take a website from us afterwards, the ' + `${money(RESCUE.price)} comes off it.`
           : 'Yes. If you take a website from us afterwards, it comes off the build fee.',
       },
       {
         q: 'Can you keep the profile updated every month?',
         a:
           'That is Managed, the middle plan, which keeps the profile active with a monthly ' +
-          'post and fresh photos alongside looking after the website.',
+          'post and fresh photos alongside looking after the website. Local posts every week.',
       },
       RESPONSE_PROMISE_FAQ,
     ],
@@ -388,7 +389,7 @@ const SERVICES = [
           {
             '@type': 'Offer',
             name: 'Google Profile Rescue',
-            price: '89',
+            price: String(RESCUE.price),
             priceCurrency: 'GBP',
           },
         ]
@@ -400,50 +401,33 @@ const SERVICES = [
     title: 'Search and AI visibility for tradespeople',
     description:
       SHOW_PRICING
-        ? `Monthly work to get you found on Google and named by AI assistants. The Growth plan, ${money(GROWTH.openingMonthly)} a month for three months then ${money(GROWTH.monthly)}, with a lead guarantee on it.`
-        : 'Monthly work to get you found on Google and named by AI assistants. The Growth plan, and part of your build fee comes back if it misses five enquiries.',
+        ? `Weekly work on your Google profile and reviews, and a quarterly check on how AI search sees you. The Local plan, ${money(LOCAL.monthly)} a month, and only five places on it.`
+        : 'Weekly work on your Google profile and reviews, and a quarterly check on how AI search sees you. The Local plan: five places, and a three month minimum.',
     indexLine: SHOW_PRICING
-      ? `Monthly content, reviews, listings and the technical work behind being named in an AI answer. The Growth plan, ${money(GROWTH.openingMonthly)} a month for the first ${GROWTH.openingMonths} months and ${money(GROWTH.monthly)} after.`
-      : 'Monthly content, reviews, listings and the technical work behind being named in an AI answer. The Growth plan, with the lead guarantee on it.',
+      ? `Weekly Google profile posts, every review answered, and a quarterly AI visibility check. The Local plan, ${money(LOCAL.monthly)} a month, five places only.`
+      : 'Weekly Google profile posts, every review answered, and a quarterly AI visibility check. The Local plan, five places only.',
     serviceType: 'Search engine optimisation and AI search visibility',
     lead: SHOW_PRICING
-      ? 'Monthly work to get you found on Google and named when somebody asks an assistant ' +
-        `for a tradesperson. It is the Growth plan: ${money(GROWTH.openingMonthly)} a month for ` +
-        `the first ${GROWTH.openingMonths} months and ${money(GROWTH.monthly)} after, on a ` +
-        'twelve month term, because we turn down every other trade in your patch to do it. It ' +
-        'is also the only plan that carries the lead guarantee, which is set out in full below.'
-      : 'Monthly work to get you found on Google and named when somebody asks an assistant for ' +
-        'a tradesperson. It is the Growth plan, the top of the ladder, and the only one that ' +
-        `carries the lead guarantee. ${QUOTE_LINE}`,
+      ? 'Work every week to keep you showing on Google and named when somebody asks an ' +
+        `assistant for a tradesperson. It is the Local plan: ${money(LOCAL.monthly)} a month, ` +
+        'with a three month minimum and then rolling on thirty days notice. There are five ' +
+        'places on it.'
+      : 'Work every week to keep you showing on Google and named when somebody asks an ' +
+        'assistant for a tradesperson. It is the Local plan, the top of the ladder, with a ' +
+        `three month minimum and five places on it. ${QUOTE_LINE}`,
     sections: [
       {
-        h2: 'What happens every month',
+        h2: 'What the plan does',
         /* The copy says four things and the data holds exactly four, so they
            are laid out as four rather than as a bulleted column. Read across,
            they are the whole of what the monthly fee buys, on one screen. */
         layout: 'full',
         listAcross: true,
         paragraphs: [
-          'Four things, and they run every month rather than once at launch. Search work stopped ' +
-            'being a job you finish some years ago.',
+          'Four things, and they keep running after launch rather than stopping at it. Search ' +
+            'work stopped being a job you finish some years ago.',
         ],
-        list: GROWTH.includes,
-      },
-      /* Was ungated: GUARANTEE.promise and GUARANTEE.terms name the £299 build
-         fee and the £149 cash figure directly, and this section ran on every
-         build regardless of SHOW_PRICING. The whole section drops out with
-         the prices, rather than trying to describe a cash-or-credit refund
-         with no figure attached to it. */
-      ...(SHOW_PRICING
-        ? [{
-            h2: 'The lead guarantee',
-            paragraphs: [GUARANTEE.promise, ...GUARANTEE.terms],
-          }]
-        : []),
-      {
-        h2: 'One trade per patch',
-        layout: 'split',
-        paragraphs: [SITE.exclusivity.full],
+        list: LOCAL.includes,
       },
       {
         h2: 'What nobody can promise you',
@@ -459,34 +443,29 @@ const SERVICES = [
       {
         h2: 'When you cannot wait a quarter',
         layout: 'split',
-        /* Was gating the price and then concatenating ADS.body straight
-           after it, and ADS.body names both the £129 fee and the £400 ad
-           spend minimum in full sentences of its own. The ternary hid the
-           price and the very next thing on the page put it back. Both figures
-           now come from pricing.js's ADS.body / ADS.bodyNoPrice pair, so
-           there is nowhere left for the price to reappear from. */
+        /* ADS.body names no figure. Google Ads has no published price, so the
+           same sentence runs whether SHOW_PRICING is on or off. */
         paragraphs: [
-          (SHOW_PRICING
-            ? `Google Ads, ${ADS.price.toLowerCase()}. ${ADS.body}`
-            : `Google Ads. ${ADS.bodyNoPrice}`),
+          `Google Ads. ${ADS.body} It is priced individually, so <a href="/contact/">get in ` +
+            'touch</a> and we will tell you what it would cost.',
         ],
       },
       {
         h2: 'What it sits on top of',
         /* The section says the monthly work is worth nothing without a site
-           worth sending people to. Lanora is a Growth client with the search
+           worth sending people to. Lanora is a Local client with the search
            work included, so this is that sentence with a name and a live site
            attached to it, and a reader can go and check. */
         layout: 'beside',
         aside: {
           slug: 'lanora-house',
           caption:
-            '<a href="/work/lanora-house/">Lanora House</a>, on Growth. The site the monthly work ' +
+            '<a href="/work/lanora-house/">Lanora House</a>, on Local. The site the monthly work ' +
             'sits on top of.',
         },
         paragraphs: [
           'None of this works without a site worth sending people to and a Google listing that ' +
-            'is filled in. Both are in the plan already: Growth contains Managed, which contains ' +
+            'is filled in. Both are in the plan already: Local contains Managed, which contains ' +
             'Online. If you only want the site, that is the <a ' +
             'href="/services/websites-for-tradespeople/">websites for tradespeople</a> page.' +
             (SHOW_PRICING ? ' Every figure is on <a href="/prices/">the prices page</a>.' : ''),
@@ -497,100 +476,46 @@ const SERVICES = [
       {
         q: 'How long before it works?',
         a:
-          'The guarantee is measured over four months, which is a fair account of how long ' +
-          'this work takes to show. If you need the phone ringing this week, Google Ads is the ' +
-          'faster route, and you pay Google directly for the ads either way.',
+          'Search work takes months rather than weeks to show, so it is worth judging over a ' +
+          'season. If you need the phone ringing this week, Google Ads is the faster route, and ' +
+          'you pay Google directly for the ads either way.',
       },
       {
-        q: 'Can you guarantee I will be named by ChatGPT?',
+        q: 'Can you promise I will be named by ChatGPT?',
         a:
           'No, and nobody can. What we can do is make sure the facts an assistant finds about ' +
           'you are consistent and easy to quote, which is what decides whether you are in the ' +
           'answer or not.',
       },
-      /* Was ungated: both guarantee figures named directly in an FAQ answer,
-         which is the same bug as the section above and the reason this whole
-         page needed a second pass rather than the one the brief scoped. */
-      ...(SHOW_PRICING
-        ? [{
-            q: 'What if it does not bring me any work?',
-            a:
-              'On Growth, if the site and your Google Business Profile do not bring you five ' +
-              `genuine customer enquiries in four months, you choose: ${money(GUARANTEE.cash)} of ` +
-              `the build fee back in cash, or the full ${money(GUARANTEE.credit)} as credit against ` +
-              'your monthly fee. A payout also ends the twelve month term on thirty days notice.',
-          }]
-        : [{
-            q: 'What if it does not bring me any work?',
-            a:
-              'On Growth, if the site and your Google Business Profile do not bring you five ' +
-              'genuine customer enquiries in four months, you get part of the build fee back ' +
-              /* Careful on purpose: GUARANTEE.cash (pricing.js) is part of the build fee and
-                 GUARANTEE.credit is the whole of it, so an unpriced sentence has to say "part"
-                 for the cash option or it promises more than the terms give. */
-              `in cash, or the whole of it as credit, your choice. ${QUOTE_LINE}`,
-          }]),
       {
-        q: 'Will you work for a competitor of mine?',
+        q: 'Is there a minimum term?',
         a:
-          'Not on Growth. If we are already working for a plumber in your town and roughly eight ' +
-          'miles around it, we will not take on another plumber there while you are a client. A ' +
-          'different trade in the same patch is fine.',
+          'Three months on Local, then it is rolling on thirty days notice. Online and Managed ' +
+          'are rolling from the start.',
       },
-      /* Was ungated: this FAQ answer named the £129 management fee directly
-         with no SHOW_PRICING check, and the faqs array feeds both the visible
-         accordion and the FAQPage JSON-LD, so the figure reached the page
-         twice. */
-      ...(SHOW_PRICING
-        ? [{
-            q: 'Do you take a cut of my ad budget?',
-            a:
-              'No. You pay Google directly, from your own card on your own account, so the budget ' +
-              `is yours and you can see every penny of it. The ${money(129)} a month covers the work ` +
-              'of running the ads, nothing else.',
-          }]
-        : [{
-            q: 'Do you take a cut of my ad budget?',
-            a:
-              'No. You pay Google directly, from your own card on your own account, so the budget ' +
-              'is yours and you can see every penny of it. What we charge to manage the ads is ' +
-              'separate and covers our work, nothing else.',
-          }]),
+      {
+        q: 'Do you take a cut of my ad budget?',
+        a:
+          'No. You pay Google directly, from your own card on your own account, so the budget ' +
+          'is yours and you can see every penny of it. What we charge to manage the ads is ' +
+          'priced individually and covers our work, nothing else.',
+      },
       RESPONSE_PROMISE_FAQ,
     ],
     offers: SHOW_PRICING
       ? [
           {
             '@type': 'Offer',
-            name: 'Growth, monthly',
-            price: String(GROWTH.monthly),
+            name: 'Local, monthly',
+            price: String(LOCAL.monthly),
             priceCurrency: 'GBP',
             priceSpecification: {
               '@type': 'UnitPriceSpecification',
-              price: String(GROWTH.monthly),
+              price: String(LOCAL.monthly),
               priceCurrency: 'GBP',
               unitCode: 'MON',
               billingIncrement: 1,
             },
-          },
-          {
-            '@type': 'Offer',
-            name: `Growth, first ${GROWTH.openingMonths} months`,
-            price: String(GROWTH.openingMonthly),
-            priceCurrency: 'GBP',
-            priceSpecification: {
-              '@type': 'UnitPriceSpecification',
-              price: String(GROWTH.openingMonthly),
-              priceCurrency: 'GBP',
-              unitCode: 'MON',
-              billingIncrement: 1,
-            },
-          },
-          {
-            '@type': 'Offer',
-            name: 'Website build fee',
-            price: String(BUILD_FEE),
-            priceCurrency: 'GBP',
           },
         ]
       : [],
@@ -599,23 +524,19 @@ const SERVICES = [
   {
     slug: 'custom-tools',
     title: 'Custom tools for trades: quotes, jobs and photos',
+    /* No published price since October 2026, so no SHOW_PRICING branch: the
+       page reads the same with the prices on or off. */
     description:
-      SHOW_PRICING
-        ? `Custom software built around how your business already works: quotes, job records, photos and stock. ${money(1200)} to build then ${money(49)} a month, or ${money(149)} a month.`
-        : 'Custom software built around how your business already works: quotes, job records, photos and stock. Built outright, or built and run for you monthly.',
-    indexLine: SHOW_PRICING
-      ? `Job organisation, photo records, inventory and quote builders, automated quotes. ${money(1200)} to build then ${money(49)} a month, or ${money(149)} a month with no build fee.`
-      : 'Job organisation, photo records, inventory and quote builders, automated quotes. Built outright, or built and run monthly.',
+      'Custom software built around how your business already works: quotes, job records, ' +
+      'photos and stock. Priced individually, so get in touch with the job.',
+    indexLine:
+      'Job organisation, photo records, inventory and quote builders, automated quotes. ' +
+      'Priced individually, get in touch.',
     serviceType: 'Custom business software',
-    lead: SHOW_PRICING
-      ? 'Custom tools built around how your business already works: the quoting, the job ' +
-        `records, the photos, the stock. ${money(1200)} to build and then ${money(49)} a month, ` +
-        `or ${money(149)} a month with no build fee on a twelve month term. If you spend hours ` +
-        'on paperwork, this is the part that gives you your evenings back.'
-      : 'Custom tools built around how your business already works: the quoting, the job ' +
-        'records, the photos, the stock. Built outright as a one off, or built and run for a ' +
-        'monthly fee. If you spend hours on paperwork, this is the part that gives you your ' +
-        'evenings back.',
+    lead:
+      'Custom tools built around how your business already works: the quoting, the job ' +
+      `records, the photos, the stock. ${PRICED_INDIVIDUALLY}. If you spend hours on ` +
+      'paperwork, this is the part that gives you your evenings back.',
     sections: [
       {
         /* NO IMAGE ON THIS PAGE EITHER, for the same reason as the Google
@@ -643,27 +564,16 @@ const SERVICES = [
         h2: 'What it costs',
         layout: 'split',
         paragraphs: [
-          SHOW_PRICING
-            ? `${TOOLS.price}. Two ways to the same tool: pay for the build and keep the ` +
-              'monthly small, or pay nothing up front and more each month. The second one ' +
-              'exists because a tool that saves you a day a week should not need a thousand ' +
-              'pounds before it saves you anything.'
-            : 'Two ways to the same tool: pay for the build and keep the monthly small, or pay ' +
-              'nothing up front and more each month. The second one exists because a tool that ' +
-              'saves you a day a week should not need a thousand pounds before it saves you ' +
-              `anything. ${QUOTE_LINE}`,
+          `${PRICED_INDIVIDUALLY}. A tool is shaped by the job it replaces, so the price comes ` +
+            `from that job rather than from a list. ${QUOTE_LINE}`,
         ],
       },
       {
         h2: 'How it sits against the website plans',
         paragraphs: [
-          'Separately. Online, Managed and Growth are the website ladder and a tool is not on ' +
-            'it, so nothing here changes what you pay for a site.' +
-            (SHOW_PRICING
-              ? ' Both prices are on <a href="/prices/#extras">the prices page</a>, and if you'
-              : ' If you') +
-            ' want the website first that is <a href="/services/websites-for-tradespeople/">' +
-            'websites for tradespeople</a>.',
+          'Separately. Online, Managed and Local are the website ladder and a tool is not on ' +
+            'it, so nothing here changes what you pay for a site. If you want the website first ' +
+            'that is <a href="/services/websites-for-tradespeople/">websites for tradespeople</a>.',
         ],
       },
       {
@@ -679,36 +589,19 @@ const SERVICES = [
     faqs: [
       {
         q: 'Is it a one off cost or monthly?',
-        a: SHOW_PRICING
-          ? `Either. ${money(1200)} to build it and then ${money(49)} a month, or ` +
-            `${money(149)} a month with no build fee on a twelve month term. The monthly covers ` +
-            'hosting, backups, security updates, fixes and small changes either way.'
-          : 'Either. Built outright as a one off, or built and run for a monthly fee. Which one ' +
-            'suits depends on the tool and how much of it we keep running for you.',
+        a:
+          'It depends on the tool. Some are built once and left alone, and some are worth ' +
+          'keeping running for a monthly fee. Each one is priced individually, so get in touch ' +
+          'with the job and you will get a figure, and what it covers, in writing.',
       },
       {
         q: 'Is a custom tool part of the website plans?',
         a:
-          'No. Online, Managed and Growth cover the website and the search work. A tool is ' +
+          'No. Online, Managed and Local cover the website and your Google profile. A tool is ' +
           'priced on its own, and you can have one without a website from us.',
       },
       {
-        q: 'Does the lead guarantee cover a custom tool?',
-        a:
-          'No. The refund guarantee is a Growth term, and it covers the website and Google ' +
-          'Business Profile, not a tool bought on its own. A custom tool is priced and ' +
-          'delivered separately from the website plans.',
-      },
-      {
-        q: 'Would you build the same tool for a competitor of mine?',
-        a:
-          'Only if you are not already a Growth client. While you are on Growth, the one trade ' +
-          'per patch promise means we will not take on another business in your trade in your ' +
-          'patch at all, whatever they buy from us, a tool included. Bought on its own without ' +
-          'Growth, a tool does not carry that protection.',
-      },
-      {
-        q: 'What does the monthly fee cover?',
+        q: 'What does keeping a tool running cover?',
         a:
           'Hosting, backups, security updates, fixes and small changes. A tool nobody maintains ' +
           'stops working the first time something it depends on changes. Larger new features ' +
@@ -716,42 +609,8 @@ const SERVICES = [
       },
       RESPONSE_PROMISE_FAQ,
     ],
-    offers: SHOW_PRICING
-      ? [
-          {
-            '@type': 'Offer',
-            name: 'Custom app, build fee',
-            price: '1200',
-            priceCurrency: 'GBP',
-          },
-          {
-            '@type': 'Offer',
-            name: 'Custom app, monthly after the build fee',
-            price: '49',
-            priceCurrency: 'GBP',
-            priceSpecification: {
-              '@type': 'UnitPriceSpecification',
-              price: '49',
-              priceCurrency: 'GBP',
-              unitCode: 'MON',
-              billingIncrement: 1,
-            },
-          },
-          {
-            '@type': 'Offer',
-            name: 'Custom app, monthly with no build fee',
-            price: '149',
-            priceCurrency: 'GBP',
-            priceSpecification: {
-              '@type': 'UnitPriceSpecification',
-              price: '149',
-              priceCurrency: 'GBP',
-              unitCode: 'MON',
-              billingIncrement: 1,
-            },
-          },
-        ]
-      : [],
+    /* No Offer: there is no published price to describe. */
+    offers: [],
   },
 ];
 
@@ -773,7 +632,7 @@ const SERVICES = [
 
      The Lanora phone shot, on the search and AI page, sits beside "What it
      sits on top of", which is the section saying the monthly work is worthless
-     without a site worth sending people to. Lanora is a Growth client with the
+     without a site worth sending people to. Lanora is a Local client with the
      search work included, so it is that sentence with a name on it. Phone
      rather than desktop because most of these clients' customers are on one,
      and because the page needed a shape that was not another wide band.
@@ -879,7 +738,7 @@ function renderSection(section) {
   if (section.list) {
     /* --across turns the bullets into a grid of peers. Reserved for lists whose
        items really are a set read across rather than steps read down, which on
-       these pages means the four things the Growth plan does every month and
+       these pages means the four things the Local plan keeps doing and
        the four kinds of tool we build. The copy above each one already says
        "four", so the shape is repeating something true rather than asserting a
        structure the words do not have. */
@@ -949,15 +808,10 @@ ${body}${aside}
    to answer "which of these is me": a reader has to hold two of them in their
    head to check the third against them. Same cards as /prices, rendered from
    the same pricing.js data by the same function, so the two pages cannot end
-   up describing different plans.
-
-   The Growth card's pointer at the exclusivity promise and the lead guarantee
-   goes to /prices, because that is where the band setting out both in full
-   actually lives. This page states the guarantee in a sentence and does not
-   reproduce the terms. */
+   up describing different plans. */
 function renderSectionPlans() {
   return `        <div class="service__plans">
-${renderPlanCards({ commitmentsHref: '/prices/#commitments' })}
+${renderPlanCards()}
         </div>`;
 }
 
@@ -1122,7 +976,7 @@ export const SERVICES_INDEX_PAGE = {
   path: '/services/',
   title: 'Website and search services for tradespeople',
   description: SHOW_PRICING
-    ? `Four things we do and what each costs: websites at ${money(BUILD_FEE)} to build and ${money(ONLINE.monthly)} a month, Google Business Profiles, search and AI visibility, and custom apps.`
+    ? `Four things we do: websites at ${money(BUILD_FEE)} to build and from ${money(ONLINE.monthly)} a month, Google Business Profiles, search and AI visibility, and custom tools for your paperwork.`
     : 'Four things we do: websites for tradespeople, Google Business Profiles, the monthly search and AI work, and custom tools for the paperwork you repeat.',
   styles: ['/article.css'],
   schemaType: 'CollectionPage',
